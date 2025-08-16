@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",
+    "@suspensive/react": "^3.5.0",
     "@tanstack/react-query": "^5.84.2",
     "axios": "^1.11.0",
     "class-variance-authority": "^0.7.1",
@@ -22,7 +23,8 @@
     "react-error-boundary": "^6.0.0",
     "react-hook-form": "^7.62.0",
     "tailwind-merge": "^3.3.1",
-    "zod": "^4.0.17"
+    "zod": "^4.0.17",
+    "zustand": "^5.0.7"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
