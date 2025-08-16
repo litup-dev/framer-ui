@@ -4,7 +4,7 @@ import { ErrorBoundary, Suspense } from "@suspensive/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 
-import { getPostsByIdOptions } from "@/app/feature/home/query-options";
+import { getPostsByIdOptions } from "@/app/feature/posts/query-options";
 
 import PostCard from "@/app/feature/home/components/post-card";
 

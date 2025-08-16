@@ -2,7 +2,7 @@ import { ErrorBoundary, Suspense } from "@suspensive/react";
 import { PropsWithChildren } from "react";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
-import { getPostsByIdOptions } from "@/app/feature/home/query-options";
+import { getPostsByIdOptions } from "@/app/feature/posts/query-options";
 import { getServerQueryClient } from "@/lib/query-client";
 
 const PostLayout = async ({
