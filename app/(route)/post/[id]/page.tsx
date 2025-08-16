@@ -2,28 +2,24 @@
 
 import { ErrorBoundary, Suspense } from "@suspensive/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
 
-import { PostsItem } from "@/app/feature/home/types";
-import { getPostsOptions } from "@/app/feature/home/query-options";
+import { getPostsByIdOptions } from "@/app/feature/home/query-options";
 
-import { Marquee3D } from "@/components/shared/marquee-cards";
 import PostCard from "@/app/feature/home/components/post-card";
 
-export default function Home() {
-  const { data: posts } = useSuspenseQuery({
-    ...getPostsOptions(),
-  });
+export default function PostDetail() {
+  const params = useParams();
+  const postId = params.id as string;
+
+  const { data: post } = useSuspenseQuery(getPostsByIdOptions(postId));
 
   return (
     <ErrorBoundary fallback={<div>Error</div>}>
       <div className="w-full flex flex-col items-center justify-center h-full gap-4 pb-20">
         <Suspense fallback={<div>Loading...</div>}>
-          <Marquee3D />
-
           <div className="w-full flex flex-col gap-2 px-4 py-2">
-            {posts.map((post: PostsItem) => (
-              <PostCard key={post.id} post={post} />
-            ))}
+            <PostCard post={post} />
           </div>
         </Suspense>
       </div>

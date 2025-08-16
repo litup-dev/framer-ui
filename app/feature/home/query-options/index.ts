@@ -1,19 +1,35 @@
-import axios from "axios";
-
 import { queryOptions } from "@tanstack/react-query";
-import { Posts } from "@/app/feature/home/types";
 
-const getDomainOptions = () =>
+const getPostsOptions = () =>
   queryOptions({
-    queryKey: ["domain-options"],
+    queryKey: ["posts"],
     queryFn: async () => {
-      const res = await axios.get<Posts[]>(
-        "https://676d15200e299dd2ddfe5d98.mockapi.io/todos"
-      );
-      return res.data;
+      const baseUrl =
+        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+      const res = await fetch(`${baseUrl}/feature/home/api`);
+      return res.json();
     },
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
   });
 
-export { getDomainOptions };
+const getPostsByIdOptions = (id: string) =>
+  queryOptions({
+    queryKey: ["posts", id],
+    enabled: !!id,
+    queryFn: async () => {
+      const baseUrl =
+        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+      const res = await fetch(`${baseUrl}/feature/home/api`);
+      const posts = await res.json();
+      const post = posts.find((p: any) => p.id === Number(id));
+      if (!post) {
+        throw new Error(`Post with id ${id} not found`);
+      }
+      return post;
+    },
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+  });
+
+export { getPostsOptions, getPostsByIdOptions };

@@ -1,12 +1,5 @@
 export interface PostsItem {
+  id: number;
   title: string;
-  subtitle: string;
-  d_day: string;
+  content: string;
 }
-
-export interface Post {
-  category: string;
-  title: string;
-  items: PostsItem[];
-}
-[];
