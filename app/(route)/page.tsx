@@ -1,22 +1,13 @@
-"use client";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+export default async function RootPage() {
+  const session = await getServerSession(authOptions);
 
-export default function RootPage() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (status === "loading") return;
-
-    if (session) {
-      router.replace("/home");
-    } else {
-      router.replace("/login");
-    }
-  }, [session, status, router]);
-
-  return null;
+  if (session) {
+    redirect("/home");
+  } else {
+    redirect("/login");
+  }
 }
