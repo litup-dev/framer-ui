@@ -1,5 +1,13 @@
+"use client";
+
+import FadeIn from "@/components/shared/fade-in";
+
 const ClubPage = () => {
-  return <div>ClubPage</div>;
+  return (
+    <FadeIn>
+      <div>ClubPage</div>
+    </FadeIn>
+  );
 };
 
 export default ClubPage;

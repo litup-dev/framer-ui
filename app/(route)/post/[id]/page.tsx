@@ -13,7 +13,6 @@ export default function PostDetail() {
   const postId = params.id as string;
 
   const { data: post } = useSuspenseQuery(getPostsByIdOptions(postId));
-
   return (
     <ErrorBoundary fallback={<div>Error</div>}>
       <div className="w-full flex flex-col items-center justify-center h-full gap-4 pb-20">
