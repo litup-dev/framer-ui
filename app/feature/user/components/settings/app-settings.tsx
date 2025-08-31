@@ -1,6 +1,6 @@
 const AppSettings = () => {
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4">
+    <div className="bg-white rounded-lg p-4">
       <h3 className="text-lg font-medium text-gray-900 mb-3">앱 설정</h3>
       <div className="space-y-3">
         <div className="flex items-center justify-between">

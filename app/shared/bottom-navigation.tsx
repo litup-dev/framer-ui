@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { CalendarCheck, Club, House, User, Users } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface NavigationItem {
   href: string;
@@ -11,7 +12,7 @@ interface NavigationItem {
 }
 
 const navigationItems: NavigationItem[] = [
-  { href: "/", icon: House, label: "홈" },
+  { href: "/home", icon: House, label: "홈" },
   { href: "/community", icon: Users, label: "커뮤니티" },
   { href: "/concert-schedule", icon: CalendarCheck, label: "공연일정" },
   { href: "/club", icon: Club, label: "클럽" },
@@ -31,9 +32,10 @@ const BottomNavigation = () => {
             <Link
               key={href}
               href={href}
-              className={`flex flex-col items-center justify-center p-2 rounded-lg transition-colors duration-200 ${
+              className={cn(
+                `flex flex-col items-center justify-center p-2 rounded-lg transition-colors duration-200`,
                 isActive ? "text-blue-600" : "text-gray-600"
-              }`}
+              )}
               aria-label={label}
             >
               <Icon

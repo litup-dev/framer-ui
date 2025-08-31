@@ -1,17 +1,16 @@
 "use client";
 
-import { useSuspenseQuery } from "@tanstack/react-query";
-
 import UserMenus from "@/app/feature/user/components/menus";
-import { getUserOptions } from "@/app/feature/user/query-options";
 import FadeIn from "@/components/shared/fade-in";
+import { useSession } from "next-auth/react";
+import { User } from "@/app/feature/user/types";
 
 const UserPage = () => {
-  const { data: user } = useSuspenseQuery(getUserOptions());
+  const user = useSession();
 
   return (
     <FadeIn>
-      <UserMenus user={user} />
+      <UserMenus user={user.data?.user as User} />
     </FadeIn>
   );
 };

@@ -1,7 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    remotePatterns: [
+      new URL("https://k.kakaocdn.net/**"),
+      new URL("http://k.kakaocdn.net/**"),
+    ],
+  },
 };
 
 export default nextConfig;

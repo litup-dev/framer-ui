@@ -4,8 +4,7 @@ const getPostsOptions = () =>
   queryOptions({
     queryKey: ["posts"],
     queryFn: async () => {
-      const baseUrl =
-        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+      const baseUrl = "http://localhost:3000";
       const res = await fetch(`${baseUrl}/feature/home/api`);
       return res.json();
     },
