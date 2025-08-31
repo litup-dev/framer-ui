@@ -19,9 +19,9 @@ export const authOptions: NextAuthOptions = {
       profile(profile) {
         return {
           id: profile.id.toString(),
-          name: profile.properties?.nickname,
+          nickname: profile.properties?.nickname,
           email: undefined,
-          image:
+          profile_path:
             profile.properties?.profile_image ||
             profile.properties?.thumbnail_image,
         };
@@ -47,15 +47,6 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async signIn({ user, account, profile }) {
-      // 로그인 시 사용자 정보 로깅
-      console.log("SignIn - User:", user);
-      console.log("SignIn - Account:", account);
-      console.log("SignIn - Profile:", profile);
-      console.log("SignIn - Profile Properties:", (profile as any)?.properties);
-      console.log(
-        "SignIn - Profile Kakao Account:",
-        (profile as any)?.kakao_account
-      );
       return true;
     },
   },
