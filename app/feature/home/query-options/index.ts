@@ -4,8 +4,9 @@ const getPostsOptions = () =>
   queryOptions({
     queryKey: ["posts"],
     queryFn: async () => {
-      const baseUrl = "http://localhost:3000";
-      const res = await fetch(`${baseUrl}/feature/home/api`);
+      const baseUrl = process.env.API_URL;
+      const url = baseUrl ? `${baseUrl}/feature/home/api` : "/feature/home/api";
+      const res = await fetch(url);
       return res.json();
     },
     staleTime: 5 * 60 * 1000,
