@@ -5,9 +5,9 @@ const getPostsByIdOptions = (id: string) =>
     queryKey: ["posts", id],
     enabled: !!id,
     queryFn: async () => {
-      const baseUrl =
-        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-      const res = await fetch(`${baseUrl}/feature/home/api`);
+      const baseUrl = process.env.API_URL;
+      const url = baseUrl ? `${baseUrl}/feature/home/api` : "/feature/home/api";
+      const res = await fetch(url);
       const posts = await res.json();
       const post = posts.find((p: any) => p.id === Number(id));
       if (!post) {
