@@ -4,6 +4,9 @@ export interface User {
   ID: Id;
   id: Id;
   nickname?: string | null;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
   created_at?: ISODateTime | null;
   updated_at?: ISODateTime | null;
   profile_path?: string | null;

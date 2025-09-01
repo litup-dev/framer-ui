@@ -1,6 +1,5 @@
 import { PropsWithChildren } from "react";
 
-import BottomNavigation from "@/app/shared/bottom-navigation";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getPostsOptions } from "@/app/feature/home/query-options";
 import { getServerQueryClient } from "@/lib/query-client";

@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode } from "react";
+import { createContext, useState } from "react";
 
 interface UserStepContextType {
   step: number;
