@@ -1,15 +1,12 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 import { LoginIcons } from "@/app/feature/login/components/icons";
 import { Button } from "@/components/ui/button";
 
 const LoginForm = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/home";
+  const callbackUrl = "/home";
 
   const handleGoogleLogin = async () => {
     try {
