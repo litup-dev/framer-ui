@@ -25,7 +25,9 @@ const ProfileSettings = ({ user }: { user: User | null | undefined }) => {
     <div className="bg-white rounded-lg p-4">
       <div className="flex items-center space-x-3">
         <Avatar className="h-12 w-12">
-          {user.image && <AvatarImage src={user.image} alt="프로필 사진" />}
+          {user.profile_path && (
+            <AvatarImage src={user.profile_path} alt="프로필 사진" />
+          )}
           <AvatarFallback>
             {user.name?.charAt(0) || user.nickname?.charAt(0)}
           </AvatarFallback>
