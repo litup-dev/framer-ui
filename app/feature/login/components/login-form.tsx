@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 import { LoginIcons } from "@/app/feature/login/components/icons";
@@ -8,19 +8,15 @@ import { Button } from "@/components/ui/button";
 
 const LoginForm = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/home";
 
   const handleGoogleLogin = async () => {
     try {
-      const result = await signIn("google", {
-        redirect: false,
+      await signIn("google", {
+        callbackUrl,
+        redirect: true,
       });
-
-      if (result?.ok) {
-        router.push("/home");
-        router.refresh();
-      } else if (result?.error) {
-        console.error("Google login error:", result.error);
-      }
     } catch (error) {
       console.error("Google login error:", error);
     }
@@ -28,16 +24,10 @@ const LoginForm = () => {
 
   const handleKakaoLogin = async () => {
     try {
-      const result = await signIn("kakao", {
-        redirect: false,
+      await signIn("kakao", {
+        callbackUrl,
+        redirect: true,
       });
-
-      if (result?.ok) {
-        router.push("/home");
-        router.refresh();
-      } else if (result?.error) {
-        console.error("Kakao login error:", result.error);
-      }
     } catch (error) {
       console.error("Kakao login error:", error);
     }
