@@ -38,7 +38,12 @@ const HeroSection = ({ selectedCategory }: HeroSectionProps) => {
     <div className="cursor-pointer" onClick={handleImageChange}>
       <div
         className="relative overflow-hidden"
-        style={{ width: 590, height: 259 }}
+        style={{
+          width: 590,
+          height: 259,
+          transform: "translateZ(0)",
+          backfaceVisibility: "hidden",
+        }}
       >
         <AnimatePresence mode="wait">
           <motion.div
@@ -46,8 +51,13 @@ const HeroSection = ({ selectedCategory }: HeroSectionProps) => {
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
+            transition={{
+              duration: 0.4,
+              ease: [0.25, 0.1, 0.25, 1],
+              type: "tween",
+            }}
             className="absolute inset-0"
+            style={{ willChange: "transform, opacity" }}
           >
             {heroSectionImages[currentImageIndex]?.image && (
               <Image
