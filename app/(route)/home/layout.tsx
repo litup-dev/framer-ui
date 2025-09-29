@@ -9,11 +9,7 @@ const Layout = async ({ children }: PropsWithChildren) => {
   await queryClient.prefetchQuery(getPostsOptions());
   const prefetchData = dehydrate(queryClient);
 
-  return (
-    <div className="max-w-xl m-auto">
-      <HydrationBoundary state={prefetchData}>{children}</HydrationBoundary>
-    </div>
-  );
+  return <HydrationBoundary state={prefetchData}>{children}</HydrationBoundary>;
 };
 
 export default Layout;

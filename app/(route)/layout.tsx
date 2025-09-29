@@ -1,11 +1,13 @@
 import { PropsWithChildren } from "react";
-import BottomNavigation from "@/app/shared/bottom-navigation";
+import Header from "@/app/shared/components/header";
+// import BottomNavigation from "@/app/shared/bottom-navigation";
 
 const Layout = ({ children }: PropsWithChildren) => {
   return (
-    <div className="max-w-xl m-auto">
+    <div className="w-full">
+      <Header />
       {children}
-      <BottomNavigation />
+      {/* <BottomNavigation /> */}
     </div>
   );
 };
