@@ -15,6 +15,7 @@ import HeroSection from "@/app/feature/home/components/hero-section";
 import Image from "next/image";
 import CarouselCards from "@/app/feature/home/components/carousel";
 import SelectShow from "@/app/feature/home/components/select-show";
+import { Calendar } from "@/components/ui/calendar";
 
 export default function Home() {
   const { data: posts } = useQuery(getPostsOptions());
@@ -33,9 +34,9 @@ export default function Home() {
           alt="character"
           width={600}
           height={300}
-          className="absolute top-[240px] right-20 z-5"
+          className="absolute top-[140px] right-20 z-5"
         />
-        <div className="flex gap-10 z-10 justify-between px-5 pt-20">
+        <div className="flex gap-10 z-10 justify-between px-5 pt-4">
           <SelectShow onCategoryChange={handleCategoryChange} />
           <CarouselCards />
         </div>
