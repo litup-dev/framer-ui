@@ -25,17 +25,8 @@ const HeroSection = ({ selectedCategory }: HeroSectionProps) => {
     }
   };
 
-  const [clickIndex, setClickIndex] = useState(0);
-
-  const currentImageIndex =
-    (getImageIndex() + clickIndex) % heroSectionImages.length;
-
-  const handleImageChange = () => {
-    setClickIndex((prev) => prev + 1);
-  };
-
   return (
-    <div className="cursor-pointer" onClick={handleImageChange}>
+    <div className="cursor-pointer">
       <div
         className="relative overflow-hidden"
         style={{
@@ -47,7 +38,7 @@ const HeroSection = ({ selectedCategory }: HeroSectionProps) => {
       >
         <AnimatePresence mode="wait">
           <motion.div
-            key={currentImageIndex}
+            key={getImageIndex()}
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
             exit={{ opacity: 0 }}
@@ -59,10 +50,10 @@ const HeroSection = ({ selectedCategory }: HeroSectionProps) => {
             className="absolute inset-0"
             style={{ willChange: "transform, opacity" }}
           >
-            {heroSectionImages[currentImageIndex]?.image && (
+            {heroSectionImages[getImageIndex()]?.image && (
               <Image
-                src={heroSectionImages[currentImageIndex].image}
-                alt={heroSectionImages[currentImageIndex].id.toString()}
+                src={heroSectionImages[getImageIndex()].image}
+                alt={heroSectionImages[getImageIndex()].id.toString()}
                 width={590}
                 height={259}
               />

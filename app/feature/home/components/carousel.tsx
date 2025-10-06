@@ -10,6 +10,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
+import Image from "next/image";
+import Link from "next/link";
 
 const CarouselCards = () => {
   return (
@@ -24,12 +26,13 @@ const CarouselCards = () => {
         <CarouselContent className="-ml-2 md:-ml-4">
           {eventPosters.map((poster) => (
             <CarouselItem key={poster.id} className="pl-2 md:pl-4 md:basis-1/4">
-              <div className="p-1">
-                <Card className="overflow-hidden">
+              <Link href={`/home/detail/${poster.id}`} className="p-1">
+                <Card className="overflow-hidden" data-hero-key={poster.id}>
                   <div className="aspect-[3/4] relative">
-                    <img
+                    <Image
                       src={poster.image}
                       alt={poster.title}
+                      fill
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -41,7 +44,7 @@ const CarouselCards = () => {
                     <p className="text-sm text-gray-500">{poster.location}</p>
                   </CardContent>
                 </Card>
-              </div>
+              </Link>
             </CarouselItem>
           ))}
         </CarouselContent>
