@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
 import { heroSectionImages } from "@/app/feature/home/mock";
 
 interface HeroSectionProps {

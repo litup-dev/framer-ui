@@ -1,13 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { ErrorBoundary, Suspense } from "@suspensive/react";
-import { useQuery } from "@tanstack/react-query";
 import { SsgoiTransition } from "@ssgoi/react";
 import FadeIn from "@/components/shared/fade-in";
-
-import { PostsItem } from "@/app/feature/home/types";
-import { getPostsOptions } from "@/app/feature/home/query-options";
 
 import HeroSection from "@/app/feature/home/components/hero-section";
 import Image from "next/image";
@@ -16,7 +11,6 @@ import SelectShow from "@/app/feature/home/components/select-show";
 import { Calendar } from "@/components/ui/calendar";
 
 export default function Home() {
-  const { data: posts } = useQuery(getPostsOptions());
   const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   const handleCategoryChange = (value: string) => {

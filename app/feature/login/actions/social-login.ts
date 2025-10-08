@@ -11,8 +11,8 @@ export interface SocialLoginState {
 }
 
 export async function googleLoginAction(
-  prevState: SocialLoginState,
-  formData: FormData
+  _prevState: SocialLoginState,
+  _formData: FormData
 ): Promise<SocialLoginState> {
   try {
     const session = await getServerSession(authOptions);
@@ -27,7 +27,7 @@ export async function googleLoginAction(
     return {
       formErrors: ["Google 로그인에 실패했습니다."],
     };
-  } catch (error) {
+  } catch {
     return {
       formErrors: ["로그인 중 오류가 발생했습니다."],
     };
@@ -35,8 +35,8 @@ export async function googleLoginAction(
 }
 
 export async function kakaoLoginAction(
-  prevState: SocialLoginState,
-  formData: FormData
+  _prevState: SocialLoginState,
+  _formData: FormData
 ): Promise<SocialLoginState> {
   try {
     const session = await getServerSession(authOptions);
