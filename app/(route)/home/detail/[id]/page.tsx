@@ -33,11 +33,13 @@ const PostDetailPage = async ({ params }: PostDetailPageProps) => {
 
   return (
     <SsgoiTransition id={`/home/detail/${id}`}>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden">
+      <div className="h-[calc(100vh-5rem)] flex items-center justify-center p-4">
+        <div
+          className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden"
+          data-hero-key={poster.id}
+        >
           <div className="relative w-full h-[500px]">
             <Image
-              data-hero-key={poster.id}
               src={poster.image}
               alt={poster.title}
               fill

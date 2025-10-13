@@ -1,7 +1,7 @@
 "use client";
 
 import { Ssgoi } from "@ssgoi/react";
-import { pinterest, film, hero } from "@ssgoi/react/view-transitions";
+import { hero } from "@ssgoi/react/view-transitions";
 import { PropsWithChildren } from "react";
 
 const ssgoiConfig = {
