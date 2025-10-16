@@ -1,41 +1,24 @@
-"use client";
-
-import { useState } from "react";
-import { SsgoiTransition } from "@ssgoi/react";
 import FadeIn from "@/components/shared/fade-in";
+import { serverApiClient } from "@/lib/api-client";
 
 import HeroSection from "@/app/feature/home/components/hero-section";
-import Image from "next/image";
-import CarouselCards from "@/app/feature/home/components/carousel";
-import SelectShow from "@/app/feature/home/components/select-show";
+import CharacterSection from "@/app/feature/home/components/character-section";
+import MainContent from "@/app/feature/home/components/main-content";
 import { Calendar } from "@/components/ui/calendar";
 
-export default function Home() {
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
+export default async function Home() {
+  const clubs = await serverApiClient.get("/api/v1/clubs");
 
-  const handleCategoryChange = (value: string) => {
-    setSelectedCategory(value);
-  };
+  console.log(clubs);
 
   return (
-    <SsgoiTransition id="/home">
-      <FadeIn>
-        <div className="w-full flex flex-col h-full gap-10 pb-20 px-10">
-          <HeroSection selectedCategory={selectedCategory} />
-          <Image
-            src="/images/character.png"
-            alt="character"
-            width={600}
-            height={300}
-            className="absolute top-[140px] right-20 z-5 animate-bounce-slow"
-          />
-          <div className="flex gap-10 z-10 justify-between px-5 pt-4">
-            <SelectShow onCategoryChange={handleCategoryChange} />
-            <CarouselCards />
-          </div>
-          <Calendar />
-        </div>
-      </FadeIn>
-    </SsgoiTransition>
+    <FadeIn>
+      <div className="w-full flex flex-col h-full gap-30 pb-20 px-20 pt-20">
+        <HeroSection />
+        <CharacterSection />
+        <MainContent />
+        <Calendar />
+      </div>
+    </FadeIn>
   );
 }

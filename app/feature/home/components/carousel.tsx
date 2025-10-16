@@ -17,16 +17,15 @@ const CarouselCards = () => {
   return (
     <div>
       <Carousel
-        className="w-full max-w-6xl"
+        className="w-full"
         opts={{
-          align: "end",
-          loop: true,
+          align: "start",
         }}
       >
         <CarouselContent className="-ml-2 md:-ml-4">
           {eventPosters.map((poster) => (
-            <CarouselItem key={poster.id} className="pl-2 md:pl-4 md:basis-1/4">
-              <Link href={`/home/detail/${poster.id}`} className="p-1">
+            <CarouselItem key={poster.id} className="pl-2 md:pl-4 md:basis-1/5">
+              <Link href={`/home/detail/${poster.id}`}>
                 <Card className="overflow-hidden" data-hero-key={poster.id}>
                   <div className="aspect-[3/4] relative">
                     <Image
@@ -36,12 +35,16 @@ const CarouselCards = () => {
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <CardContent className="p-5">
-                    <h3 className="font-bold text-lg mb-1 truncate">
-                      {poster.title}
+                  <CardContent className="flex flex-col justify-start">
+                    <h3 className="text-gray-400 text-[16px] font-medium mb-1 truncate">
+                      {poster.label}
                     </h3>
-                    <p className="text-sm text-gray-600 mb-1">{poster.price}</p>
-                    <p className="text-sm text-gray-500">{poster.location}</p>
+                    <p className="font-bold text-[20px] text-[#202020] mb-1 truncate">
+                      {poster.title}
+                    </p>
+                    <p className="font-normal text-[14px] text-gray-400">
+                      {poster.artists}
+                    </p>
                   </CardContent>
                 </Card>
               </Link>

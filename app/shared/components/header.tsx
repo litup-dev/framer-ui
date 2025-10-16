@@ -1,12 +1,12 @@
-import Logo from "@/app/shared/components/logo";
-import HeaderMenus from "@/app/shared/components/menus";
+import DesktopHeader from "@/app/shared/components/desktop-header";
+import MobileHeader from "@/app/shared/components/mobile-header";
 
 const Header = () => {
   return (
-    <header className="py-5 px-10 flex justify-between">
-      <Logo />
-      <HeaderMenus />
-    </header>
+    <div>
+      <DesktopHeader />
+      <MobileHeader />
+    </div>
   );
 };
 

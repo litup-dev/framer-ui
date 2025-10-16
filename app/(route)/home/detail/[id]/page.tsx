@@ -1,7 +1,18 @@
-import { SsgoiTransition } from "@ssgoi/react";
-import { eventPosters } from "@/app/feature/home/mock";
+"use client";
+
+import { use } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+import { eventPosters } from "@/app/feature/home/mock";
+import { Button } from "@/components/ui/button";
+
+import FadeIn from "@/components/shared/fade-in";
+
+import DesktopContent from "@/app/feature/home/detail/components/desktop-content";
+import MobileContent from "@/app/feature/home/detail/components/mobile-content";
+
+import DetailMobileHeader from "@/app/feature/home/detail/components/detail-mobile-header";
 
 interface PostDetailPageProps {
   params: Promise<{
@@ -9,70 +20,58 @@ interface PostDetailPageProps {
   }>;
 }
 
-const PostDetailPage = async ({ params }: PostDetailPageProps) => {
-  const { id } = await params;
+const PostDetailPage = ({ params }: PostDetailPageProps) => {
+  const { id } = use(params);
   const postId = parseInt(id);
   const poster = eventPosters.find((p) => p.id === postId);
+  const router = useRouter();
 
   if (!poster) {
     return (
-      <SsgoiTransition id={`/home/detail/${id}`}>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">
-              포스터를 찾을 수 없습니다
-            </h1>
-            <Link href="/home" className="text-blue-600 hover:text-blue-800">
-              홈으로 돌아가기
-            </Link>
-          </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            포스터를 찾을 수 없습니다
+          </h1>
+          <Button
+            onClick={() => router.back()}
+            className="text-blue-600 hover:text-blue-800"
+          >
+            홈으로 돌아가기
+          </Button>
         </div>
-      </SsgoiTransition>
+      </div>
     );
   }
 
   return (
-    <SsgoiTransition id={`/home/detail/${id}`}>
-      <div className="h-[calc(100vh-5rem)] flex items-center justify-center p-4">
-        <div
-          className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden"
-          data-hero-key={poster.id}
-        >
-          <div className="relative w-full h-[500px]">
+    <FadeIn>
+      <div className="flex justify-center px-5 sm:px-10 md:px-15 lg:px-20 min-h-screen pt-1.5 md:pt-20">
+        <div className="w-full flex flex-col md:flex-row gap-4 lg:gap-[60px] bg-white">
+          <div className="block md:hidden">
+            <DetailMobileHeader />
+          </div>
+          <div className="relative w-full md:w-2/5 h-[442px] md:h-[560px] flex-shrink-0">
             <Image
               src={poster.image}
               alt={poster.title}
               fill
-              className="w-full h-full object-cover"
+              className="object-cover rounded-md"
             />
           </div>
-          <div className="p-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">
-              {poster.title}
-            </h1>
-            <div className="space-y-2 mb-6">
-              <p className="text-lg text-gray-600">
-                <span className="font-semibold">가격:</span> {poster.price}
-              </p>
-              <p className="text-lg text-gray-600">
-                <span className="font-semibold">장소:</span> {poster.location}
-              </p>
+
+          <div className="w-full md:w-3/5 md:border-t-4 border-[#FF491A]">
+            <div className="hidden md:block">
+              <DesktopContent title={poster.title} />
             </div>
-            <div className="flex gap-4">
-              <Link
-                href="/home"
-                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                홈으로 돌아가기
-              </Link>
-              <button className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors">
-                예약하기
-              </button>
+
+            <div className="block md:hidden">
+              <MobileContent title={poster.title} />
             </div>
           </div>
         </div>
       </div>
-    </SsgoiTransition>
+    </FadeIn>
   );
 };
 

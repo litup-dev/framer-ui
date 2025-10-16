@@ -4,6 +4,14 @@ import "./globals.css";
 import ReactQueryProvider from "@/providers/react-query-provider";
 import NextAuthProvider from "@/providers/next-auth-provider";
 import SsgoiProvider from "@/providers/ssgoi-provider";
+import localFont from "next/font/local";
+
+const suit = localFont({
+  src: "./fonts/SUIT-Variable.woff2",
+  display: "swap",
+  weight: "45 920",
+  variable: "--font-suit",
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
+    <html lang="ko" className={suit.variable}>
       <body
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

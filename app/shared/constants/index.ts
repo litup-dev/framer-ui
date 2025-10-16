@@ -1,22 +1,17 @@
 export const MenuItems = [
   {
     id: 1,
-    label: "Home",
+    label: "공연 일정",
     href: "/home",
   },
   {
     id: 2,
-    label: "About",
+    label: "클럽 찾기",
     href: "/about",
   },
   {
     id: 3,
-    label: "Contact",
+    label: "커뮤니티",
     href: "/contact",
-  },
-  {
-    id: 4,
-    label: "Login",
-    href: "/login",
   },
 ];

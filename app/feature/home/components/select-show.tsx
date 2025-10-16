@@ -1,34 +1,75 @@
+import { cn } from "@/lib/utils";
 import * as React from "react";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 interface SelectShowProps {
   onCategoryChange: (value: string) => void;
+  selectedCategory?: string;
+  isAnimating?: boolean;
 }
 
-const SelectShow = ({ onCategoryChange }: SelectShowProps) => {
+const SelectShow = ({
+  onCategoryChange,
+  selectedCategory,
+  isAnimating = false,
+}: SelectShowProps) => {
+  const selectItems = [
+    {
+      id: 1,
+      label: "금주공연",
+      value: "week",
+    },
+    {
+      id: 2,
+      label: "월간공연",
+      value: "month",
+    },
+    {
+      id: 3,
+      label: "무료공연",
+      value: "free",
+    },
+    {
+      id: 4,
+      label: "지역별",
+      value: "local",
+    },
+  ];
+
   return (
-    <Select onValueChange={onCategoryChange}>
-      <SelectTrigger className="w-[260px]">
-        <SelectValue placeholder="공연분류" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          <SelectLabel>공연분류</SelectLabel>
-          <SelectItem value="today">금일 공연</SelectItem>
-          <SelectItem value="week">금주 공연</SelectItem>
-          <SelectItem value="month">월간 공연</SelectItem>
-          <SelectItem value="hongdae">홍대 공연</SelectItem>
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+    <div className="text-[24px] font-bold flex flex-col gap-2">
+      <div className="flex gap-4">
+        {selectItems.slice(0, 2).map((item) => (
+          <div
+            key={item.id}
+            onClick={() => !isAnimating && onCategoryChange(item.value)}
+            className={cn(
+              !isAnimating && "cursor-pointer",
+              selectedCategory === item.value
+                ? "text-black underline decoration-3 underline-offset-4"
+                : "text-[#20202066]"
+            )}
+          >
+            {item.label}
+          </div>
+        ))}
+      </div>
+      <div className="flex gap-4 pl-11.5">
+        {selectItems.slice(2, 4).map((item) => (
+          <div
+            key={item.id}
+            onClick={() => !isAnimating && onCategoryChange(item.value)}
+            className={cn(
+              !isAnimating && "cursor-pointer",
+              selectedCategory === item.value
+                ? "text-black underline decoration-3 underline-offset-4"
+                : "text-[#20202066]"
+            )}
+          >
+            {item.label}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 
