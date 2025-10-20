@@ -8,6 +8,7 @@
   --color-foreground: var(--foreground);
   --color-black: #202020;
   --color-black-80: #202020cc;
+  --color-main: #ff491a;
   --font-sans: var(--font-suit);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -158,6 +159,11 @@
     letter-spacing: -0.08em;
   }
 
+  .text-title-16 {
+    @apply font-bold text-[16px];
+    letter-spacing: -0.08em;
+  }
+
   /* Subtitle styles */
   .text-subtitle-20 {
     @apply font-bold text-[20px];
@@ -180,6 +186,11 @@
   }
 
   .text-subtitle-14 {
+    @apply font-bold text-[14px];
+    letter-spacing: -0.04em;
+  }
+
+  .text-subtitle-12 {
     @apply font-bold text-[14px];
     letter-spacing: -0.04em;
   }
@@ -218,6 +229,14 @@
 
   .text-black-80 {
     color: #202020cc;
+  }
+
+  .text-black-60 {
+    color: #20202099;
+  }
+
+  .text-gray {
+    color: #2020204d;
   }
 }
 

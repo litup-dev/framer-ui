@@ -1,12 +1,27 @@
-"use client";
+import PageWrapper from "@/app/shared/components/page-wrapper";
+import { getServerQueryClient } from "@/lib/query-client";
+import { serverApiClient } from "@/lib/api-client";
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
+import ClubSearchForm from "@/app/feature/club/components/serarch-form";
 
-import FadeIn from "@/components/shared/fade-in";
+const ClubPage = async () => {
+  const queryClient = getServerQueryClient();
 
-const ClubPage = () => {
+  await queryClient.prefetchQuery({
+    queryKey: ["clubs"],
+    staleTime: 5,
+    queryFn: async () => {
+      const res = await serverApiClient.get("/api/v1/clubs");
+      return res;
+    },
+  });
+
   return (
-    <FadeIn>
-      <div>ClubPage</div>
-    </FadeIn>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <PageWrapper>
+        <ClubSearchForm />
+      </PageWrapper>
+    </HydrationBoundary>
   );
 };
 

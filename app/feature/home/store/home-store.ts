@@ -9,12 +9,16 @@ interface HomeState {
   setIsAnimating: (animating: boolean) => void;
   handleCategoryChange: (value: string) => void;
   handleShowAllClick: () => void;
+  selectedMobileBottomNavigation: "home" | "calendar";
+  setSelectedMobileBottomNavigation: (value: "home" | "calendar") => void;
+  resetMobileNavigationOnDesktop: () => void;
 }
 
 export const useHomeStore = create<HomeState>((set) => ({
   selectedCategory: "week",
   showAllItems: false,
   isAnimating: false,
+  selectedMobileBottomNavigation: "home",
 
   setSelectedCategory: (category: string) =>
     set({ selectedCategory: category }),
@@ -27,4 +31,10 @@ export const useHomeStore = create<HomeState>((set) => ({
 
   handleShowAllClick: () =>
     set((state) => ({ showAllItems: !state.showAllItems })),
+
+  setSelectedMobileBottomNavigation: (value: "home" | "calendar") =>
+    set({ selectedMobileBottomNavigation: value }),
+
+  resetMobileNavigationOnDesktop: () =>
+    set({ selectedMobileBottomNavigation: "home" }),
 }));

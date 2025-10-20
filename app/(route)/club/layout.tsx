@@ -1,6 +1,6 @@
 import { PropsWithChildren } from "react";
 
-const ClubLayout = ({ children }: PropsWithChildren) => {
+const ClubLayout = async ({ children }: PropsWithChildren) => {
   return <div>{children}</div>;
 };
 

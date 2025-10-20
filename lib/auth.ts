@@ -8,7 +8,7 @@ const createToken = (userId: string, secret: string) => {
     {
       userId,
       iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + 5,
+      exp: Math.floor(Date.now() / 1000) + 3600,
     },
     secret
   );
@@ -98,6 +98,10 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (token.user) {
         session.user = token.user;
+      }
+
+      if (token.userId) {
+        session.userId = token.userId as string;
       }
 
       return session;

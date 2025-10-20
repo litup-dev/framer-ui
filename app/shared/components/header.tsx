@@ -3,10 +3,10 @@ import MobileHeader from "@/app/shared/components/mobile-header";
 
 const Header = () => {
   return (
-    <div>
+    <>
       <DesktopHeader />
       <MobileHeader />
-    </div>
+    </>
   );
 };
 

@@ -6,9 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { heroSectionImages } from "@/app/feature/home/mock";
 import { useHomeStore } from "@/app/feature/home/store/home-store";
+import { cn } from "@/lib/utils";
 
 const HeroSection = () => {
-  const { selectedCategory, isAnimating, setIsAnimating } = useHomeStore();
+  const { selectedCategory, setIsAnimating, selectedMobileBottomNavigation } =
+    useHomeStore();
   const [previousIndex, setPreviousIndex] = useState(0);
 
   const getImageIndex = () => {
@@ -40,12 +42,15 @@ const HeroSection = () => {
   };
 
   return (
-    <div className="cursor-pointer">
+    <div
+      className={cn(
+        "cursor-pointer",
+        selectedMobileBottomNavigation === "calendar" && "hidden"
+      )}
+    >
       <div
-        className="relative overflow-hidden"
+        className="relative overflow-hidden w-[250px] md:w-[270px] lg:w-[400px] xl:w-[600px] aspect-[590/259]"
         style={{
-          width: 590,
-          height: 259,
           transform: "translateZ(0)",
           backfaceVisibility: "hidden",
         }}
@@ -71,8 +76,8 @@ const HeroSection = () => {
               <Image
                 src={heroSectionImages[previousIndex].image}
                 alt={heroSectionImages[previousIndex].id.toString()}
-                width={590}
-                height={259}
+                fill
+                className="object-contain"
               />
             )}
           </motion.div>
@@ -100,8 +105,8 @@ const HeroSection = () => {
                 <Image
                   src={heroSectionImages[currentIndex].image}
                   alt={heroSectionImages[currentIndex].id.toString()}
-                  width={590}
-                  height={259}
+                  fill
+                  className="object-contain"
                 />
               )}
             </motion.div>
@@ -114,8 +119,8 @@ const HeroSection = () => {
               <Image
                 src={heroSectionImages[currentIndex].image}
                 alt={heroSectionImages[currentIndex].id.toString()}
-                width={590}
-                height={259}
+                fill
+                className="object-contain"
               />
             )}
           </div>

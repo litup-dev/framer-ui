@@ -7,7 +7,7 @@ export const MenuItems = [
   {
     id: 2,
     label: "클럽 찾기",
-    href: "/about",
+    href: "/club",
   },
   {
     id: 3,

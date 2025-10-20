@@ -14,7 +14,7 @@ export const Title = ({
   return (
     <Component
       className={cn(
-        "font-bold text-[24px] md:text-[28px] lg:text-[32px]",
+        "font-bold text-[24px] md:text-[20px] lg:text-[24px] xl:text-[28px]",
         "tracking-[-0.08em]",
         className
       )}
@@ -50,7 +50,7 @@ export const Description = ({
   return (
     <Component
       className={cn(
-        "font-medium text-[14px] md:text-[16px]",
+        "font-medium text-[14px] md:text-[16px] xl:text-[18px]",
         "tracking-[-0.04em]",
         className
       )}

@@ -1,6 +1,6 @@
-import { getSession } from "next-auth/react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import jwt from "jsonwebtoken";
 
 interface ApiRequestOptions {
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
@@ -20,12 +20,28 @@ class ApiClient {
 
   private async getAuthToken(): Promise<string | null> {
     if (this.isServer) {
-      const session = await getServerSession(authOptions);
-      return session?.accessToken || null;
+      try {
+        const session = await getServerSession(authOptions);
+        if (session?.user) {
+          const userId = session.userId;
+          const token = jwt.sign(
+            {
+              userId: userId,
+              iat: Math.floor(Date.now() / 1000),
+              exp: Math.floor(Date.now() / 1000) + 3600,
+            },
+            process.env.NEXTAUTH_SECRET!
+          );
+          console.log("서버사이드 토큰 생성됨");
+          return token;
+        }
+        return null;
+      } catch (error) {
+        console.log("서버사이드 토큰 생성 실패:", error);
+        return null;
+      }
     } else {
-      const { getSession } = await import("next-auth/react");
-      const session = await getSession();
-      return session?.accessToken || null;
+      return null;
     }
   }
 
@@ -54,6 +70,12 @@ class ApiClient {
 
     const url = `${this.baseURL}${endpoint}`;
     const headers = await this.createHeaders(customHeaders);
+
+    console.log(`서버사이드 API 호출: ${method} ${url}`);
+    console.log(
+      "Authorization 헤더:",
+      headers.Authorization ? "존재함" : "없음"
+    );
 
     const config: RequestInit = {
       method,
