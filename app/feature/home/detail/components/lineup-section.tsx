@@ -1,13 +1,10 @@
-import { Description, Title } from "@/components/shared/typography";
-
 const LineupSection = () => {
   return (
-    <div className="flex flex-col gap-6 text-black">
-      <Title className="hidden lg:block text-black text-title-24">artist</Title>
-
-      <Description className="text-black-80">
-        6eyes, 소음발광, 칩앤스위트
-      </Description>
+    <div className="flex sm:flex-col gap-11.5 sm:gap-6">
+      <div className="text-black text-description-14 sm:text-subtitle-20">
+        artist
+      </div>
+      <span className="text-black-80">6eyes, 소음발광, 칩앤스위트</span>
     </div>
   );
 };

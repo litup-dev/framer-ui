@@ -8,10 +8,10 @@ const TabContent = () => {
     <Tabs defaultValue="account" className="w-full">
       <TabsList className="w-full bg-white">
         <TabsTrigger value="account">
-          <Description>상세정보</Description>
+          <Description className="text-subtitle-14">상세정보</Description>
         </TabsTrigger>
         <TabsTrigger value="coment">
-          <Description>코멘트(10)</Description>
+          <Description className="text-subtitle-14">코멘트(10)</Description>
         </TabsTrigger>
       </TabsList>
       <TabsContent value="account" className="">

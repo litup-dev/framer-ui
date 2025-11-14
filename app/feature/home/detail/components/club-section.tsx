@@ -2,10 +2,12 @@ import { Title, Subtitle, Description } from "@/components/shared/typography";
 
 const ClubSection = () => {
   return (
-    <div className="flex flex-col gap-6">
-      <Title className="text-black text-title-24">club</Title>
-      <div className="flex flex-col gap-3 text-black">
-        <div className="flex gap-3 items-center  rounded-[4px]">
+    <div className="flex flex-col gap-4">
+      <Title className="text-black-60 text-description-14 sm:text-subtitle-20">
+        club
+      </Title>
+      <div className="flex flex-col gap-3 text-black bg-gray-100 rounded-[4px]">
+        <div className="flex gap-3 items-center  rounded-[4px] p-4">
           <div className="w-15 h-15 rounded-full bg-black" />
           <div className="flex flex-col gap-2">
             <Subtitle className="text-subtitle-16">

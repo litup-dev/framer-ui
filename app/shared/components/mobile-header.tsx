@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-import Logo from "@/app/shared/components/logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";

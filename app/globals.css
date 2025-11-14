@@ -159,12 +159,27 @@
     letter-spacing: -0.08em;
   }
 
+  .text-title-20 {
+    @apply font-bold text-[20px];
+    letter-spacing: -0.08em;
+  }
+
+  .text-title-18 {
+    @apply font-bold text-[18px];
+    letter-spacing: -0.08em;
+  }
+
   .text-title-16 {
     @apply font-bold text-[16px];
     letter-spacing: -0.08em;
   }
 
   /* Subtitle styles */
+  .text-subtitle-28 {
+    @apply font-bold text-[28px];
+    letter-spacing: -0.04em;
+  }
+
   .text-subtitle-20 {
     @apply font-bold text-[20px];
     letter-spacing: -0.04em;
@@ -191,7 +206,12 @@
   }
 
   .text-subtitle-12 {
-    @apply font-bold text-[14px];
+    @apply font-bold text-[12px];
+    letter-spacing: -0.04em;
+  }
+
+  .text-subtitle-11 {
+    @apply font-bold text-[11px];
     letter-spacing: -0.04em;
   }
 
@@ -203,6 +223,11 @@
 
   .text-description-14 {
     @apply font-medium text-[14px];
+    letter-spacing: -0.04em;
+  }
+
+  .text-description-12 {
+    @apply font-medium text-[12px];
     letter-spacing: -0.04em;
   }
 
@@ -221,6 +246,10 @@
     @apply font-medium text-[14px];
     letter-spacing: 0;
   }
+  .text-chip-13 {
+    @apply font-medium text-[13px];
+    letter-spacing: 0;
+  }
 
   .text-chip-12 {
     @apply font-medium text-[12px];
@@ -235,8 +264,16 @@
     color: #20202099;
   }
 
+  .text-black-40 {
+    color: #20202066;
+  }
+
   .text-gray {
     color: #2020204d;
+  }
+
+  .bg-gray {
+    background-color: #f7f6f5;
   }
 }
 
