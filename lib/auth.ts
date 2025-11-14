@@ -26,7 +26,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.KAKAO_CLIENT_SECRET!,
       authorization: {
         params: {
-          scope: "profile_nickname profile_image",
+          scope: "account_email",
         },
       },
     }),
@@ -59,13 +59,13 @@ export const authOptions: NextAuthOptions = {
 
       if (account) {
         const payload = {
-          userId: account.providerAccountId,
-          username: token?.name,
+          providerId: account.providerAccountId,
+          provider: "kakao",
         };
 
         try {
           const response = await fetch(
-            `${process.env.API_BASE_URL}/api/v1/auth/register`,
+            `${process.env.API_BASE_URL}/api/v1/auth/verify`,
             {
               method: "POST",
               headers: {
@@ -74,6 +74,9 @@ export const authOptions: NextAuthOptions = {
               body: JSON.stringify(payload),
             }
           );
+
+          console.log(payload, "<<<< payload");
+          console.log(response, "<<<< response");
 
           if (response && response.ok) {
             const result = await response.json();

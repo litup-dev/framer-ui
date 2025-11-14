@@ -46,17 +46,17 @@ const PostDetailPage = ({ params }: PostDetailPageProps) => {
 
   return (
     <FadeIn>
-      <div className="flex justify-center px-5 sm:px-10 md:px-15 lg:px-20 min-h-screen pt-1.5 md:pt-20">
+      <div className="flex flex-col justify-center px-5 sm:px-10 md:px-15 lg:px-20 min-h-screen md:pt-20">
+        <div className="block md:hidden">
+          <DetailMobileHeader />
+        </div>
         <div className="w-full flex flex-col md:flex-row gap-4 lg:gap-[60px] bg-white">
-          <div className="block md:hidden">
-            <DetailMobileHeader />
-          </div>
-          <div className="relative w-full md:w-2/5 h-[442px] md:h-[560px] flex-shrink-0">
+          <div className="relative w-screen md:w-2/5 h-[442px] md:h-[560px] -mx-5 sm:-mx-10 md:mx-0 flex-shrink-0 md:rounded-md overflow-hidden">
             <Image
               src={poster.image}
               alt={poster.title}
               fill
-              className="object-cover rounded-md"
+              className="object-cover md:rounded-md"
             />
           </div>
 

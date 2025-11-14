@@ -136,7 +136,7 @@ const DesktopFilter = ({
           <Separator />
 
           <div className="space-y-5">
-            {clubs?.slice(1).map((club: Club) => (
+            {clubs?.map((club: Club) => (
               <ClubCard
                 key={club.id}
                 club={club}
