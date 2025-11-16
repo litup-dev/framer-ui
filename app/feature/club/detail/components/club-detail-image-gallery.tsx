@@ -68,18 +68,25 @@ const ClubDetailImageGallery = () => {
   return (
     <Dialog open={isImageGalleryOpen} onOpenChange={closeImageGallery}>
       <DialogContent
-        className="max-w-[90vw] max-h-[90vh] w-full h-full p-0 bg-white border-none z-[1000000]"
+        className="!w-screen h-[90vh] !max-w-none p-0 bg-white border-none z-[1000000] !left-0 !translate-x-0 top-[5vh] !translate-y-0"
+        style={{
+          width: "100vw",
+          maxWidth: "none",
+          left: 0,
+          transform: "translateX(0) translateY(0)",
+          top: "5vh",
+        }}
         showCloseButton={false}
       >
-        <div className="relative w-full h-full flex flex-col">
+        <div className="relative w-full h-full flex flex-col px-10">
           <button
             onClick={closeImageGallery}
-            className="absolute top-4 right-4 z-50 text-white hover:opacity-70 transition-opacity"
+            className="absolute top-7 right-7 z-50 text-white hover:opacity-70 transition-opacity"
           >
             <X className="w-6 h-6 text-black" />
           </button>
 
-          <div className="flex-1 flex items-center justify-center p-4 pb-24">
+          <div className="flex-1 flex items-center justify-center pb-24">
             <AnimatePresence mode="wait">
               <motion.div
                 key={imageGalleryCurrentIndex}
@@ -101,16 +108,16 @@ const ClubDetailImageGallery = () => {
           </div>
 
           {imageGalleryImages.length > 1 && (
-            <div className="absolute bottom-0 left-0 right-0 bg-white p-4 overflow-x-auto">
+            <div className="absolute bottom-10 left-0 right-0 bg-white overflow-x-auto">
               <div className="flex gap-3 justify-center">
                 {imageGalleryImages.map((image, index) => (
                   <button
                     key={index}
                     onClick={() => setImageGalleryIndex(index)}
-                    className={`relative w-20 h-20 flex-shrink-0 rounded overflow-hidden border-2 transition-all ${
+                    className={`relative w-[120px] h-[120px] flex-shrink-0 overflow-hidden transition-all ${
                       index === imageGalleryCurrentIndex
-                        ? "border-main"
-                        : "border-transparent opacity-60 hover:opacity-100"
+                        ? ""
+                        : "opacity-60 hover:opacity-100"
                     }`}
                   >
                     <Image
@@ -120,6 +127,15 @@ const ClubDetailImageGallery = () => {
                       className="object-cover"
                       sizes="80px"
                     />
+                    {index === imageGalleryCurrentIndex && (
+                      <div
+                        className="absolute inset-0 pointer-events-none z-10"
+                        style={{
+                          border: "2px solid #ff491a",
+                          boxSizing: "border-box",
+                        }}
+                      />
+                    )}
                   </button>
                 ))}
               </div>

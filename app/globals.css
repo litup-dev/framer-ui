@@ -304,3 +304,28 @@
   animation: none;
   mix-blend-mode: normal;
 }
+
+.scrollbar-custom {
+  scrollbar-gutter: stable;
+}
+
+.scrollbar-custom::-webkit-scrollbar {
+  width: 5px !important;
+  height: 5px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: transparent !important;
+  margin: 0;
+  border-radius: 10px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2) !important;
+  border-radius: 10px;
+  min-height: 100px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3) !important;
+}
