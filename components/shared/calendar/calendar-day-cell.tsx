@@ -1,14 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useRef, useEffect } from "react";
-import { Plus } from "lucide-react";
+import { useRef } from "react";
 import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
-
 import { CalendarEvent } from "@/components/shared/calendar/types";
-
-import { Title } from "@/components/shared/typography";
+import { useCalendarCellHeight } from "./hooks/use-calendar-cell-height";
+import { useCalendarCellScroll } from "./hooks/use-calendar-cell-scroll";
+import { useCalendarCellOverflow } from "./hooks/use-calendar-cell-overflow";
+import {
+  getCellContainerStyles,
+  getButtonStyles,
+  getButtonClassName,
+} from "./utils/calendar-cell-styles";
+import { CalendarDayHeader } from "./components/calendar-day-header";
+import { CalendarDayEvents } from "./components/calendar-day-events";
 
 interface CalendarDayCellProps {
   day: Date;
@@ -42,97 +47,33 @@ export const CalendarDayCell = ({
   onMouseEnter,
   onMouseLeave,
 }: CalendarDayCellProps) => {
-  const eventsContainerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const divRef = useRef<HTMLDivElement>(null);
-  const [isOverflowing, setIsOverflowing] = useState(false);
-  const [expandedHeight, setExpandedHeight] = useState<number | null>(null);
 
-  useEffect(() => {
-    if (!isHovered || !isXl || !eventsContainerRef.current) return;
+  const expandedHeight = useCalendarCellHeight({
+    isHovered,
+    isXl,
+    dayEvents,
+    buttonRef,
+    divRef,
+  });
 
-    const container = eventsContainerRef.current;
+  const eventsContainerRef = useCalendarCellScroll({
+    isHovered,
+    isXl,
+  });
 
-    const handleWheel = (e: WheelEvent) => {
-      const { scrollTop, scrollHeight, clientHeight } = container;
-      const isAtTop = scrollTop === 0;
-      const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 1;
-
-      if ((isAtTop && e.deltaY < 0) || (isAtBottom && e.deltaY > 0)) {
-        e.preventDefault();
-      }
-    };
-
-    container.addEventListener("wheel", handleWheel, { passive: false });
-
-    return () => {
-      container.removeEventListener("wheel", handleWheel);
-    };
-  }, [isHovered, isXl]);
-
-  useEffect(() => {
-    if (!isHovered && eventsContainerRef.current) {
-      const checkOverflow = () => {
-        const element = eventsContainerRef.current;
-        if (element) {
-          const overflowing = element.scrollHeight > element.clientHeight;
-          setIsOverflowing(overflowing);
-        }
-      };
-
-      checkOverflow();
-      const timeoutId = setTimeout(checkOverflow, 100);
-      return () => clearTimeout(timeoutId);
-    } else {
-      setIsOverflowing(false);
-    }
-  }, [dayEvents, isHovered, dayNumber]);
-
-  useEffect(() => {
-    if (isHovered && isXl && buttonRef.current && divRef.current) {
-      // DOM 업데이트 후 높이 계산
-      const calculateHeight = () => {
-        if (!buttonRef.current || !divRef.current) return;
-        
-        const button = buttonRef.current;
-        // 현재 높이 저장
-        const currentHeight = button.style.height;
-        
-        // 높이를 auto로 설정하여 실제 콘텐츠 높이 측정
-        button.style.height = "auto";
-        const actualHeight = button.scrollHeight;
-        
-        // 원래 높이로 복원
-        button.style.height = currentHeight;
-        
-        // max-height는 560px (이벤트 컨테이너의 max-h-[560px])
-        // 버튼 패딩(p-6 = 24px * 2 = 48px)과 다른 요소들을 고려
-        // 기본 높이 315px + (560px - 315px) = 560px가 최대
-        const baseHeight = 315; // 기본 높이
-        const maxExpandHeight = 560; // 최대 확장 높이
-        const finalHeight = Math.min(actualHeight, maxExpandHeight);
-        
-        setExpandedHeight(finalHeight);
-        divRef.current.style.height = `${finalHeight}px`;
-      };
-      
-      // requestAnimationFrame을 사용하여 DOM 업데이트 후 계산
-      requestAnimationFrame(() => {
-        requestAnimationFrame(calculateHeight);
-      });
-    } else if (!isHovered && divRef.current) {
-      divRef.current.style.height = "";
-      setExpandedHeight(null);
-    }
-  }, [isHovered, isXl, dayEvents]);
+  const isOverflowing = useCalendarCellOverflow({
+    isHovered,
+    dayEvents,
+    dayNumber,
+    eventsContainerRef,
+  });
 
   return (
     <motion.div
       ref={divRef}
-      className={cn(
-        isXl ? "overflow-visible" : "overflow-hidden",
-        "relative"
-      )}
+      className={isXl ? "overflow-visible" : "overflow-hidden relative"}
       initial={false}
       animate={{
         height: !isXl ? (isRowExpanded ? "auto" : "0px") : undefined,
@@ -143,41 +84,18 @@ export const CalendarDayCell = ({
           ease: [0.25, 0.1, 0.25, 1],
         },
       }}
-      style={{
-        zIndex: isHovered && isXl ? 10 : 1,
-        position: isXl && isHovered ? "absolute" : "relative",
-        ...(isXl && isHovered && {
-          top: 0,
-          left: 0,
-          right: 0,
-        }),
-        ...(isXl &&
-          !isHovered && {
-            height: "315px",
-          }),
-        ...(isXl &&
-          isHovered &&
-          expandedHeight && {
-            height: `${expandedHeight}px`,
-          }),
-        ...(!isXl && !isRowExpanded && { minHeight: "0px" }),
-      }}
+      style={getCellContainerStyles(isXl, isHovered, expandedHeight)}
     >
       <motion.button
         ref={buttonRef}
         onClick={() => onDateClick(day)}
         onMouseEnter={isXl ? () => onMouseEnter(day) : undefined}
         onMouseLeave={isXl ? onMouseLeave : undefined}
-        className={cn(
-          "flex flex-col text-left",
-          isXl ? "p-6" : "p-1",
-          "h-auto min-h-[62px] sm:min-h-[117px] md:min-h-[159px] xl:min-h-[315px]",
-          isHovered && isXl
-            ? "bg-main text-white"
-            : dayEvents.length === 0
-            ? "bg-gray text-black"
-            : "bg-white text-black",
-          !isCurrentMonth && "opacity-50"
+        className={getButtonClassName(
+          isXl,
+          isHovered,
+          dayEvents,
+          isCurrentMonth
         )}
         initial={false}
         animate={{
@@ -189,14 +107,7 @@ export const CalendarDayCell = ({
             ease: [0.25, 0.1, 0.25, 1],
           },
         }}
-        style={{
-          width: "100%",
-          height: isXl ? (isHovered && expandedHeight ? `${expandedHeight}px` : "315px") : "auto",
-          position: isXl && isHovered ? "absolute" : "relative",
-          ...(isXl && isHovered && { top: 0, left: 0, right: 0 }),
-          zIndex: isHovered && isXl ? 10 : 1,
-          transition: isXl ? "height 0.5s cubic-bezier(0.25, 0.1, 0.25, 1)" : "none",
-        }}
+        style={getButtonStyles(isXl, isHovered, expandedHeight)}
       >
         {!isXl && dayEvents[0]?.image && (
           <div className="absolute inset-0 w-full h-full overflow-hidden">
@@ -209,140 +120,24 @@ export const CalendarDayCell = ({
             />
           </div>
         )}
-        <div
-          className={cn(
-            "xl:flex xl:items-center relative",
-            isXl ? "justify-between xl:mb-10 z-50" : "justify-center z-10"
-          )}
-        >
-          <div
-            className={cn(
-              !isXl &&
-                "rounded-full w-6 h-6 flex items-center justify-center min-w-[24px]",
-              !isXl && isSelected && "bg-main",
-              !isXl && isTodayDate && !isSelected && "bg-[#AECACD]",
-              !isXl &&
-                !isSelected &&
-                !isTodayDate &&
-                dayEvents[0]?.image &&
-                "bg-black-60"
-            )}
-          >
-            <Title
-              className={cn(
-                "text-start text-[12px] xl:text-[20px]",
-                !isXl && dayEvents[0]?.image
-                  ? "text-white"
-                  : !isXl && (isSelected || isTodayDate)
-                  ? "text-white"
-                  : isHovered && isXl
-                  ? "text-white xl:text-white"
-                  : "text-black xl:text-black"
-              )}
-            >
-              {dayNumber}
-            </Title>
-          </div>
-          {isTodayDate && isXl && (
-            <div
-              className={cn(
-                "leading-4",
-                isHovered && isXl ? "bg-transparent" : "bg-[#AECACD]"
-              )}
-            >
-              <Title
-                className={cn(
-                  "text-black xl:text-[20px]",
-                  isHovered && isXl ? "text-white" : "text-black"
-                )}
-              >
-                today
-              </Title>
-            </div>
-          )}
-        </div>
 
-        {dayEvents.length > 0 && (
-          <>
-            <div
-              ref={eventsContainerRef}
-              className={cn(
-                "flex flex-col relative",
-                isHovered && isXl
-                  ? "max-h-[560px] overflow-y-auto gap-8 scrollbar scrollbar-w-[5px] scrollbar-track-transparent scrollbar-thumb-black/20 hover:scrollbar-thumb-black/30 scrollbar-thumb-rounded-none scrollbar-track-rounded-none scrollbar-thumb-min-100 z-10"
-                  : isXl
-                  ? "max-h-[315px] overflow-hidden mt-1 pb-6 gap-8 z-10"
-                  : "hidden",
-                !isCurrentMonth && "opacity-50"
-              )}
-              style={{
-                width: isXl ? "calc(100% + 48px)" : "100%",
-                boxSizing: "border-box",
-                paddingLeft: isHovered && isXl ? "24px" : "0",
-                paddingRight: isHovered && isXl ? "24px" : "0",
-                marginRight: isHovered && isXl ? "-24px" : "0",
-                marginLeft: isHovered && isXl ? "-24px" : "0",
-                marginTop:
-                  isHovered && isXl
-                    ? "calc(-1 * (24px + 28px + 40px + 32px + 8px))"
-                    : undefined,
-                paddingTop:
-                  isHovered && isXl
-                    ? "calc(24px + 28px + 40px + 32px + 8px)"
-                    : undefined,
-                maskImage:
-                  isHovered && isXl
-                    ? "linear-gradient(to bottom, transparent 0%, transparent 10%, black 20%, black 100%)"
-                    : "none",
-                WebkitMaskImage:
-                  isHovered && isXl
-                    ? "linear-gradient(to bottom, transparent 0%, transparent 10%, black 20%, black 100%)"
-                    : "none",
-              }}
-            >
-              {dayEvents.map((event, eventIndex) => (
-                <div
-                  key={eventIndex}
-                  className={cn(
-                    "flex flex-col gap-2.5",
-                    isHovered && isXl ? "text-white" : "text-black"
-                  )}
-                >
-                  <div>
-                    <Title
-                      className={cn(
-                        "text-black xl:text-[20px]",
-                        isHovered && isXl ? "text-white" : "text-black"
-                      )}
-                    >
-                      {event.venue}
-                    </Title>
-                  </div>
-                  {event.artists.length > 0 && (
-                    <div className="flex flex-col">
-                      {event.artists.map((artist, artistIndex) => (
-                        <Title
-                          key={artistIndex}
-                          className={cn(
-                            "font-medium xl:text-[16px] text-black-60",
-                            isHovered && isXl ? "text-white" : "text-black"
-                          )}
-                        >
-                          {artist}
-                        </Title>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-            {!isHovered && isOverflowing && (
-              <div className="hidden xl:flex xl:items-center xl:justify-end">
-                <Plus className="w-6 h-6 text-black" />
-              </div>
-            )}
-          </>
-        )}
+        <CalendarDayHeader
+          dayNumber={dayNumber}
+          isXl={isXl}
+          isSelected={isSelected}
+          isTodayDate={isTodayDate}
+          isHovered={isHovered}
+          hasImage={!!dayEvents[0]?.image}
+        />
+
+        <CalendarDayEvents
+          events={dayEvents}
+          isXl={isXl}
+          isHovered={isHovered}
+          isCurrentMonth={isCurrentMonth}
+          eventsContainerRef={eventsContainerRef}
+          isOverflowing={isOverflowing}
+        />
       </motion.button>
     </motion.div>
   );

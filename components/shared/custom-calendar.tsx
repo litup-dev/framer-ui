@@ -1,22 +1,15 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import {
-  startOfMonth,
-  endOfMonth,
-  startOfWeek,
-  endOfWeek,
-  eachDayOfInterval,
-  addMonths,
-  subMonths,
-} from "date-fns";
+import { useState, useMemo } from "react";
 import { format } from "date-fns";
-
+import { addMonths, subMonths } from "date-fns";
 import { CalendarHeader } from "@/components/shared/calendar/calendar-header";
 import { CalendarWeekdays } from "@/components/shared/calendar/calendar-weekdays";
 import { CalendarGrid } from "@/components/shared/calendar/calendar-grid";
 import { CalendarSelectedEvents } from "@/components/shared/calendar/calendar-selected-events";
 import { CalendarEvent } from "@/components/shared/calendar/types";
+import { useResponsive } from "./calendar/hooks/use-responsive";
+import { useCalendarDays } from "./calendar/hooks/use-calendar-days";
 
 interface CustomCalendarProps {
   events?: Record<string, CalendarEvent[]>;
@@ -33,24 +26,10 @@ const CustomCalendar = ({
 }: CustomCalendarProps) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [hoveredDate, setHoveredDate] = useState<Date | null>(null);
-  const [isXl, setIsXl] = useState(false);
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
 
-  useEffect(() => {
-    const checkXl = () => {
-      setIsXl(window.innerWidth >= 1280);
-    };
-    checkXl();
-    window.addEventListener("resize", checkXl);
-    return () => window.removeEventListener("resize", checkXl);
-  }, []);
-
-  const monthStart = startOfMonth(currentMonth);
-  const monthEnd = endOfMonth(currentMonth);
-  const calendarStart = startOfWeek(monthStart, { weekStartsOn: 1 });
-  const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 1 });
-
-  const days = eachDayOfInterval({ start: calendarStart, end: calendarEnd });
+  const isXl = useResponsive();
+  const days = useCalendarDays(currentMonth);
 
   const handlePrevMonth = () => {
     setCurrentMonth(subMonths(currentMonth, 1));

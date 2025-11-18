@@ -1,10 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { format, isSameMonth, isSameDay, isToday, getDate } from "date-fns";
+import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { CalendarDayCell } from "@/components/shared/calendar/calendar-day-cell";
 import { CalendarEvent } from "@/components/shared/calendar/types";
+import { useCalendarRows } from "./hooks/use-calendar-rows";
+import { getEventsForDate, getDayState } from "./utils/calendar-date-helpers";
 
 interface CalendarGridProps {
   days: Date[];
@@ -35,27 +37,11 @@ export const CalendarGrid = ({
   onMouseLeave,
   onExpandAll,
 }: CalendarGridProps) => {
-  const getEventsForDate = (date: Date): CalendarEvent[] => {
-    const dateKey = format(date, "yyyy-MM-dd");
-    return events[dateKey] || [];
-  };
-
-  const rows = Array.from(
-    { length: Math.ceil(days.length / 7) },
-    (_, rowIndex) => {
-      const isRowExpanded =
-        !isXl && (selectedRowIndex === null || selectedRowIndex === rowIndex);
-      const isCollapsedAndNotSelected =
-        !isXl && selectedRowIndex !== null && selectedRowIndex !== rowIndex;
-      return {
-        days: days.slice(rowIndex * 7, rowIndex * 7 + 7),
-        isRowExpanded,
-        isCollapsedAndNotSelected,
-      };
-    }
-  );
-
-  const hasCollapsedRow = !isXl && selectedRowIndex !== null;
+  const { rows, hasCollapsedRow } = useCalendarRows({
+    days,
+    selectedRowIndex,
+    isXl,
+  });
 
   return (
     <div className="relative px-5 xl:px-20">
@@ -69,12 +55,14 @@ export const CalendarGrid = ({
           >
             {row.days.map((day, dayIndexInRow) => {
               const index = rowIndex * 7 + dayIndexInRow;
-              const dayEvents = getEventsForDate(day);
-              const isCurrentMonth = isSameMonth(day, currentMonth);
-              const isHovered = hoveredDate && isSameDay(day, hoveredDate);
-              const isTodayDate = isToday(day);
-              const isSelected = selectedDate && isSameDay(day, selectedDate);
-              const dayNumber = getDate(day);
+              const dayEvents = getEventsForDate(day, events);
+              const {
+                isCurrentMonth,
+                isHovered,
+                isTodayDate,
+                isSelected,
+                dayNumber,
+              } = getDayState(day, currentMonth, hoveredDate, selectedDate);
 
               return (
                 <div
