@@ -44,6 +44,7 @@ export const CalendarDayCell = ({
 }: CalendarDayCellProps) => {
   const eventsContainerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const divRef = useRef<HTMLDivElement>(null);
   const [isOverflowing, setIsOverflowing] = useState(false);
   const [expandedHeight, setExpandedHeight] = useState<number | null>(null);
 
@@ -88,42 +89,77 @@ export const CalendarDayCell = ({
   }, [dayEvents, isHovered, dayNumber]);
 
   useEffect(() => {
-    if (isHovered && isXl && buttonRef.current) {
-      const button = buttonRef.current;
-      const tempHeight = button.style.height;
-      button.style.height = "auto";
-      const actualHeight = button.scrollHeight;
-      button.style.height = tempHeight;
-      setExpandedHeight(actualHeight);
+    if (isHovered && isXl && buttonRef.current && divRef.current) {
+      // DOM 업데이트 후 높이 계산
+      const calculateHeight = () => {
+        if (!buttonRef.current || !divRef.current) return;
+        
+        const button = buttonRef.current;
+        // 현재 높이 저장
+        const currentHeight = button.style.height;
+        
+        // 높이를 auto로 설정하여 실제 콘텐츠 높이 측정
+        button.style.height = "auto";
+        const actualHeight = button.scrollHeight;
+        
+        // 원래 높이로 복원
+        button.style.height = currentHeight;
+        
+        // max-height는 560px (이벤트 컨테이너의 max-h-[560px])
+        // 버튼 패딩(p-6 = 24px * 2 = 48px)과 다른 요소들을 고려
+        // 기본 높이 315px + (560px - 315px) = 560px가 최대
+        const baseHeight = 315; // 기본 높이
+        const maxExpandHeight = 560; // 최대 확장 높이
+        const finalHeight = Math.min(actualHeight, maxExpandHeight);
+        
+        setExpandedHeight(finalHeight);
+        divRef.current.style.height = `${finalHeight}px`;
+      };
+      
+      // requestAnimationFrame을 사용하여 DOM 업데이트 후 계산
+      requestAnimationFrame(() => {
+        requestAnimationFrame(calculateHeight);
+      });
+    } else if (!isHovered && divRef.current) {
+      divRef.current.style.height = "";
+      setExpandedHeight(null);
     }
-  }, [isHovered, isXl]);
+  }, [isHovered, isXl, dayEvents]);
 
   return (
     <motion.div
+      ref={divRef}
       className={cn(
-        "overflow-hidden",
-        isXl ? (isHovered ? "absolute" : "relative") : "relative"
+        isXl ? "overflow-visible" : "overflow-hidden",
+        "relative"
       )}
       initial={false}
       animate={{
         height: !isXl ? (isRowExpanded ? "auto" : "0px") : undefined,
       }}
       transition={{
-        duration: 0.5,
-        ease: [0.25, 0.1, 0.25, 1],
+        height: {
+          duration: 0.5,
+          ease: [0.25, 0.1, 0.25, 1],
+        },
       }}
       style={{
-        zIndex: isHovered && isXl ? 88888 : 1,
-        ...(isXl && isHovered && { top: 0, left: 0, right: 0 }),
-        ...(isXl && {
-          height:
-            isHovered && expandedHeight
-              ? expandedHeight
-              : isHovered
-              ? "auto"
-              : "315px",
-          "--cell-padding-top": "24px",
+        zIndex: isHovered && isXl ? 10 : 1,
+        position: isXl && isHovered ? "absolute" : "relative",
+        ...(isXl && isHovered && {
+          top: 0,
+          left: 0,
+          right: 0,
         }),
+        ...(isXl &&
+          !isHovered && {
+            height: "315px",
+          }),
+        ...(isXl &&
+          isHovered &&
+          expandedHeight && {
+            height: `${expandedHeight}px`,
+          }),
         ...(!isXl && !isRowExpanded && { minHeight: "0px" }),
       }}
     >
@@ -145,41 +181,21 @@ export const CalendarDayCell = ({
         )}
         initial={false}
         animate={{
-          height: isXl
-            ? isHovered && expandedHeight
-              ? expandedHeight
-              : isHovered
-              ? "auto"
-              : 315
-            : "auto",
           opacity: !isXl && isCollapsedAndNotSelected ? 0.2 : 1,
         }}
-        transition={
-          isXl
-            ? {
-                height: {
-                  duration: 0.5,
-                  ease: [0.25, 0.1, 0.25, 1],
-                },
-              }
-            : {
-                opacity: {
-                  duration: 0.5,
-                  ease: [0.25, 0.1, 0.25, 1],
-                },
-              }
-        }
-        onAnimationComplete={() => {
-          if (isXl && !isHovered && expandedHeight !== null) {
-            setExpandedHeight(null);
-          }
+        transition={{
+          opacity: {
+            duration: 0.5,
+            ease: [0.25, 0.1, 0.25, 1],
+          },
         }}
         style={{
           width: "100%",
-          position: isXl ? "absolute" : "relative",
-          ...(isXl && { top: 0, left: 0, right: 0 }),
-          zIndex: isHovered && isXl ? 88888 : 1,
-          willChange: isHovered && isXl ? "height" : "auto",
+          height: isXl ? (isHovered && expandedHeight ? `${expandedHeight}px` : "315px") : "auto",
+          position: isXl && isHovered ? "absolute" : "relative",
+          ...(isXl && isHovered && { top: 0, left: 0, right: 0 }),
+          zIndex: isHovered && isXl ? 10 : 1,
+          transition: isXl ? "height 0.5s cubic-bezier(0.25, 0.1, 0.25, 1)" : "none",
         }}
       >
         {!isXl && dayEvents[0]?.image && (

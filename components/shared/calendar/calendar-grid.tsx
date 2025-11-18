@@ -80,10 +80,19 @@ export const CalendarGrid = ({
                 <div
                   key={`${format(day, "yyyy-MM-dd")}-${index}`}
                   className={cn(
-                    isXl
-                      ? "flex-shrink-0 xl:w-[250px] relative"
-                      : "w-full relative"
+                    "flex-1 relative",
+                    isXl && "w-[250px] flex-shrink-0"
                   )}
+                  style={{
+                    ...(isXl && isHovered
+                      ? {
+                          zIndex: 10,
+                        }
+                      : {}),
+                    ...(isXl && {
+                      minHeight: "315px",
+                    }),
+                  }}
                 >
                   <CalendarDayCell
                     day={day}

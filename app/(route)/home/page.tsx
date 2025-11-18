@@ -13,9 +13,7 @@ import MobileBottomNavigation from "@/app/feature/home/components/mobile-bottom-
 import Footer from "@/app/shared/components/footer";
 
 export default function Home() {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    undefined
-  );
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 
   const events = useMemo(() => {
     return convertCalendarEvents(mockCalendarEvents);
@@ -32,7 +30,7 @@ export default function Home() {
         <CharacterSection />
         <MainContent />
       </PageWrapper> */}
-      <div className="container w-full pt-30">
+      <div className="w-full pt-30">
         <CustomCalendar
           events={events}
           selectedDate={selectedDate}
