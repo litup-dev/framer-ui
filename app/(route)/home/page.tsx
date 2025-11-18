@@ -14,24 +14,24 @@ import Footer from "@/app/shared/components/footer";
 
 export default function Home() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    new Date()
+    undefined
   );
 
   const events = useMemo(() => {
     return convertCalendarEvents(mockCalendarEvents);
   }, []);
 
-  const handleDateSelect = (date: Date) => {
+  const handleDateSelect = (date: Date | undefined) => {
     setSelectedDate(date);
   };
 
   return (
     <div>
-      <PageWrapper>
+      {/* <PageWrapper>
         <HeroSection />
         <CharacterSection />
         <MainContent />
-      </PageWrapper>
+      </PageWrapper> */}
       <div className="container w-full pt-30">
         <CustomCalendar
           events={events}

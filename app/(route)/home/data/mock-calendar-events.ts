@@ -6,6 +6,7 @@ export const mockCalendarEvents: Record<string, CalendarEvent[]> = {
       id: "1",
       venue: "언플러그드 라운지",
       artists: ["쿠인", "심각한 개구리", "황찬욱"],
+      image: "/images/poster1.png",
     },
   ],
   "2024-09-04": [
@@ -13,6 +14,7 @@ export const mockCalendarEvents: Record<string, CalendarEvent[]> = {
       id: "2",
       venue: "언플러그드 라운지",
       artists: ["쿠인", "심각한 개구리", "황찬욱"],
+      image: "/images/poster2.png",
     },
   ],
   "2024-09-05": [
@@ -20,81 +22,97 @@ export const mockCalendarEvents: Record<string, CalendarEvent[]> = {
       id: "3",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster3.png",
     },
     {
       id: "4",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster4.png",
     },
     {
       id: "5",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster1.png",
     },
     {
       id: "6",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster2.png",
     },
     {
       id: "7",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster3.png",
     },
     {
       id: "8",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster4.png",
     },
     {
       id: "9",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster3.png",
     },
     {
       id: "10",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster1.png",
     },
     {
       id: "11",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster2.png",
     },
     {
       id: "12",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster3.png",
     },
     {
       id: "13",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster4.png",
     },
     {
       id: "14",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster1.png",
     },
     {
       id: "15",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster2.png",
     },
     {
       id: "16",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster3.png",
     },
     {
       id: "17",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster1.png",
     },
     {
       id: "18",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster1.png",
     },
   ],
   "2024-09-06": [
@@ -102,6 +120,7 @@ export const mockCalendarEvents: Record<string, CalendarEvent[]> = {
       id: "7",
       venue: "언플러그드 라운지",
       artists: ["쿠인", "심각한 개구리", "황찬욱"],
+      image: "/images/poster2.png",
     },
   ],
   "2024-09-07": [
@@ -109,21 +128,25 @@ export const mockCalendarEvents: Record<string, CalendarEvent[]> = {
       id: "8",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster4.png",
     },
     {
       id: "9",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster2.png",
     },
     {
       id: "10",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster3.png",
     },
     {
       id: "11",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster4.png",
     },
   ],
   "2024-09-08": [
@@ -131,21 +154,25 @@ export const mockCalendarEvents: Record<string, CalendarEvent[]> = {
       id: "12",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster1.png",
     },
     {
       id: "13",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster2.png",
     },
     {
       id: "14",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster3.png",
     },
     {
       id: "15",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster1.png",
     },
   ],
   "2024-09-12": [
@@ -153,21 +180,25 @@ export const mockCalendarEvents: Record<string, CalendarEvent[]> = {
       id: "16",
       venue: "언플러그드 라운지",
       artists: ["쿠인", "심각한 개구리", "황찬욱"],
+      image: "/images/poster2.png",
     },
     {
       id: "17",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster3.png",
     },
     {
       id: "18",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster4.png",
     },
     {
       id: "19",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster2.png",
     },
   ],
   "2024-09-13": [
@@ -175,21 +206,25 @@ export const mockCalendarEvents: Record<string, CalendarEvent[]> = {
       id: "20",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster3.png",
     },
     {
       id: "21",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster4.png",
     },
     {
       id: "22",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster1.png",
     },
     {
       id: "23",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster1.png",
     },
   ],
   "2024-09-14": [
@@ -197,6 +232,7 @@ export const mockCalendarEvents: Record<string, CalendarEvent[]> = {
       id: "24",
       venue: "언플러그드 라운지",
       artists: ["쿠인", "심각한 개구리", "황찬욱"],
+      image: "/images/poster4.png",
     },
   ],
   "2024-09-16": [
@@ -204,6 +240,7 @@ export const mockCalendarEvents: Record<string, CalendarEvent[]> = {
       id: "25",
       venue: "언플러그드 라운지",
       artists: ["쿠인", "심각한 개구리", "황찬욱"],
+      image: "/images/poster3.png",
     },
   ],
   "2024-09-18": [
@@ -211,6 +248,7 @@ export const mockCalendarEvents: Record<string, CalendarEvent[]> = {
       id: "26",
       venue: "언플러그드 라운지",
       artists: ["쿠인", "심각한 개구리", "황찬욱"],
+      image: "/images/poster4.png",
     },
   ],
   "2024-09-20": [
@@ -218,6 +256,7 @@ export const mockCalendarEvents: Record<string, CalendarEvent[]> = {
       id: "27",
       venue: "언플러그드 라운지",
       artists: ["쿠인", "심각한 개구리", "황찬욱"],
+      image: "/images/poster3.png",
     },
   ],
   "2024-09-21": [
@@ -225,21 +264,25 @@ export const mockCalendarEvents: Record<string, CalendarEvent[]> = {
       id: "28",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster1.png",
     },
     {
       id: "29",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster2.png",
     },
     {
       id: "30",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster3.png",
     },
     {
       id: "31",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster4.png",
     },
   ],
   "2024-09-23": [
@@ -247,21 +290,25 @@ export const mockCalendarEvents: Record<string, CalendarEvent[]> = {
       id: "32",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster4.png",
     },
     {
       id: "33",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster1.png",
     },
     {
       id: "34",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster3.png",
     },
     {
       id: "35",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster1.png",
     },
   ],
   "2024-09-24": [
@@ -269,21 +316,25 @@ export const mockCalendarEvents: Record<string, CalendarEvent[]> = {
       id: "36",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster2.png",
     },
     {
       id: "37",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster3.png",
     },
     {
       id: "38",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster4.png",
     },
     {
       id: "39",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster2.png",
     },
   ],
   "2024-09-25": [
@@ -291,21 +342,25 @@ export const mockCalendarEvents: Record<string, CalendarEvent[]> = {
       id: "40",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster3.png",
     },
     {
       id: "41",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster4.png",
     },
     {
       id: "42",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster1.png",
     },
     {
       id: "43",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster2.png",
     },
   ],
   "2024-09-26": [
@@ -313,6 +368,7 @@ export const mockCalendarEvents: Record<string, CalendarEvent[]> = {
       id: "44",
       venue: "언플러그드 라운지",
       artists: ["쿠인", "심각한 개구리", "황찬욱"],
+      image: "/images/poster3.png",
     },
   ],
   "2024-09-27": [
@@ -320,21 +376,25 @@ export const mockCalendarEvents: Record<string, CalendarEvent[]> = {
       id: "45",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster1.png",
     },
     {
       id: "46",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster2.png",
     },
     {
       id: "47",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster3.png",
     },
     {
       id: "48",
       venue: "현대카드 언더스테이지",
       artists: ["와와와놀이도감"],
+      image: "/images/poster4.png",
     },
   ],
   "2024-09-28": [
@@ -342,6 +402,7 @@ export const mockCalendarEvents: Record<string, CalendarEvent[]> = {
       id: "49",
       venue: "언플러그드 라운지",
       artists: ["쿠인", "심각한 개구리", "황찬욱"],
+      image: "/images/poster2.png",
     },
   ],
   "2024-09-30": [
@@ -349,6 +410,7 @@ export const mockCalendarEvents: Record<string, CalendarEvent[]> = {
       id: "50",
       venue: "언플러그드 라운지",
       artists: ["쿠인", "심각한 개구리", "황찬욱"],
+      image: "/images/poster3.png",
     },
   ],
 };

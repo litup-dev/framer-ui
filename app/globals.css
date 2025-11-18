@@ -1,5 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin "tailwind-scrollbar" {
+  nocompatible: true;
+  preferredstrategy: "pseudoelements";
+}
 
 @custom-variant dark (&:is(.dark *));
 
@@ -264,6 +268,10 @@
     color: #20202099;
   }
 
+  .bg-black-60 {
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+
   .text-black-40 {
     color: #20202066;
   }
@@ -274,6 +282,10 @@
 
   .bg-gray {
     background-color: #f7f6f5;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    min-height: 100px !important;
   }
 }
 
@@ -304,28 +316,22 @@
   animation: none;
   mix-blend-mode: normal;
 }
-
 .scrollbar-custom {
   scrollbar-gutter: stable;
 }
 
-.scrollbar-custom::-webkit-scrollbar {
-  width: 5px !important;
-  height: 5px;
+.scrollbar::-webkit-scrollbar {
+  display: block !important;
+  opacity: 1 !important;
 }
 
-.scrollbar-custom::-webkit-scrollbar-track {
-  background: transparent !important;
-  margin: 0;
-  border-radius: 10px;
+.scrollbar:hover::-webkit-scrollbar {
+  display: block !important;
+  opacity: 1 !important;
 }
 
-.scrollbar-custom::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2) !important;
-  border-radius: 10px;
-  min-height: 100px;
-}
-
-.scrollbar-custom::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.3) !important;
+@layer utilities {
+  .scrollbar-thumb-min-100::-webkit-scrollbar-thumb {
+    min-height: 100px;
+  }
 }
