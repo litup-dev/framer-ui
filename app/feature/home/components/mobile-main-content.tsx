@@ -1,11 +1,12 @@
 "use client";
 
-import { eventPosters } from "@/app/feature/home/mock";
-import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
+
+import { eventPosters } from "@/app/feature/home/mock";
+import { Card, CardContent } from "@/components/ui/card";
+
 import { Description, Subtitle } from "@/components/shared/typography";
-import { Calendar } from "@/components/ui/calendar";
 
 interface MobileMainContentProps {
   selectedMobileBottomNavigation: "home" | "calendar";
@@ -16,7 +17,7 @@ const MobileMainContent = ({
 }: MobileMainContentProps) => {
   if (selectedMobileBottomNavigation === "home") {
     return (
-      <div className="grid grid-cols-2 gap-2 md:hidden">
+      <div className="grid grid-cols-3 gap-x-2.5 gap-y-6 md:hidden">
         {eventPosters.map((poster) => (
           <Link key={poster.id} href={`/home/detail/${poster.id}`}>
             <Card className="overflow-hidden gap-3 pb-2">
@@ -28,11 +29,13 @@ const MobileMainContent = ({
                   className="w-full h-full object-cover"
                 />
               </div>
-              <CardContent className="flex flex-col justify-start">
-                <Subtitle className="truncate text-subtitle-16">
+              <CardContent className="flex flex-col gap-1.5 justify-start">
+                <Description className="truncate text-[12px] text-black/60">
                   {poster.title}
+                </Description>
+                <Subtitle className="truncate text-[14px]">
+                  {poster.artists}
                 </Subtitle>
-                <Description>{poster.artists}</Description>
               </CardContent>
             </Card>
           </Link>
@@ -40,12 +43,6 @@ const MobileMainContent = ({
       </div>
     );
   }
-
-  return (
-    <div className="md:hidden -mx-5">
-      <Calendar className="w-full" />
-    </div>
-  );
 };
 
 export default MobileMainContent;

@@ -47,7 +47,7 @@ const ClubDetailSchedule = ({ events }: ClubDetailScheduleProps) => {
           >
             {events.map((event, eventIndex) => (
               <div key={eventIndex} className="flex gap-4 items-start">
-                <div className="w-10 lg:w-16 flex-shrink-0 flex items-center justify-center flex-col leading-8">
+                <div className="w-10 lg:w-16 flex-shrink-0 flex items-center justify-center flex-col gap-0.5">
                   {eventIndex === 0 && (
                     <>
                       <Subtitle className="text-black text-[11px] sm:text-[12px] leading-tight text-left">
@@ -59,8 +59,8 @@ const ClubDetailSchedule = ({ events }: ClubDetailScheduleProps) => {
                     </>
                   )}
                 </div>
-                <div className="flex-1 flex flex-col lg:flex-row gap-2 lg:gap-20">
-                  <div className="border-l-2 border-gray pl-4 space-y-1">
+                <div className="flex-1 flex flex-col lg:flex-row gap-3 lg:gap-20">
+                  <div className="border-l-2 border-gray pl-4 space-y-1.5">
                     <div className="flex items-center gap-1.5 text-sm text-black-60">
                       <Image
                         src="/images/watch.svg"
@@ -84,7 +84,7 @@ const ClubDetailSchedule = ({ events }: ClubDetailScheduleProps) => {
                       </Description>
                     </div>
                   </div>
-                  <div className="pl-4 space-y-1 lg:border-l-2 lg:border-gray lg:pl-6">
+                  <div className="pl-4 space-y-1.5 lg:border-l-2 lg:border-gray lg:pl-6">
                     <Subtitle className="text-black text-[15px] sm:text-[18px]">
                       {event.title}
                     </Subtitle>

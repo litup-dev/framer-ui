@@ -1,4 +1,6 @@
-export const getImageUrl = (filePath: string | null | undefined): string | null => {
+export const getImageUrl = (
+  filePath: string | null | undefined
+): string | null => {
   if (!filePath) return null;
   if (filePath.startsWith("http://") || filePath.startsWith("https://")) {
     return filePath;
@@ -7,4 +9,3 @@ export const getImageUrl = (filePath: string | null | undefined): string | null 
   const path = filePath.startsWith("/") ? filePath : `/${filePath}`;
   return `${apiBaseUrl}${path}`;
 };
-

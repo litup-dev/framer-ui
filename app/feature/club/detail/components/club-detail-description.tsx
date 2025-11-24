@@ -18,7 +18,7 @@ const DEFAULT_TIME_MESSAGE = "운영시간을 등록해주세요.";
 
 const LABEL_CLASS = "text-[14px] md:text-[16px] flex-[3]";
 const VALUE_CLASS = "text-[14px] md:text-[16px] flex-[9]";
-const VALUE_COL_CLASS = "flex flex-col flex-[9]";
+const VALUE_COL_CLASS = "flex flex-col flex-[9] gap-1";
 
 interface InfoRowProps {
   label: string;
@@ -58,7 +58,7 @@ const ClubDetailDescription = ({ data }: ClubDetailDescriptionProps) => {
           </InfoRow>
 
           <InfoRow label="SNS">
-            <div className="flex-[9] bg-gray  flex gap-1">
+            <div className="flex-[9] bg-gray flex gap-5">
               <Description className="text-black">youtube ↗</Description>
               <Description className="text-black">instagram ↗</Description>
             </div>
@@ -68,7 +68,7 @@ const ClubDetailDescription = ({ data }: ClubDetailDescriptionProps) => {
         <div className="flex flex-col  flex-1 space-y-10 lg:space-y-20 xl:space-y-0 lg:justify-between pb-14">
           <div className="flex flex-col gap-4">
             <InfoRow label="위치" align="start">
-              <div className={`${VALUE_COL_CLASS} bg-gray gap-1`}>
+              <div className={`${VALUE_COL_CLASS} bg-gray`}>
                 <Chip className="text-black">{data.address}</Chip>
                 <Chip className="text-black">상수역 3번 출구에서 115m</Chip>
               </div>

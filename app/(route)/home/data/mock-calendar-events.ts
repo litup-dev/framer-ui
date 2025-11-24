@@ -1,4 +1,4 @@
-import { CalendarEvent } from "@/components/shared/custom-calendar";
+import { CalendarEvent } from "@/components/shared/calendar/custom-calendar";
 
 export const mockCalendarEvents: Record<string, CalendarEvent[]> = {
   "2024-09-03": [

@@ -57,10 +57,10 @@ export const getButtonClassName = (
 ) => {
   return cn(
     "flex flex-col text-left",
-    isXl ? "p-6" : "p-1",
+    isXl ? "px-6 pt-6" : "p-1",
     "h-auto min-h-[62px] sm:min-h-[117px] md:min-h-[159px] xl:min-h-[315px]",
     isHovered && isXl
-      ? "bg-main text-white"
+      ? "bg-main text-white pb-6"
       : dayEvents.length === 0
       ? "bg-gray text-black"
       : "bg-white text-black",
@@ -71,20 +71,28 @@ export const getButtonClassName = (
 export const getEventsContainerClassName = (
   isXl: boolean,
   isHovered: boolean,
-  isCurrentMonth: boolean
+  isCurrentMonth: boolean,
+  isOverflowing: boolean
 ) => {
   return cn(
     "flex flex-col relative",
     isHovered && isXl
-      ? "max-h-[560px] overflow-y-auto gap-8 scrollbar scrollbar-w-[5px] scrollbar-track-transparent scrollbar-thumb-black/20 hover:scrollbar-thumb-black/30 scrollbar-thumb-rounded-none scrollbar-track-rounded-none scrollbar-thumb-min-100 z-10"
+      ? cn(
+          "gap-8 scrollbar scrollbar-w-[5px] scrollbar-track-transparent scrollbar-thumb-black/20 hover:scrollbar-thumb-black/30 scrollbar-thumb-rounded-none scrollbar-track-rounded-none scrollbar-thumb-min-100 z-10",
+          isOverflowing && "max-h-[560px] overflow-y-auto"
+        )
       : isXl
-      ? "max-h-[315px] overflow-hidden mt-1 pb-6 gap-8 z-10"
+      ? "h-[315px] overflow-hidden gap-8 z-10"
       : "hidden",
     !isCurrentMonth && "opacity-50"
   );
 };
 
-export const getEventsContainerStyles = (isXl: boolean, isHovered: boolean) => {
+export const getEventsContainerStyles = (
+  isXl: boolean,
+  isHovered: boolean,
+  isOverflowing: boolean
+) => {
   return {
     width: isXl ? "calc(100% + 48px)" : "100%",
     boxSizing: "border-box" as const,
@@ -101,10 +109,14 @@ export const getEventsContainerStyles = (isXl: boolean, isHovered: boolean) => {
     maskImage:
       isHovered && isXl
         ? "linear-gradient(to bottom, transparent 0%, transparent 10%, black 20%, black 100%)"
+        : !isHovered && isXl && isOverflowing
+        ? "linear-gradient(to bottom, black 0%, black 75%, transparent 100%)"
         : "none",
     WebkitMaskImage:
       isHovered && isXl
         ? "linear-gradient(to bottom, transparent 0%, transparent 10%, black 20%, black 100%)"
+        : !isHovered && isXl && isOverflowing
+        ? "linear-gradient(to bottom, black 0%, black 75%, transparent 100%)"
         : "none",
   };
 };

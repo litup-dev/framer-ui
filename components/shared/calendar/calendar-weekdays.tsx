@@ -19,7 +19,7 @@ export const CalendarWeekdays = ({ isXl }: CalendarWeekdaysProps) => {
         >
           <Title
             className={cn(
-              "text-start text-black text-[12px] xl:text-[24px]",
+              "text-center xl:text-start text-black text-[12px] xl:text-[24px]",
               isXl ? "pl-6" : "pl-1"
             )}
           >

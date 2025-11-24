@@ -13,6 +13,7 @@
   --color-black: #202020;
   --color-black-80: #202020cc;
   --color-main: #ff491a;
+  --leading-percent: 100%;
   --font-sans: var(--font-suit);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);

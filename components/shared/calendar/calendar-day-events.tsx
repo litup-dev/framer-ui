@@ -7,7 +7,7 @@ import { Title } from "@/components/shared/typography";
 import {
   getEventsContainerStyles,
   getEventsContainerClassName,
-} from "../utils/calendar-cell-styles";
+} from "@/components/shared/calendar/utils/calendar-cell-styles";
 
 interface CalendarDayEventsProps {
   events: CalendarEvent[];
@@ -35,35 +35,36 @@ export const CalendarDayEvents = ({
         className={getEventsContainerClassName(
           isXl,
           isHovered,
-          isCurrentMonth
+          isCurrentMonth,
+          isOverflowing
         )}
-        style={getEventsContainerStyles(isXl, isHovered)}
+        style={getEventsContainerStyles(isXl, isHovered, isOverflowing)}
       >
         {events.map((event, eventIndex) => (
           <div
             key={eventIndex}
             className={cn(
-              "flex flex-col gap-2.5",
+              "flex flex-col gap-4",
               isHovered && isXl ? "text-white" : "text-black"
             )}
           >
             <div>
               <Title
                 className={cn(
-                  "text-black xl:text-[20px]",
+                  "text-black xl:text-[16px] 2xl:text-[20px]",
                   isHovered && isXl ? "text-white" : "text-black"
                 )}
               >
-                {event.venue}
+                {event.clubName}
               </Title>
             </div>
             {event.artists.length > 0 && (
-              <div className="flex flex-col">
+              <div className="flex flex-col xl:gap-2 2xl:gap-2.5">
                 {event.artists.map((artist, artistIndex) => (
                   <Title
                     key={artistIndex}
                     className={cn(
-                      "font-medium xl:text-[16px] text-black-60",
+                      "font-medium xl:text-[14px] 2xl:text-[16px] text-black-60",
                       isHovered && isXl ? "text-white" : "text-black"
                     )}
                   >
@@ -76,11 +77,10 @@ export const CalendarDayEvents = ({
         ))}
       </div>
       {!isHovered && isOverflowing && (
-        <div className="hidden xl:flex xl:items-center xl:justify-end">
-          <Plus className="w-6 h-6 text-black" />
+        <div className="hidden xl:absolute xl:bottom-4 xl:right-4 xl:flex xl:items-center xl:justify-end">
+          <Plus className="xl:w-5 xl:h-5 2xl:w-6 2xl:h-6 text-black" />
         </div>
       )}
     </>
   );
 };
-

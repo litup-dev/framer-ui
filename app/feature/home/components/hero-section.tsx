@@ -4,9 +4,10 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { cn } from "@/lib/utils";
+
 import { heroSectionImages } from "@/app/feature/home/mock";
 import { useHomeStore } from "@/app/feature/home/store/home-store";
-import { cn } from "@/lib/utils";
 
 const HeroSection = () => {
   const { selectedCategory, setIsAnimating, selectedMobileBottomNavigation } =
@@ -17,11 +18,11 @@ const HeroSection = () => {
     switch (selectedCategory) {
       case "week":
         return 0;
-      case "month":
+      case "today":
         return 1;
       case "free":
         return 2;
-      case "local":
+      case "area":
         return 3;
       default:
         return 0;

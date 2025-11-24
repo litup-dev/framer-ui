@@ -4,16 +4,26 @@ import Image from "next/image";
 import { useRef } from "react";
 import { motion } from "framer-motion";
 import { CalendarEvent } from "@/components/shared/calendar/types";
-import { useCalendarCellHeight } from "./hooks/use-calendar-cell-height";
-import { useCalendarCellScroll } from "./hooks/use-calendar-cell-scroll";
-import { useCalendarCellOverflow } from "./hooks/use-calendar-cell-overflow";
+import { useCalendarCellHeight } from "@/components/shared/calendar/hooks/use-calendar-cell-height";
+import { useCalendarCellScroll } from "@/components/shared/calendar/hooks/use-calendar-cell-scroll";
+import { useCalendarCellOverflow } from "@/components/shared/calendar/hooks/use-calendar-cell-overflow";
 import {
   getCellContainerStyles,
   getButtonStyles,
   getButtonClassName,
-} from "./utils/calendar-cell-styles";
-import { CalendarDayHeader } from "./components/calendar-day-header";
-import { CalendarDayEvents } from "./components/calendar-day-events";
+} from "@/components/shared/calendar/utils/calendar-cell-styles";
+import { CalendarDayHeader } from "@/components/shared/calendar/calendar-day-header";
+import { CalendarDayEvents } from "@/components/shared/calendar/calendar-day-events";
+import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
+
+const DEFAULT_IMAGE = "/images/poster1.png";
+
+const isValidImageUrl = (url: string | undefined | null): boolean => {
+  if (!url) return false;
+  if (url.startsWith("/")) return true;
+  if (url.startsWith("http://") || url.startsWith("https://")) return true;
+  return false;
+};
 
 interface CalendarDayCellProps {
   day: Date;
@@ -24,7 +34,7 @@ interface CalendarDayCellProps {
   isSelected: boolean;
   dayNumber: number;
   isXl: boolean;
-  maxEventsPerDay: number;
+
   isRowExpanded: boolean;
   isCollapsedAndNotSelected: boolean;
   onDateClick: (date: Date) => void;
@@ -70,6 +80,12 @@ export const CalendarDayCell = ({
     eventsContainerRef,
   });
 
+  const firstEvent = dayEvents[0];
+  const eventImage = firstEvent?.image;
+  const imageUrl = isValidImageUrl(eventImage)
+    ? getImageUrl(eventImage) || DEFAULT_IMAGE
+    : DEFAULT_IMAGE;
+
   return (
     <motion.div
       ref={divRef}
@@ -109,11 +125,11 @@ export const CalendarDayCell = ({
         }}
         style={getButtonStyles(isXl, isHovered, expandedHeight)}
       >
-        {!isXl && dayEvents[0]?.image && (
+        {!isXl && firstEvent && (
           <div className="absolute inset-0 w-full h-full overflow-hidden">
             <Image
-              src={dayEvents[0].image}
-              alt={dayEvents[0].venue}
+              src={imageUrl}
+              alt={firstEvent.clubName || "Event image"}
               fill
               className="object-cover"
               sizes="50px"
@@ -127,7 +143,7 @@ export const CalendarDayCell = ({
           isSelected={isSelected}
           isTodayDate={isTodayDate}
           isHovered={isHovered}
-          hasImage={!!dayEvents[0]?.image}
+          hasImage={!!firstEvent?.image}
         />
 
         <CalendarDayEvents

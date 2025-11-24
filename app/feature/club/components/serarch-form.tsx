@@ -2,20 +2,20 @@
 
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Club } from "@/app/feature/club/types";
-
-import MobileFilter from "@/app/feature/club/components/mobile-filter";
-import ClubCard from "@/app/feature/club/components/club-card";
-import DesktopFilter from "@/app/feature/club/components/desktop-filter";
+import { getClubsOptions } from "@/app/feature/club/query-options";
 import {
   clubSearchFormSchema,
   ClubSearchFormSchema,
   defaultValues,
 } from "@/app/feature/club/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { getClubsOptions } from "../query-options";
 import { useQuery } from "@tanstack/react-query";
+
+import MobileFilter from "@/app/feature/club/components/mobile-filter";
+import ClubCard from "@/app/feature/club/components/club-card";
+import DesktopFilter from "@/app/feature/club/components/desktop-filter";
 
 const ClubSearchForm = () => {
   const { data } = useQuery(getClubsOptions());

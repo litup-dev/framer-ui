@@ -1,7 +1,7 @@
 export interface CalendarEvent {
   id: string;
-  venue: string;
+  clubName: string;
   artists: string[];
+  performName: string;
   image?: string;
 }
-

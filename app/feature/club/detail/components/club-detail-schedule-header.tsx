@@ -20,7 +20,7 @@ const ClubDetailScheduleHeader = () => {
 
   return (
     <div className="flex items-center justify-between sm:justify-start sm:gap-4 border-b-2 border-main pb-2">
-      <div className="flex gap-1">
+      <div className="flex gap-1 items-center">
         <Image
           src="/images/review_calendar.svg"
           alt="calendar"

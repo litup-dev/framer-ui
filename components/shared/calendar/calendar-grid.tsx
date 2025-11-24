@@ -14,7 +14,6 @@ interface CalendarGridProps {
   events: Record<string, CalendarEvent[]>;
   hoveredDate: Date | null;
   isXl: boolean;
-  maxEventsPerDay: number;
   selectedRowIndex: number | null;
   selectedDate?: Date;
   onDateClick: (date: Date) => void;
@@ -29,7 +28,6 @@ export const CalendarGrid = ({
   events,
   hoveredDate,
   isXl,
-  maxEventsPerDay,
   selectedRowIndex,
   selectedDate,
   onDateClick,
@@ -91,7 +89,6 @@ export const CalendarGrid = ({
                     isSelected={!!isSelected}
                     dayNumber={dayNumber}
                     isXl={isXl}
-                    maxEventsPerDay={maxEventsPerDay}
                     isRowExpanded={row.isRowExpanded}
                     isCollapsedAndNotSelected={row.isCollapsedAndNotSelected}
                     onDateClick={onDateClick}

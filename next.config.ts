@@ -1,10 +1,9 @@
 import type { NextConfig } from "next";
 
-// API 베이스 URL에서 호스트 추출
 const getApiHostname = (): string | null => {
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
   if (!apiBaseUrl) return null;
-  
+
   try {
     const url = new URL(apiBaseUrl);
     return url.hostname;
@@ -33,7 +32,12 @@ const nextConfig: NextConfig = {
         hostname: "newsroom.etomato.com",
         pathname: "/**",
       },
-      // API 베이스 URL의 호스트 추가
+      {
+        protocol: "https",
+        hostname: "encrypted-tbn0.gstatic.com",
+        pathname: "/**",
+      },
+
       ...(apiHostname
         ? [
             {

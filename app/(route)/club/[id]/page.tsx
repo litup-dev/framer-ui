@@ -1,8 +1,9 @@
-import PageWrapper from "@/app/shared/components/page-wrapper";
 import { getServerQueryClient } from "@/lib/query-client";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
+
 import { getClubByIdOptions } from "@/app/feature/club/query-options";
-import ClubDetailContent from "./club-detail-content";
+
+import ClubDetailContent from "@/app/(route)/club/[id]/club-detail-content";
 
 interface ClubDetailPageProps {
   params: Promise<{ id: string }>;
