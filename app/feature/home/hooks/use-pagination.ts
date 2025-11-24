@@ -28,8 +28,8 @@ export const usePagination = ({
         pageNumbers.push(i);
       }
     } else {
-      let start = Math.max(1, currentPage - 2);
-      let end = Math.min(totalPages, currentPage + 2);
+      const start = Math.max(1, currentPage - 2);
+      const end = Math.min(totalPages, currentPage + 2);
 
       if (start > 1) {
         pageNumbers.push(1);
