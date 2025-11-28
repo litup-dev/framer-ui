@@ -4,15 +4,15 @@ import {
   PerformancesResponse,
 } from "@/app/feature/home/types";
 import { format } from "date-fns";
+import { apiClient } from "@/lib/api-client";
 
 const getCalendarEventsOptions = (month: string) =>
   queryOptions({
     queryKey: ["calendarEvents", month],
     queryFn: async () => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/performances/calendar?month=${month}`
+      const response = await apiClient.get<CalendarEventsResponse>(
+        `/api/v1/performances/calendar?month=${month}`
       );
-      const response: CalendarEventsResponse = await res.json();
       return response.data;
     },
   });
@@ -24,10 +24,9 @@ const getCalendarEventsListOptions = () => {
     queryKey: ["calendarEventsList"],
     queryFn: async ({ pageParam }) => {
       const month = pageParam as string;
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/performances/calendar?month=${month}`
+      const response = await apiClient.get<CalendarEventsResponse>(
+        `/api/v1/performances/calendar?month=${month}`
       );
-      const response: CalendarEventsResponse = await res.json();
       return { month, data: response.data };
     },
     initialPageParam: currentMonth,
@@ -62,35 +61,16 @@ const getPerformancesOptions = (
         params.push(`area=${area}`);
       }
 
-      const url = `${
-        process.env.NEXT_PUBLIC_API_BASE_URL
-      }/api/v1/performances?${params.join("&")}`;
-
-      console.log("API 요청 URL:", url);
-
-      const res = await fetch(url);
-
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error("API 에러 응답:", {
-          status: res.status,
-          statusText: res.statusText,
-          url,
-          errorBody: errorText,
-        });
-        throw new Error(
-          `API 요청 실패: ${res.status} ${res.statusText} - ${errorText}`
-        );
-      }
-
-      const response: PerformancesResponse = await res.json();
+      const endpoint = `/api/v1/performances?${params.join("&")}`;
+      const response = await apiClient.get<PerformancesResponse>(endpoint);
       const items = response.data.items;
-      const hasMore = offset + items.length < response.data.total;
+      const total = response.data.total;
+      const hasMore = offset + items.length < total;
       return {
         data: items,
         offset,
         hasMore,
-        total: response.data.total,
+        total,
       };
     },
     initialPageParam: 0,

@@ -16,6 +16,7 @@ import CharacterSection from "@/app/feature/home/components/character-section";
 import MainContent from "@/app/feature/home/components/main-content";
 import MobileBottomNavigation from "@/app/feature/home/components/mobile-bottom-navigation";
 import SelectCalendarViewHeader from "@/components/shared/select-calendar-view-header";
+import Footer from "@/app/shared/components/footer";
 
 export default function Home() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -64,6 +65,8 @@ export default function Home() {
           />
         </div>
       )}
+      <Footer />
+
       <MobileBottomNavigation />
     </>
   );

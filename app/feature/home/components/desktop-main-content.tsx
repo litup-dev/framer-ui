@@ -14,7 +14,7 @@ import {
   getEndOfWeek,
 } from "@/lib/date-utils";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
-import { PerformancesPagination } from "./performances-pagination";
+import { PerformancesPagination } from "@/app/feature/home/components/performances-pagination";
 
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -51,7 +51,7 @@ const DesktopMainContent = ({ showAllItems }: DesktopMainContentProps) => {
     performances?.pages.flatMap((page) => page.data) || [];
 
   const limit = 16;
-  const total = performances?.pages[0]?.total || 0;
+  const total = (performances?.pages[0] as { total?: number })?.total || 0;
   const currentPage = performances?.pages.length || 1;
 
   const pagination = usePagination({
@@ -89,8 +89,13 @@ const DesktopMainContent = ({ showAllItems }: DesktopMainContentProps) => {
                     {imageUrl ? (
                       <Image
                         src={imageUrl}
-                        alt={performance.title}
+                        alt={
+                          performance.title ||
+                          performance.club?.name ||
+                          "Performance image"
+                        }
                         fill
+                        sizes="(max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -159,8 +164,13 @@ const DesktopMainContent = ({ showAllItems }: DesktopMainContentProps) => {
                       {imageUrl ? (
                         <Image
                           src={imageUrl}
-                          alt={performance.title}
+                          alt={
+                            performance.title ||
+                            performance.club?.name ||
+                            "Performance image"
+                          }
                           fill
+                          sizes="(max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
                           className="w-full h-full object-cover"
                         />
                       ) : (

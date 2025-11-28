@@ -78,6 +78,7 @@ const HeroSection = () => {
                 src={heroSectionImages[previousIndex].image}
                 alt={heroSectionImages[previousIndex].id.toString()}
                 fill
+                sizes="(max-width: 768px) 250px, (max-width: 1024px) 270px, (max-width: 1280px) 400px, 600px"
                 className="object-contain"
               />
             )}
@@ -107,6 +108,7 @@ const HeroSection = () => {
                   src={heroSectionImages[currentIndex].image}
                   alt={heroSectionImages[currentIndex].id.toString()}
                   fill
+                  sizes="(max-width: 768px) 250px, (max-width: 1024px) 270px, (max-width: 1280px) 400px, 600px"
                   className="object-contain"
                 />
               )}
@@ -121,6 +123,8 @@ const HeroSection = () => {
                 src={heroSectionImages[currentIndex].image}
                 alt={heroSectionImages[currentIndex].id.toString()}
                 fill
+                sizes="(max-width: 768px) 250px, (max-width: 1024px) 270px, (max-width: 1280px) 400px, 600px"
+                priority
                 className="object-contain"
               />
             )}

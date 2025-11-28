@@ -37,8 +37,9 @@ const PostDetailPage = ({ params }: PostDetailPageProps) => {
           <div className="relative w-screen md:w-2/5 h-[442px] md:h-[560px] -mx-5 sm:-mx-10 md:mx-0 flex-shrink-0 md:rounded-md overflow-hidden bg-gray-200">
             <Image
               src={imageUrl}
-              alt={poster?.title || ""}
+              alt={poster?.title || "Performance poster"}
               fill
+              sizes="(max-width: 768px) 100vw, 40vw"
               className="object-cover md:rounded-md"
             />
           </div>

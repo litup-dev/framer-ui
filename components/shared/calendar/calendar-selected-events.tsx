@@ -88,6 +88,7 @@ export const CalendarSelectedEvents = ({
                           src={imageUrl}
                           alt={event.clubName || "Event image"}
                           fill
+                          sizes="(max-width: 640px) 90px, (max-width: 768px) 133px, 160px"
                           className="object-cover"
                         />
                       </div>

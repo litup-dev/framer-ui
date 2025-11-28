@@ -26,6 +26,7 @@ const MobileMainContent = ({
                   src={poster.image}
                   alt={poster.title}
                   fill
+                  sizes="33vw"
                   className="w-full h-full object-cover"
                 />
               </div>

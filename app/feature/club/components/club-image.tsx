@@ -41,6 +41,7 @@ const ClubImage = ({ club, size = "md", className = "" }: ClubImageProps) => {
           src={imageUrl}
           alt={club.name}
           fill
+          sizes={size === "sm" ? "40px" : size === "md" ? "56px" : "80px"}
           className="object-cover rounded-full"
         />
       ) : (
