@@ -11,7 +11,7 @@ const PrivacyPolicyPage = () => {
           <h2 className="text-xl font-semibold mb-4">개인정보 처리방침</h2>
 
           <p className="mb-4">
-            <strong>onhz</strong>(이하 "플랫폼")은 이용자의 개인정보를 매우
+            <strong>onhz</strong>(이하 &quot;플랫폼&quot;)은 이용자의 개인정보를 매우
             중요하게 생각하며, 「개인정보 보호법」 등 관련 법령을 준수하고
             있습니다. 본 개인정보 처리방침은 이용자가 플랫폼에서 제공하는
             서비스를 이용함에 있어, 어떤 개인정보가 수집·이용되고 있으며, 그
@@ -124,7 +124,7 @@ const PrivacyPolicyPage = () => {
                   정보만 보관됨
                 </li>
                 <li>
-                  이용자가 작성한 게시글 및 댓글은 "삭제된 사용자"로 표시되어
+                  이용자가 작성한 게시글 및 댓글은 &quot;삭제된 사용자&quot;로 표시되어
                   콘텐츠 내에 남습니다.
                 </li>
                 <li>또한 회원 탈퇴 시 계정은 복구 불가능합니다.</li>

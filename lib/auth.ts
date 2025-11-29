@@ -113,7 +113,7 @@ export const authOptions: NextAuthOptions = {
               );
 
               return {
-                nickname: result.data?.nickname!,
+                nickname: result.data?.nickname || "",
                 profilePath: result.data?.profilePath || null,
                 accessToken,
                 refreshToken,

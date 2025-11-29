@@ -13,8 +13,8 @@ const TermsOfServicePage = () => {
           <section>
             <h3 className="text-lg font-semibold mb-3">제1조 (목적)</h3>
             <p className="mb-4">
-              이 약관은 본 서비스(이하 "회사" 또는 "플랫폼")가 제공하는 웹사이트
-              및 애플리케이션을 통해 제공되는 모든 서비스(이하 "서비스")의
+              이 약관은 본 서비스(이하 &quot;회사&quot; 또는 &quot;플랫폼&quot;)가 제공하는 웹사이트
+              및 애플리케이션을 통해 제공되는 모든 서비스(이하 &quot;서비스&quot;)의
               이용과 관련하여 회사와 사용자 간의 권리, 의무 및 책임사항, 기타
               필요한 사항을 규정함을 목적으로 합니다.
             </p>
@@ -24,15 +24,15 @@ const TermsOfServicePage = () => {
             <h3 className="text-lg font-semibold mb-3">제2조 (용어의 정의)</h3>
             <ol className="list-decimal list-inside space-y-2 ml-4">
               <li>
-                "이용자"란 회사가 제공하는 서비스에 접속하여 이 약관에 따라
+                &quot;이용자&quot;란 회사가 제공하는 서비스에 접속하여 이 약관에 따라
                 회사가 제공하는 서비스를 이용하는 회원 및 비회원을 말합니다.
               </li>
               <li>
-                "회원"이란 서비스에 회원가입을 완료하고 지속적으로 서비스를
+                &quot;회원&quot;이란 서비스에 회원가입을 완료하고 지속적으로 서비스를
                 이용할 수 있는 자를 의미합니다.
               </li>
               <li>
-                "콘텐츠"란 이용자가 서비스 내에서 작성하거나 등록한 정보(댓글,
+                &quot;콘텐츠&quot;란 이용자가 서비스 내에서 작성하거나 등록한 정보(댓글,
                 게시글, 이미지, 리뷰 등)를 의미합니다.
               </li>
             </ol>
@@ -190,7 +190,7 @@ const TermsOfServicePage = () => {
                 <p className="font-semibold mb-2">3. 탈퇴 후의 영향</p>
                 <p className="ml-4 mb-2">
                   회원 탈퇴 후에는 서비스 내에서 사용자가 생성한 모든 콘텐츠는
-                  "삭제된 사용자"로 변경됩니다.
+                  &quot;삭제된 사용자&quot;로 변경됩니다.
                 </p>
                 <ul className="list-disc list-inside ml-8">
                   <li>
