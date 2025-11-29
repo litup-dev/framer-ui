@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Image from "next/image";
 
 import { cn } from "@/lib/utils";
@@ -17,11 +18,11 @@ const Footer = () => {
         <div className="flex flex-col gap-8">
           <div className="flex gap-3">
             {FooterMenus.map((menu) => (
-              <div key={menu.id}>
-                <Subtitle className="text-[12px] xl:text-[14px] 2xl:text-[16px]">
+              <Link key={menu.id} href={menu.href}>
+                <Subtitle className="text-[12px] xl:text-[14px] 2xl:text-[16px] hover:underline cursor-pointer">
                   {menu.label}
                 </Subtitle>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -40,7 +41,7 @@ const Footer = () => {
             ))}
           </div>
 
-          <div className="pt-12 sm:pt-0 pb-4 sm:pb-10 flex justify-end gap-2 items-center">
+          <div className="pt-12 sm:pt-0 pb-4 sm:pb-10 flex  justify-end sm:justify-start gap-2 items-center">
             {FooterSocials.map((social) => (
               <div key={social.id}>
                 <Subtitle

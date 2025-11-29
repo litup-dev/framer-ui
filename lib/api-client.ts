@@ -82,6 +82,7 @@ class ApiClient {
     try {
       const response = await fetch(url, config);
 
+      console.log(response, "<<<<<<");
       if (!response.ok) {
         throw new Error(
           `API 요청 실패: ${response.status} ${response.statusText}`

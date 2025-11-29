@@ -80,6 +80,7 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
           <div className="flex flex-col flex-1 xl:flex-[5]">
             <div id="info" className="flex flex-col py-6 sm:py-8 lg:py-10">
               <ClubDetailInfo
+                id={id}
                 name={data.data.name}
                 description={data.data.description}
                 address={data.data.address}

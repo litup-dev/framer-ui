@@ -1,4 +1,4 @@
-import { queryOptions } from "@tanstack/react-query";
+import { mutationOptions, queryOptions } from "@tanstack/react-query";
 import { ClubDetail } from "@/app/feature/club/types";
 import { apiClient } from "@/lib/api-client";
 
@@ -22,4 +22,16 @@ const getClubByIdOptions = (id: string) =>
     },
   });
 
-export { getClubsOptions, getClubByIdOptions };
+const mutateFavoriteClub = (id: string) =>
+  mutationOptions({
+    mutationKey: ["favorite-club", id],
+    mutationFn: async () => {
+      const response = await apiClient.post(`/api/v1/clubs/${id}/favorite`, {
+        entityId: id,
+      });
+
+      return response;
+    },
+  });
+
+export { getClubsOptions, getClubByIdOptions, mutateFavoriteClub };

@@ -1,10 +1,14 @@
 "use client";
 
-import { Separator } from "@/components/ui/separator";
-import { Chip, Description, Subtitle } from "@/components/shared/typography";
 import Image from "next/image";
 
+import { Separator } from "@/components/ui/separator";
+import { Description, Subtitle } from "@/components/shared/typography";
+import { useMutation } from "@tanstack/react-query";
+import { mutateFavoriteClub } from "../../query-options";
+
 interface ClubDetailInfoProps {
+  id: string;
   name?: string;
   subtitle?: string;
   description?: string;
@@ -12,11 +16,16 @@ interface ClubDetailInfoProps {
 }
 
 const ClubDetailInfo = ({
+  id,
   name,
   subtitle,
   description,
   address,
 }: ClubDetailInfoProps) => {
+  const { mutate } = useMutation(mutateFavoriteClub(id));
+
+  const handleFavorite = () => mutate();
+
   return (
     <div className="space-y-6 sm:space-y-8 lg:space-y-10">
       <div className="flex gap-4.5 items-center px-5 sm:px-10 lg:px-15">
@@ -29,7 +38,10 @@ const ClubDetailInfo = ({
             {address}
           </Description>
         </div>
-        <div className="flex flex-col items-center gap-1">
+        <div
+          className="flex flex-col items-center gap-1"
+          onClick={handleFavorite}
+        >
           <Image
             src="/images/favorite_active.svg"
             alt="club profile"

@@ -4,26 +4,11 @@ import KakaoProvider from "next-auth/providers/kakao";
 import jwt from "jsonwebtoken";
 
 const createAccessToken = (userId: string, secret: string) => {
-  return jwt.sign(
-    {
-      userId,
-      iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + 3600,
-    },
-    secret
-  );
+  return jwt.sign({ userId }, secret, { expiresIn: "1h" });
 };
 
 const createRefreshToken = (userId: string, secret: string) => {
-  const oneMonthInSeconds = 30 * 24 * 60 * 60;
-  return jwt.sign(
-    {
-      userId,
-      iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + oneMonthInSeconds,
-    },
-    secret
-  );
+  return jwt.sign({ userId }, secret, { expiresIn: "30d" });
 };
 
 export const authOptions: NextAuthOptions = {
@@ -50,12 +35,14 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user, account }) {
-      if (!account && token.userId && token.accessToken) {
+      if (!account && token.accessToken) {
         try {
           const decoded = jwt.decode(token.accessToken as string) as any;
           const currentTime = Math.floor(Date.now() / 1000);
 
           if (decoded && decoded.exp && decoded.exp <= currentTime) {
+            const userId = decoded.userId;
+
             if (token.refreshToken) {
               const refreshDecoded = jwt.decode(
                 token.refreshToken as string
@@ -67,7 +54,7 @@ export const authOptions: NextAuthOptions = {
                 refreshDecoded.exp > currentTime
               ) {
                 const newAccessToken = createAccessToken(
-                  token.userId as string,
+                  userId,
                   process.env.NEXTAUTH_SECRET!
                 );
                 token.accessToken = newAccessToken;
@@ -76,7 +63,7 @@ export const authOptions: NextAuthOptions = {
               }
             } else {
               const newAccessToken = createAccessToken(
-                token.userId as string,
+                userId,
                 process.env.NEXTAUTH_SECRET!
               );
               token.accessToken = newAccessToken;
@@ -125,9 +112,12 @@ export const authOptions: NextAuthOptions = {
                 process.env.NEXTAUTH_SECRET!
               );
 
-              token.accessToken = accessToken;
-              token.refreshToken = refreshToken;
-              token.userId = String(userId);
+              return {
+                nickname: result.data?.nickname!,
+                profilePath: result.data?.profilePath || null,
+                accessToken,
+                refreshToken,
+              };
             }
           } else {
             const errorText = await response.text();
@@ -138,19 +128,11 @@ export const authOptions: NextAuthOptions = {
       return { ...token };
     },
     async session({ session, token }) {
-      if (token.user) {
-        session.user = token.user;
-      }
-
-      if (token.userId) {
-        session.userId = token.userId as string;
-      }
-
-      if (token.accessToken) {
-        session.accessToken = token.accessToken as string;
-      }
-
-      return session;
+      return {
+        accessToken: token.accessToken,
+        nickname: (token.nickname as string) || "",
+        profilePath: (token.profilePath as string) || null,
+      } as typeof session;
     },
     async signIn() {
       return true;

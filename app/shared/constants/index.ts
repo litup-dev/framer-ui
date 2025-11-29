@@ -52,11 +52,11 @@ export const FooterSocials = [
     icon: "/images/social-instagram.svg",
     href: "https://www.instagram.com/example",
   },
-  {
-    id: 3,
-    label: "앱 다운로드",
-    href: "https://www.facebook.com/example",
-  },
+  // {
+  //   id: 3,
+  //   label: "앱 다운로드",
+  //   href: "https://www.facebook.com/example",
+  // },
 ];
 
 export const litupEmails = [
