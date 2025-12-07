@@ -44,11 +44,17 @@ const CustomCalendar = ({
   const handlePrevMonth = () => {
     const newMonth = subMonths(currentMonth, 1);
     setCurrentMonth(newMonth);
+    setSelectedRowIndex(null);
+    setHoveredDate(null);
+    onDateSelect?.(undefined);
   };
 
   const handleNextMonth = () => {
     const newMonth = addMonths(currentMonth, 1);
     setCurrentMonth(newMonth);
+    setSelectedRowIndex(null);
+    setHoveredDate(null);
+    onDateSelect?.(undefined);
   };
 
   const handleDateClick = (date: Date) => {

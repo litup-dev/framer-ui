@@ -43,64 +43,73 @@ export const CalendarGrid = ({
 
   return (
     <div className="relative px-5 xl:px-20">
-      {rows.map((row, rowIndex) => (
-        <div key={rowIndex} className="relative">
+      {rows.map((row, rowIndex) => {
+        const firstDayKey = row.days[0]
+          ? format(row.days[0], "yyyy-MM-dd")
+          : `row-${rowIndex}`;
+        return (
           <div
-            className={cn(
-              "gap-0 gap-x-0 gap-y-0 relative",
-              isXl ? "flex" : "grid grid-cols-7"
-            )}
+            key={`${format(currentMonth, "yyyy-MM")}-row-${firstDayKey}`}
+            className="relative"
           >
-            {row.days.map((day, dayIndexInRow) => {
-              const index = rowIndex * 7 + dayIndexInRow;
-              const dayEvents = getEventsForDate(day, events);
-              const {
-                isCurrentMonth,
-                isHovered,
-                isTodayDate,
-                isSelected,
-                dayNumber,
-              } = getDayState(day, currentMonth, hoveredDate, selectedDate);
+            <div
+              className={cn(
+                "gap-0 gap-x-0 gap-y-0 relative",
+                isXl ? "flex" : "grid grid-cols-7"
+              )}
+            >
+              {row.days.map((day, dayIndexInRow) => {
+                const index = rowIndex * 7 + dayIndexInRow;
+                const dayEvents = getEventsForDate(day, events);
+                const {
+                  isCurrentMonth,
+                  isHovered,
+                  isTodayDate,
+                  isSelected,
+                  dayNumber,
+                } = getDayState(day, currentMonth, hoveredDate, selectedDate);
 
-              return (
-                <div
-                  key={`${format(day, "yyyy-MM-dd")}-${index}`}
-                  className={cn(
-                    "flex-1 relative",
-                    isXl && "w-[250px] flex-shrink-0"
-                  )}
-                  style={{
-                    ...(isXl && isHovered
-                      ? {
-                          zIndex: 10,
-                        }
-                      : {}),
-                    ...(isXl && {
-                      minHeight: "315px",
-                    }),
-                  }}
-                >
-                  <CalendarDayCell
-                    day={day}
-                    dayEvents={dayEvents}
-                    isCurrentMonth={isCurrentMonth}
-                    isHovered={!!isHovered}
-                    isTodayDate={isTodayDate}
-                    isSelected={!!isSelected}
-                    dayNumber={dayNumber}
-                    isXl={isXl}
-                    isRowExpanded={row.isRowExpanded}
-                    isCollapsedAndNotSelected={row.isCollapsedAndNotSelected}
-                    onDateClick={onDateClick}
-                    onMouseEnter={onMouseEnter}
-                    onMouseLeave={onMouseLeave}
-                  />
-                </div>
-              );
-            })}
+                return (
+                  <div
+                    key={`${format(day, "yyyy-MM-dd")}-${index}`}
+                    className={cn(
+                      "flex-1 relative",
+                      isXl && "w-[250px] flex-shrink-0"
+                    )}
+                    style={{
+                      ...(isXl && isHovered
+                        ? {
+                            zIndex: 10,
+                          }
+                        : {}),
+                      ...(isXl && {
+                        height: "315px",
+                        minHeight: "315px",
+                      }),
+                    }}
+                  >
+                    <CalendarDayCell
+                      day={day}
+                      dayEvents={dayEvents}
+                      isCurrentMonth={isCurrentMonth}
+                      isHovered={!!isHovered}
+                      isTodayDate={isTodayDate}
+                      isSelected={!!isSelected}
+                      dayNumber={dayNumber}
+                      isXl={isXl}
+                      isRowExpanded={row.isRowExpanded}
+                      isCollapsedAndNotSelected={row.isCollapsedAndNotSelected}
+                      onDateClick={onDateClick}
+                      onMouseEnter={onMouseEnter}
+                      onMouseLeave={onMouseLeave}
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
       {hasCollapsedRow && (
         <div
           className="flex items-center justify-center py-4 cursor-pointer"

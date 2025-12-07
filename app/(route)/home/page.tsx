@@ -22,9 +22,13 @@ export default function Home() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const currentMonthKey = format(currentMonth, "yyyy-MM");
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  const { data: calendarEvents } = useQuery(
-    getCalendarEventsOptions(currentMonthKey)
+
+  const calendarEventsQueryOptions = useMemo(
+    () => getCalendarEventsOptions(currentMonthKey),
+    [currentMonthKey]
   );
+
+  const { data: calendarEvents } = useQuery(calendarEventsQueryOptions);
 
   const isXl = useResponsive();
   const { selectedMobileBottomNavigation } = useHomeStore();

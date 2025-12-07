@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useRef } from "react";
+import { format } from "date-fns";
 import { motion } from "framer-motion";
 import { CalendarEvent } from "@/components/shared/calendar/types";
 import { useCalendarCellHeight } from "@/components/shared/calendar/hooks/use-calendar-cell-height";
@@ -86,8 +87,11 @@ export const CalendarDayCell = ({
     ? getImageUrl(eventImage) || DEFAULT_IMAGE
     : DEFAULT_IMAGE;
 
+  const dayKey = format(day, "yyyy-MM-dd");
+
   return (
     <motion.div
+      key={`cell-${dayKey}`}
       ref={divRef}
       className={isXl ? "overflow-visible" : "overflow-hidden relative"}
       initial={false}
@@ -103,6 +107,7 @@ export const CalendarDayCell = ({
       style={getCellContainerStyles(isXl, isHovered, expandedHeight)}
     >
       <motion.button
+        key={`button-${dayKey}`}
         ref={buttonRef}
         onClick={() => onDateClick(day)}
         onMouseEnter={isXl ? () => onMouseEnter(day) : undefined}
