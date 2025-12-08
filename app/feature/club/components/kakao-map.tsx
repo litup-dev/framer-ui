@@ -2,8 +2,10 @@
 
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 import useKakaoLoader from "@/lib/kakao-map-loader";
+
 import { Club } from "@/app/feature/club/types";
-import ClubInfoCard from "./club-info-card";
+
+import ClubInfoCard from "@/app/feature/club/components/club-info-card";
 
 interface KakaoMapProps {
   club: Club | null;
