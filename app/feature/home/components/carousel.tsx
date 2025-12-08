@@ -25,6 +25,7 @@ const MobileCarouselCards = () => {
                 src={poster.image}
                 alt={poster.title}
                 fill
+                sizes="(max-width: 768px) 50vw, 20vw"
                 className="w-full h-full object-cover"
               />
             </div>

@@ -1,9 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { Map, Info, Star } from "lucide-react";
+
 import { Club } from "@/app/feature/club/types";
-import ClubImage from "./club-image";
+
 import { Separator } from "@/components/ui/separator";
+import ClubImage from "@/app/feature/club/components/club-image";
 
 interface ClubCardProps {
   club: Club;
@@ -12,7 +15,7 @@ interface ClubCardProps {
 
 const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
   return (
-    <div className="space-y-3">
+    <Link href={`/club/${club.id}`} className="space-y-3 block cursor-pointer">
       <div className="flex justify-between">
         <div>
           <div className="flex items-center gap-4">
@@ -48,13 +51,13 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
           <Map className="w-4 h-4" />
           지도
         </span>
-        <span className="flex items-center gap-1 border border-[#2020201A] px-2.5 py-2 rounded-[2px]">
+        <span className="flex items-center gap-1 border border-[#2020201A] px-2.5 py-2 rounded-[2px] cursor-pointer">
           <Info className="w-4 h-4" />
           상세
         </span>
       </div>
       <Separator className="hidden sm:block" />
-    </div>
+    </Link>
   );
 };
 

@@ -3,6 +3,12 @@ import NextAuth from "next-auth";
 declare module "next-auth" {
   interface Session {
     accessToken?: string;
-    userId?: string;
+    refreshToken?: string;
+    expires?: string;
+  }
+
+  interface JWT {
+    accessToken?: string;
+    refreshToken?: string;
   }
 }

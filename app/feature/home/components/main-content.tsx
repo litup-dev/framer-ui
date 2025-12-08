@@ -1,9 +1,10 @@
 "use client";
 
+import { useHomeStore } from "@/app/feature/home/store/home-store";
+
 import SelectShow from "@/app/feature/home/components/select-show";
 import MobileMainContent from "@/app/feature/home/components/mobile-main-content";
 import DesktopMainContent from "@/app/feature/home/components/desktop-main-content";
-import { useHomeStore } from "@/app/feature/home/store/home-store";
 
 export default function MainContent() {
   const {
@@ -12,15 +13,21 @@ export default function MainContent() {
     isAnimating,
     handleCategoryChange,
     selectedMobileBottomNavigation,
+    selectedArea,
+    setSelectedArea,
   } = useHomeStore();
 
   return (
     <div className="flex flex-col md:flex-row gap-5 z-10">
       <div className="w-full md:w-2/10">
         <SelectShow
-          onCategoryChange={handleCategoryChange}
+          onCategoryChange={(value: "week" | "today" | "free" | "area") =>
+            handleCategoryChange(value)
+          }
           selectedCategory={selectedCategory}
           isAnimating={isAnimating}
+          selectedArea={selectedArea}
+          onAreaChange={(value: string) => setSelectedArea(value)}
         />
       </div>
       <div className="w-full md:w-8/10">

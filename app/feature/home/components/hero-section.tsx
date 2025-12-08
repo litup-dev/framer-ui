@@ -4,9 +4,10 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { cn } from "@/lib/utils";
+
 import { heroSectionImages } from "@/app/feature/home/mock";
 import { useHomeStore } from "@/app/feature/home/store/home-store";
-import { cn } from "@/lib/utils";
 
 const HeroSection = () => {
   const { selectedCategory, setIsAnimating, selectedMobileBottomNavigation } =
@@ -17,11 +18,11 @@ const HeroSection = () => {
     switch (selectedCategory) {
       case "week":
         return 0;
-      case "month":
+      case "today":
         return 1;
       case "free":
         return 2;
-      case "local":
+      case "area":
         return 3;
       default:
         return 0;
@@ -77,6 +78,7 @@ const HeroSection = () => {
                 src={heroSectionImages[previousIndex].image}
                 alt={heroSectionImages[previousIndex].id.toString()}
                 fill
+                sizes="(max-width: 768px) 250px, (max-width: 1024px) 270px, (max-width: 1280px) 400px, 600px"
                 className="object-contain"
               />
             )}
@@ -106,6 +108,7 @@ const HeroSection = () => {
                   src={heroSectionImages[currentIndex].image}
                   alt={heroSectionImages[currentIndex].id.toString()}
                   fill
+                  sizes="(max-width: 768px) 250px, (max-width: 1024px) 270px, (max-width: 1280px) 400px, 600px"
                   className="object-contain"
                 />
               )}
@@ -120,6 +123,8 @@ const HeroSection = () => {
                 src={heroSectionImages[currentIndex].image}
                 alt={heroSectionImages[currentIndex].id.toString()}
                 fill
+                sizes="(max-width: 768px) 250px, (max-width: 1024px) 270px, (max-width: 1280px) 400px, 600px"
+                priority
                 className="object-contain"
               />
             )}

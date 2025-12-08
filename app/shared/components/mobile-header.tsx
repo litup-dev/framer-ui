@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-import Logo from "@/app/shared/components/logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -43,7 +42,7 @@ const MobileHeader = () => {
 
   return (
     <>
-      <div className="px-5 py-2 justify-between flex items-center sm:hidden">
+      <div className="px-5 py-2 justify-between flex items-center md:hidden">
         <div className="flex items-center gap-1">
           <div className="w-6 h-6 rounded-full bg-black" />
           <Link href="/home">logo</Link>

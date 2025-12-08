@@ -1,5 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin "tailwind-scrollbar" {
+  nocompatible: true;
+  preferredstrategy: "pseudoelements";
+}
 
 @custom-variant dark (&:is(.dark *));
 
@@ -9,6 +13,7 @@
   --color-black: #202020;
   --color-black-80: #202020cc;
   --color-main: #ff491a;
+  --leading-percent: 100%;
   --font-sans: var(--font-suit);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -159,12 +164,27 @@
     letter-spacing: -0.08em;
   }
 
+  .text-title-20 {
+    @apply font-bold text-[20px];
+    letter-spacing: -0.08em;
+  }
+
+  .text-title-18 {
+    @apply font-bold text-[18px];
+    letter-spacing: -0.08em;
+  }
+
   .text-title-16 {
     @apply font-bold text-[16px];
     letter-spacing: -0.08em;
   }
 
   /* Subtitle styles */
+  .text-subtitle-28 {
+    @apply font-bold text-[28px];
+    letter-spacing: -0.04em;
+  }
+
   .text-subtitle-20 {
     @apply font-bold text-[20px];
     letter-spacing: -0.04em;
@@ -191,7 +211,12 @@
   }
 
   .text-subtitle-12 {
-    @apply font-bold text-[14px];
+    @apply font-bold text-[12px];
+    letter-spacing: -0.04em;
+  }
+
+  .text-subtitle-11 {
+    @apply font-bold text-[11px];
     letter-spacing: -0.04em;
   }
 
@@ -203,6 +228,11 @@
 
   .text-description-14 {
     @apply font-medium text-[14px];
+    letter-spacing: -0.04em;
+  }
+
+  .text-description-12 {
+    @apply font-medium text-[12px];
     letter-spacing: -0.04em;
   }
 
@@ -221,6 +251,10 @@
     @apply font-medium text-[14px];
     letter-spacing: 0;
   }
+  .text-chip-13 {
+    @apply font-medium text-[13px];
+    letter-spacing: 0;
+  }
 
   .text-chip-12 {
     @apply font-medium text-[12px];
@@ -235,8 +269,24 @@
     color: #20202099;
   }
 
+  .bg-black-60 {
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+
+  .text-black-40 {
+    color: #20202066;
+  }
+
   .text-gray {
     color: #2020204d;
+  }
+
+  .bg-gray {
+    background-color: #f7f6f5;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    min-height: 100px !important;
   }
 }
 
@@ -266,4 +316,23 @@
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
+}
+.scrollbar-custom {
+  scrollbar-gutter: stable;
+}
+
+.scrollbar::-webkit-scrollbar {
+  display: block !important;
+  opacity: 1 !important;
+}
+
+.scrollbar:hover::-webkit-scrollbar {
+  display: block !important;
+  opacity: 1 !important;
+}
+
+@layer utilities {
+  .scrollbar-thumb-min-100::-webkit-scrollbar-thumb {
+    min-height: 100px;
+  }
 }

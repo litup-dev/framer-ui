@@ -1,4 +1,12 @@
-import { format, startOfDay, endOfDay, isToday, isSameDay } from "date-fns";
+import {
+  format,
+  startOfDay,
+  endOfDay,
+  isToday,
+  isSameDay,
+  startOfWeek,
+  endOfWeek,
+} from "date-fns";
 import { ko } from "date-fns/locale";
 
 /**
@@ -97,4 +105,43 @@ export const getTodayDayString = (): string => {
 export const getTodayDayPadded = (): string => {
   const today = new Date();
   return format(today, "dd");
+};
+
+/**
+ * 주어진 날짜의 주 시작일(일요일)을 포맷된 문자열로 가져오는 함수
+ * @param date - 기준 날짜 (기본값: 오늘)
+ * @param formatString - 날짜 포맷 문자열 (기본값: 'yyyy-MM-dd')
+ * @returns 포맷된 주 시작일 문자열
+ */
+export const getStartOfWeek = (
+  date: Date = new Date(),
+  formatString: string = "yyyy-MM-dd"
+): string => {
+  return format(startOfWeek(date), formatString, { locale: ko });
+};
+
+/**
+ * 주어진 날짜의 주 마지막일(토요일)을 포맷된 문자열로 가져오는 함수
+ * @param date - 기준 날짜 (기본값: 오늘)
+ * @param formatString - 날짜 포맷 문자열 (기본값: 'yyyy-MM-dd')
+ * @returns 포맷된 주 마지막일 문자열
+ */
+export const getEndOfWeek = (
+  date: Date = new Date(),
+  formatString: string = "yyyy-MM-dd"
+): string => {
+  return format(endOfWeek(date), formatString, { locale: ko });
+};
+
+/**
+ * 날짜를 포맷된 문자열로 변환하는 함수
+ * @param date - 포맷할 날짜
+ * @param formatString - 날짜 포맷 문자열 (기본값: 'yyyy-MM-dd')
+ * @returns 포맷된 날짜 문자열
+ */
+export const formatDate = (
+  date: Date,
+  formatString: string = "yyyy-MM-dd"
+): string => {
+  return format(date, formatString, { locale: ko });
 };

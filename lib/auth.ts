@@ -3,15 +3,12 @@ import GoogleProvider from "next-auth/providers/google";
 import KakaoProvider from "next-auth/providers/kakao";
 import jwt from "jsonwebtoken";
 
-const createToken = (userId: string, secret: string) => {
-  return jwt.sign(
-    {
-      userId,
-      iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + 3600,
-    },
-    secret
-  );
+const createAccessToken = (userId: string, secret: string) => {
+  return jwt.sign({ userId }, secret, { expiresIn: "1h" });
+};
+
+const createRefreshToken = (userId: string, secret: string) => {
+  return jwt.sign({ userId }, secret, { expiresIn: "30d" });
 };
 
 export const authOptions: NextAuthOptions = {
@@ -26,7 +23,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.KAKAO_CLIENT_SECRET!,
       authorization: {
         params: {
-          scope: "profile_nickname profile_image",
+          scope: "account_email",
         },
       },
     }),
@@ -38,73 +35,104 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user, account }) {
-      if (!account && token.userId && token.accessToken) {
+      if (!account && token.accessToken) {
         try {
           const decoded = jwt.decode(token.accessToken as string) as any;
           const currentTime = Math.floor(Date.now() / 1000);
 
           if (decoded && decoded.exp && decoded.exp <= currentTime) {
-            console.log("커스텀 토큰 만료 예정 - 갱신 중...");
-            const newToken = createToken(
-              token.userId as string,
-              process.env.NEXTAUTH_SECRET!
-            );
-            token.accessToken = newToken;
-            console.log("토큰 갱신 완료:", newToken);
+            const userId = decoded.userId;
+
+            if (token.refreshToken) {
+              const refreshDecoded = jwt.decode(
+                token.refreshToken as string
+              ) as any;
+
+              if (
+                refreshDecoded &&
+                refreshDecoded.exp &&
+                refreshDecoded.exp > currentTime
+              ) {
+                const newAccessToken = createAccessToken(
+                  userId,
+                  process.env.NEXTAUTH_SECRET!
+                );
+                token.accessToken = newAccessToken;
+              } else {
+                return { ...token, error: "RefreshTokenExpired" };
+              }
+            } else {
+              const newAccessToken = createAccessToken(
+                userId,
+                process.env.NEXTAUTH_SECRET!
+              );
+              token.accessToken = newAccessToken;
+            }
           }
-        } catch (error) {
-          console.error("토큰 갱신 중 에러:", error);
-        }
+        } catch (error) {}
+        return { ...token };
       }
 
       if (account) {
-        const payload = {
-          userId: account.providerAccountId,
-          username: token?.name,
+        const payload: {
+          providerId: string;
+          provider: string;
+          email?: string;
+        } = {
+          providerId: account.providerAccountId,
+          provider: "kakao",
         };
 
+        if (user?.email) {
+          payload.email = user.email;
+        }
+
         try {
-          const response = await fetch(
-            `${process.env.API_BASE_URL}/api/v1/auth/register`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(payload),
-            }
-          );
+          const apiUrl = `${process.env.API_BASE_URL}/api/v1/auth/verify`;
+
+          const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          });
 
           if (response && response.ok) {
             const result = await response.json();
 
-            const userId = result.data.userId;
-            const newToken = createToken(userId, process.env.NEXTAUTH_SECRET!);
+            const userId = result.data?.id || result.data?.userId;
+            if (userId) {
+              const accessToken = createAccessToken(
+                String(userId),
+                process.env.NEXTAUTH_SECRET!
+              );
+              const refreshToken = createRefreshToken(
+                String(userId),
+                process.env.NEXTAUTH_SECRET!
+              );
 
-            token.accessToken = newToken;
-            token.userId = userId;
+              return {
+                nickname: result.data?.nickname || "",
+                profilePath: result.data?.profilePath || null,
+                accessToken,
+                refreshToken,
+              };
+            }
           } else {
-            console.error("유저 생성 실패:", response.status);
+            const errorText = await response.text();
           }
-        } catch (error) {
-          console.error("API 호출 에러:", error);
-        }
-      } else {
-        console.log("기존 로그인된 사용자 - API 호출 안함");
+        } catch (error) {}
       }
 
       return { ...token };
     },
     async session({ session, token }) {
-      if (token.user) {
-        session.user = token.user;
-      }
-
-      if (token.userId) {
-        session.userId = token.userId as string;
-      }
-
-      return session;
+      return {
+        accessToken: token.accessToken,
+        nickname: (token.nickname as string) || "",
+        profilePath: (token.profilePath as string) || null,
+      } as typeof session;
     },
     async signIn() {
       return true;

@@ -11,7 +11,7 @@ const MobileContent = ({ title }: MobileContentProps) => {
     <>
       <div className="pt-0 pb-4">
         <div className="flex justify-between items-center">
-          <Title className="text-gray-900">{title}</Title>
+          <span className="text-subtitle-18">{title}</span>
           <div className="hidden md:flex gap-2">
             <Star className="w-4 h-4" />
             <Instagram className="w-4 h-4" />

@@ -15,7 +15,7 @@ const MobileBottomNavigation = () => {
   return (
     <div
       className={cn(
-        "sm:hidden fixed cursor-pointer bottom-0 left-0 right-0 z-50 bg-white shadow-lg max-w-2xl m-auto border-t-1 h-[64px] flex items-center justify-center gap-20"
+        "xl:hidden fixed cursor-pointer bottom-0 left-0 right-0 z-50 bg-white shadow-lg w-full m-auto border-t-1 h-[64px] flex items-center justify-center gap-20"
       )}
     >
       {navigationItems.map((item) => (

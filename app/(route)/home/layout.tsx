@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
+import { PropsWithChildren } from "react";
 
-export default function HomeLayout({ children }: { children: ReactNode }) {
+export default function HomeLayout({ children }: PropsWithChildren) {
   return <>{children}</>;
 }

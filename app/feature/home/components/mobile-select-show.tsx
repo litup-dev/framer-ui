@@ -4,7 +4,7 @@ import { useHomeStore } from "@/app/feature/home/store/home-store";
 import { useEffect } from "react";
 
 interface SelectShowProps {
-  onCategoryChange: (value: string) => void;
+  onCategoryChange: (value: "week" | "today" | "free" | "area") => void;
   selectedCategory?: string;
   isAnimating?: boolean;
 }
@@ -34,7 +34,7 @@ const selectItems = [
 
 interface SelectItemProps {
   item: (typeof selectItems)[0];
-  onCategoryChange: (value: string) => void;
+  onCategoryChange: (value: "week" | "today" | "free" | "area") => void;
   selectedCategory?: string;
   isAnimating?: boolean;
   underlineDecoration?: "decoration-2" | "decoration-3";
@@ -49,7 +49,10 @@ const SelectItem = ({
 }: SelectItemProps) => {
   return (
     <div
-      onClick={() => !isAnimating && onCategoryChange(item.value)}
+      onClick={() =>
+        !isAnimating &&
+        onCategoryChange(item.value as "week" | "today" | "free" | "area")
+      }
       className={cn(
         !isAnimating && "cursor-pointer",
         selectedCategory === item.value
