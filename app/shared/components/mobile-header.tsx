@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Subtitle } from "@/components/shared/typography";
+import { cn } from "@/lib/utils";
 
 const MENU_ITEMS = [
   { label: "클럽 찾기", href: "/club" },
@@ -97,14 +99,15 @@ const MobileHeader = () => {
                           {session?.user?.name?.charAt(0) || ""}
                         </AvatarFallback>
                       </Avatar>
-                      <div className="flex">
-                        <p className="text-subtitle-14">
-                          {session?.user?.name}
-                        </p>
+                      <div className="flex items-center">
+                        <Subtitle className="text-[16px]">
+                          {session?.nickname}
+                        </Subtitle>
                         <ChevronRight
-                          className={`w-5 h-5 transition-transform ${
-                            isUserDropdownOpen ? "rotate-90" : ""
-                          }`}
+                          className={cn(
+                            "w-5 h-5 transition-transform",
+                            isUserDropdownOpen && "rotate-90"
+                          )}
                         />
                       </div>
                     </div>

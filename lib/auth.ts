@@ -113,6 +113,7 @@ export const authOptions: NextAuthOptions = {
               );
 
               return {
+                userId: userId,
                 nickname: result.data?.nickname || "",
                 profilePath: result.data?.profilePath || null,
                 accessToken,
@@ -132,6 +133,7 @@ export const authOptions: NextAuthOptions = {
         accessToken: token.accessToken,
         nickname: (token.nickname as string) || "",
         profilePath: (token.profilePath as string) || null,
+        userId: (token.userId as number) || 0,
       } as typeof session;
     },
     async signIn() {

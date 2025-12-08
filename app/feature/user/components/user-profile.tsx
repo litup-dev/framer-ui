@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Camera } from "lucide-react";
+import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
 
 interface UserProfileProps {
   session: Session;
@@ -20,15 +21,21 @@ interface UserProfileProps {
   setIsEditing?: (value: boolean) => void;
 }
 
-export default function UserProfile({ session, isOwner, isEditing: externalIsEditing, setIsEditing: externalSetIsEditing }: UserProfileProps) {
+export default function UserProfile({
+  session,
+  isOwner,
+  isEditing: externalIsEditing,
+  setIsEditing: externalSetIsEditing,
+}: UserProfileProps) {
   const [internalIsEditing, setInternalIsEditing] = useState(false);
   const [showEditButton, setShowEditButton] = useState(false);
   const [bio, setBio] = useState("");
-  const [nickname, setNickname] = useState(session.user?.name || "사용자");
+  const [nickname, setNickname] = useState(session.nickname);
   const [isFollowing, setIsFollowing] = useState(false);
 
   // props로 받은 isEditing을 사용하거나, 내부 state 사용
-  const isEditing = externalIsEditing !== undefined ? externalIsEditing : internalIsEditing;
+  const isEditing =
+    externalIsEditing !== undefined ? externalIsEditing : internalIsEditing;
   const setIsEditing = externalSetIsEditing || setInternalIsEditing;
 
   const handleSave = () => {
@@ -49,9 +56,12 @@ export default function UserProfile({ session, isOwner, isEditing: externalIsEdi
         <div className="flex gap-4 lg:gap-6 xl:gap-0 xl:flex-col">
           <div className="relative flex-shrink-0">
             <Avatar className="w-20 h-20 md:w-[100px] md:h-[100px] lg:w-[120px] lg:h-[120px]">
-              <AvatarImage src={session.user?.image || ""} alt={nickname} />
+              <AvatarImage
+                src={getImageUrl(session.profilePath) || ""}
+                alt={nickname}
+              />
               <AvatarFallback className="bg-muted text-black text-xl md:text-2xl lg:text-3xl">
-                {nickname.charAt(0)}
+                {nickname?.charAt(0)}
               </AvatarFallback>
             </Avatar>
             {isEditing && (

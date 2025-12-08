@@ -43,8 +43,10 @@ export default function UserPage({ searchParams }: UserPageProps) {
     return null;
   }
 
+  console.log(session, "<<<<<<");
+
   // 현재 로그인한 유저의 페이지인지 확인
-  const isOwner = !targetUserId || targetUserId === session.userId;
+  const isOwner = !targetUserId || targetUserId === String(session.userId);
 
   // TODO: targetUserId가 있으면 해당 유저 정보를 API에서 가져오기
   // 일단은 mock data 사용
@@ -52,16 +54,13 @@ export default function UserPage({ searchParams }: UserPageProps) {
     ? session
     : {
         ...session,
-        user: {
-          name: "다른 유저",
-          email: "other@example.com",
-          image: session.user?.image,
-        },
-        userId: targetUserId || "",
+        userId: Number(targetUserId) || 0,
       };
 
   // 페이지 헤더 타이틀
-  const pageTitle = isOwner ? "마이페이지" : `${targetUser.user?.name}님의 활동`;
+  const pageTitle = isOwner
+    ? "마이페이지"
+    : `${targetUser.user?.name}님의 활동`;
 
   return (
     <PageWrapper className="pt-6 sm:pt-[104px] 2xl:pt-[124px]">
@@ -84,9 +83,7 @@ export default function UserPage({ searchParams }: UserPageProps) {
           />
 
           {/* 사이드바 메뉴는 마이페이지일 때만 표시 - 간격: xl 80px, 2xl 100px */}
-          {isOwner && (
-            <UserSidebarMenu className="xl:mt-20 2xl:mt-[100px]" />
-          )}
+          {isOwner && <UserSidebarMenu className="xl:mt-20 2xl:mt-[100px]" />}
         </div>
 
         {/* 우측: 페이지 헤더 + 통계, 관람 기록, 관심 클럽 */}

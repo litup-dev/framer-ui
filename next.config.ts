@@ -16,28 +16,8 @@ const apiHostname = getApiHostname();
 
 const nextConfig: NextConfig = {
   images: {
+    unoptimized: true,
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "k.kakaocdn.net",
-        pathname: "/**",
-      },
-      {
-        protocol: "http",
-        hostname: "k.kakaocdn.net",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "newsroom.etomato.com",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "encrypted-tbn0.gstatic.com",
-        pathname: "/**",
-      },
-
       ...(apiHostname
         ? [
             {

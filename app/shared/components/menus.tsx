@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { MenuItems } from "@/app/shared/constants";
+import { Subtitle } from "@/components/shared/typography";
 
 const HeaderMenus = () => {
   const { data: session, status } = useSession();
@@ -41,20 +42,19 @@ const HeaderMenus = () => {
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56" align="end" forceMount>
-            <div className="flex items-center justify-start gap-2 p-2">
-              <div className="flex flex-col space-y-1 leading-none">
-                <p className="font-medium">{session.user?.name}</p>
-                <p className="w-[200px] truncate text-sm text-muted-foreground">
-                  {session.user?.email}
-                </p>
-              </div>
-            </div>
+          <DropdownMenuContent
+            className="w-56 z-[99999999] p-2 space-y-2"
+            align="end"
+            forceMount
+          >
+            <DropdownMenuItem className="cursor-pointer">
+              <Subtitle>{session.nickname}</Subtitle>
+            </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
               onSelect={() => signOut()}
             >
-              로그아웃
+              <Subtitle>로그아웃</Subtitle>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
