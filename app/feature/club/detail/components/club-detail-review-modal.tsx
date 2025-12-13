@@ -68,7 +68,7 @@ const ClubDetailReviewModal = () => {
         if (!open) handleClose();
       }}
     >
-      <DialogContent className="bg-white max-h-[90vh] flex flex-col p-0 overflow-hidden gap-0">
+      <DialogContent className="bg-white max-h-[90vh] flex flex-col p-0 overflow-hidden gap-0 z-[99999999]">
         <DialogTitle
           className={cn(
             "flex justify-start w-full items-center gap-1 p-6 pb-0 flex-shrink-0 ",

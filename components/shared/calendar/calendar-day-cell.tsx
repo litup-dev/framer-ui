@@ -82,7 +82,10 @@ export const CalendarDayCell = ({
   });
 
   const firstEvent = dayEvents[0];
-  const eventImage = firstEvent?.image;
+  const firstPerformance = firstEvent?.performances?.[0];
+  const mainImage = firstPerformance?.images?.find((img) => img.isMain);
+  const eventImage =
+    mainImage?.filePath || firstPerformance?.images?.[0]?.filePath;
   const imageUrl = isValidImageUrl(eventImage)
     ? getImageUrl(eventImage) || DEFAULT_IMAGE
     : DEFAULT_IMAGE;
@@ -148,7 +151,7 @@ export const CalendarDayCell = ({
           isSelected={isSelected}
           isTodayDate={isTodayDate}
           isHovered={isHovered}
-          hasImage={!!firstEvent?.image}
+          hasImage={!!eventImage}
         />
 
         <CalendarDayEvents

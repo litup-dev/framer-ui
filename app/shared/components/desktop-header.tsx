@@ -10,14 +10,11 @@ import { useClubDetailStore } from "@/app/feature/club/detail/store";
 import { useSession } from "next-auth/react";
 
 const DesktopHeader = () => {
-  const { data: session } = useSession();
-
-  console.log(session, "<<<<< session client");
   const pathname = usePathname();
   const isClubDetailPage =
     pathname?.startsWith("/club/") && pathname !== "/club";
   const [scrollProgress, setScrollProgress] = useState(0);
-  const { isImageGalleryOpen } = useClubDetailStore();
+  const { isImageGalleryOpen, isReviewModalOpen } = useClubDetailStore();
 
   useEffect(() => {
     if (!isClubDetailPage) return;
@@ -52,12 +49,17 @@ const DesktopHeader = () => {
   return (
     <div
       className={cn(
-        "py-5 px-5 sm:px-10 md:px-15 lg:px-20 hidden md:flex sm:justify-between z-[999999]",
+        "py-5 px-5 sm:px-10 md:px-15 lg:px-20 hidden md:flex sm:justify-between",
         isClubDetailPage
           ? scrollProgress > 0
             ? "fixed top-0 left-0 right-0"
             : "absolute top-0 left-0 right-0 text-white"
-          : "fixed top-0 left-0 right-0 bg-white z-[999999]"
+          : "fixed top-0 left-0 right-0 bg-white",
+        isReviewModalOpen
+          ? "z-[40]"
+          : isClubDetailPage
+          ? "z-[99999]"
+          : "z-[999999]"
       )}
       style={
         isClubDetailPage

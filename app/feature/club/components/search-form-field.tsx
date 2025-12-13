@@ -29,7 +29,13 @@ const SearchFormField = ({ onFocus }: SearchFormFieldProps) => {
       name="search"
       render={({ field }) => (
         <div className="space-y-2">
-          <InputGroup className="bg-[#2020200A] border-none h-12 rounded-[4px]">
+          <InputGroup className="border-b-2 border-main h-12">
+            <InputGroupAddon
+              align="inline-start"
+              onClick={handleSubmit(onSubmit)}
+            >
+              <SearchIcon className="size-5 text-[#FF491A]" strokeWidth={3} />
+            </InputGroupAddon>
             <FormControl>
               <InputGroupInput
                 placeholder="검색어를 입력하세요."
@@ -38,12 +44,6 @@ const SearchFormField = ({ onFocus }: SearchFormFieldProps) => {
                 {...field}
               />
             </FormControl>
-            <InputGroupAddon
-              align="inline-end"
-              onClick={handleSubmit(onSubmit)}
-            >
-              <SearchIcon className="size-5 text-[#FF491A]" strokeWidth={3} />
-            </InputGroupAddon>
           </InputGroup>
         </div>
       )}

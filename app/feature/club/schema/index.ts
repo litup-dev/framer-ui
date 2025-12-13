@@ -6,6 +6,7 @@ export const clubSearchFormSchema = z.object({
   reviewSort: z.string().optional(),
   reviewDate: z.string().optional(),
   ratingSort: z.string().optional(),
+  keywords: z.array(z.number()).optional(),
 });
 
 export type ClubSearchFormSchema = z.infer<typeof clubSearchFormSchema>;
@@ -13,7 +14,8 @@ export type ClubSearchFormSchema = z.infer<typeof clubSearchFormSchema>;
 export const defaultValues: ClubSearchFormSchema = {
   search: "",
   region: "",
-  reviewSort: "review_count_desc",
-  reviewDate: "recent_review_desc",
-  ratingSort: "rating_desc",
+  reviewSort: "-reviewCount",
+  reviewDate: "-reviewCreatedAt",
+  ratingSort: "-rating",
+  keywords: [],
 };

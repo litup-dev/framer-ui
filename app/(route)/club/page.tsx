@@ -8,19 +8,20 @@ const ClubPage = async () => {
   const queryClient = getServerQueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ["clubs"],
-    staleTime: 5,
+    queryKey: ["review-category"],
+    staleTime: Infinity,
+    gcTime: Infinity,
     queryFn: async () => {
-      const res = await serverApiClient.get("/api/v1/clubs");
+      const res = await serverApiClient.get("/api/v1/common/review-category");
       return res;
     },
   });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <PageWrapper>
+      <div className="w-full h-screen px-5 md:px-10 lg:px-15 xl:px-20 pt-20 flex flex-col">
         <ClubSearchForm />
-      </PageWrapper>
+      </div>
     </HydrationBoundary>
   );
 };

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ClubSearchFormSchema } from "@/app/feature/club/schema";
+import { filterItems } from "@/app/feature/club/constants";
 
 export const useFilterState = () => {
   const [activeFilterId, setActiveFilterId] = useState<number | null>(null);
@@ -7,17 +8,6 @@ export const useFilterState = () => {
     Record<number, number>
   >({});
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
-
-  const getFieldName = (
-    filterId: number
-  ): keyof ClubSearchFormSchema | null => {
-    const fieldMapping: Record<number, keyof ClubSearchFormSchema> = {
-      1: "reviewSort",
-      2: "reviewDate",
-      3: "ratingSort",
-    };
-    return fieldMapping[filterId] || null;
-  };
 
   const toggleOption = (currentOption: number, optionIndex: number) => {
     return currentOption === optionIndex
@@ -40,9 +30,16 @@ export const useFilterState = () => {
       [filterId]: newOptionIndex,
     }));
 
-    const fieldName = getFieldName(filterId);
-    if (fieldName) {
-      setValue(fieldName, newOptionIndex);
+    const filter = filterItems.find((f) => f.id === filterId);
+
+    if (filter) {
+      const selectedValue = filter.options[newOptionIndex].value;
+      filterItems.forEach((f) => {
+        if (f.id !== filterId) {
+          setValue(f.fieldName, undefined);
+        }
+      });
+      setValue(filter.fieldName, selectedValue);
     }
 
     setActiveFilterId(filterId);

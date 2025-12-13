@@ -43,8 +43,6 @@ export default function UserPage({ searchParams }: UserPageProps) {
     return null;
   }
 
-  console.log(session, "<<<<<<");
-
   // 현재 로그인한 유저의 페이지인지 확인
   const isOwner = !targetUserId || targetUserId === String(session.userId);
 

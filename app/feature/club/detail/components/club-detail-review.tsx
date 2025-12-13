@@ -3,8 +3,9 @@
 import Image from "next/image";
 import { ChevronDown } from "lucide-react";
 
-import { ClubDetailData } from "@/app/feature/club/types";
+import { ClubDetailData, Review } from "@/app/feature/club/types";
 import { Checkbox } from "@/components/ui/checkbox";
+import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
 
 import { useClubDetailStore } from "@/app/feature/club/detail/store";
 import ClubDetailReviewItem from "@/app/feature/club/detail/components/club-detail-review-item";
@@ -13,6 +14,7 @@ import ClubDetailImageGallery from "@/app/feature/club/detail/components/club-de
 
 interface ClubDetailReviewProps {
   data: ClubDetailData;
+  reviews: Review[];
 }
 
 interface ReviewItem {
@@ -29,37 +31,46 @@ interface ReviewItem {
   rating: number;
 }
 
-const ClubDetailReview = ({ data }: ClubDetailReviewProps) => {
+const ClubDetailReview = ({ data, reviews }: ClubDetailReviewProps) => {
   const { openReviewModal } = useClubDetailStore();
 
-  const mockReviews: ReviewItem[] = [
-    {
-      id: 1,
-      images: ["/images/club_detail1.png", "/images/club_detail2.png"],
-      content:
-        "낮에는 카페였다가 밤에는 지하에서 라이브공연을 하는 곳. 밤에는 취한제비로 상호가 바뀐다. 아늑하고 아늑하고 아늑하...",
-      tags: ["#새단장", "#조용한 분위기", "#교통편이 편함", "#조용한 분위기"],
-      createdAt: "00.00.00 00:00:00",
-      updatedAt: "00.00.00 00:00:00",
-      user: {
-        name: "이름",
-      },
-      rating: 4.0,
-    },
-    {
-      id: 2,
-      images: ["/images/club_detail3.png", "/images/club_detail4.png"],
-      content:
-        "낮에는 카페였다가 밤에는 지하에서 라이브공연을 하는 곳. 밤에는 취한제비로 상호가 바뀐다. 아늑하고 아늑하고 아늑하...",
-      tags: ["#새단장", "#조용한 분위기", "#교통편이 편함", "#조용한 분위기"],
-      createdAt: "00.00.00 00:00:00",
-      updatedAt: "00.00.00 00:00:00",
-      user: {
-        name: "이름",
-      },
-      rating: 4.0,
-    },
-  ];
+  const convertToReviewItems = (reviews: Review[]): ReviewItem[] => {
+    if (!reviews || !Array.isArray(reviews) || reviews.length === 0) return [];
+
+    return reviews
+      .filter((review): review is Review => review != null)
+      .map((review) => {
+        const imageUrls =
+          Array.isArray(review.images) && review.images.length > 0
+            ? review.images
+                .map((img) =>
+                  img?.filePath ? getImageUrl(img.filePath) : null
+                )
+                .filter((url): url is string => url !== null)
+            : [];
+
+        return {
+          id: review.id,
+          images: imageUrls,
+          content: review.content || "",
+          tags:
+            Array.isArray(review.keywords) && review.keywords.length > 0
+              ? review.keywords.map((keyword) => `#${keyword?.name || ""}`)
+              : [],
+          createdAt: review.createdAt || "",
+          updatedAt: review.updatedAt || review.createdAt || "",
+          user: {
+            name: review.user?.nickname || "",
+            ...(review.user?.profilePath && {
+              profileImage: getImageUrl(review.user.profilePath) || undefined,
+            }),
+          },
+          rating: review.rating || 0,
+        };
+      });
+  };
+
+  const reviewItems = convertToReviewItems(reviews || []);
 
   return (
     <div>
@@ -107,9 +118,15 @@ const ClubDetailReview = ({ data }: ClubDetailReviewProps) => {
         </div>
       </div>
       <div className="pt-4">
-        {mockReviews.map((review) => (
-          <ClubDetailReviewItem key={review.id} review={review} />
-        ))}
+        {reviewItems.length > 0 ? (
+          reviewItems.map((review) => (
+            <ClubDetailReviewItem key={review.id} review={review} />
+          ))
+        ) : (
+          <div className="py-8 text-center text-black-60">
+            아직 작성된 리뷰가 없습니다.
+          </div>
+        )}
       </div>
       <ClubDetailReviewModal />
       <ClubDetailImageGallery />

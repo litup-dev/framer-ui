@@ -80,7 +80,6 @@ const ClubDetailHeader = ({ clubName }: ClubDetailHeaderProps) => {
 
   if (carouselImages.length === 0) return null;
 
-  console.log(carouselImages);
   return (
     <div className="relative w-full aspect-[3/4] h-[490px] xl:h-[490px] 2xl:h-[600px] bg-black">
       <AnimatePresence>

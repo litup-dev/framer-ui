@@ -46,19 +46,76 @@ export interface ClubDetailData {
   name: string;
   phone: string;
   address: string;
-  description: string;
+  description: string | null;
   capacity: number;
   openTime: string | null;
   closeTime: string | null;
   avgRating: number | null;
   reviewCnt: number | null;
+  favoriteCount: number;
+  latitude: number;
+  longitude: number;
   createdAt: string;
   owner: ClubOwner;
   images: ClubImage[];
   keywords: ClubKeyword[];
-  upcomingPerforms: UpcomingPerform[];
+  upcomingPerforms?: UpcomingPerform[];
 }
 
 export interface ClubDetail {
   data: ClubDetailData;
 }
+
+export interface ReviewKeyword {
+  id: number;
+  keyword: string;
+  iconPath: string;
+  sortOrder: number;
+}
+
+export interface ReviewCategory {
+  id: number;
+  code: string;
+  name: string;
+  keywords: ReviewKeyword[];
+}
+
+export interface ReviewUser {
+  id: number;
+  nickname: string;
+  profilePath: string | null;
+}
+
+export interface ReviewKeywordItem {
+  id: number;
+  name: string;
+}
+
+export interface ReviewImage {
+  id: number;
+  filePath: string;
+  isMain: boolean;
+}
+
+export interface Review {
+  id: number;
+  clubId: number;
+  userId: number;
+  rating: number;
+  content: string;
+  createdAt: string;
+  updatedAt: string | null;
+  user: ReviewUser;
+  keywords: ReviewKeywordItem[];
+  images: ReviewImage[];
+}
+
+export interface ReviewResponse {
+  data: Review;
+}
+
+export interface ReviewListResponse {
+  data: Review[];
+}
+
+export type ReviewsResponse = ReviewResponse | ReviewListResponse;

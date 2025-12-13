@@ -13,7 +13,7 @@ import { Separator } from "@/components/ui/separator";
 
 const Footer = () => {
   return (
-    <footer className="w-full pt-10 sm:pt-12 xl:pt-15 2xl:pt-20 pb-20 px-5 sm:px-10 xl:px-15 2xl:px-20">
+    <footer className="w-full 2xl:p-20 bg-[#ffffff] 2xl:pt-40">
       <div className="flex flex-col sm:flex-row sm:justify-between gap-8">
         <div className="flex flex-col gap-8">
           <div className="flex gap-3">
@@ -68,7 +68,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-4 sm:gap-5 xl:gap-6 2xl:gap-10 pb-10">
+      <div className="flex flex-col gap-4 sm:gap-5 xl:gap-6 2xl:gap-10">
         <Separator className="text-black" />
         <Description className="text-[12px] xl:text-[14px] 2xl:text-[16px] text-black/40">
           ⓒ 2025 LitUp. All rights reserved.

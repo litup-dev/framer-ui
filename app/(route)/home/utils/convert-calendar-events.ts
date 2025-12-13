@@ -9,11 +9,9 @@ export function convertCalendarEvents(
   Object.keys(apiEvents).forEach((dateKey) => {
     // API에서 받은 날짜 키를 그대로 사용 (yyyy-MM-dd 형식)
     convertedEvents[dateKey] = apiEvents[dateKey].map((event) => ({
-      id: String(event.id),
+      id: event.id,
       clubName: event.clubName,
-      artists: event.artists,
-      performName: event.performName,
-      image: event.image,
+      performances: event.performances,
     }));
   });
 

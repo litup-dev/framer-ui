@@ -90,7 +90,7 @@ const CustomCalendar = ({
   }, [selectedDate, events]);
 
   return (
-    <div className="w-screen relative md:pt-20 xl:pb-[388px]">
+    <div className="w-screen relative md:pt-20">
       {calendarView === "calendar" && (
         <div className="bg-gray">
           <CalendarHeader

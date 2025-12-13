@@ -3,8 +3,11 @@
 import { useQuery } from "@tanstack/react-query";
 import useKakaoLoader from "@/lib/kakao-map-loader";
 
-import { getClubByIdOptions } from "@/app/feature/club/query-options";
-import { ClubDetail } from "@/app/feature/club/types";
+import {
+  getClubByIdOptions,
+  getReviewByIdOptions,
+} from "@/app/feature/club/query-options";
+import { ClubDetail, ReviewResponse, Review } from "@/app/feature/club/types";
 import { useClubDetailStore } from "@/app/feature/club/detail/store";
 
 import {
@@ -24,9 +27,13 @@ interface ClubDetailContentProps {
 }
 
 const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
+  useKakaoLoader();
+
   const { isReviewModalOpen } = useClubDetailStore();
   const { data } = useQuery<ClubDetail>(getClubByIdOptions(id));
-  useKakaoLoader();
+  const { data: reviewsData } = useQuery<ReviewResponse>(
+    getReviewByIdOptions(id)
+  );
 
   const images = data?.data?.images || [];
   const mainImageObj = images.find((img) => img.isMain) || images[0];
@@ -67,6 +74,8 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
     },
   ];
 
+  const reviews: Review[] = reviewsData?.data ? [reviewsData.data] : [];
+
   return (
     <div className="w-screen">
       <ClubDetailHeader
@@ -82,7 +91,7 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
               <ClubDetailInfo
                 id={id}
                 name={data.data.name}
-                description={data.data.description}
+                description={data.data.description || "description"}
                 address={data.data.address}
               />
               <div className="xl:hidden">
@@ -99,11 +108,11 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
             </div>
 
             <div id="review" className="space-y-5 px-5 sm:px-10 lg:px-15">
-              <ClubDetailReview data={data.data} />
+              <ClubDetailReview data={data.data} reviews={reviews} />
             </div>
           </div>
 
-          <div className="hidden xl:flex xl:flex-[3] bg-gray xl:self-stretch">
+          <div className="hidden xl:flex xl:flex-[3] bg-gray xl:sticky xl:top-0 xl:self-start xl:h-screen xl:overflow-y-auto">
             <ClubDetailDescription data={data.data} />
           </div>
         </div>

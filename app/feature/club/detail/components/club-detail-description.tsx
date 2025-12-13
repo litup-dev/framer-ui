@@ -13,7 +13,6 @@ interface ClubDetailDescriptionProps {
   data: ClubDetailData;
 }
 
-const MAP_CENTER = { lat: 37.49793, lng: 127.027596 };
 const DEFAULT_TIME_MESSAGE = "운영시간을 등록해주세요.";
 
 const LABEL_CLASS = "text-[14px] md:text-[16px] flex-[3]";
@@ -39,7 +38,21 @@ const InfoRow = ({ label, children, align = "center" }: InfoRowProps) => (
 
 const ClubDetailDescription = ({ data }: ClubDetailDescriptionProps) => {
   const formatTime = (time: string | null) => {
-    return time ? format(new Date(time), "HH:mm") : DEFAULT_TIME_MESSAGE;
+    if (!time) return DEFAULT_TIME_MESSAGE;
+
+    if (/^\d{2}:\d{2}$/.test(time)) {
+      return time;
+    }
+
+    try {
+      const date = new Date(time);
+      if (isNaN(date.getTime())) {
+        return time;
+      }
+      return format(date, "HH:mm");
+    } catch {
+      return time;
+    }
   };
 
   return (
@@ -76,11 +89,14 @@ const ClubDetailDescription = ({ data }: ClubDetailDescriptionProps) => {
 
             <div className="w-full border h-[300px] md:h-[376px] lg:h-[210px] xl:w-full xl:h-[249px]">
               <Map
-                center={MAP_CENTER}
+                center={{ lat: data.latitude, lng: data.longitude }}
                 className="w-full h-full"
                 draggable={false}
               >
-                <MapMarker position={MAP_CENTER} title={data.name} />
+                <MapMarker
+                  position={{ lat: data.latitude, lng: data.longitude }}
+                  title={data.name}
+                />
               </Map>
             </div>
             <ClubDetailFacilities />

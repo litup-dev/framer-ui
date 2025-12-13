@@ -58,21 +58,20 @@ export const CalendarDayEvents = ({
                 {event.clubName}
               </Title>
             </div>
-            {event.artists.length > 0 && (
-              <div className="flex flex-col xl:gap-2 2xl:gap-2.5">
-                {event.artists.map((artist, artistIndex) => (
-                  <Title
-                    key={artistIndex}
-                    className={cn(
-                      "font-medium xl:text-[14px] 2xl:text-[16px] text-black-60",
-                      isHovered && isXl ? "text-white" : "text-black"
-                    )}
-                  >
-                    {artist}
-                  </Title>
-                ))}
-              </div>
-            )}
+
+            <div className="flex flex-col xl:gap-2 2xl:gap-2.5">
+              {event.performances?.map((performance, performanceIndex) => (
+                <Title
+                  key={performanceIndex}
+                  className={cn(
+                    "font-medium xl:text-[14px] 2xl:text-[16px] text-black-60",
+                    isHovered && isXl ? "text-white" : "text-black"
+                  )}
+                >
+                  {performance.title}
+                </Title>
+              ))}
+            </div>
           </div>
         ))}
       </div>

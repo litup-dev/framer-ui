@@ -43,11 +43,6 @@ const MobileFilter = ({
   } = useFilterState();
 
   const handleFilterClick = (filterId: number, optionIndex: number) => {
-    const filter = filterItems.find((f) => f.id === filterId);
-    if (filter) {
-      const selectedValue = filter.options[optionIndex].value;
-      setValue("reviewSort" as keyof ClubSearchFormSchema, selectedValue);
-    }
     handleFilterClickHook(filterId, optionIndex, setValue);
   };
 
@@ -131,30 +126,35 @@ const MobileFilter = ({
           </div>
           <Separator />
           <div className="flex gap-2.5">
-            {filterItems.map((filter) => (
-              <div
-                key={filter.id}
-                onClick={() => handleFilterClick(filter.id, 0)}
-                className={cn(
-                  "border rounded-full px-3 py-2 cursor-pointer transition-colors",
-                  isActive(filter.id)
-                    ? "border-2 border-main text-main"
-                    : "bg-transparent text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                <div className="flex items-center">
-                  <p className="text-chip-14">{getFilterLabel(filter)}</p>
-                  {isActive(filter.id) && (
-                    <ChevronDown
-                      className={cn(
-                        "size-5 transition-transform",
-                        getChevronRotation(filter)
-                      )}
-                    />
+            {filterItems.map((filter) => {
+              const currentOptionIndex = getCurrentOptionIndex(filter.id);
+              return (
+                <div
+                  key={filter.id}
+                  onClick={() =>
+                    handleFilterClick(filter.id, currentOptionIndex)
+                  }
+                  className={cn(
+                    "border rounded-full px-3 py-2 cursor-pointer transition-colors",
+                    isActive(filter.id)
+                      ? "border-2 border-main text-main"
+                      : "bg-transparent text-gray-700 hover:bg-gray-100"
                   )}
+                >
+                  <div className="flex items-center">
+                    <p className="text-chip-14">{getFilterLabel(filter)}</p>
+                    {isActive(filter.id) && (
+                      <ChevronDown
+                        className={cn(
+                          "size-5 transition-transform",
+                          getChevronRotation(filter)
+                        )}
+                      />
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <div className="space-y-5">

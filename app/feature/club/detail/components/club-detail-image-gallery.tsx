@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import Image from "next/image";
 import { X } from "lucide-react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useClubDetailStore } from "@/app/feature/club/detail/store";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -78,6 +78,7 @@ const ClubDetailImageGallery = () => {
         }}
         showCloseButton={false}
       >
+        <DialogTitle className="sr-only">이미지 갤러리</DialogTitle>
         <div className="relative w-full h-full flex flex-col px-10">
           <button
             onClick={closeImageGallery}

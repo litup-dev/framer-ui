@@ -1,7 +1,17 @@
+export interface Performance {
+  id: number;
+  title: string;
+  performDate: string;
+  artists: Array<{ name: string }>;
+  images: Array<{
+    id: number;
+    filePath: string;
+    isMain: boolean;
+  }>;
+}
+
 export interface CalendarEvent {
-  id: string;
+  id: number;
   clubName: string;
-  artists: string[];
-  performName: string;
-  image?: string;
+  performances: Performance[];
 }
