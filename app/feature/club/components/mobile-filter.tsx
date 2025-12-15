@@ -3,11 +3,14 @@
 import { Map } from "lucide-react";
 import { ChevronDown, List } from "lucide-react";
 import { useFormContext } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
 
 import { cn } from "@/lib/utils";
 import { ClubSearchFormSchema } from "@/app/feature/club/schema";
 import { region, filterItems } from "@/app/feature/club/constants";
 import { useFilterState } from "@/app/feature/club/hooks/use-filter-state";
+import { getReviewCategoryOptions } from "@/app/feature/club/query-options";
+import { ReviewCategory } from "@/app/feature/club/types";
 
 import { Title } from "@/components/shared/typography";
 import { Separator } from "@/components/ui/separator";
@@ -41,6 +44,8 @@ const MobileFilter = ({
     isActive,
     handleRegionClick: handleRegionClickHook,
   } = useFilterState();
+  const { data } = useQuery(getReviewCategoryOptions());
+  const categories = (data as any)?.data as ReviewCategory[] | undefined;
 
   const handleFilterClick = (filterId: number, optionIndex: number) => {
     handleFilterClickHook(filterId, optionIndex, setValue);

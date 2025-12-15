@@ -1,9 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Map, Info, Star } from "lucide-react";
+import { useMemo } from "react";
 
 import { Club } from "@/app/feature/club/types";
+import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
 
 import { Separator } from "@/components/ui/separator";
 import ClubImage from "@/app/feature/club/components/club-image";
@@ -14,6 +17,12 @@ interface ClubCardProps {
 }
 
 const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
+  const mainImageUrl = useMemo(() => {
+    return club.mainImage?.filePath
+      ? getImageUrl(club.mainImage.filePath)
+      : null;
+  }, [club.mainImage]);
+
   return (
     <Link href={`/club/${club.id}`} className="space-y-3 block cursor-pointer">
       <div className="flex justify-between">
@@ -38,9 +47,21 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
       </div>
 
       <div className="flex gap-[1px]">
-        {Array.from({ length: 5 }).map((_, idx) => (
-          <div key={idx} className="h-25 w-20 bg-[#D9D9D9]" />
-        ))}
+        {mainImageUrl ? (
+          <div className="relative h-25 w-20 bg-[#D9D9D9] overflow-hidden">
+            <Image
+              src={mainImageUrl}
+              alt={club.name}
+              fill
+              className="object-cover"
+              sizes="20px"
+            />
+          </div>
+        ) : (
+          Array.from({ length: 5 }).map((_, idx) => (
+            <div key={idx} className="h-25 w-20 bg-[#D9D9D9]" />
+          ))
+        )}
       </div>
 
       <div className="flex gap-1 items-center text-subtitle-12 text-black-60 sm:hidden">

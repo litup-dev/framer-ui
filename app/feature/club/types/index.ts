@@ -13,6 +13,7 @@ export interface ClubImage {
 export interface ClubKeyword {
   id?: number;
   name?: string;
+  iconPath?: string;
 }
 
 export interface Club {
