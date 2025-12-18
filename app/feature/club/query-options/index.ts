@@ -50,10 +50,11 @@ const buildQueryString = (params: GetClubsParams): string => {
 };
 
 const getClubsOptions = (params: GetClubsParams = {}) => {
-  const limit = params.limit || 20;
+  const limit = params.limit || 5;
   const page = params.page || 1;
   const offset = params.offset ?? (page - 1) * limit;
 
+  console.log(page, offset);
   const normalizedParams = {
     area: params.area || "other",
     sort: params.sort || "-reviewCount",

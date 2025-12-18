@@ -64,7 +64,7 @@ const ClubDetailSchedule = ({
             className="border rounded-lg py-5 px-4 space-y-4 lg:space-y-8"
           >
             {events.map((event, eventIndex) => (
-              <div key={eventIndex} className="flex gap-4 items-start">
+              <div key={eventIndex} className="flex gap-4 items-center">
                 <div className="w-10 lg:w-16 flex-shrink-0 flex items-center justify-center flex-col gap-0.5">
                   {eventIndex === 0 && (
                     <>
@@ -112,7 +112,7 @@ const ClubDetailSchedule = ({
                     </Description>
                   </div>
                 </div>
-                <div className="flex-shrink-0 flex items-center justify-center">
+                <div className="flex-shrink-0 flex flex-col items-center justify-start">
                   {event.isAttend ? (
                     <div onClick={() => handleAttend(event.id)}>
                       <Button className="lg:hidden w-10 h-10 border-2 border-orange-500 bg-orange-500 rounded flex items-center justify-center hover:bg-orange-600 transition-colors">
