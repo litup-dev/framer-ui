@@ -19,6 +19,7 @@ export interface ClubKeyword {
 export interface Club {
   id: number;
   name: string;
+  isFavorite: boolean;
   address: string;
   phone: string;
   capacity: number;
@@ -31,6 +32,8 @@ export interface Club {
   owner: ClubOwner;
   mainImage?: ClubImage;
   keywords: ClubKeyword[];
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface UpcomingPerform {
@@ -120,3 +123,18 @@ export interface ReviewListResponse {
 }
 
 export type ReviewsResponse = ReviewResponse | ReviewListResponse;
+
+export interface Performance {
+  id: number;
+  title: string;
+  performDate: string;
+  bookingPrice: number;
+  onsitePrice: number;
+  isCanceled: boolean;
+  description: string;
+  isAttend: boolean;
+}
+
+export interface ClubDetailCalendarResponse {
+  data: Record<string, Performance[]>;
+}

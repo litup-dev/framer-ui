@@ -1,11 +1,19 @@
 "use client";
 
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
 import useKakaoLoader from "@/lib/kakao-map-loader";
+import {
+  parseDateKey,
+  extractTimeFromISO,
+  formatEntryPrice,
+} from "@/lib/date-utils";
 
 import {
   getClubByIdOptions,
   getReviewByIdOptions,
+  getClubDetailCalendarByIdOptions,
 } from "@/app/feature/club/query-options";
 import { ClubDetail, ReviewResponse, Review } from "@/app/feature/club/types";
 import { useClubDetailStore } from "@/app/feature/club/detail/store";
@@ -13,7 +21,6 @@ import { useClubDetailStore } from "@/app/feature/club/detail/store";
 import {
   ClubDetailHeader,
   ClubDetailInfo,
-  ClubDetailFacilities,
   ClubDetailDescription,
   ClubDetailScheduleHeader,
   ClubDetailSchedule,
@@ -31,6 +38,14 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
 
   const { isReviewModalOpen } = useClubDetailStore();
   const { data } = useQuery<ClubDetail>(getClubByIdOptions(id));
+  const [selectedMonth, setSelectedMonth] = useState(new Date());
+  const currentMonth = useMemo(
+    () => format(selectedMonth, "yyyy-MM"),
+    [selectedMonth]
+  );
+  const { data: calendarData } = useQuery({
+    ...getClubDetailCalendarByIdOptions(Number(id), currentMonth),
+  });
   const { data: reviewsData } = useQuery<ReviewResponse>(
     getReviewByIdOptions(id)
   );
@@ -45,36 +60,50 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
   const overlayImagePath = overlayImageObj?.filePath;
   const overlayImage = getImageUrl(overlayImagePath);
 
-  if (!data?.data) return null;
+  const events = useMemo(() => {
+    if (!calendarData) return [];
 
-  const mockEvents = [
-    {
-      date: new Date(2025, 10, 12),
-      time: "18:00 - 19:00",
-      entry: "무료입장 / 자율페이",
-      title: "6eyes 소음발광 칩앤스위트",
-      description: "나고야 포스트 펑크밴드 6eyes 내한 >",
-      isBooked: false,
-    },
-    {
-      date: new Date(2025, 10, 12),
-      time: "19:00 - 20:00",
-      entry: "무료입장 / 자율페이",
-      title: "6eyes 소음발광 칩앤스위트",
-      description: "나고야 포스트 펑크밴드 6eyes 내한 >",
-      isBooked: true,
-    },
-    {
-      date: new Date(2025, 10, 15),
-      time: "20:00 - 21:00",
-      entry: "무료입장 / 자율페이",
-      title: "다른 공연 제목",
-      description: "다른 공연 설명 >",
-      isBooked: false,
-    },
-  ];
+    const scheduleEvents: Array<{
+      id: number;
+      date: Date;
+      time: string;
+      entry: string;
+      title: string;
+      description: string;
+      isAttend: boolean;
+    }> = [];
+
+    Object.entries(calendarData).forEach(([dateKey, performances]) => {
+      if (!Array.isArray(performances)) {
+        return;
+      }
+
+      performances.forEach((performance) => {
+        const eventDate = parseDateKey(dateKey);
+        const timeStr = extractTimeFromISO(performance.performDate);
+        const entryStr = formatEntryPrice(
+          performance.bookingPrice,
+          performance.onsitePrice
+        );
+
+        scheduleEvents.push({
+          id: performance.id,
+          date: eventDate,
+          time: timeStr,
+          entry: entryStr,
+          title: performance.title,
+          description: performance.description,
+          isAttend: performance.isAttend,
+        });
+      });
+    });
+
+    return scheduleEvents;
+  }, [calendarData]);
 
   const reviews: Review[] = reviewsData?.data ? [reviewsData.data] : [];
+
+  if (!data?.data) return null;
 
   return (
     <div className="w-screen">
@@ -103,8 +132,15 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
               id="schedule"
               className="py-5 space-y-5 px-5 sm:px-10 lg:px-15"
             >
-              <ClubDetailScheduleHeader />
-              <ClubDetailSchedule events={mockEvents} />
+              <ClubDetailScheduleHeader
+                currentMonth={selectedMonth}
+                onMonthChange={setSelectedMonth}
+              />
+              <ClubDetailSchedule
+                events={events}
+                clubId={Number(id)}
+                month={currentMonth}
+              />
             </div>
 
             <div id="review" className="space-y-5 px-5 sm:px-10 lg:px-15">

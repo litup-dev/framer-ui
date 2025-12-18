@@ -1,9 +1,11 @@
 "use client";
 
+import { useEffect, useState, useRef } from "react";
 import { useFormContext } from "react-hook-form";
 import { SearchIcon } from "lucide-react";
 
 import { ClubSearchFormSchema } from "@/app/feature/club/schema";
+import { useDebounce } from "@/hooks/use-debounce";
 
 import {
   InputGroup,
@@ -17,7 +19,14 @@ interface SearchFormFieldProps {
 }
 
 const SearchFormField = ({ onFocus }: SearchFormFieldProps) => {
-  const { control, handleSubmit } = useFormContext<ClubSearchFormSchema>();
+  const { control, handleSubmit, setValue } =
+    useFormContext<ClubSearchFormSchema>();
+  const [inputValue, setInputValue] = useState<string>("");
+  const debouncedValue = useDebounce(inputValue, 500);
+
+  useEffect(() => {
+    setValue("search", debouncedValue, { shouldDirty: false });
+  }, [debouncedValue, setValue]);
 
   const onSubmit = (data: ClubSearchFormSchema) => {
     console.log(data);
@@ -41,7 +50,11 @@ const SearchFormField = ({ onFocus }: SearchFormFieldProps) => {
                 placeholder="검색어를 입력하세요."
                 className="placeholder:text-[#2020204D]"
                 onFocus={onFocus}
-                {...field}
+                value={inputValue}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setInputValue(value);
+                }}
               />
             </FormControl>
           </InputGroup>

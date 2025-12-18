@@ -55,7 +55,7 @@ const ClubSearchForm = () => {
     [search, region, sort, currentPage, limit, keywords]
   );
 
-  const { data } = useQuery(clubsQueryOptions);
+  const { data } = useQuery({ ...clubsQueryOptions });
 
   const clubs = data?.data?.items || [];
   const total = data?.data?.total || 0;

@@ -1,21 +1,26 @@
 "use client";
 
-import { useState } from "react";
 import { format, addMonths, subMonths } from "date-fns";
 import { ko } from "date-fns/locale";
-import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { Subtitle } from "@/components/shared/typography";
 
-const ClubDetailScheduleHeader = () => {
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+interface ClubDetailScheduleHeaderProps {
+  currentMonth: Date;
+  onMonthChange: (month: Date) => void;
+}
 
+const ClubDetailScheduleHeader = ({
+  currentMonth,
+  onMonthChange,
+}: ClubDetailScheduleHeaderProps) => {
   const handlePrevMonth = () => {
-    setCurrentMonth(subMonths(currentMonth, 1));
+    onMonthChange(subMonths(currentMonth, 1));
   };
 
   const handleNextMonth = () => {
-    setCurrentMonth(addMonths(currentMonth, 1));
+    onMonthChange(addMonths(currentMonth, 1));
   };
 
   return (

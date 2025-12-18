@@ -1,9 +1,16 @@
-import { mutationOptions, queryOptions } from "@tanstack/react-query";
+import {
+  mutationOptions,
+  queryOptions,
+  QueryClient,
+} from "@tanstack/react-query";
 import {
   ClubDetail,
   ReviewResponse,
   ReviewListResponse,
   ReviewsResponse,
+  ClubDetailCalendarResponse,
+  Performance,
+  Club,
 } from "@/app/feature/club/types";
 import { apiClient } from "@/lib/api-client";
 import { ReviewCategory } from "@/app/feature/club/types";
@@ -73,6 +80,7 @@ const getClubsOptions = (params: GetClubsParams = {}) => {
       page,
       normalizedParams.limit,
     ],
+
     queryFn: async () => {
       return apiClient.get(
         `/api/v1/clubs${buildQueryString(normalizedParams)}`
@@ -127,10 +135,146 @@ const getReviewByIdOptions = (id: string) =>
     },
   });
 
+const clubFavoriteByIdOptions = (id: number, queryClient?: QueryClient) =>
+  mutationOptions({
+    mutationKey: ["club-favorite", id],
+    mutationFn: async () => {
+      const response = await apiClient.post(`/api/v1/clubs/${id}/favorite`, {
+        entityId: id,
+      });
+
+      return response;
+    },
+    onMutate: async () => {
+      if (!queryClient) return;
+
+      await queryClient.cancelQueries({ queryKey: ["clubs"] });
+
+      const previousClubs = queryClient.getQueriesData({ queryKey: ["clubs"] });
+
+      queryClient.setQueriesData<{ data: { items: Club[]; total: number } }>(
+        { queryKey: ["clubs"] },
+        (old) => {
+          if (!old) return old;
+          return {
+            ...old,
+            data: {
+              ...old.data,
+              items: old.data.items.map((club) =>
+                club.id === id
+                  ? { ...club, isFavorite: !club.isFavorite }
+                  : club
+              ),
+            },
+          };
+        }
+      );
+
+      return { previousClubs };
+    },
+    onError: (err, variables, context) => {
+      if (!queryClient || !context) return;
+
+      context.previousClubs.forEach(([queryKey, data]) => {
+        queryClient.setQueryData(queryKey, data);
+      });
+    },
+    onSettled: () => {
+      if (!queryClient) return;
+
+      queryClient.invalidateQueries({ queryKey: ["clubs"] });
+    },
+  });
+
+const getClubDetailCalendarByIdOptions = (id: number, month: string) =>
+  queryOptions<Record<string, Performance[]>>({
+    queryKey: ["club-detail-calendar", id, month],
+    queryFn: async (): Promise<Record<string, Performance[]>> => {
+      const response = await apiClient.get<ClubDetailCalendarResponse>(
+        `/api/v1/performances/club/${id}/calendar?month=${month}`
+      );
+      return response.data;
+    },
+  });
+
+const performaceAttendByIdOptions = (
+  clubId: number,
+  month: string,
+  queryClient?: QueryClient
+) =>
+  mutationOptions<
+    unknown,
+    Error,
+    number,
+    { previousCalendar: Record<string, Performance[]> | undefined }
+  >({
+    mutationKey: ["performance-attend"],
+    mutationFn: async (id: number) => {
+      const response = await apiClient.post(
+        `/api/v1/performances/${id}/attend`,
+        {
+          entityId: id,
+        }
+      );
+      return response;
+    },
+    onMutate: async (id: number) => {
+      if (!queryClient) return { previousCalendar: undefined };
+
+      await queryClient.cancelQueries({
+        queryKey: ["club-detail-calendar", clubId, month],
+      });
+
+      const previousCalendar = queryClient.getQueryData<
+        Record<string, Performance[]>
+      >(["club-detail-calendar", clubId, month]);
+
+      queryClient.setQueryData<Record<string, Performance[]>>(
+        ["club-detail-calendar", clubId, month],
+        (old) => {
+          if (!old) return old;
+
+          const updated: Record<string, Performance[]> = {};
+          Object.entries(old).forEach(([dateKey, performances]) => {
+            updated[dateKey] = performances.map((performance) =>
+              performance.id === id
+                ? { ...performance, isAttend: !performance.isAttend }
+                : performance
+            );
+          });
+
+          return updated;
+        }
+      );
+
+      return { previousCalendar };
+    },
+    onError: (err, id, context) => {
+      if (!queryClient || !context) return;
+
+      if (context?.previousCalendar) {
+        queryClient.setQueryData(
+          ["club-detail-calendar", clubId, month],
+          context.previousCalendar
+        );
+      }
+    },
+    onSettled: () => {
+      if (!queryClient) return;
+
+      queryClient.invalidateQueries({
+        queryKey: ["club-detail-calendar", clubId, month],
+      });
+    },
+  });
+
 export {
   getClubsOptions,
   getClubByIdOptions,
   mutateFavoriteClub,
   getReviewCategoryOptions,
   getReviewByIdOptions,
+  clubFavoriteByIdOptions,
+  getClubDetailCalendarByIdOptions,
+  performaceAttendByIdOptions,
 };
