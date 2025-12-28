@@ -133,10 +133,13 @@ const ClubDetailHeader = ({ images, clubName }: ClubDetailHeaderProps) => {
                       sizes="100vw"
                     />
                     <div className="hidden sm:block relative w-full h-[490px] xl:h-[490px] 2xl:h-[600px] max-w-[440px] xl:max-w-none xl:w-auto xl:flex xl:items-center xl:justify-center">
-                      <img
+                      <Image
                         src={imageSrc}
                         alt="Overlay"
+                        width={440}
+                        height={490}
                         className="w-full h-[490px] xl:w-auto xl:h-[490px] 2xl:h-[600px] object-cover xl:object-contain"
+                        unoptimized
                       />
                     </div>
                   </div>

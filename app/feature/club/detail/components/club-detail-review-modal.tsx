@@ -38,7 +38,7 @@ const ClubDetailReviewModal = ({ entityId }: { entityId: number }) => {
           });
 
           const response = await apiClient.post(
-            `/api/v1/upload/club-review/${data?.data?.id}`,
+            `/api/v1/upload/club-review/${data?.id}`,
             formData
           );
 
