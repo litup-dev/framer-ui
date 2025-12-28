@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ import { MenuItems } from "@/app/shared/constants";
 import { Subtitle } from "@/components/shared/typography";
 
 const HeaderMenus = () => {
+  const router = useRouter();
   const { data: session, status } = useSession();
 
   return (
@@ -47,7 +49,10 @@ const HeaderMenus = () => {
             align="end"
             forceMount
           >
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onSelect={() => router.push("/user")}
+            >
               <Subtitle>{session.nickname}</Subtitle>
             </DropdownMenuItem>
             <DropdownMenuItem

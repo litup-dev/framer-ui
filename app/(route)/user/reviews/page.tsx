@@ -1,25 +1,91 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import PageWrapper from "@/app/shared/components/page-wrapper";
-import UserProfile from "@/app/feature/user/components/user-profile";
-import UserSidebarMenu from "@/app/feature/user/components/user-sidebar-menu";
-import { Title } from "@/components/shared/typography";
+import { useState } from "react";
+import { useRequireAuth } from "@/app/feature/user/hooks/useRequireAuth";
+import UserPageLayout from "@/app/shared/components/user-page-layout";
+import ClubReviewItem from "@/app/feature/user/components/club-review-item";
+import SortDropdown from "@/app/shared/components/sort-dropdown";
+
+type SortOption = "latest" | "oldest" | "rating-high" | "rating-low";
+
+// Mock data
+const mockClubReviews = [
+  {
+    clubId: "1",
+    clubName: "제비다방",
+    reviewCount: 2,
+    reviews: [
+      {
+        id: "1",
+        title: "2025년 1월 1일자",
+        rating: 4.0,
+        content: "분위기 너무좋고요\n일하는 직원들이랑 다같이라온것도 좋고\n먹어도 괜찮네요 시설도 좋고 상태도 좋으셔서 뭐든 다 좋아요 이런저런 이야기를",
+        tags: ["분위기", "조명분위기", "고급적인", "고급분위기"],
+        createdAt: "2024-12-07 23:00",
+        updatedAt: "2024-12-07 23:55",
+        images: [
+          "https://images.unsplash.com/photo-1566417713940-fe7c737a9ef2?w=400",
+          "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=400",
+        ],
+      },
+      {
+        id: "2",
+        title: "2025년 1월 1일자",
+        rating: 4.0,
+        content: "분위기 너무좋고요\n일하는 직원들이랑 다같이라온것도 좋고\n먹어도 괜찮네요 시설도 좋고 상태도 좋으셔서 뭐든 다 좋아요 이런저런 이야기를 분위기 너무좋고요\n일하는 직원들이랑 다같이라온것도 좋고\n먹어도 괜찮네요 시설도 좋고 상태도 좋으셔서 뭐든 다 좋아요 이런저런 이야기를",
+        tags: ["분위기", "조명분위기", "고급적인", "고급분위기"],
+        createdAt: "2024-12-07 23:00",
+      },
+    ],
+  },
+  {
+    clubId: "2",
+    clubName: "디테라이어바앨유수",
+    reviewCount: 1,
+    reviews: [
+      {
+        id: "3",
+        title: "완전 좋았어요",
+        rating: 5.0,
+        content: "최고의 클럽입니다!",
+        tags: ["완벽", "최고"],
+        createdAt: "2024-12-06 20:00",
+        images: [
+          "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400",
+        ],
+      },
+    ],
+  },
+  {
+    clubId: "3",
+    clubName: "앤올로드 림자",
+    reviewCount: 1,
+    reviews: [
+      {
+        id: "4",
+        title: "좋았어요",
+        rating: 4.5,
+        content: "전반적으로 만족스러웠습니다.",
+        tags: ["만족"],
+        createdAt: "2024-12-05 19:00",
+      },
+    ],
+  },
+];
+
+const sortOptions = [
+  { value: "latest" as SortOption, label: "최신순" },
+  { value: "oldest" as SortOption, label: "오래된순" },
+  { value: "rating-high" as SortOption, label: "평점 높은순" },
+  { value: "rating-low" as SortOption, label: "평점 낮은순" },
+];
 
 export default function ReviewsPage() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-  const [isProfileEditing, setIsProfileEditing] = useState(false);
+  const { session, isLoading } = useRequireAuth();
+  const [sortBy, setSortBy] = useState<SortOption>("latest");
+  const [openAccordions, setOpenAccordions] = useState<Set<string>>(new Set());
 
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/login");
-    }
-  }, [status, router]);
-
-  if (status === "loading") {
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
@@ -27,87 +93,61 @@ export default function ReviewsPage() {
     return null;
   }
 
+  const handleEdit = (reviewId: string) => {
+    console.log("Edit review:", reviewId);
+    // TODO: 리뷰 수정 모달 또는 페이지로 이동
+  };
+
+  const handleDelete = (reviewId: string) => {
+    if (confirm("정말 이 리뷰를 삭제하시겠습니까?")) {
+      console.log("Delete review:", reviewId);
+      // TODO: API 호출로 리뷰 삭제
+    }
+  };
+
   return (
-    <PageWrapper className="pt-6 sm:pt-[104px] 2xl:pt-[124px]">
-      {/* 1280px 이상: 2열 레이아웃 */}
-      <div className="hidden xl:flex xl:flex-row gap-6 xl:gap-10 2xl:gap-[85px]">
-        {/* 좌측: 프로필 섹션 + 메뉴 - 너비: xl 330px, 2xl 365px */}
-        <div className="w-full xl:w-[330px] 2xl:w-[365px] flex flex-col">
-          {/* 타이틀 높이만큼 공백 추가 */}
-          <div className="mb-6">
-            <div className="font-bold text-[24px] xl:text-[28px] invisible">
-              클럽 리뷰
-            </div>
-          </div>
+    <UserPageLayout
+      session={session}
+      title="클럽 리뷰"
+      contentTopMargin={{
+        sm: "mt-4",
+        md: "md:mt-4",
+        lg: "lg:mt-4",
+        xl: "xl:mt-4",
+        "2xl": "2xl:mt-4",
+      }}
+    >
+      {/* 정렬 기준 */}
+      <SortDropdown
+        value={sortBy}
+        options={sortOptions}
+        onChange={setSortBy}
+        className="flex justify-end"
+      />
 
-          <UserProfile
-            session={session}
-            isOwner={true}
-            isEditing={isProfileEditing}
-            setIsEditing={setIsProfileEditing}
+      {/* 리뷰 목록 */}
+      <div className="space-y-0">
+        {mockClubReviews.map((clubReview) => (
+          <ClubReviewItem
+            key={clubReview.clubId}
+            clubName={clubReview.clubName}
+            reviewCount={clubReview.reviewCount}
+            reviews={clubReview.reviews}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            isOpen={openAccordions.has(clubReview.clubId)}
+            onToggle={() => {
+              const newOpen = new Set(openAccordions);
+              if (newOpen.has(clubReview.clubId)) {
+                newOpen.delete(clubReview.clubId);
+              } else {
+                newOpen.add(clubReview.clubId);
+              }
+              setOpenAccordions(newOpen);
+            }}
           />
-
-          {/* 사이드바 메뉴 - 간격: xl 80px, 2xl 100px */}
-          <UserSidebarMenu className="xl:mt-20 2xl:mt-[100px]" />
-        </div>
-
-        {/* 우측: 페이지 헤더 + 컨텐츠 */}
-        <div className="w-full xl:w-3/4 2xl:w-[1315px] flex flex-col gap-6">
-          <div className="flex flex-col">
-            <Title className="text-black">클럽 리뷰</Title>
-            <div className="h-[3px] bg-main mt-4 md:mt-7 lg:mt-10" />
-          </div>
-
-          {/* 클럽 리뷰 컨텐츠 영역 */}
-          <div className="text-muted-foreground">
-            작성한 클럽 리뷰 목록이 표시됩니다.
-          </div>
-        </div>
+        ))}
       </div>
-
-      {/* 1024~1279px: 1열 레이아웃 */}
-      <div className="hidden lg:flex xl:hidden flex-col gap-6">
-        <div className="flex flex-col">
-          <Title className="text-black">클럽 리뷰</Title>
-          <div className="h-[3px] bg-main mt-10" />
-        </div>
-        <UserProfile
-          session={session}
-          isOwner={true}
-          isEditing={isProfileEditing}
-          setIsEditing={setIsProfileEditing}
-        />
-
-        {/* 클럽 리뷰 컨텐츠 영역 */}
-        <div className="text-muted-foreground">
-          작성한 클럽 리뷰 목록이 표시됩니다.
-        </div>
-
-        {/* 사이드바 메뉴는 가장 하단 */}
-        <UserSidebarMenu className="mt-12 md:mt-16 lg:mt-20" />
-      </div>
-
-      {/* 1023px 이하: 모바일 레이아웃 */}
-      <div className="flex lg:hidden flex-col gap-6">
-        <div className="flex flex-col">
-          <Title className="text-black">클럽 리뷰</Title>
-          <div className="h-[3px] bg-main mt-4 md:mt-7" />
-        </div>
-        <UserProfile
-          session={session}
-          isOwner={true}
-          isEditing={isProfileEditing}
-          setIsEditing={setIsProfileEditing}
-        />
-
-        {/* 클럽 리뷰 컨텐츠 영역 */}
-        <div className="text-muted-foreground">
-          작성한 클럽 리뷰 목록이 표시됩니다.
-        </div>
-
-        {/* 사이드바 메뉴는 가장 하단 */}
-        <UserSidebarMenu className="mt-12 md:mt-16 lg:mt-20" />
-      </div>
-    </PageWrapper>
+    </UserPageLayout>
   );
 }

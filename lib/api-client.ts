@@ -119,9 +119,10 @@ class ApiClient {
 
   async delete<T = any>(
     endpoint: string,
+    body?: any,
     headers?: Record<string, string>
   ): Promise<T> {
-    return this.request<T>(endpoint, { method: "DELETE", headers });
+    return this.request<T>(endpoint, { method: "DELETE", body, headers });
   }
 
   async patch<T = any>(

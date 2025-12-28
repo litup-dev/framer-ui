@@ -8,10 +8,17 @@ declare module "next-auth" {
     expires?: string;
     nickname?: string;
     profilePath?: string | null;
+    bio?: string;
+    provider?: string;
   }
 
   interface JWT {
     accessToken?: string;
     refreshToken?: string;
+    userId?: number;
+    nickname?: string;
+    profilePath?: string | null;
+    bio?: string;
+    provider?: string;
   }
 }

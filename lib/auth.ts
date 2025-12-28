@@ -34,7 +34,15 @@ export const authOptions: NextAuthOptions = {
     error: "/login",
   },
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, trigger, session }) {
+      // update() 호출 시 session 데이터로 token 업데이트
+      if (trigger === "update" && session) {
+        return {
+          ...token,
+          ...session,
+        };
+      }
+
       if (!account && token.accessToken) {
         try {
           const decoded = jwt.decode(token.accessToken as string) as any;
@@ -112,10 +120,40 @@ export const authOptions: NextAuthOptions = {
                 process.env.NEXTAUTH_SECRET!
               );
 
+              // 최신 유저 정보 조회
+              try {
+                const userInfoResponse = await fetch(
+                  `${process.env.API_BASE_URL}/api/v1/users/${userId}`,
+                  {
+                    headers: {
+                      Authorization: `Bearer ${accessToken}`,
+                    },
+                  }
+                );
+
+                if (userInfoResponse.ok) {
+                  const userInfo = await userInfoResponse.json();
+                  return {
+                    userId: userId,
+                    nickname: userInfo.data?.nickname || "",
+                    profilePath: userInfo.data?.profilePath || null,
+                    bio: userInfo.data?.bio || "",
+                    provider: account.provider || "",
+                    accessToken,
+                    refreshToken,
+                  };
+                }
+              } catch (error) {
+                // 유저 정보 조회 실패 시 기본값 사용
+              }
+
+              // 유저 정보 조회 실패 시 verify 응답 사용
               return {
                 userId: userId,
                 nickname: result.data?.nickname || "",
                 profilePath: result.data?.profilePath || null,
+                bio: result.data?.bio || "",
+                provider: account.provider || "",
                 accessToken,
                 refreshToken,
               };
@@ -133,6 +171,8 @@ export const authOptions: NextAuthOptions = {
         accessToken: token.accessToken,
         nickname: (token.nickname as string) || "",
         profilePath: (token.profilePath as string) || null,
+        bio: (token.bio as string) || "",
+        provider: (token.provider as string) || "",
         userId: (token.userId as number) || 0,
       } as typeof session;
     },
