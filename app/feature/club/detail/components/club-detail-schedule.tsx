@@ -40,7 +40,6 @@ const ClubDetailSchedule = ({
     performaceAttendByIdOptions(clubId, month, queryClient)
   );
 
-  console.log(session, "<<<<");
   const handleAttend = (id: number) => {
     if (!session) {
       alert("로그인 후 이용해주세요");

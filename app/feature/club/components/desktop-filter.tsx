@@ -80,7 +80,6 @@ const DesktopFilter = ({
     return optionIndex === 0 ? "rotate-0" : "rotate-180";
   };
 
-  console.log(clubs, "<<<<");
   return (
     <div className="flex h-full gap-[40px]">
       <div className="w-2/5 bg-white border-gray-200 flex flex-col h-full">

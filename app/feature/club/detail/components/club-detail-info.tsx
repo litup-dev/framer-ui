@@ -46,7 +46,6 @@ const ClubDetailInfo = ({
     });
   };
 
-  console.log(isFavorite, "<<<<");
   return (
     <div className="space-y-6 sm:space-y-8 lg:space-y-10">
       <div className="flex gap-4.5 items-center px-5 sm:px-10 lg:px-15">
