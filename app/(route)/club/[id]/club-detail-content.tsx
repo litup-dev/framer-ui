@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import useKakaoLoader from "@/lib/kakao-map-loader";
+
 import {
   parseDateKey,
   extractTimeFromISO,
@@ -21,6 +22,7 @@ import {
   Review,
 } from "@/app/feature/club/types";
 import { useClubDetailStore } from "@/app/feature/club/detail/store";
+import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
 
 import {
   ClubDetailHeader,
@@ -29,7 +31,6 @@ import {
   ClubDetailScheduleHeader,
   ClubDetailSchedule,
 } from "@/app/feature/club/detail/components";
-import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
 import ClubDetailReview from "@/app/feature/club/detail/components/club-detail-review";
 import ClubDetailFloating from "@/app/feature/club/detail/components/club-detail-floating";
 
@@ -42,7 +43,6 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
 
   const { isReviewModalOpen } = useClubDetailStore();
   const { data } = useQuery<ClubDetail>(getClubByIdOptions(id));
-  console.log(data, "<<<<");
   const [selectedMonth, setSelectedMonth] = useState(new Date());
   const [reviewPage, setReviewPage] = useState(1);
   const reviewLimit = 5;
@@ -122,6 +122,8 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
                 name={data.data.name}
                 description={data.data.description || "description"}
                 address={data.data.address}
+                isFavorite={data.data.isFavorite}
+                favoriteCount={data.data.favoriteCount}
               />
               <div className="xl:hidden">
                 <ClubDetailDescription data={data.data} />

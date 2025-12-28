@@ -50,6 +50,7 @@ export interface ClubDetailData {
   name: string;
   phone: string;
   address: string;
+  isFavorite: boolean;
   description: string | null;
   capacity: number;
   openTime: string | null;

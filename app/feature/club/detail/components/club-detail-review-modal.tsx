@@ -11,12 +11,13 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { ReviewStep1 } from "@/app/feature/club/detail/components/review-step1";
 import { ReviewStep2 } from "@/app/feature/club/detail/components/review-step2";
-import { ReviewCategory, CreateReviewResponse } from "@/app/feature/club/types";
+import { CreateReviewResponse } from "@/app/feature/club/types";
 import { createReviewOptions } from "@/app/feature/club/query-options";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
 
 const ClubDetailReviewModal = ({ entityId }: { entityId: number }) => {
+  const queryClient = useQueryClient();
   const {
     isReviewModalOpen,
     closeReviewModal,
@@ -29,7 +30,7 @@ const ClubDetailReviewModal = ({ entityId }: { entityId: number }) => {
 
   const { mutate: createReview } = useMutation({
     ...createReviewOptions(Number(entityId)),
-    onSuccess: async (data: CreateReviewResponse) => {
+    onSuccess: async (data: { data: CreateReviewResponse }) => {
       if (data && reviewImages.length > 0) {
         try {
           const formData = new FormData();
@@ -38,17 +39,27 @@ const ClubDetailReviewModal = ({ entityId }: { entityId: number }) => {
           });
 
           const response = await apiClient.post(
-            `/api/v1/upload/club-review/${data?.id}`,
+            `/api/v1/upload/club-review/${data?.data?.id}`,
             formData
           );
 
           if (response.data.success) {
+            queryClient.invalidateQueries({
+              queryKey: ["reviews", String(entityId)],
+            });
+            resetReviewData();
             closeReviewModal();
           }
         } catch (error) {
           console.error("이미지 업로드 실패:", error);
           console.log(error);
         }
+      } else {
+        queryClient.invalidateQueries({
+          queryKey: ["reviews", String(entityId)],
+        });
+        resetReviewData();
+        closeReviewModal();
       }
     },
   });

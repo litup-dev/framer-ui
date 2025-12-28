@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Map, Info, Star } from "lucide-react";
+import { Map, Info } from "lucide-react";
 
 import { Club } from "@/app/feature/club/types";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
@@ -20,7 +20,19 @@ interface ClubCardProps {
 
 const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
   const queryClient = useQueryClient();
-  const { mutate } = useMutation(clubFavoriteByIdOptions(club.id, queryClient));
+  const { mutate: mutateFavorite } = useMutation(
+    clubFavoriteByIdOptions(club.id, queryClient)
+  );
+
+  const mutate = () => {
+    mutateFavorite(undefined, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["reviews", String(club.id)],
+        });
+      },
+    });
+  };
 
   const mainImageUrl = useMemo(() => {
     return club.mainImage?.filePath

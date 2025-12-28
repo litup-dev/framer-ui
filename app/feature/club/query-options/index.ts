@@ -105,11 +105,9 @@ const getReviewCategoryOptions = () =>
       const response = await apiClient.get<ReviewCategoryResponse>(
         "/api/v1/common/review-category"
       );
-      // API 응답이 { data: ReviewCategory[] } 형태로 래핑되어 있는지 확인
       if ("data" in response && Array.isArray(response.data)) {
         return response;
       }
-      // 직접 배열인 경우 래핑
       if (Array.isArray(response)) {
         return { data: response };
       }
@@ -120,7 +118,6 @@ const getReviewCategoryOptions = () =>
 const getClubByIdOptions = (id: string) =>
   queryOptions<ClubDetail>({
     queryKey: ["club", id],
-    staleTime: 5 * 60 * 1000,
     queryFn: async () => {
       const response = await apiClient.get<ClubDetail>(`/api/v1/clubs/${id}`);
       return response;
@@ -151,7 +148,7 @@ const getReviewByIdOptions = (
       const response = await apiClient.get<
         { data: ReviewPaginatedResponse } | ReviewPaginatedResponse
       >(`/api/v1/clubs/${id}/reviews?offset=${offset}&limit=${limit}`);
-      // API 응답이 { data: { items, total, offset, limit } } 형태로 래핑되어 있는지 확인
+
       if (
         "data" in response &&
         response.data &&
@@ -160,11 +157,11 @@ const getReviewByIdOptions = (
       ) {
         return response.data;
       }
-      // 직접 { items, total, offset, limit } 형태인 경우
+
       if ("items" in response) {
         return response as ReviewPaginatedResponse;
       }
-      // 래핑된 경우
+
       return (response as { data: ReviewPaginatedResponse }).data;
     },
   });
@@ -304,7 +301,7 @@ const performaceAttendByIdOptions = (
 
 const createReviewOptions = (entityId: number) =>
   mutationOptions<
-    CreateReviewResponse,
+    { data: CreateReviewResponse },
     Error,
     { content: string; categories: number[]; rating: number }
   >({
@@ -313,8 +310,8 @@ const createReviewOptions = (entityId: number) =>
       content: string;
       categories: number[];
       rating: number;
-    }): Promise<CreateReviewResponse> => {
-      const response = await apiClient.post<CreateReviewResponse>(
+    }): Promise<{ data: CreateReviewResponse }> => {
+      const response = await apiClient.post<{ data: CreateReviewResponse }>(
         `/api/v1/clubs/${entityId}/reviews`,
         params
       );

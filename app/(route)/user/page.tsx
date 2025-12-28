@@ -52,7 +52,7 @@ export default function UserPage({ searchParams }: UserPageProps) {
     ? session
     : {
         ...session,
-        userId: Number(targetUserId) || 0,
+        userId: targetUserId || "",
       };
 
   // 페이지 헤더 타이틀

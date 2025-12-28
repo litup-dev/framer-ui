@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import { useSession } from "next-auth/react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+import { mutateFavoriteClub } from "@/app/feature/club/query-options";
 
 import { Separator } from "@/components/ui/separator";
 import { Description, Subtitle } from "@/components/shared/typography";
-import { useMutation } from "@tanstack/react-query";
-import { mutateFavoriteClub } from "../../query-options";
 
 interface ClubDetailInfoProps {
   id: string;
@@ -13,6 +15,8 @@ interface ClubDetailInfoProps {
   subtitle?: string;
   description?: string;
   address?: string;
+  isFavorite?: boolean;
+  favoriteCount?: number;
 }
 
 const ClubDetailInfo = ({
@@ -21,11 +25,28 @@ const ClubDetailInfo = ({
   subtitle,
   description,
   address,
+  isFavorite,
+  favoriteCount,
 }: ClubDetailInfoProps) => {
-  const { mutate } = useMutation(mutateFavoriteClub(id));
+  const queryClient = useQueryClient();
+  const { data: session } = useSession();
+  const { mutate: mutateFavorite } = useMutation(mutateFavoriteClub(id));
 
-  const handleFavorite = () => mutate();
+  const handleFavorite = () => {
+    if (!session) {
+      alert("로그인 후 이용해주세요");
+      return;
+    }
+    mutateFavorite(undefined, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["club", id],
+        });
+      },
+    });
+  };
 
+  console.log(isFavorite, "<<<<");
   return (
     <div className="space-y-6 sm:space-y-8 lg:space-y-10">
       <div className="flex gap-4.5 items-center px-5 sm:px-10 lg:px-15">
@@ -42,13 +63,23 @@ const ClubDetailInfo = ({
           className="flex flex-col items-center gap-1"
           onClick={handleFavorite}
         >
-          <Image
-            src="/images/favorite_active.svg"
-            alt="club profile"
-            width={28}
-            height={28}
-          />
-          <div className="text-chip-12 text-main">10</div>
+          {isFavorite ? (
+            <Image
+              src="/images/favorite_active.svg"
+              alt="club profile"
+              width={28}
+              height={28}
+            />
+          ) : (
+            <Image
+              src="/images/favorite_inactive.svg"
+              alt="club profile"
+              width={28}
+              height={28}
+            />
+          )}
+
+          <div className="text-chip-12 text-main">{favoriteCount}</div>
         </div>
       </div>
 

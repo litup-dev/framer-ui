@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { ChevronDown } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 import { ClubDetailData, Review } from "@/app/feature/club/types";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -46,6 +47,7 @@ const ClubDetailReview = ({
   onPageChange,
 }: ClubDetailReviewProps) => {
   const { openReviewModal } = useClubDetailStore();
+  const { data: session } = useSession();
 
   const {
     totalPages,
@@ -125,7 +127,10 @@ const ClubDetailReview = ({
           </div>
         </div>
         <button
-          onClick={openReviewModal}
+          onClick={() => {
+            if (session?.userId) openReviewModal();
+            else alert("로그인 후 이용해주세요");
+          }}
           className="text-subtitle-12 flex items-center gap-1 border px-2.5 py-1.5 cursor-pointer hover:opacity-80 transition-opacity"
         >
           작성하기

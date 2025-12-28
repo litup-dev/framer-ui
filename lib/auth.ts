@@ -133,7 +133,7 @@ export const authOptions: NextAuthOptions = {
         accessToken: token.accessToken,
         nickname: (token.nickname as string) || "",
         profilePath: (token.profilePath as string) || null,
-        userId: (token.userId as number) || 0,
+        userId: (token.userId as number) || "",
       } as typeof session;
     },
     async signIn() {
