@@ -27,7 +27,7 @@ export default function UserPageContent({
   const [isProfileEditing, setIsProfileEditing] = useState(false);
   const [isHistoryEditing, setIsHistoryEditing] = useState(false);
 
-  const userId = userInfo.userId;
+  const userId = userInfo.userId!; // userId는 항상 존재함을 보장
   const pageTitle = isOwner
     ? "마이페이지"
     : `${userInfo.nickname || "사용자"}님의 활동`;
