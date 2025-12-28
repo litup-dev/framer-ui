@@ -15,7 +15,11 @@ import {
   getReviewByIdOptions,
   getClubDetailCalendarByIdOptions,
 } from "@/app/feature/club/query-options";
-import { ClubDetail, ReviewResponse, Review } from "@/app/feature/club/types";
+import {
+  ClubDetail,
+  ReviewPaginatedResponse,
+  Review,
+} from "@/app/feature/club/types";
 import { useClubDetailStore } from "@/app/feature/club/detail/store";
 
 import {
@@ -38,7 +42,12 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
 
   const { isReviewModalOpen } = useClubDetailStore();
   const { data } = useQuery<ClubDetail>(getClubByIdOptions(id));
+  console.log(data, "<<<<");
   const [selectedMonth, setSelectedMonth] = useState(new Date());
+  const [reviewPage, setReviewPage] = useState(1);
+  const reviewLimit = 5;
+  const reviewOffset = (reviewPage - 1) * reviewLimit;
+
   const currentMonth = useMemo(
     () => format(selectedMonth, "yyyy-MM"),
     [selectedMonth]
@@ -46,19 +55,14 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
   const { data: calendarData } = useQuery({
     ...getClubDetailCalendarByIdOptions(Number(id), currentMonth),
   });
-  const { data: reviewsData } = useQuery<ReviewResponse>(
-    getReviewByIdOptions(id)
+  const { data: reviewsData } = useQuery<ReviewPaginatedResponse>(
+    getReviewByIdOptions(id, reviewOffset, reviewLimit)
   );
 
   const images = data?.data?.images || [];
-  const mainImageObj = images.find((img) => img.isMain) || images[0];
-  const mainImagePath = mainImageObj?.filePath;
-  const mainImage = getImageUrl(mainImagePath);
-
-  const overlayImageObj =
-    images.find((img) => img.id !== mainImageObj?.id) || images[1] || images[0];
-  const overlayImagePath = overlayImageObj?.filePath;
-  const overlayImage = getImageUrl(overlayImagePath);
+  const imageUrls = images
+    .map((img) => getImageUrl(img.filePath))
+    .filter((url): url is string => url !== null);
 
   const events = useMemo(() => {
     if (!calendarData) return [];
@@ -101,17 +105,13 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
     return scheduleEvents;
   }, [calendarData]);
 
-  const reviews: Review[] = reviewsData?.data ? [reviewsData.data] : [];
+  const reviews: Review[] = reviewsData?.items || [];
 
   if (!data?.data) return null;
 
   return (
     <div className="w-screen">
-      <ClubDetailHeader
-        mainImage={mainImage}
-        overlayImage={overlayImage}
-        clubName={data.data.name}
-      />
+      <ClubDetailHeader images={imageUrls} clubName={data.data.name} />
 
       <div>
         <div className="flex flex-col xl:flex-row xl:items-stretch">
@@ -144,7 +144,14 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
             </div>
 
             <div id="review" className="space-y-5 px-5 sm:px-10 lg:px-15">
-              <ClubDetailReview data={data.data} reviews={reviews} />
+              <ClubDetailReview
+                data={data.data}
+                reviews={reviews}
+                total={reviewsData?.total || 0}
+                currentPage={reviewPage}
+                limit={reviewLimit}
+                onPageChange={setReviewPage}
+              />
             </div>
           </div>
 

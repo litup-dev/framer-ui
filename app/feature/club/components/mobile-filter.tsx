@@ -44,8 +44,7 @@ const MobileFilter = ({
     isActive,
     handleRegionClick: handleRegionClickHook,
   } = useFilterState();
-  const { data } = useQuery(getReviewCategoryOptions());
-  const categories = (data as any)?.data as ReviewCategory[] | undefined;
+  const { data: categories } = useQuery(getReviewCategoryOptions());
 
   const handleFilterClick = (filterId: number, optionIndex: number) => {
     handleFilterClickHook(filterId, optionIndex, setValue);

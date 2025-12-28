@@ -73,7 +73,7 @@ export interface ClubDetail {
 export interface ReviewKeyword {
   id: number;
   keyword: string;
-  iconPath: string;
+  iconPath?: string;
   sortOrder: number;
 }
 
@@ -82,6 +82,10 @@ export interface ReviewCategory {
   code: string;
   name: string;
   keywords: ReviewKeyword[];
+}
+
+export interface ReviewCategoryResponse {
+  data: ReviewCategory[];
 }
 
 export interface ReviewUser {
@@ -122,7 +126,24 @@ export interface ReviewListResponse {
   data: Review[];
 }
 
+export interface ReviewPaginatedResponse {
+  items: Review[];
+  total: number;
+  offset: number;
+  limit: number;
+}
+
 export type ReviewsResponse = ReviewResponse | ReviewListResponse;
+
+export interface CreateReviewResponse {
+  id: number;
+  clubId: number;
+  userId: number;
+  rating: number;
+  content: string;
+  createdAt: string;
+  updatedAt: string | null;
+}
 
 export interface Performance {
   id: number;

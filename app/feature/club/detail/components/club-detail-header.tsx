@@ -16,12 +16,11 @@ import {
 } from "@/components/ui/carousel";
 
 interface ClubDetailHeaderProps {
-  mainImage: string | null;
-  overlayImage: string | null;
+  images: string[];
   clubName?: string;
 }
 
-const ClubDetailHeader = ({ clubName }: ClubDetailHeaderProps) => {
+const ClubDetailHeader = ({ images, clubName }: ClubDetailHeaderProps) => {
   const router = useRouter();
   const [scrollProgress, setScrollProgress] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -56,12 +55,14 @@ const ClubDetailHeader = ({ clubName }: ClubDetailHeaderProps) => {
     };
   }, []);
 
-  const carouselImages = [
-    "/images/club_detail1.png",
-    "/images/club_detail2.png",
-    "/images/club_detail3.png",
-    "/images/club_detail4.png",
-  ];
+  const carouselImages = images.length > 0 
+    ? images 
+    : [
+        "/images/club_detail1.png",
+        "/images/club_detail2.png",
+        "/images/club_detail3.png",
+        "/images/club_detail4.png",
+      ];
 
   useEffect(() => {
     if (!api) return;

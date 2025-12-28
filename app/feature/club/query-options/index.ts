@@ -7,13 +7,18 @@ import {
   ClubDetail,
   ReviewResponse,
   ReviewListResponse,
+  ReviewPaginatedResponse,
   ReviewsResponse,
   ClubDetailCalendarResponse,
   Performance,
   Club,
+  CreateReviewResponse,
 } from "@/app/feature/club/types";
 import { apiClient } from "@/lib/api-client";
-import { ReviewCategory } from "@/app/feature/club/types";
+import {
+  ReviewCategory,
+  ReviewCategoryResponse,
+} from "@/app/feature/club/types";
 
 interface GetClubsParams {
   searchKey?: string;
@@ -91,13 +96,23 @@ const getClubsOptions = (params: GetClubsParams = {}) => {
 };
 
 const getReviewCategoryOptions = () =>
-  queryOptions<ReviewCategory[]>({
+  queryOptions<ReviewCategoryResponse>({
     queryKey: ["review-category"],
     staleTime: Infinity,
     gcTime: Infinity,
 
     queryFn: async () => {
-      const response = await apiClient.get("/api/v1/common/review-category");
+      const response = await apiClient.get<ReviewCategoryResponse>(
+        "/api/v1/common/review-category"
+      );
+      // API 응답이 { data: ReviewCategory[] } 형태로 래핑되어 있는지 확인
+      if ("data" in response && Array.isArray(response.data)) {
+        return response;
+      }
+      // 직접 배열인 경우 래핑
+      if (Array.isArray(response)) {
+        return { data: response };
+      }
       return response;
     },
   });
@@ -124,15 +139,33 @@ const mutateFavoriteClub = (id: string) =>
     },
   });
 
-const getReviewByIdOptions = (id: string) =>
-  queryOptions<ReviewResponse>({
-    queryKey: ["reviews", id],
+const getReviewByIdOptions = (
+  id: string,
+  offset: number = 0,
+  limit: number = 5
+) =>
+  queryOptions<ReviewPaginatedResponse>({
+    queryKey: ["reviews", id, offset, limit],
     staleTime: 5 * 60 * 1000,
     queryFn: async () => {
-      const response = await apiClient.get<ReviewResponse>(
-        `/api/v1/reviews/${id}`
-      );
-      return response;
+      const response = await apiClient.get<
+        { data: ReviewPaginatedResponse } | ReviewPaginatedResponse
+      >(`/api/v1/clubs/${id}/reviews?offset=${offset}&limit=${limit}`);
+      // API 응답이 { data: { items, total, offset, limit } } 형태로 래핑되어 있는지 확인
+      if (
+        "data" in response &&
+        response.data &&
+        typeof response.data === "object" &&
+        "items" in response.data
+      ) {
+        return response.data;
+      }
+      // 직접 { items, total, offset, limit } 형태인 경우
+      if ("items" in response) {
+        return response as ReviewPaginatedResponse;
+      }
+      // 래핑된 경우
+      return (response as { data: ReviewPaginatedResponse }).data;
     },
   });
 
@@ -269,6 +302,38 @@ const performaceAttendByIdOptions = (
     },
   });
 
+const createReviewOptions = (entityId: number) =>
+  mutationOptions<
+    CreateReviewResponse,
+    Error,
+    { content: string; categories: number[]; rating: number }
+  >({
+    mutationKey: ["create-review"],
+    mutationFn: async (params: {
+      content: string;
+      categories: number[];
+      rating: number;
+    }): Promise<CreateReviewResponse> => {
+      const response = await apiClient.post<CreateReviewResponse>(
+        `/api/v1/clubs/${entityId}/reviews`,
+        params
+      );
+      return response;
+    },
+  });
+
+const uploadClubReviewImageOptions = (reviewId: number) =>
+  mutationOptions({
+    mutationKey: ["upload-club-review-image", reviewId],
+    mutationFn: async (params: FormData) => {
+      const response = await apiClient.post(
+        `/api/v1/reviews/${reviewId}/images`,
+        params
+      );
+      return response;
+    },
+  });
+
 export {
   getClubsOptions,
   getClubByIdOptions,
@@ -278,4 +343,6 @@ export {
   clubFavoriteByIdOptions,
   getClubDetailCalendarByIdOptions,
   performaceAttendByIdOptions,
+  createReviewOptions,
+  uploadClubReviewImageOptions,
 };
