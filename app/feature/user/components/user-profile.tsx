@@ -40,7 +40,7 @@ export default function UserProfile({
     onSuccess: async () => {
       // API로 최신 유저 정보 조회
       if (session.userId) {
-        const userInfoResponse = await getUserInfo(session.userId);
+        const userInfoResponse = await getUserInfo(Number(session.userId));
         const updatedUserInfo = userInfoResponse.data;
 
         // session 업데이트 - 변경된 필드만 전달

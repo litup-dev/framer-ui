@@ -28,6 +28,7 @@ export default function UserPageContent({
   const [isHistoryEditing, setIsHistoryEditing] = useState(false);
 
   const userId = userInfo.userId!; // userId는 항상 존재함을 보장
+  const userIdNumber = Number(userId); // API 호출을 위해 number로 변환
   const pageTitle = isOwner
     ? "마이페이지"
     : `${userInfo.nickname || "사용자"}님의 활동`;
@@ -41,14 +42,14 @@ export default function UserPageContent({
           className="mt-12 md:mt-16 lg:mt-20 xl:mt-20 2xl:mt-[100px]"
           isEditing={isHistoryEditing}
           setIsEditing={setIsHistoryEditing}
-          userId={userId}
+          userId={userIdNumber}
           isOwner={isOwner}
         />
       )}
       {permissions.canViewFavoriteClubs && (
         <FavoriteClubs
           className="mt-12 md:mt-16 lg:mt-20 xl:mt-20 2xl:mt-[100px]"
-          userId={userId}
+          userId={userIdNumber}
           isOwner={isOwner}
         />
       )}

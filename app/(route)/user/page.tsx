@@ -19,7 +19,7 @@ export default function MyPage() {
 
   // 유저 통계 조회
   const { data: userStats } = useQuery({
-    ...getUserStatsOptions(session?.userId ?? 0),
+    ...getUserStatsOptions(session?.userId ? Number(session.userId) : 0),
     enabled: !!session?.userId,
   });
 
