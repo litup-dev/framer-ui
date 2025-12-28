@@ -6,6 +6,8 @@ import {
   isSameDay,
   startOfWeek,
   endOfWeek,
+  parse,
+  parseISO,
 } from "date-fns";
 import { ko } from "date-fns/locale";
 
@@ -144,4 +146,44 @@ export const formatDate = (
   formatString: string = "yyyy-MM-dd"
 ): string => {
   return format(date, formatString, { locale: ko });
+};
+
+/**
+ * 날짜 키 문자열을 Date 객체로 변환하는 함수 (시간대 문제 방지)
+ * @param dateKey - 날짜 키 문자열 (예: "2025-11-01")
+ * @returns Date 객체
+ */
+export const parseDateKey = (dateKey: string): Date => {
+  return parse(dateKey, "yyyy-MM-dd", new Date());
+};
+
+/**
+ * ISO 날짜 문자열에서 시간만 추출하는 함수
+ * @param isoDateString - ISO 날짜 문자열 (예: "2025-11-01T20:00:00.000Z")
+ * @returns 시간 문자열 (예: "20:00")
+ */
+export const extractTimeFromISO = (isoDateString: string): string => {
+  const date = parseISO(isoDateString);
+  return format(date, "HH:mm");
+};
+
+/**
+ * 가격 정보를 기반으로 입장료 문자열을 생성하는 함수
+ * @param bookingPrice - 예약 가격
+ * @param onsitePrice - 현장 가격
+ * @returns 입장료 문자열
+ */
+export const formatEntryPrice = (
+  bookingPrice: number,
+  onsitePrice: number
+): string => {
+  if (bookingPrice === 0 && onsitePrice === 0) {
+    return "무료입장";
+  } else if (onsitePrice === 0) {
+    return `예약 ${bookingPrice.toLocaleString()}원 / 현장 무료`;
+  } else if (bookingPrice === 0) {
+    return `현장 ${onsitePrice.toLocaleString()}원`;
+  } else {
+    return `예약 ${bookingPrice.toLocaleString()}원 / 현장 ${onsitePrice.toLocaleString()}원`;
+  }
 };

@@ -58,8 +58,7 @@ const DesktopFilter = ({
     isActive,
     handleRegionClick: handleRegionClickHook,
   } = useFilterState();
-  const { data } = useQuery(getReviewCategoryOptions());
-  const categories = (data as any)?.data as ReviewCategory[] | undefined;
+  const { data: categories } = useQuery(getReviewCategoryOptions());
 
   const handleFilterClick = (filterId: number, optionIndex: number) => {
     handleFilterClickHook(filterId, optionIndex, setValue);
@@ -88,7 +87,7 @@ const DesktopFilter = ({
           <div className="space-y-6">
             <SearchFormField />
             <div className="space-y-4">
-              <KeywordList categories={categories} />
+              <KeywordList categories={categories?.data} />
               <div>
                 <div className="flex gap-2 items-center">
                   <Select

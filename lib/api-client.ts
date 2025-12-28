@@ -45,14 +45,20 @@ class ApiClient {
   }
 
   private async createHeaders(
-    customHeaders: Record<string, string> = {}
+    customHeaders: Record<string, string> = {},
+    isFormData: boolean = false
   ): Promise<Record<string, string>> {
     const token = await this.getAuthToken();
 
     const headers: Record<string, string> = {
-      "Content-Type": "application/json",
       ...customHeaders,
     };
+
+    if (isFormData) {
+      delete headers["Content-Type"];
+    } else {
+      headers["Content-Type"] = "application/json";
+    }
 
     if (token) {
       headers.Authorization = `Bearer ${token}`;
@@ -68,7 +74,8 @@ class ApiClient {
     const { method = "GET", headers: customHeaders = {}, body } = options;
 
     const url = `${this.baseURL}${endpoint}`;
-    const headers = await this.createHeaders(customHeaders);
+    const isFormData = body instanceof FormData;
+    const headers = await this.createHeaders(customHeaders, isFormData);
 
     const config: RequestInit = {
       method,
@@ -76,7 +83,7 @@ class ApiClient {
     };
 
     if (body && method !== "GET") {
-      config.body = JSON.stringify(body);
+      config.body = isFormData ? body : JSON.stringify(body);
     }
 
     try {

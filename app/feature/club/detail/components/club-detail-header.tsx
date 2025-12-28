@@ -16,12 +16,11 @@ import {
 } from "@/components/ui/carousel";
 
 interface ClubDetailHeaderProps {
-  mainImage: string | null;
-  overlayImage: string | null;
+  images: string[];
   clubName?: string;
 }
 
-const ClubDetailHeader = ({ clubName }: ClubDetailHeaderProps) => {
+const ClubDetailHeader = ({ images, clubName }: ClubDetailHeaderProps) => {
   const router = useRouter();
   const [scrollProgress, setScrollProgress] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -56,12 +55,14 @@ const ClubDetailHeader = ({ clubName }: ClubDetailHeaderProps) => {
     };
   }, []);
 
-  const carouselImages = [
-    "/images/club_detail1.png",
-    "/images/club_detail2.png",
-    "/images/club_detail3.png",
-    "/images/club_detail4.png",
-  ];
+  const carouselImages = images.length > 0 
+    ? images 
+    : [
+        "/images/club_detail1.png",
+        "/images/club_detail2.png",
+        "/images/club_detail3.png",
+        "/images/club_detail4.png",
+      ];
 
   useEffect(() => {
     if (!api) return;
@@ -132,10 +133,13 @@ const ClubDetailHeader = ({ clubName }: ClubDetailHeaderProps) => {
                       sizes="100vw"
                     />
                     <div className="hidden sm:block relative w-full h-[490px] xl:h-[490px] 2xl:h-[600px] max-w-[440px] xl:max-w-none xl:w-auto xl:flex xl:items-center xl:justify-center">
-                      <img
+                      <Image
                         src={imageSrc}
                         alt="Overlay"
+                        width={440}
+                        height={490}
                         className="w-full h-[490px] xl:w-auto xl:h-[490px] 2xl:h-[600px] object-cover xl:object-contain"
+                        unoptimized
                       />
                     </div>
                   </div>

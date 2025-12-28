@@ -13,11 +13,13 @@ export interface ClubImage {
 export interface ClubKeyword {
   id?: number;
   name?: string;
+  iconPath?: string;
 }
 
 export interface Club {
   id: number;
   name: string;
+  isFavorite: boolean;
   address: string;
   phone: string;
   capacity: number;
@@ -30,6 +32,8 @@ export interface Club {
   owner: ClubOwner;
   mainImage?: ClubImage;
   keywords: ClubKeyword[];
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface UpcomingPerform {
@@ -69,7 +73,7 @@ export interface ClubDetail {
 export interface ReviewKeyword {
   id: number;
   keyword: string;
-  iconPath: string;
+  iconPath?: string;
   sortOrder: number;
 }
 
@@ -78,6 +82,10 @@ export interface ReviewCategory {
   code: string;
   name: string;
   keywords: ReviewKeyword[];
+}
+
+export interface ReviewCategoryResponse {
+  data: ReviewCategory[];
 }
 
 export interface ReviewUser {
@@ -118,4 +126,36 @@ export interface ReviewListResponse {
   data: Review[];
 }
 
+export interface ReviewPaginatedResponse {
+  items: Review[];
+  total: number;
+  offset: number;
+  limit: number;
+}
+
 export type ReviewsResponse = ReviewResponse | ReviewListResponse;
+
+export interface CreateReviewResponse {
+  id: number;
+  clubId: number;
+  userId: number;
+  rating: number;
+  content: string;
+  createdAt: string;
+  updatedAt: string | null;
+}
+
+export interface Performance {
+  id: number;
+  title: string;
+  performDate: string;
+  bookingPrice: number;
+  onsitePrice: number;
+  isCanceled: boolean;
+  description: string;
+  isAttend: boolean;
+}
+
+export interface ClubDetailCalendarResponse {
+  data: Record<string, Performance[]>;
+}

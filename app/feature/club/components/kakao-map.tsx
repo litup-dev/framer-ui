@@ -18,17 +18,19 @@ interface KakaoMapProps {
 const KakaoMap = ({ club, placeInfo }: KakaoMapProps) => {
   useKakaoLoader();
 
+  const defaultCenter = { lat: 37.557, lng: 126.924 };
+  const center =
+    club?.latitude && club?.longitude
+      ? { lat: club.latitude, lng: club.longitude }
+      : defaultCenter;
+
   return (
     <div className="w-full h-full relative">
-      <Map
-        center={{ lat: 37.49793, lng: 127.027596 }}
-        className="w-full h-full"
-        draggable={!club}
-      >
-        {club && (
+      <Map center={center} className="w-full h-full" draggable={!club}>
+        {club && club.latitude && club.longitude && (
           <MapMarker
             key={club.id}
-            position={{ lat: 37.49793, lng: 127.027596 }}
+            position={{ lat: club.latitude, lng: club.longitude }}
             title={club.name}
           />
         )}

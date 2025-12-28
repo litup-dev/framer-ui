@@ -1,9 +1,14 @@
 "use client";
 
+import { useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Map, Info, Star } from "lucide-react";
 
 import { Club } from "@/app/feature/club/types";
+import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
+import { clubFavoriteByIdOptions } from "@/app/feature/club/query-options";
 
 import { Separator } from "@/components/ui/separator";
 import ClubImage from "@/app/feature/club/components/club-image";
@@ -14,10 +19,19 @@ interface ClubCardProps {
 }
 
 const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation(clubFavoriteByIdOptions(club.id, queryClient));
+
+  const mainImageUrl = useMemo(() => {
+    return club.mainImage?.filePath
+      ? getImageUrl(club.mainImage.filePath)
+      : null;
+  }, [club.mainImage]);
+
   return (
-    <Link href={`/club/${club.id}`} className="space-y-3 block cursor-pointer">
+    <div className="space-y-3 block cursor-pointer">
       <div className="flex justify-between">
-        <div>
+        <Link href={`/club/${club.id}`}>
           <div className="flex items-center gap-4">
             <ClubImage club={club} size="md" />
             <div className="flex flex-col text-subtitle-16">
@@ -25,7 +39,7 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
                 <div>{club.name}</div>
                 <div className="flex items-center gap-1 text-black-60">
                   <div>{club.avgRating ?? 0}</div>
-                  <div>{`(${club.capacity})`}</div>
+                  <div>{`(${club.reviewCnt})`}</div>
                 </div>
               </div>
               <div className="text-description-14 text-black-60">
@@ -33,17 +47,45 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
               </div>
             </div>
           </div>
-        </div>
-        <Star className="w-4 h-4 sm:mr-4" />
+        </Link>
+        {club.isFavorite ? (
+          <Image
+            className="w-8 h-8 sm:mr-4 text-main hover:text-main cursor-pointer"
+            onClick={() => mutate()}
+            src="/images/club_favorite_fill.svg"
+            alt="favorite"
+            width={16}
+            height={16}
+          />
+        ) : (
+          <Image
+            src="/images/club_favorite.svg"
+            alt="favorite"
+            width={16}
+            height={16}
+            className="w-8 h-8 sm:mr-4 text-black-60 hover:text-main cursor-pointer"
+            onClick={() => mutate()}
+          />
+        )}
       </div>
-
       <div className="flex gap-[1px]">
-        {Array.from({ length: 5 }).map((_, idx) => (
-          <div key={idx} className="h-25 w-20 bg-[#D9D9D9]" />
-        ))}
+        {mainImageUrl ? (
+          <div className="relative h-25 w-20 bg-[#D9D9D9] overflow-hidden">
+            <Image
+              src={mainImageUrl}
+              alt={club.name}
+              fill
+              className="object-cover"
+              sizes="20px"
+            />
+          </div>
+        ) : (
+          Array.from({ length: 5 }).map((_, idx) => (
+            <div key={idx} className="h-25 w-20 bg-[#D9D9D9]" />
+          ))
+        )}
       </div>
-
-      <div className="flex gap-1 items-center text-subtitle-12 text-black-60 sm:hidden">
+      <div className="flex gap-1 items-center text-subtitle-12 text-black-60">
         <span
           className="flex items-center gap-1 border border-[#2020201A] px-2.5 py-2 rounded-[2px] cursor-pointer"
           onClick={() => onMapClick(club)}
@@ -51,13 +93,15 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
           <Map className="w-4 h-4" />
           지도
         </span>
-        <span className="flex items-center gap-1 border border-[#2020201A] px-2.5 py-2 rounded-[2px] cursor-pointer">
-          <Info className="w-4 h-4" />
-          상세
-        </span>
+        <Link href={`/club/${club.id}`}>
+          <span className="flex items-center gap-1 border border-[#2020201A] px-2.5 py-2 rounded-[2px] cursor-pointer">
+            <Info className="w-4 h-4" />
+            상세
+          </span>
+        </Link>
       </div>
       <Separator className="hidden sm:block" />
-    </Link>
+    </div>
   );
 };
 

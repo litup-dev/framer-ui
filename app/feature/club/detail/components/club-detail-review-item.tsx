@@ -54,7 +54,7 @@ const ClubDetailReviewItem = ({ review }: ClubDetailReviewItemProps) => {
         <div className="flex gap-2">
           {review.images.map((image, index) => (
             <button
-              key={index}
+              key={`${review.id}-image-${index}-${image}`}
               onClick={() => handleImageClick(index)}
               className="relative w-[110px] h-[140px] bg-gray-200 rounded flex-shrink-0 overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
             >
@@ -73,7 +73,7 @@ const ClubDetailReviewItem = ({ review }: ClubDetailReviewItemProps) => {
       <div className="flex flex-wrap gap-2">
         {review.tags.map((tag, index) => (
           <span
-            key={index}
+            key={`${review.id}-tag-${index}-${tag}`}
             className="p-2 w-fit bg-white border rounded-[3px] text-subtitle-14"
           >
             {tag}

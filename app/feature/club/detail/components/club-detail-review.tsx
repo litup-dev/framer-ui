@@ -11,10 +11,16 @@ import { useClubDetailStore } from "@/app/feature/club/detail/store";
 import ClubDetailReviewItem from "@/app/feature/club/detail/components/club-detail-review-item";
 import ClubDetailReviewModal from "@/app/feature/club/detail/components/club-detail-review-modal";
 import ClubDetailImageGallery from "@/app/feature/club/detail/components/club-detail-image-gallery";
+import { ReviewPagination } from "@/app/feature/club/detail/components/review-pagination";
+import { useReviewPagination } from "@/app/feature/club/detail/hooks/use-review-pagination";
 
 interface ClubDetailReviewProps {
   data: ClubDetailData;
   reviews: Review[];
+  total: number;
+  currentPage: number;
+  limit: number;
+  onPageChange: (page: number) => void;
 }
 
 interface ReviewItem {
@@ -31,8 +37,30 @@ interface ReviewItem {
   rating: number;
 }
 
-const ClubDetailReview = ({ data, reviews }: ClubDetailReviewProps) => {
+const ClubDetailReview = ({
+  data,
+  reviews,
+  total,
+  currentPage,
+  limit,
+  onPageChange,
+}: ClubDetailReviewProps) => {
   const { openReviewModal } = useClubDetailStore();
+
+  const {
+    totalPages,
+    pageNumbers,
+    handlePageClick,
+    handlePreviousClick,
+    handleNextClick,
+    canGoPrevious,
+    canGoNext,
+  } = useReviewPagination({
+    total,
+    limit,
+    currentPage,
+    onPageChange,
+  });
 
   const convertToReviewItems = (reviews: Review[]): ReviewItem[] => {
     if (!reviews || !Array.isArray(reviews) || reviews.length === 0) return [];
@@ -43,9 +71,7 @@ const ClubDetailReview = ({ data, reviews }: ClubDetailReviewProps) => {
         const imageUrls =
           Array.isArray(review.images) && review.images.length > 0
             ? review.images
-                .map((img) =>
-                  img?.filePath ? getImageUrl(img.filePath) : null
-                )
+                .map((img) => (img.filePath ? getImageUrl(img.filePath) : null))
                 .filter((url): url is string => url !== null)
             : [];
 
@@ -55,14 +81,19 @@ const ClubDetailReview = ({ data, reviews }: ClubDetailReviewProps) => {
           content: review.content || "",
           tags:
             Array.isArray(review.keywords) && review.keywords.length > 0
-              ? review.keywords.map((keyword) => `#${keyword?.name || ""}`)
+              ? review.keywords
+                  .map((keyword) => `#${keyword.name}`)
+                  .filter((tag) => tag !== "#")
               : [],
           createdAt: review.createdAt || "",
           updatedAt: review.updatedAt || review.createdAt || "",
           user: {
-            name: review.user?.nickname || "",
-            ...(review.user?.profilePath && {
-              profileImage: getImageUrl(review.user.profilePath) || undefined,
+            name: review.user.nickname || "",
+            ...(review.user.profilePath && {
+              profileImage: (() => {
+                const url = getImageUrl(review.user.profilePath);
+                return url !== null ? url : undefined;
+              })(),
             }),
           },
           rating: review.rating || 0,
@@ -128,7 +159,21 @@ const ClubDetailReview = ({ data, reviews }: ClubDetailReviewProps) => {
           </div>
         )}
       </div>
-      <ClubDetailReviewModal />
+      {totalPages > 1 && (
+        <div className="pt-6 flex justify-center">
+          <ReviewPagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            pageNumbers={pageNumbers}
+            onPageClick={handlePageClick}
+            onPreviousClick={handlePreviousClick}
+            onNextClick={handleNextClick}
+            canGoPrevious={canGoPrevious}
+            canGoNext={canGoNext}
+          />
+        </div>
+      )}
+      <ClubDetailReviewModal entityId={data.id} />
       <ClubDetailImageGallery />
     </div>
   );
