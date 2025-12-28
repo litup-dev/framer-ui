@@ -34,7 +34,14 @@ export const authOptions: NextAuthOptions = {
     error: "/login",
   },
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, trigger, session }) {
+      if (trigger === "update" && session) {
+        return {
+          ...token,
+          ...session,
+        };
+      }
+
       if (!account && token.accessToken) {
         try {
           const decoded = jwt.decode(token.accessToken as string) as any;
@@ -112,12 +119,32 @@ export const authOptions: NextAuthOptions = {
                 process.env.NEXTAUTH_SECRET!
               );
 
+              try {
+                const userInfoResponse = await fetch(
+                  `${process.env.API_BASE_URL}/api/v1/users/${userId}`,
+                  {
+                    headers: {
+                      Authorization: `Bearer ${accessToken}`,
+                    },
+                  }
+                );
+
+                if (userInfoResponse.ok) {
+                  const userInfo = await userInfoResponse.json();
+                  return {
+                    userId: String(userId),
+                    nickname: userInfo.data?.nickname || "",
+                    profilePath: userInfo.data?.profilePath || null,
+                    accessToken,
+                  };
+                }
+              } catch (error) {}
+
               return {
-                userId: userId,
+                userId: String(userId),
                 nickname: result.data?.nickname || "",
                 profilePath: result.data?.profilePath || null,
                 accessToken,
-                refreshToken,
               };
             }
           } else {
@@ -130,11 +157,11 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       return {
-        accessToken: token.accessToken,
+        accessToken: (token.accessToken as string) || undefined,
         nickname: (token.nickname as string) || "",
         profilePath: (token.profilePath as string) || null,
-        userId: (token.userId as number) || "",
-      } as typeof session;
+        userId: (token.userId as string) || "",
+      };
     },
     async signIn() {
       return true;

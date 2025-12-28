@@ -71,3 +71,22 @@ export const litupEmails = [
     email: "litup.helpdesk@gmail.com",
   },
 ];
+
+export const MyPageMenuItems = [
+  {
+    id: 1,
+    label: "나의 활동",
+    subItems: [
+      { label: "클럽 리뷰", href: "/user/reviews" },
+      { label: "공연 코멘트", href: "/user/comments" },
+    ],
+  },
+  {
+    id: 2,
+    label: "나의 정보",
+    subItems: [
+      { label: "공개범위 설정", href: "/user/privacy" },
+      { label: "회원정보관리", href: "/user/account" },
+    ],
+  },
+];

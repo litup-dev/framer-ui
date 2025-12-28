@@ -149,6 +149,11 @@
 
 @layer utilities {
   /* Title styles */
+  .text-title-40 {
+    @apply font-bold text-[40px];
+    letter-spacing: -0.08em;
+  }
+
   .text-title-32 {
     @apply font-bold text-[32px];
     letter-spacing: -0.08em;
