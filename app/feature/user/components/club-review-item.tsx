@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { ChevronDown, Star, Circle, Hash } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Description, Subtitle, Title } from "@/components/shared/typography";
@@ -137,10 +138,12 @@ export default function ClubReviewItem({
                   {hasImages && (
                     <div className="flex gap-3">
                       {review.images!.map((image, imgIndex) => (
-                        <img
+                        <Image
                           key={imgIndex}
                           src={image}
                           alt={`Review image ${imgIndex + 1}`}
+                          width={140}
+                          height={177}
                           className="w-[111px] h-[141px] 2xl:w-[140px] 2xl:h-[177px] object-cover rounded"
                         />
                       ))}

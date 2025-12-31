@@ -20,21 +20,6 @@ export default function AccountPage() {
   const [nickname, setNickname] = useState("");
   const [bio, setBio] = useState("");
 
-  useEffect(() => {
-    if (session) {
-      setNickname(session.nickname || "");
-      setBio(session.bio || "");
-    }
-  }, [session]);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!session) {
-    return null;
-  }
-
   // 프로필 수정 mutation
   const updateMutation = useMutation({
     mutationFn: updateUserInfo,
@@ -60,6 +45,21 @@ export default function AccountPage() {
       alert("회원 탈퇴에 실패했습니다.");
     },
   });
+
+  useEffect(() => {
+    if (session) {
+      setNickname(session.nickname || "");
+      setBio(session.bio || "");
+    }
+  }, [session]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!session) {
+    return null;
+  }
 
   const handleLogout = async () => {
     await signOut({ callbackUrl: "/" });
