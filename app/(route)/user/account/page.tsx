@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { signOut } from "next-auth/react";
+import { useMutation } from "@tanstack/react-query";
 import { useRequireAuth } from "@/app/feature/user/hooks/useRequireAuth";
 import UserPageLayout from "@/app/shared/components/user-page-layout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -11,6 +12,8 @@ import { Separator } from "@/components/ui/separator";
 import { Subtitle, Description } from "@/components/shared/typography";
 import { Button } from "@/components/ui/button";
 import { GoogleIcon, KakaoIcon } from "@/app/feature/login/components/icons";
+import { updateUserInfo } from "@/app/feature/user/query-options";
+import { apiClient } from "@/lib/api-client";
 
 export default function AccountPage() {
   const { session, isLoading } = useRequireAuth();
@@ -32,13 +35,47 @@ export default function AccountPage() {
     return null;
   }
 
+  // 프로필 수정 mutation
+  const updateMutation = useMutation({
+    mutationFn: updateUserInfo,
+    onSuccess: () => {
+      alert("프로필이 수정되었습니다.");
+      // 세션 갱신을 위해 페이지 새로고침
+      window.location.reload();
+    },
+    onError: () => {
+      alert("프로필 수정에 실패했습니다.");
+    },
+  });
+
+  // 회원 탈퇴 mutation
+  const withdrawMutation = useMutation({
+    mutationFn: async () => {
+      return apiClient.delete("/api/v1/auth/withdraw");
+    },
+    onSuccess: () => {
+      signOut({ callbackUrl: "/" });
+    },
+    onError: () => {
+      alert("회원 탈퇴에 실패했습니다.");
+    },
+  });
+
   const handleLogout = async () => {
     await signOut({ callbackUrl: "/" });
   };
 
   const handleSave = () => {
-    // TODO: API 호출로 닉네임, 소개글 저장
-    console.log("저장:", { nickname, bio });
+    updateMutation.mutate({
+      nickname,
+      bio,
+    });
+  };
+
+  const handleWithdraw = () => {
+    if (confirm("정말 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
+      withdrawMutation.mutate();
+    }
   };
 
   // 소셜 로그인 제공자 정보
@@ -119,6 +156,7 @@ export default function AccountPage() {
       <div className="flex justify-end md:justify-start mt-8 sm:mt-8 md:mt-10 xl:mt-10 2xl:mt-20">
         <Button
           onClick={handleSave}
+          disabled={updateMutation.isPending}
           className="
             bg-black text-white rounded-[4px] hover:bg-black/80
             md:bg-transparent md:border md:border-input md:shadow-xs
@@ -126,7 +164,7 @@ export default function AccountPage() {
             md:dark:bg-input/30 md:dark:border-input md:dark:hover:bg-input/50
           "
         >
-          저장
+          {updateMutation.isPending ? "저장 중..." : "저장"}
         </Button>
       </div>
 
@@ -134,10 +172,11 @@ export default function AccountPage() {
       <Separator className="mt-10 md:mt-8 2xl:mt-10" />
       <div className="mt-10 md:mt-12 2xl:mt-20">
         <button
-          onClick={handleLogout}
+          onClick={handleWithdraw}
           className="text-sm text-[#202020]/60 underline hover:text-black transition-colors"
+          disabled={withdrawMutation.isPending}
         >
-          회원 탈퇴하기
+          {withdrawMutation.isPending ? "처리 중..." : "회원 탈퇴하기"}
         </button>
       </div>  
   </UserPageLayout>

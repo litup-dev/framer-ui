@@ -72,7 +72,8 @@ export default function UserProfileActions({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem>신고하기</DropdownMenuItem>
-          <DropdownMenuItem>차단하기</DropdownMenuItem>
+          {/* MVP에서는 미지원 */}
+          {/* <DropdownMenuItem>차단하기</DropdownMenuItem> */}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

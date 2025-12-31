@@ -11,6 +11,9 @@ import {
   UserInfoResponse,
   UpdateUserInfoRequest,
   UpdateUserInfoResponse,
+  PrivacySettingsResponse,
+  UpdatePrivacySettingsRequest,
+  UpdatePrivacySettingsResponse,
 } from "@/app/feature/user/types";
 
 // 유저 통계 API
@@ -123,6 +126,31 @@ export const updateUserInfo = async (
 ): Promise<UpdateUserInfoResponse> => {
   const response = await apiClient.patch<UpdateUserInfoResponse>(
     "/api/v1/users/info",
+    data
+  );
+  return response;
+};
+
+// 유저 공개범위 설정 조회 API
+export const getPrivacySettingsOptions = () =>
+  queryOptions({
+    queryKey: ["privacySettings"],
+    queryFn: async () => {
+      const response = await apiClient.get<PrivacySettingsResponse>(
+        "/api/v1/users/settings/privacy"
+      );
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000, // 5분
+    gcTime: 10 * 60 * 1000, // 10분
+  });
+
+// 유저 공개범위 설정 수정 Mutation
+export const updatePrivacySettings = async (
+  data: UpdatePrivacySettingsRequest
+): Promise<UpdatePrivacySettingsResponse> => {
+  const response = await apiClient.patch<UpdatePrivacySettingsResponse>(
+    "/api/v1/users/settings/privacy",
     data
   );
   return response;

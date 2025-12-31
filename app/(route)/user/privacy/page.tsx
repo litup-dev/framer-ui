@@ -1,18 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRequireAuth } from "@/app/feature/user/hooks/useRequireAuth";
 import UserPageLayout from "@/app/shared/components/user-page-layout";
 import PrivacySettingGroup from "@/app/feature/user/components/privacy-setting-group";
 import { Separator } from "@/components/ui/separator";
 import { HandMetal, Ticket, Star } from "lucide-react";
 import { LucideIcon } from "lucide-react";
-
-type PrivacyLevel = "public" | "friends" | "private";
+import { PrivacyLevel } from "@/app/feature/user/types";
+import {
+  getPrivacySettingsOptions,
+  updatePrivacySettings
+} from "@/app/feature/user/query-options";
 
 interface PrivacySettings {
-  wantToWatch: PrivacyLevel;
-  viewingHistory: PrivacyLevel;
+  attendance: PrivacyLevel;
+  performHistory: PrivacyLevel;
   favoriteClubs: PrivacyLevel;
 }
 
@@ -21,20 +25,50 @@ const settingLabels: {
   label: string;
   icon: LucideIcon;
 }[] = [
-  { key: "wantToWatch", label: "보고 싶은 공연", icon: HandMetal },
-  { key: "viewingHistory", label: "관람 기록", icon: Ticket },
+  { key: "attendance", label: "보고 싶은 공연", icon: HandMetal },
+  { key: "performHistory", label: "관람 기록", icon: Ticket },
   { key: "favoriteClubs", label: "관심 클럽", icon: Star },
 ];
 
 export default function PrivacyPage() {
-  const { session, isLoading } = useRequireAuth();
+  const { session, isLoading: isAuthLoading } = useRequireAuth();
+  const queryClient = useQueryClient();
   const [settings, setSettings] = useState<PrivacySettings>({
-    wantToWatch: "public",
-    viewingHistory: "public",
+    attendance: "public",
+    performHistory: "public",
     favoriteClubs: "public",
   });
 
-  if (isLoading) {
+  // 공개범위 설정 조회
+  const { data: privacyData, isLoading: isPrivacyLoading } = useQuery({
+    ...getPrivacySettingsOptions(),
+    enabled: !!session,
+  });
+
+  // 공개범위 설정 수정 mutation
+  const updateMutation = useMutation({
+    mutationFn: updatePrivacySettings,
+    onSuccess: () => {
+      // 성공 시 캐시 무효화
+      queryClient.invalidateQueries({ queryKey: ["privacySettings"] });
+    },
+    onError: () => {
+      alert("설정 변경에 실패했습니다.");
+    },
+  });
+
+  // API 데이터로 초기화
+  useEffect(() => {
+    if (privacyData) {
+      setSettings({
+        attendance: privacyData.attendance,
+        performHistory: privacyData.performHistory,
+        favoriteClubs: privacyData.favoriteClubs,
+      });
+    }
+  }, [privacyData]);
+
+  if (isAuthLoading || isPrivacyLoading) {
     return <div>Loading...</div>;
   }
 
@@ -47,7 +81,13 @@ export default function PrivacyPage() {
       ...prev,
       [key]: value,
     }));
-    // TODO: API 호출로 설정 저장
+
+    // 즉시 API 호출
+    updateMutation.mutate({
+      attendance: key === "attendance" ? value : settings.attendance,
+      performHistory: key === "performHistory" ? value : settings.performHistory,
+      favoriteClubs: key === "favoriteClubs" ? value : settings.favoriteClubs,
+    });
   };
 
   return (

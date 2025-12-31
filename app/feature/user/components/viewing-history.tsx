@@ -125,7 +125,7 @@ export default function ViewingHistory({
         title={`관람 기록 (${totalCount})`}
         iconClassName="w-8 h-8 lg:w-9 lg:h-9 fill-black text-white stroke-1"
         action={
-          isOwner ? (
+          isOwner && totalCount > 0 ? (
             <Button
               onClick={() => {
                 setIsEditing(!isEditing);

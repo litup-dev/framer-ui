@@ -2,7 +2,7 @@ export const getImageUrl = (
   filePath: string | null | undefined
 ): string | null => {
   if (!filePath) return null;
-  if (filePath.startsWith("http://") || filePath.startsWith("https://")) {
+  if (filePath.startsWith("http://") || filePath.startsWith("https://") || filePath.startsWith("blob:")) {
     return filePath;
   }
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";

@@ -8,7 +8,9 @@ import { Button } from "@/components/ui/button";
 import UserProfileAvatar from "./user-profile-avatar";
 import UserProfileInfo from "./user-profile-info";
 import UserProfileActions from "./user-profile-actions";
+import ProfileImageCropModal from "./profile-image-crop-modal";
 import { updateUserInfo, getUserInfo } from "@/app/feature/user/query-options";
+import { apiClient } from "@/lib/api-client";
 
 interface UserProfileProps {
   session: Session;
@@ -28,37 +30,75 @@ export default function UserProfile({
   const [bio, setBio] = useState(session.bio || "");
   const [nickname, setNickname] = useState(session.nickname || "");
   const [isFollowing, setIsFollowing] = useState(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [profileImageUrl, setProfileImageUrl] = useState(session.profilePath || null);
+  const [tempProfileImage, setTempProfileImage] = useState<Blob | null>(null);
+  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
 
   // props로 받은 isEditing을 사용하거나, 내부 state 사용
   const isEditing =
     externalIsEditing !== undefined ? externalIsEditing : internalIsEditing;
   const setIsEditing = externalSetIsEditing || setInternalIsEditing;
 
-  // 유저 프로필 수정 mutation
+  // 유저 프로필 수정 mutation (닉네임/bio만)
   const updateMutation = useMutation({
-    mutationFn: updateUserInfo,
-    onSuccess: async () => {
-      // API로 최신 유저 정보 조회
-      if (session.userId) {
-        const userInfoResponse = await getUserInfo(Number(session.userId));
-        const updatedUserInfo = userInfoResponse.data;
+    mutationFn: async (params: { nickname: string; bio: string }) => {
+      return updateUserInfo(params);
+    },
+    onSuccess: async (response: any) => {
+      // API 응답에서 최신 유저 정보 받기 (id, nickname, profilePath, bio)
+      const updatedUserInfo = response.data;
 
-        // session 업데이트 - 변경된 필드만 전달
+      // session 업데이트
+      await update({
+        nickname: updatedUserInfo.nickname,
+        bio: updatedUserInfo.bio,
+        profilePath: updatedUserInfo.profilePath,
+      });
+      setProfileImageUrl(updatedUserInfo.profilePath);
+      setTempProfileImage(null);
+      setPreviewImageUrl(null);
+      setIsEditing(false);
+    },
+    onError: () => {
+      alert("프로필 수정에 실패했습니다.");
+    },
+  });
+
+  const handleSave = async () => {
+    try {
+      // 1. 프로필 이미지가 변경되었으면 먼저 업로드
+      if (tempProfileImage) {
+        const formData = new FormData();
+        formData.append("image", tempProfileImage, "profile.jpg");
+
+        const response: any = await apiClient.post(
+          "/api/v1/upload/avatar",
+          formData
+        );
+
+        // 이미지 업로드 API 응답에서 최신 유저 정보 받기 (id, nickname, profilePath, bio)
+        const updatedUserInfo = response.data;
+
+        // session 업데이트
         await update({
           nickname: updatedUserInfo.nickname,
           bio: updatedUserInfo.bio,
           profilePath: updatedUserInfo.profilePath,
         });
+        setProfileImageUrl(updatedUserInfo.profilePath);
+        setTempProfileImage(null);
+        setPreviewImageUrl(null);
       }
-      setIsEditing(false);
-    },
-  });
 
-  const handleSave = () => {
-    updateMutation.mutate({
-      nickname,
-      bio,
-    });
+      // 2. 닉네임/bio 업데이트 (항상 호출)
+      updateMutation.mutate({
+        nickname,
+        bio,
+      });
+    } catch (error) {
+      alert("프로필 사진 업로드에 실패했습니다.");
+    }
   };
 
   const handleFollow = () => {
@@ -66,16 +106,31 @@ export default function UserProfile({
     setIsFollowing(!isFollowing);
   };
 
+  const handleProfileImageSelect = (croppedImageBlob: Blob) => {
+    // 임시 저장 및 미리보기
+    setTempProfileImage(croppedImageBlob);
+    const previewUrl = URL.createObjectURL(croppedImageBlob);
+    setPreviewImageUrl(previewUrl);
+  };
+
   return (
     <div className="flex flex-col">
+      {/* 프로필 이미지 편집 모달 */}
+      <ProfileImageCropModal
+        isOpen={isImageModalOpen}
+        onClose={() => setIsImageModalOpen(false)}
+        onSave={handleProfileImageSelect}
+      />
+
       {/* xl 이상: 아바타 + ... 버튼 */}
       <div className="hidden xl:flex items-start justify-between">
         <UserProfileAvatar
-          profilePath={session.profilePath}
+          profilePath={previewImageUrl || profileImageUrl}
           nickname={nickname}
           isEditing={isEditing}
           sizeClass="w-[120px] h-[120px]"
           textSizeClass="text-3xl"
+          onEditClick={() => setIsImageModalOpen(true)}
         />
         <UserProfileActions
           isOwner={isOwner}
@@ -105,11 +160,12 @@ export default function UserProfile({
       <div className="hidden md:flex xl:hidden items-start justify-between">
         <div className="flex gap-4 lg:gap-6 flex-1">
           <UserProfileAvatar
-            profilePath={session.profilePath}
+            profilePath={previewImageUrl || profileImageUrl}
             nickname={nickname}
             isEditing={isEditing}
             sizeClass="w-[100px] h-[100px] lg:w-[120px] lg:h-[120px]"
             textSizeClass="text-2xl lg:text-3xl"
+            onEditClick={() => setIsImageModalOpen(true)}
           />
 
           {/* 닉네임 + 자기소개 (아바타 옆) */}
@@ -152,11 +208,12 @@ export default function UserProfile({
         {/* 아바타 + 닉네임/자기소개 */}
         <div className="flex gap-4">
           <UserProfileAvatar
-            profilePath={session.profilePath}
+            profilePath={previewImageUrl || profileImageUrl}
             nickname={nickname}
             isEditing={isEditing}
             sizeClass="w-20 h-20"
             textSizeClass="text-xl"
+            onEditClick={() => setIsImageModalOpen(true)}
           />
 
           {/* 닉네임 + 자기소개 (아바타 옆) */}
@@ -176,8 +233,8 @@ export default function UserProfile({
         </div>
       </div>
 
-      {/* 팔로우 버튼 (다른 유저일 때만) */}
-      {!isOwner && (
+      {/* 팔로우 버튼 (다른 유저일 때만) - MVP에서는 미지원 */}
+      {/* {!isOwner && (
         <Button
           variant="outline"
           size="sm"
@@ -186,7 +243,7 @@ export default function UserProfile({
         >
           {isFollowing ? "팔로우 중" : "팔로우하기 +"}
         </Button>
-      )}
+      )} */}
     </div>
   );
 }

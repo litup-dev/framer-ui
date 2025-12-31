@@ -9,7 +9,8 @@ export interface UserStatsResponse {
 
 export interface UserStats {
   attendCount: number;
-  performReviewCount: number;
+  // performReviewCount: number; // TODO: 게시글 수 API 추가 예정
+  // commentCount: number; // TODO: 댓글 수 API 추가 예정
 }
 
 // Viewing History 응답 타입
@@ -117,4 +118,28 @@ export interface UserPermissions {
   canViewStats: boolean;
   canViewPerformHistory: boolean;
   canViewFavoriteClubs: boolean;
+}
+
+// 공개 범위 타입
+export type PrivacyLevel = "public" | "friends" | "private";
+
+// 유저 공개범위 설정 응답 타입
+export interface PrivacySettingsResponse {
+  data: {
+    favoriteClubs: PrivacyLevel;
+    attendance: PrivacyLevel;
+    performHistory: PrivacyLevel;
+  };
+  message?: string;
+}
+
+// 유저 공개범위 설정 수정 요청 타입
+export interface UpdatePrivacySettingsRequest {
+  favoriteClubs: PrivacyLevel;
+  attendance: PrivacyLevel;
+  performHistory: PrivacyLevel;
+}
+
+export interface UpdatePrivacySettingsResponse {
+  message?: string;
 }
