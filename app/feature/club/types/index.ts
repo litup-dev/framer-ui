@@ -109,7 +109,7 @@ export interface ReviewImage {
 export interface Review {
   id: number;
   clubId: number;
-  userId: number;
+  publicId: number;
   rating: number;
   content: string;
   createdAt: string;
@@ -139,7 +139,7 @@ export type ReviewsResponse = ReviewResponse | ReviewListResponse;
 export interface CreateReviewResponse {
   id: number;
   clubId: number;
-  userId: number;
+  publicId: number;
   rating: number;
   content: string;
   createdAt: string;

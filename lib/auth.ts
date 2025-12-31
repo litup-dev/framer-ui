@@ -3,12 +3,12 @@ import GoogleProvider from "next-auth/providers/google";
 import KakaoProvider from "next-auth/providers/kakao";
 import jwt from "jsonwebtoken";
 
-const createAccessToken = (userId: string, secret: string) => {
-  return jwt.sign({ userId }, secret, { expiresIn: "1h" });
+const createAccessToken = (publicId: string, secret: string) => {
+  return jwt.sign({ publicId }, secret, { expiresIn: "1h" });
 };
 
-const createRefreshToken = (userId: string, secret: string) => {
-  return jwt.sign({ userId }, secret, { expiresIn: "30d" });
+const createRefreshToken = (publicId: string, secret: string) => {
+  return jwt.sign({ publicId }, secret, { expiresIn: "30d" });
 };
 
 export const authOptions: NextAuthOptions = {
@@ -34,21 +34,14 @@ export const authOptions: NextAuthOptions = {
     error: "/login",
   },
   callbacks: {
-    async jwt({ token, user, account, trigger, session }) {
-      if (trigger === "update" && session) {
-        return {
-          ...token,
-          ...session,
-        };
-      }
-
+    async jwt({ token, user, account }) {
       if (!account && token.accessToken) {
         try {
           const decoded = jwt.decode(token.accessToken as string) as any;
           const currentTime = Math.floor(Date.now() / 1000);
 
           if (decoded && decoded.exp && decoded.exp <= currentTime) {
-            const userId = decoded.userId;
+            const publicId = decoded.publicId;
 
             if (token.refreshToken) {
               const refreshDecoded = jwt.decode(
@@ -61,7 +54,7 @@ export const authOptions: NextAuthOptions = {
                 refreshDecoded.exp > currentTime
               ) {
                 const newAccessToken = createAccessToken(
-                  userId,
+                  publicId,
                   process.env.NEXTAUTH_SECRET!
                 );
                 token.accessToken = newAccessToken;
@@ -70,7 +63,7 @@ export const authOptions: NextAuthOptions = {
               }
             } else {
               const newAccessToken = createAccessToken(
-                userId,
+                publicId,
                 process.env.NEXTAUTH_SECRET!
               );
               token.accessToken = newAccessToken;
@@ -108,19 +101,19 @@ export const authOptions: NextAuthOptions = {
           if (response && response.ok) {
             const result = await response.json();
 
-            const userId = result.data?.id || result.data?.userId;
-            if (userId) {
+            const publicId = result.data?.publicId;
+            if (publicId) {
               const accessToken = createAccessToken(
-                String(userId),
+                String(publicId),
                 process.env.NEXTAUTH_SECRET!
               );
               const refreshToken = createRefreshToken(
-                String(userId),
+                String(publicId),
                 process.env.NEXTAUTH_SECRET!
               );
 
               return {
-                userId: String(userId),
+                publicId: String(publicId),
                 nickname: result.data?.nickname || "",
                 profilePath: result.data?.profilePath || null,
                 accessToken,
@@ -140,8 +133,8 @@ export const authOptions: NextAuthOptions = {
         ...session,
         accessToken: token.accessToken as string | undefined,
         nickname: (token.nickname as string) || "",
-        profilePath: (token.profilePath as string | null) || null,
-        userId: (token.userId as string) || "",
+        profilePath: (token.profilePath as string) || null,
+        publicId: (token.publicId as string) || "",
       };
     },
     async signIn() {
