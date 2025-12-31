@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -12,8 +11,16 @@ import ProfileImageCropModal from "./profile-image-crop-modal";
 import { updateUserInfo, getUserInfo } from "@/app/feature/user/query-options";
 import { apiClient } from "@/lib/api-client";
 
+interface UserInfo {
+  userId?: string;
+  nickname?: string;
+  profilePath?: string | null;
+  bio?: string;
+  accessToken?: string;
+}
+
 interface UserProfileProps {
-  session: Session;
+  session: UserInfo;
   isOwner: boolean;
   isEditing?: boolean;
   setIsEditing?: (value: boolean) => void;

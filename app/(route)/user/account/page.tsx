@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { signOut } from "next-auth/react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRequireAuth } from "@/app/feature/user/hooks/useRequireAuth";
 import UserPageLayout from "@/app/shared/components/user-page-layout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -12,13 +12,20 @@ import { Separator } from "@/components/ui/separator";
 import { Subtitle, Description } from "@/components/shared/typography";
 import { Button } from "@/components/ui/button";
 import { GoogleIcon, KakaoIcon } from "@/app/feature/login/components/icons";
-import { updateUserInfo } from "@/app/feature/user/query-options";
+import { updateUserInfo, getUserInfo } from "@/app/feature/user/query-options";
 import { apiClient } from "@/lib/api-client";
 
 export default function AccountPage() {
   const { session, isLoading } = useRequireAuth();
   const [nickname, setNickname] = useState("");
   const [bio, setBio] = useState("");
+
+  // 유저 정보 조회
+  const { data: userInfoResponse, isLoading: isUserLoading } = useQuery({
+    queryKey: ["userInfo", session?.userId],
+    queryFn: () => getUserInfo(Number(session?.userId)),
+    enabled: !!session?.userId,
+  });
 
   // 프로필 수정 mutation
   const updateMutation = useMutation({
@@ -47,19 +54,21 @@ export default function AccountPage() {
   });
 
   useEffect(() => {
-    if (session) {
-      setNickname(session.nickname || "");
-      setBio(session.bio || "");
+    if (userInfoResponse?.data) {
+      setNickname(userInfoResponse.data.nickname || "");
+      setBio(userInfoResponse.data.bio || "");
     }
-  }, [session]);
+  }, [userInfoResponse]);
 
-  if (isLoading) {
+  if (isLoading || isUserLoading) {
     return <div>Loading...</div>;
   }
 
-  if (!session) {
+  if (!session || !userInfoResponse?.data) {
     return null;
   }
+
+  const userInfo = userInfoResponse.data;
 
   const handleLogout = async () => {
     await signOut({ callbackUrl: "/" });
@@ -79,7 +88,7 @@ export default function AccountPage() {
   };
 
   // 소셜 로그인 제공자 정보
-  const socialProvider = session.provider || "google";
+  const socialProvider = userInfo.provider || "google";
   const providerName = socialProvider === "google" ? "Google" : "Kakao";
 
   // provider에 따라 아이콘 컴포넌트 선택

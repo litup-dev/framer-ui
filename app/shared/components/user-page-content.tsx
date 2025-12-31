@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Session } from "next-auth";
 import PageWrapper from "@/app/shared/components/page-wrapper";
 import UserProfile from "@/app/feature/user/components/user-profile";
 import UserStats from "@/app/feature/user/components/user-stats";
@@ -11,8 +10,16 @@ import UserSidebarMenu from "@/app/feature/user/components/user-sidebar-menu";
 import { Title } from "@/components/shared/typography";
 import { UserStats as UserStatsType, UserPermissions } from "@/app/feature/user/types";
 
+interface UserInfo {
+  userId: string;
+  nickname?: string;
+  profilePath?: string | null;
+  bio?: string;
+  accessToken?: string;
+}
+
 interface UserPageContentProps {
-  userInfo: Session;
+  userInfo: UserInfo;
   isOwner: boolean;
   permissions: UserPermissions;
   userStats?: UserStatsType;
