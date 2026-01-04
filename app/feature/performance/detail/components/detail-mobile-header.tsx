@@ -2,8 +2,8 @@ import { ChevronLeft, Share2, Plus } from "lucide-react";
 
 const DetailMobileHeader = () => {
   return (
-    <div className="flex justify-between items-center h-[48px] mb-[14px]">
-      <ChevronLeft className="-mx-3" />
+    <div className="flex justify-between items-center h-16 py-3.5 px-5">
+      <ChevronLeft className="w-5 h-5" />
       <div className="flex gap-2">
         <div className="flex items-center text-subtitle-14 bg-main px-4 py-2.5 text-[#fff] rounded-[4px]">
           보고 싶어요
