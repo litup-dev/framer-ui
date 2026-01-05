@@ -107,7 +107,6 @@ export const authOptions: NextAuthOptions = {
 
           if (response && response.ok) {
             const result = await response.json();
-
             const publicId = result.data?.publicId;
             if (publicId) {
               const accessToken = createAccessToken(
@@ -136,6 +135,7 @@ export const authOptions: NextAuthOptions = {
                     nickname: userInfo.data?.nickname || "",
                     profilePath: userInfo.data?.profilePath || null,
                     accessToken,
+                    refreshToken,
                   };
                 }
               } catch (error) {}
@@ -145,6 +145,7 @@ export const authOptions: NextAuthOptions = {
                 nickname: result.data?.nickname || "",
                 profilePath: result.data?.profilePath || null,
                 accessToken,
+                refreshToken,
               };
             }
           } else {
@@ -157,11 +158,11 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       return {
-        accessToken: (token.accessToken as string) || undefined,
+        accessToken: token.accessToken as string | undefined,
         nickname: (token.nickname as string) || "",
         profilePath: (token.profilePath as string) || null,
         publicId: (token.publicId as string) || "",
-      };
+      } as typeof session;
     },
     async signIn() {
       return true;

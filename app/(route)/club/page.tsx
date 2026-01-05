@@ -1,11 +1,12 @@
-import PageWrapper from "@/app/shared/components/page-wrapper";
-import { getServerQueryClient } from "@/lib/query-client";
-import { serverApiClient } from "@/lib/api-client";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
+
+import { getQueryClient } from "@/providers/get-query-client";
+import { serverApiClient } from "@/lib/api-client";
+
 import ClubSearchForm from "@/app/feature/club/components/serarch-form";
 
 const ClubPage = async () => {
-  const queryClient = getServerQueryClient();
+  const queryClient = getQueryClient();
 
   await queryClient.prefetchQuery({
     queryKey: ["review-category"],

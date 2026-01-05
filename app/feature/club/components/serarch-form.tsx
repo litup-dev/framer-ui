@@ -16,11 +16,15 @@ import { useQuery } from "@tanstack/react-query";
 import MobileFilter from "@/app/feature/club/components/mobile-filter";
 import DesktopFilter from "@/app/feature/club/components/desktop-filter";
 import { useClubPagination } from "@/app/feature/club/hooks/use-club-pagination";
+import { useGeolocation } from "@/app/feature/club/hooks/use-geolocation";
 
 const ClubSearchForm = () => {
   const [viewType, setViewType] = useState<"list" | "map">("list");
   const [selectedClub, setSelectedClub] = useState<Club | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [prevRegion, setPrevRegion] = useState<string>("");
+  const { latitude, longitude, requestGeolocation, resetGeolocation } =
+    useGeolocation();
 
   const form = useForm<ClubSearchFormSchema>({
     resolver: zodResolver(clubSearchFormSchema),
@@ -40,6 +44,16 @@ const ClubSearchForm = () => {
     setCurrentPage(1);
   }, [search, region, sort, keywords]);
 
+  useEffect(() => {
+    if (region === "nearby" && prevRegion !== "nearby") {
+      resetGeolocation();
+      requestGeolocation();
+    }
+    if (region) {
+      setPrevRegion(region);
+    }
+  }, [region, prevRegion, requestGeolocation, resetGeolocation]);
+
   const limit = 5;
 
   const clubsQueryOptions = useMemo(
@@ -51,8 +65,10 @@ const ClubSearchForm = () => {
         page: currentPage,
         limit,
         keywords: keywords && keywords.length > 0 ? keywords : undefined,
+        latitude: region === "nearby" ? latitude ?? undefined : undefined,
+        longitude: region === "nearby" ? longitude ?? undefined : undefined,
       }),
-    [search, region, sort, currentPage, limit, keywords]
+    [search, region, sort, currentPage, limit, keywords, latitude, longitude]
   );
 
   const { data } = useQuery({ ...clubsQueryOptions });

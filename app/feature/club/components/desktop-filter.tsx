@@ -25,6 +25,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getReviewCategoryOptions } from "../query-options";
 import { ReviewCategory } from "@/app/feature/club/types";
 import KeywordList from "@/app/feature/club/components/keyword-list";
+import { Subtitle } from "@/components/shared/typography";
 
 type FilterItem = (typeof filterItems)[number];
 
@@ -100,10 +101,12 @@ const DesktopFilter = ({
                         className="placeholder:text-description-14 text-black-60"
                       />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="p-4">
                       {region.map((item) => (
                         <SelectItem key={item.id} value={item.value}>
-                          {item.label}
+                          <Subtitle className="text-[12px] xl:text-[14px]">
+                            {item.label}
+                          </Subtitle>
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -117,16 +120,14 @@ const DesktopFilter = ({
                           handleFilterClick(filter.id, currentOptionIndex)
                         }
                         className={cn(
-                          "border rounded-full px-4 py-2 cursor-pointer transition-colors",
+                          "border rounded-full px-4 py-1 cursor-pointer transition-colors",
                           isActive(filter.id)
                             ? "border-2 border-main text-main"
                             : "bg-transparent text-gray-700 hover:bg-gray-100"
                         )}
                       >
                         <div className="flex items-center gap-1">
-                          <p className="text-chip-14">
-                            {getFilterLabel(filter)}
-                          </p>
+                          {getFilterLabel(filter)}
                           {isActive(filter.id) && (
                             <ChevronDown
                               className={cn(
