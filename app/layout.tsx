@@ -4,7 +4,9 @@ import "./globals.css";
 import ReactQueryProvider from "@/providers/react-query-provider";
 import NextAuthProvider from "@/providers/next-auth-provider";
 import SsgoiProvider from "@/providers/ssgoi-provider";
+import { CommonModal } from "@/components/shared/common-modal";
 import localFont from "next/font/local";
+import { Suspense } from "react";
 
 const suit = localFont({
   src: "./fonts/SUIT-Variable.woff2",
@@ -40,9 +42,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <NextAuthProvider>
-          <ReactQueryProvider>
-            <SsgoiProvider>{children}</SsgoiProvider>
-          </ReactQueryProvider>
+          <Suspense fallback={<div>Loading...</div>}>
+            <ReactQueryProvider>
+              <SsgoiProvider>
+                {children}
+                <CommonModal />
+              </SsgoiProvider>
+            </ReactQueryProvider>
+          </Suspense>
         </NextAuthProvider>
       </body>
     </html>

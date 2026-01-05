@@ -58,7 +58,7 @@ export default function UserPage({ params }: UserPageProps) {
 
   // API 응답을 Session 형식으로 변환
   const userInfo = {
-    userId: userId || "", // URL 파라미터의 userId를 문자열로 사용
+    userId: Number(userId), // URL 파라미터의 userId를 숫자로 변환
     nickname: userInfoResponse.data.nickname,
     bio: userInfoResponse.data.bio,
     profilePath: userInfoResponse.data.profilePath,

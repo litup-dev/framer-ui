@@ -18,7 +18,7 @@ const MobileCarouselCards = () => {
   return (
     <div className="grid grid-cols-2 gap-4 md:hidden">
       {eventPosters.map((poster) => (
-        <Link key={poster.id} href={`/home/detail/${poster.id}`}>
+        <Link key={poster.id} href={`/performance/${poster.id}`}>
           <Card className="overflow-hidden" data-hero-key={poster.id}>
             <div className="aspect-[3/4] relative">
               <Image
@@ -58,7 +58,7 @@ const DesktopCarouselCards = () => {
       <CarouselContent className="-ml-2 md:-ml-4">
         {eventPosters.map((poster) => (
           <CarouselItem key={poster.id} className="pl-2 sm:pl-4 sm:basis-1/5">
-            <Link href={`/home/detail/${poster.id}`}>
+            <Link href={`/performance/${poster.id}`}>
               <Card className="overflow-hidden" data-hero-key={poster.id}>
                 <div className="aspect-[3/4] relative">
                   <Image

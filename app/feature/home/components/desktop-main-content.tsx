@@ -79,7 +79,7 @@ const DesktopMainContent = ({ showAllItems }: DesktopMainContentProps) => {
             return (
               <Link
                 key={performance.id}
-                href={`/home/detail/${performance.id}`}
+                href={`/performance/${performance.id}`}
               >
                 <Card
                   className="overflow-hidden gap-3 pb-2"
@@ -155,7 +155,7 @@ const DesktopMainContent = ({ showAllItems }: DesktopMainContentProps) => {
                 key={performance.id}
                 className="pl-2 sm:pl-4 md:basis-1/3 lg:basis-1/4 xl:basis-1/5"
               >
-                <Link href={`/home/detail/${performance.id}`}>
+                <Link href={`/performance/${performance.id}`}>
                   <Card
                     className="overflow-hidden"
                     data-hero-key={performance.id}

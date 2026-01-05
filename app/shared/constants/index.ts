@@ -1,8 +1,8 @@
 export const MenuItems = [
   {
     id: 1,
-    label: "공연 일정",
-    href: "/home",
+    label: "전체 공연",
+    href: "/all-performances",
   },
   {
     id: 2,
