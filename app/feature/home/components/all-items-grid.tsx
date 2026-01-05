@@ -9,7 +9,7 @@ const AllItemsGrid = () => {
   return (
     <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
       {eventPosters.map((poster) => (
-        <Link key={poster.id} href={`/home/detail/${poster.id}`}>
+        <Link key={poster.id} href={`/performance/${poster.id}`}>
           <Card className="overflow-hidden" data-hero-key={poster.id}>
             <div className="aspect-[3/4] relative">
               <Image

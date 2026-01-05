@@ -1,18 +1,29 @@
 "use client";
 
 import { useState } from "react";
-import { Title, Description } from "@/components/shared/typography";
+import { Subtitle, Description } from "@/components/shared/typography";
 import { Button } from "@/components/ui/button";
+import { Instagram } from "lucide-react";
 
 const NoticeSection = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className="flex flex-col gap-4 -mx-5 sm:-mx-10 md:-mx-15 lg:-mx-20 w-screen sm:w-screen md:w-full lg:w-full">
-      <span className="text-black text-description-14 sm:text-subtitle-20 px-5 sm:px-10 md:px-15 lg:px-20">
+    <div className="flex flex-col gap-4 w-full">
+      {/* notice 캡션: MD 이하에서만 표시 */}
+      <Subtitle className="lg:hidden text-[14px] font-medium text-black-60 md:text-[20px] md:font-bold md:text-black">
         notice
-      </span>
-      <div className="flex flex-col">
+      </Subtitle>
+      <div className="flex flex-col relative">
+        {/* 원문 가기 버튼: 우측 상단 */}
+        <Button
+          variant="outline"
+          className="absolute top-4 right-4 2xl:top-6 2xl:right-6 xl:top-6 xl:right-6 bg-white rounded-[4px] border border-[#202020]/10 py-2.5 px-3.5 h-9 2xl:h-10 w-[100px] 2xl:w-[110px] flex items-center gap-1.5 hover:bg-gray-50"
+        >
+          <Subtitle className="text-[14px] 2xl:text-[16px]">원문 가기</Subtitle>
+          <Instagram className="w-4 h-4" />
+        </Button>
+
         <div
           className={`overflow-hidden transition-all duration-300 ${
             isExpanded ? "h-auto" : "h-[200px]"
@@ -65,7 +76,7 @@ const NoticeSection = () => {
           variant="ghost"
           size="sm"
           onClick={() => setIsExpanded(!isExpanded)}
-          className="border text-black-60 hover:text-black px-5 sm:px-10 md:px-15 lg:px-20"
+          className="border text-black-60 hover:text-black w-full"
         >
           {isExpanded ? "접기" : "더보기"}
         </Button>

@@ -19,7 +19,7 @@ const MobileMainContent = ({
     return (
       <div className="grid grid-cols-3 gap-x-2.5 gap-y-6 md:hidden">
         {eventPosters.map((poster) => (
-          <Link key={poster.id} href={`/home/detail/${poster.id}`}>
+          <Link key={poster.id} href={`/performance/${poster.id}`}>
             <Card className="overflow-hidden gap-3 pb-2">
               <div className="aspect-[3/4] relative">
                 <Image
