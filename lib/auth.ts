@@ -108,6 +108,7 @@ export const authOptions: NextAuthOptions = {
           if (response && response.ok) {
             const result = await response.json();
             const publicId = result.data?.publicId;
+            const userId = result.data?.userId;
             if (publicId) {
               const accessToken = createAccessToken(
                 String(publicId),
@@ -132,6 +133,7 @@ export const authOptions: NextAuthOptions = {
                   const userInfo = await userInfoResponse.json();
                   return {
                     publicId: String(publicId),
+                    userId: userId,
                     nickname: userInfo.data?.nickname || "",
                     profilePath: userInfo.data?.profilePath || null,
                     accessToken,
@@ -142,6 +144,7 @@ export const authOptions: NextAuthOptions = {
 
               return {
                 publicId: String(publicId),
+                userId: userId,
                 nickname: result.data?.nickname || "",
                 profilePath: result.data?.profilePath || null,
                 accessToken,
@@ -162,6 +165,7 @@ export const authOptions: NextAuthOptions = {
         nickname: (token.nickname as string) || "",
         profilePath: (token.profilePath as string) || null,
         publicId: (token.publicId as string) || "",
+        userId: token.userId as number | undefined,
       } as typeof session;
     },
     async signIn() {

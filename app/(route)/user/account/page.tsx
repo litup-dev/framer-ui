@@ -20,6 +20,32 @@ export default function AccountPage() {
   const [nickname, setNickname] = useState("");
   const [bio, setBio] = useState("");
 
+  // 프로필 수정 mutation - 훅은 최상위에서 호출
+  const updateMutation = useMutation({
+    mutationFn: updateUserInfo,
+    onSuccess: () => {
+      alert("프로필이 수정되었습니다.");
+      // 세션 갱신을 위해 페이지 새로고침
+      window.location.reload();
+    },
+    onError: () => {
+      alert("프로필 수정에 실패했습니다.");
+    },
+  });
+
+  // 회원 탈퇴 mutation - 훅은 최상위에서 호출
+  const withdrawMutation = useMutation({
+    mutationFn: async () => {
+      return apiClient.delete("/api/v1/auth/withdraw");
+    },
+    onSuccess: () => {
+      signOut({ callbackUrl: "/" });
+    },
+    onError: () => {
+      alert("회원 탈퇴에 실패했습니다.");
+    },
+  });
+
   useEffect(() => {
     if (session) {
       setNickname(session.nickname || "");
@@ -34,32 +60,6 @@ export default function AccountPage() {
   if (!session) {
     return null;
   }
-
-  // 프로필 수정 mutation
-  const updateMutation = useMutation({
-    mutationFn: updateUserInfo,
-    onSuccess: () => {
-      alert("프로필이 수정되었습니다.");
-      // 세션 갱신을 위해 페이지 새로고침
-      window.location.reload();
-    },
-    onError: () => {
-      alert("프로필 수정에 실패했습니다.");
-    },
-  });
-
-  // 회원 탈퇴 mutation
-  const withdrawMutation = useMutation({
-    mutationFn: async () => {
-      return apiClient.delete("/api/v1/auth/withdraw");
-    },
-    onSuccess: () => {
-      signOut({ callbackUrl: "/" });
-    },
-    onError: () => {
-      alert("회원 탈퇴에 실패했습니다.");
-    },
-  });
 
   const handleLogout = async () => {
     await signOut({ callbackUrl: "/" });
