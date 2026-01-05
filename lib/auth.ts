@@ -107,9 +107,12 @@ export const authOptions: NextAuthOptions = {
 
           if (response && response.ok) {
             const result = await response.json();
+            console.log(result, "<<<<< result");
             const publicId = result.data?.publicId;
-            const userId = result.data?.userId;
-            if (publicId) {
+            const userId = result.data?.id;
+
+            console.log(userId, "<<<<< userId");
+            if (userId) {
               const accessToken = createAccessToken(
                 String(publicId),
                 process.env.NEXTAUTH_SECRET!
@@ -140,16 +143,16 @@ export const authOptions: NextAuthOptions = {
                     refreshToken,
                   };
                 }
-              } catch (error) {}
 
-              return {
-                publicId: String(publicId),
-                userId: userId,
-                nickname: result.data?.nickname || "",
-                profilePath: result.data?.profilePath || null,
-                accessToken,
-                refreshToken,
-              };
+                return {
+                  publicId: String(publicId),
+                  userId: userId,
+                  nickname: result.data?.nickname || "",
+                  profilePath: result.data?.profilePath || null,
+                  accessToken,
+                  refreshToken,
+                };
+              } catch (error) {}
             }
           } else {
             const errorText = await response.text();

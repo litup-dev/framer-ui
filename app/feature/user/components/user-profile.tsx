@@ -12,7 +12,7 @@ import { updateUserInfo, getUserInfo } from "@/app/feature/user/query-options";
 import { apiClient } from "@/lib/api-client";
 
 interface UserInfo {
-  userId?: string;
+  userId?: number;
   nickname?: string;
   profilePath?: string | null;
   bio?: string;
@@ -38,7 +38,9 @@ export default function UserProfile({
   const [nickname, setNickname] = useState(session.nickname || "");
   const [isFollowing, setIsFollowing] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-  const [profileImageUrl, setProfileImageUrl] = useState(session.profilePath || null);
+  const [profileImageUrl, setProfileImageUrl] = useState(
+    session.profilePath || null
+  );
   const [tempProfileImage, setTempProfileImage] = useState<Blob | null>(null);
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
 

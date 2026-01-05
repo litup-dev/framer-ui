@@ -8,10 +8,13 @@ import ViewingHistory from "@/app/feature/user/components/viewing-history";
 import FavoriteClubs from "@/app/feature/user/components/favorite-clubs";
 import UserSidebarMenu from "@/app/feature/user/components/user-sidebar-menu";
 import { Title } from "@/components/shared/typography";
-import { UserStats as UserStatsType, UserPermissions } from "@/app/feature/user/types";
+import {
+  UserStats as UserStatsType,
+  UserPermissions,
+} from "@/app/feature/user/types";
 
 interface UserInfo {
-  userId: string;
+  userId: number;
   nickname?: string;
   profilePath?: string | null;
   bio?: string;

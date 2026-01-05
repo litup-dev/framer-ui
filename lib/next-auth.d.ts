@@ -5,8 +5,12 @@ declare module "next-auth" {
     publicId?: string;
     userId?: number;
     accessToken?: string;
+    refreshToken?: string;
+    expires?: string;
     nickname?: string;
     profilePath?: string | null;
+    bio?: string;
+    provider?: string;
   }
 
   interface JWT {
@@ -14,6 +18,8 @@ declare module "next-auth" {
     userId?: number;
     nickname?: string;
     profilePath?: string | null;
+    bio?: string;
+    provider?: string;
     accessToken?: string;
     refreshToken?: string;
   }
