@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRequireAuth } from "@/app/feature/user/hooks/useRequireAuth";
+import { useRouter } from "next/navigation";
+import { useUserStore } from "@/store/user-store";
 import UserPageLayout from "@/app/shared/components/user-page-layout";
 import PrivacySettingGroup from "@/app/feature/user/components/privacy-setting-group";
 import { Separator } from "@/components/ui/separator";
@@ -11,7 +12,7 @@ import { LucideIcon } from "lucide-react";
 import { PrivacyLevel } from "@/app/feature/user/types";
 import {
   getPrivacySettingsOptions,
-  updatePrivacySettings
+  updatePrivacySettings,
 } from "@/app/feature/user/query-options";
 
 interface PrivacySettings {
@@ -31,7 +32,8 @@ const settingLabels: {
 ];
 
 export default function PrivacyPage() {
-  const { session, isLoading: isAuthLoading } = useRequireAuth();
+  const router = useRouter();
+  const { isAuthenticated } = useUserStore();
   const queryClient = useQueryClient();
   const [settings, setSettings] = useState<PrivacySettings>({
     attendance: "public",
@@ -40,9 +42,9 @@ export default function PrivacyPage() {
   });
 
   // 공개범위 설정 조회
-  const { data: privacyData, isLoading: isPrivacyLoading } = useQuery({
+  const { data: privacyData, isLoading } = useQuery({
     ...getPrivacySettingsOptions(),
-    enabled: !!session,
+    enabled: isAuthenticated,
   });
 
   // 공개범위 설정 수정 mutation
@@ -68,15 +70,24 @@ export default function PrivacyPage() {
     }
   }, [privacyData]);
 
-  if (isAuthLoading || isPrivacyLoading) {
+  // useEffect(() => {
+  //   if (!isAuthenticated) {
+  //     router.push("/login");
+  //   }
+  // }, [isAuthenticated, router]);
+
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (!session) {
-    return null;
-  }
+  // if (!isAuthenticated) {
+  //   return null;
+  // }
 
-  const handleSettingChange = (key: keyof PrivacySettings, value: PrivacyLevel) => {
+  const handleSettingChange = (
+    key: keyof PrivacySettings,
+    value: PrivacyLevel
+  ) => {
     setSettings((prev) => ({
       ...prev,
       [key]: value,
@@ -85,14 +96,14 @@ export default function PrivacyPage() {
     // 즉시 API 호출
     updateMutation.mutate({
       attendance: key === "attendance" ? value : settings.attendance,
-      performHistory: key === "performHistory" ? value : settings.performHistory,
+      performHistory:
+        key === "performHistory" ? value : settings.performHistory,
       favoriteClubs: key === "favoriteClubs" ? value : settings.favoriteClubs,
     });
   };
 
   return (
     <UserPageLayout
-      session={session}
       title="공개범위 설정"
       contentTopMargin={{
         sm: "mt-8",
@@ -153,7 +164,9 @@ export default function PrivacyPage() {
         <PrivacySettingGroup
           title={settingLabels[2].label}
           selectedValue={settings[settingLabels[2].key]}
-          onChange={(value) => handleSettingChange(settingLabels[2].key, value)}
+          onChange={(value) =>
+            handleSettingChange(settingLabels[2].key, value)
+          }
           name={settingLabels[2].key}
           layout="lg"
           icon={settingLabels[2].icon}

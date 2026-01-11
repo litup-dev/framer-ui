@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useSession, signOut } from "next-auth/react";
+import { signOut } from "next-auth/react";
+import { useUserStore } from "@/store/user-store";
+import { logout } from "@/lib/auth-utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +19,13 @@ import { Subtitle } from "@/components/shared/typography";
 
 const HeaderMenus = () => {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { user, isAuthenticated } = useUserStore();
+
+  const handleLogout = async () => {
+    await signOut({ redirect: false });
+    logout();
+    router.push("/");
+  };
 
   return (
     <div className="flex gap-10 items-center">
@@ -27,19 +35,17 @@ const HeaderMenus = () => {
         </Link>
       ))}
 
-      {status === "loading" ? (
-        <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
-      ) : session ? (
+      {isAuthenticated ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
               <Avatar className="h-8 w-8">
                 <AvatarImage
-                  src={session.user?.image || ""}
-                  alt={session.user?.name || ""}
+                  src={user?.profilePath || ""}
+                  alt={user?.nickname || ""}
                 />
                 <AvatarFallback>
-                  {session.user?.name?.charAt(0) || "U"}
+                  {user?.nickname?.charAt(0) || "U"}
                 </AvatarFallback>
               </Avatar>
             </Button>
@@ -53,11 +59,11 @@ const HeaderMenus = () => {
               className="cursor-pointer"
               onSelect={() => router.push("/user")}
             >
-              <Subtitle>{session.nickname}</Subtitle>
+              <Subtitle>{user?.nickname}</Subtitle>
             </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
-              onSelect={() => signOut()}
+              onSelect={handleLogout}
             >
               <Subtitle>로그아웃</Subtitle>
             </DropdownMenuItem>

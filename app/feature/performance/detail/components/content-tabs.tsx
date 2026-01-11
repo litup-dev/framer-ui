@@ -1,14 +1,22 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Subtitle } from "@/components/shared/typography";
-import NoticeSection from "./notice-section";
 import CommentSection from "./comment-section";
+import { getPerformanceCommentsOptions } from "../query-options";
 
-interface PerformanceTabsProps {
+interface ContentTabsProps {
   noticeContent: React.ReactNode;
   size?: "sm" | "md" | "lg";
+  performanceId: number;
+  commentText: string;
+  setCommentText: (text: string) => void;
+  editingCommentId: number | null;
+  setEditingCommentId: (id: number | null) => void;
+  editingText: string;
+  setEditingText: (text: string) => void;
 }
 
 /**
@@ -16,7 +24,17 @@ interface PerformanceTabsProps {
  * - size에 따라 폰트 크기 조정
  * - localStorage로 active 탭 상태 유지
  */
-const PerformanceTabs = ({ noticeContent, size = "lg" }: PerformanceTabsProps) => {
+const ContentTabs = ({
+  noticeContent,
+  size = "lg",
+  performanceId,
+  commentText,
+  setCommentText,
+  editingCommentId,
+  setEditingCommentId,
+  editingText,
+  setEditingText
+}: ContentTabsProps) => {
   const [activeTab, setActiveTab] = useState<string>("notice");
 
   const fontSize = {
@@ -24,6 +42,12 @@ const PerformanceTabs = ({ noticeContent, size = "lg" }: PerformanceTabsProps) =
     md: "text-[16px]",
     lg: "text-[18px]"
   }[size];
+
+  // 댓글 수 조회 (React Query 캐싱 활용)
+  const { data: commentsData } = useQuery(
+    getPerformanceCommentsOptions(performanceId, 0, 1)
+  );
+  const totalComments = commentsData?.data.total || 0;
 
   // 컴포넌트 마운트 시 localStorage에서 탭 상태 복원
   useEffect(() => {
@@ -53,7 +77,7 @@ const PerformanceTabs = ({ noticeContent, size = "lg" }: PerformanceTabsProps) =
           value="comment"
           className="data-[state=active]:border-b-2 data-[state=active]:border-[#FF491A] data-[state=active]:text-[#202020]"
         >
-          <Subtitle className={fontSize}>코멘트(10)</Subtitle>
+          <Subtitle className={fontSize}>코멘트({totalComments})</Subtitle>
         </TabsTrigger>
       </TabsList>
 
@@ -62,10 +86,18 @@ const PerformanceTabs = ({ noticeContent, size = "lg" }: PerformanceTabsProps) =
       </TabsContent>
 
       <TabsContent value="comment" className="mt-8 lg:mt-6">
-        <CommentSection />
+        <CommentSection
+          performanceId={performanceId}
+          commentText={commentText}
+          setCommentText={setCommentText}
+          editingCommentId={editingCommentId}
+          setEditingCommentId={setEditingCommentId}
+          editingText={editingText}
+          setEditingText={setEditingText}
+        />
       </TabsContent>
     </Tabs>
   );
 };
 
-export default PerformanceTabs;
+export default ContentTabs;

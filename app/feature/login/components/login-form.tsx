@@ -1,12 +1,31 @@
 "use client";
 
-import { signIn } from "next-auth/react";
-
+import { signIn, useSession } from "next-auth/react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { loginWithToken } from "@/lib/auth-utils";
 import { LoginIcons } from "@/app/feature/login/components/icons";
 import { Button } from "@/components/ui/button";
 
 const LoginForm = () => {
+  const router = useRouter();
+  const { data: session } = useSession();
   const callbackUrl = "/home";
+
+  useEffect(() => {
+    const initializeAuth = async () => {
+      if (session?.accessToken && session?.userId) {
+        try {
+          await loginWithToken(session.accessToken, session.userId);
+          router.push(callbackUrl);
+        } catch (error) {
+          console.error("Failed to initialize auth:", error);
+        }
+      }
+    };
+
+    initializeAuth();
+  }, [session, router]);
 
   const handleGoogleLogin = async () => {
     try {

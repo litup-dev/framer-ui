@@ -1,41 +1,38 @@
-export interface PerformanceInfoResponse {
+export interface PerformanceDetailResponse {
   data: {
     id: number;
     title: string;
     description: string;
     performDate: string;
     bookingPrice: number;
-    onsitePrice: NamedCurve;
+    onsitePrice: number;
     bookingUrl: string;
     isCanceled: boolean;
-    artists: [
-      {
-        name: string;
-      }
-    ];
-    snsLinks: [
-      {
-        instagram: string;
-        youtube: string;
-      }
-    ];
+    artists: Array<{
+      name: string;
+    }>;
+    snsLinks: Array<{
+      instagram: string;
+      youtube: string;
+    }>;
     createdAt: string;
     club: {
       id: number;
       name: string;
       address: string;
     };
-    images: [
-      {
-        id: number;
-        filePath: string;
-        isMain: boolean;
-      }
-    ];
+    images: Array<{
+      id: number;
+      filePath: string;
+      isMain: boolean;
+    }>;
     isAttend: boolean;
   };
   message: string;
 }
+
+// 호환성을 위한 alias
+export type PerformanceInfoResponse = PerformanceDetailResponse;
 
 export interface PerformanceCommentResponse {
     data: {
@@ -47,14 +44,15 @@ export interface PerformanceCommentResponse {
 }
 
 export interface PerformanceCommentItem {
-  id: string;
+  id: number;
   content: string;
   likeCount: number;
   createdAt: string;
   updatedAt: string;
   user: {
-    id: string;
+    publicId: string;
     nickname: string;
     profilePath?: string;
   };
+  isLiked: boolean;
 }

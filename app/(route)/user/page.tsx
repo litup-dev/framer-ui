@@ -42,15 +42,6 @@ export default function MyPage() {
     return <div>유저 정보를 불러올 수 없습니다.</div>;
   }
 
-  // API 응답을 Session 형식으로 변환
-  const userInfo = {
-    userId: session.userId,
-    nickname: userInfoResponse.data.nickname,
-    bio: userInfoResponse.data.bio,
-    profilePath: userInfoResponse.data.profilePath,
-    accessToken: session.accessToken,
-  };
-
   // 마이페이지는 모든 권한 허용
   const permissions = {
     canViewStats: true,
@@ -60,7 +51,6 @@ export default function MyPage() {
 
   return (
     <UserPageContent
-      userInfo={userInfo}
       isOwner={true}
       permissions={permissions}
       userStats={userStats}

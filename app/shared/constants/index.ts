@@ -90,3 +90,14 @@ export const MyPageMenuItems = [
     ],
   },
 ];
+
+export const REPORT_CATEGORIES = [
+  { id: "spam", label: "스팸/광고성 콘텐츠" },
+  { id: "hate", label: "욕설 및 혐오 발언" },
+  { id: "copyright", label: "저작권 침해" },
+  { id: "privacy", label: "개인정보 노출" },
+  { id: "misinformation", label: "허위 정보" },
+  { id: "illegal", label: "불법 행위" },
+  { id: "adult", label: "음란/성적 콘텐츠" },
+  { id: "etc", label: "기타" },
+] as const;

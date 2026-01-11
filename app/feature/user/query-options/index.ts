@@ -14,7 +14,9 @@ import {
   PrivacySettingsResponse,
   UpdatePrivacySettingsRequest,
   UpdatePrivacySettingsResponse,
+  UserClubReviewsResponse,
 } from "@/app/feature/user/types";
+import { PerformanceCommentResponse } from "@/app/feature/performance/detail/types";
 
 // 유저 통계 API
 export const getUserStatsOptions = (userId: number) =>
@@ -155,3 +157,53 @@ export const updatePrivacySettings = async (
   );
   return response;
 };
+
+// 유저 클럽 리뷰 목록 조회 API
+export const getUserClubReviewsOptions = (sort: string = "-createdAt") =>
+  queryOptions({
+    queryKey: ["userClubReviews", sort],
+    queryFn: async () => {
+      const response = await apiClient.get<UserClubReviewsResponse>(
+        `/api/v1/users/me/club-reviews?sort=${sort}`
+      );
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+  });
+
+// 유저가 작성한 공연 한줄평 목록 조회 API
+export const getMyPerformanceCommentsOptions = (
+  sort: string = "-createdAt",
+  offset: number = 0,
+  limit: number = 10
+) =>
+  queryOptions({
+    queryKey: ["myPerformanceComments", sort, offset, limit],
+    queryFn: async () => {
+      const response = await apiClient.get<PerformanceCommentResponse>(
+        `/api/v1/users/me/perform-review?sort=${sort}&offset=${offset}&limit=${limit}`
+      );
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+  });
+
+// 유저가 좋아요한 공연 한줄평 목록 조회 API
+export const getMyLikedPerformanceCommentsOptions = (
+  sort: string = "-createdAt",
+  offset: number = 0,
+  limit: number = 10
+) =>
+  queryOptions({
+    queryKey: ["myLikedPerformanceComments", sort, offset, limit],
+    queryFn: async () => {
+      const response = await apiClient.get<PerformanceCommentResponse>(
+        `/api/v1/users/me/liked-review?sort=${sort}&offset=${offset}&limit=${limit}`
+      );
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+  });

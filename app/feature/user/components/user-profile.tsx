@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useSession } from "next-auth/react";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import UserProfileAvatar from "./user-profile-avatar";
@@ -10,36 +9,29 @@ import UserProfileActions from "./user-profile-actions";
 import ProfileImageCropModal from "./profile-image-crop-modal";
 import { updateUserInfo, getUserInfo } from "@/app/feature/user/query-options";
 import { apiClient } from "@/lib/api-client";
-
-interface UserInfo {
-  userId?: number;
-  nickname?: string;
-  profilePath?: string | null;
-  bio?: string;
-  accessToken?: string;
-}
+import { UserInfo, useUserStore } from "@/store/user-store";
 
 interface UserProfileProps {
-  session: UserInfo;
+  user: UserInfo | null;
   isOwner: boolean;
   isEditing?: boolean;
   setIsEditing?: (value: boolean) => void;
 }
 
 export default function UserProfile({
-  session,
+  user,
   isOwner,
   isEditing: externalIsEditing,
   setIsEditing: externalSetIsEditing,
 }: UserProfileProps) {
-  const { update } = useSession();
+  const { setUser } = useUserStore();
   const [internalIsEditing, setInternalIsEditing] = useState(false);
-  const [bio, setBio] = useState(session.bio || "");
-  const [nickname, setNickname] = useState(session.nickname || "");
+  const [bio, setBio] = useState(user?.bio || "");
+  const [nickname, setNickname] = useState(user?.nickname || "");
   const [isFollowing, setIsFollowing] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [profileImageUrl, setProfileImageUrl] = useState(
-    session.profilePath || null
+    user?.profilePath || null
   );
   const [tempProfileImage, setTempProfileImage] = useState<Blob | null>(null);
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
@@ -58,12 +50,9 @@ export default function UserProfile({
       // API 응답에서 최신 유저 정보 받기 (id, nickname, profilePath, bio)
       const updatedUserInfo = response.data;
 
-      // session 업데이트
-      await update({
-        nickname: updatedUserInfo.nickname,
-        bio: updatedUserInfo.bio,
-        profilePath: updatedUserInfo.profilePath,
-      });
+      // user store 업데이트
+      setUser(updatedUserInfo);
+
       setProfileImageUrl(updatedUserInfo.profilePath);
       setTempProfileImage(null);
       setPreviewImageUrl(null);
@@ -89,12 +78,8 @@ export default function UserProfile({
         // 이미지 업로드 API 응답에서 최신 유저 정보 받기 (id, nickname, profilePath, bio)
         const updatedUserInfo = response.data;
 
-        // session 업데이트
-        await update({
-          nickname: updatedUserInfo.nickname,
-          bio: updatedUserInfo.bio,
-          profilePath: updatedUserInfo.profilePath,
-        });
+        // user store 업데이트
+        setUser(updatedUserInfo);
         setProfileImageUrl(updatedUserInfo.profilePath);
         setTempProfileImage(null);
         setPreviewImageUrl(null);

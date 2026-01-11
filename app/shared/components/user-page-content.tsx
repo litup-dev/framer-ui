@@ -8,40 +8,32 @@ import ViewingHistory from "@/app/feature/user/components/viewing-history";
 import FavoriteClubs from "@/app/feature/user/components/favorite-clubs";
 import UserSidebarMenu from "@/app/feature/user/components/user-sidebar-menu";
 import { Title } from "@/components/shared/typography";
+import { useUserStore } from "@/store/user-store";
 import {
   UserStats as UserStatsType,
   UserPermissions,
 } from "@/app/feature/user/types";
 
-interface UserInfo {
-  userId: number;
-  nickname?: string;
-  profilePath?: string | null;
-  bio?: string;
-  accessToken?: string;
-}
-
 interface UserPageContentProps {
-  userInfo: UserInfo;
   isOwner: boolean;
   permissions: UserPermissions;
   userStats?: UserStatsType;
 }
 
 export default function UserPageContent({
-  userInfo,
   isOwner,
   permissions,
   userStats,
 }: UserPageContentProps) {
+  const { user } = useUserStore();
   const [isProfileEditing, setIsProfileEditing] = useState(false);
   const [isHistoryEditing, setIsHistoryEditing] = useState(false);
 
-  const userId = userInfo.userId!; // userId는 항상 존재함을 보장
+  const userId = user?.publicId ?? 0;
   const userIdNumber = Number(userId); // API 호출을 위해 number로 변환
   const pageTitle = isOwner
     ? "마이페이지"
-    : `${userInfo.nickname || "사용자"}님의 활동`;
+    : `${user?.nickname || "사용자"}님의 활동`;
 
   // 공통 콘텐츠
   const renderContent = () => (
@@ -70,7 +62,7 @@ export default function UserPageContent({
   const renderProfileSection = () => (
     <>
       <UserProfile
-        session={userInfo}
+        user={user}
         isOwner={isOwner}
         isEditing={isProfileEditing}
         setIsEditing={setIsProfileEditing}
@@ -104,7 +96,7 @@ export default function UserPageContent({
           {pageTitle}
         </Title>
         <UserProfile
-          session={userInfo}
+          user={user}
           isOwner={isOwner}
           isEditing={isProfileEditing}
           setIsEditing={setIsProfileEditing}

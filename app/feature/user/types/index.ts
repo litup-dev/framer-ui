@@ -143,3 +143,35 @@ export interface UpdatePrivacySettingsRequest {
 export interface UpdatePrivacySettingsResponse {
   message?: string;
 }
+
+export interface UserClubReviewsResponse {
+  data: {
+    id: number;
+    name: string;
+    total: number;
+    reviews: ClubReviewsItem[];
+  }[];
+  message?: string;
+}
+
+export interface ClubReviewsItem {
+  id: number;
+  rating: number;
+  content: string;
+  createdAt: string;
+  updatedAt?: string;
+  user: {
+    id: number;
+    nickname: string;
+    profilePath?: string;
+  };
+  keywords: {
+    id: number;
+    name: string;
+  }[];
+  images?: {
+    id: number;
+    filePath: string;
+    isMain: boolean;
+  }[];
+}

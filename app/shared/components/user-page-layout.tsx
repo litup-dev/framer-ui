@@ -1,16 +1,15 @@
 "use client";
 
 import { ReactNode, useState } from "react";
-import { Session } from "next-auth";
 import PageWrapper from "@/app/shared/components/page-wrapper";
 import UserProfile from "@/app/feature/user/components/user-profile";
 import UserSidebarMenu from "@/app/feature/user/components/user-sidebar-menu";
 import { Title } from "@/components/shared/typography";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { useUserStore } from "@/store/user-store";
 
 interface UserPageLayoutProps {
-  session: Session;
   title: string;
   children: ReactNode;
   contentTopMargin?: {
@@ -23,7 +22,6 @@ interface UserPageLayoutProps {
 }
 
 export default function UserPageLayout({
-  session,
   title,
   children,
   contentTopMargin = {
@@ -34,6 +32,7 @@ export default function UserPageLayout({
     "2xl": "2xl:mt-20",
   },
 }: UserPageLayoutProps) {
+  const { user } = useUserStore();
   const [isProfileEditing, setIsProfileEditing] = useState(false);
 
   return (
@@ -49,7 +48,7 @@ export default function UserPageLayout({
           </div>
 
           <UserProfile
-            session={session}
+            user={user}
             isOwner={true}
             isEditing={isProfileEditing}
             setIsEditing={setIsProfileEditing}
