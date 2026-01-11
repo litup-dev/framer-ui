@@ -111,20 +111,19 @@ export const authOptions: NextAuthOptions = {
             const publicId = result.data?.publicId;
             const userId = result.data?.id;
 
-            console.log(userId, "<<<<< userId");
             if (userId) {
               const accessToken = createAccessToken(
-                String(publicId),
+                String(userId),
                 process.env.NEXTAUTH_SECRET!
               );
               const refreshToken = createRefreshToken(
-                String(publicId),
+                String(userId),
                 process.env.NEXTAUTH_SECRET!
               );
 
               try {
                 const userInfoResponse = await fetch(
-                  `${process.env.API_BASE_URL}/api/v1/users/${publicId}`,
+                  `${process.env.API_BASE_URL}/api/v1/users/${userId}`,
                   {
                     headers: {
                       Authorization: `Bearer ${accessToken}`,
@@ -135,7 +134,7 @@ export const authOptions: NextAuthOptions = {
                 if (userInfoResponse.ok) {
                   const userInfo = await userInfoResponse.json();
                   return {
-                    publicId: String(publicId),
+                    publicId: String(userId),
                     userId: userId,
                     nickname: userInfo.data?.nickname || "",
                     profilePath: userInfo.data?.profilePath || null,
@@ -145,7 +144,7 @@ export const authOptions: NextAuthOptions = {
                 }
 
                 return {
-                  publicId: String(publicId),
+                  publicId: String(userId),
                   userId: userId,
                   nickname: result.data?.nickname || "",
                   profilePath: result.data?.profilePath || null,
