@@ -56,16 +56,6 @@ export default function UserPage({ params }: UserPageProps) {
     return <div>유저 정보를 불러올 수 없습니다.</div>;
   }
 
-  // API 응답을 Session 형식으로 변환
-  const userInfo = {
-    userId: Number(userId), // URL 파라미터의 userId를 숫자로 변환
-    nickname: userInfoResponse.data.nickname,
-    bio: userInfoResponse.data.bio,
-    profilePath: userInfoResponse.data.profilePath,
-    provider: userInfoResponse.data.provider,
-    accessToken: "",
-  };
-
   // 임시: 모든 권한 허용 (나중에 권한 API 추가 예정)
   const permissions = {
     canViewStats: true,
@@ -75,7 +65,6 @@ export default function UserPage({ params }: UserPageProps) {
 
   return (
     <UserPageContent
-      userInfo={userInfo}
       isOwner={false}
       permissions={permissions}
       userStats={userStats}
