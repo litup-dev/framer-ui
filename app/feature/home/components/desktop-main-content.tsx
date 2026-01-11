@@ -1,22 +1,16 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { usePagination } from "@/app/feature/home/hooks/use-pagination";
 import { getPerformancesOptions } from "@/app/feature/home/query-options";
 import { useHomeStore } from "@/app/feature/home/store/home-store";
-import {
-  getToday,
-  getTodayDate,
-  getStartOfWeek,
-  getEndOfWeek,
-} from "@/lib/date-utils";
-import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
+import { getDateRange } from "@/app/feature/home/utils/get-date-range";
+import { getQueryParams } from "@/app/feature/home/utils/get-query-params";
 import { PerformancesPagination } from "@/app/feature/home/components/performances-pagination";
+import { PerformanceCard } from "@/app/feature/home/components/performance-card";
 
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -24,109 +18,106 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Subtitle } from "@/components/shared/typography";
 
 interface DesktopMainContentProps {
   showAllItems: boolean;
 }
 
 const DesktopMainContent = ({ showAllItems }: DesktopMainContentProps) => {
-  const { selectedCategory } = useHomeStore();
-  const today = getTodayDate();
+  const { selectedCategory, selectedArea } = useHomeStore();
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const startDate =
-    selectedCategory === "week" ? getStartOfWeek(today) : getToday();
+  const { startDate, endDate } = getDateRange(selectedCategory);
+  const { isFree, area } = getQueryParams(selectedCategory, selectedArea);
 
-  const endDate =
-    selectedCategory === "week" ? getEndOfWeek(today) : getToday();
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, selectedArea]);
 
   const {
     data: performances,
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = useInfiniteQuery(getPerformancesOptions(startDate, endDate));
-
-  const performanceItems =
-    performances?.pages.flatMap((page) => page.data) || [];
+  } = useInfiniteQuery(
+    getPerformancesOptions(startDate, endDate, area, isFree)
+  );
 
   const limit = 16;
   const total = (performances?.pages[0] as { total?: number })?.total || 0;
-  const currentPage = performances?.pages.length || 1;
+
+  const performanceItems = useMemo(() => {
+    if (!performances?.pages || performances.pages.length === 0) return [];
+
+    const targetOffset = (currentPage - 1) * limit;
+    const pageIndex = performances.pages.findIndex(
+      (page) => page.offset === targetOffset
+    );
+
+    if (pageIndex !== -1) {
+      return performances.pages[pageIndex].data;
+    }
+
+    return performances.pages[0]?.data || [];
+  }, [performances?.pages, currentPage, limit]);
 
   const pagination = usePagination({
     total,
     limit,
     currentPage,
     hasNextPage: hasNextPage ?? false,
-    fetchNextPage,
+    fetchNextPage: async () => {
+      await fetchNextPage();
+    },
     pages: performances?.pages || [],
   });
+
+  const handlePageChange = useCallback(
+    async (page: number) => {
+      const totalPages = Math.ceil(total / limit);
+      if (page < 1 || page > totalPages) return;
+
+      const targetOffset = (page - 1) * limit;
+      let currentMaxOffset = Math.max(
+        ...(performances?.pages.map((p) => p.offset) || [0]),
+        0
+      );
+
+      while (targetOffset > currentMaxOffset && hasNextPage) {
+        await fetchNextPage();
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        currentMaxOffset = Math.max(
+          ...(performances?.pages.map((p) => p.offset) || [0]),
+          0
+        );
+        if (currentMaxOffset >= targetOffset) {
+          break;
+        }
+      }
+
+      setCurrentPage(page);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    [performances?.pages, hasNextPage, fetchNextPage, total, limit]
+  );
 
   if (showAllItems) {
     return (
       <div className="hidden md:flex flex-col gap-4">
         <div className="grid grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          {performanceItems.map((performance) => {
-            const mainImage =
-              performance.images.find((img) => img.isMain) ||
-              performance.images[0];
-            const imageUrl = getImageUrl(mainImage?.filePath);
-            const artistsText = performance.artists
-              .map((artist) => artist.name)
-              .join(", ");
-
-            return (
-              <Link
-                key={performance.id}
-                href={`/performance/${performance.id}`}
-              >
-                <Card
-                  className="overflow-hidden gap-3 pb-2"
-                  data-hero-key={performance.id}
-                >
-                  <div className="aspect-[3/4] relative">
-                    {imageUrl ? (
-                      <Image
-                        src={imageUrl}
-                        alt={
-                          performance.title ||
-                          performance.club?.name ||
-                          "Performance image"
-                        }
-                        fill
-                        sizes="(max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                        <span className="text-gray-500 text-sm">
-                          이미지 없음
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                  <CardContent className="flex flex-col justify-start truncate gap-2.5">
-                    <Subtitle>{performance.club.name}</Subtitle>
-                    <Subtitle>{performance.title}</Subtitle>
-                    <p className="text-chip-14 2xl:text-chip-16">
-                      {artistsText || "아티스트 정보 없음"}
-                    </p>
-                  </CardContent>
-                </Card>
-              </Link>
-            );
-          })}
+          {performanceItems.map((performance) => (
+            <PerformanceCard key={performance.id} performance={performance} />
+          ))}
         </div>
         <PerformancesPagination
           totalPages={pagination.totalPages}
           currentPage={currentPage}
           pageNumbers={pagination.pageNumbers}
-          onPageClick={pagination.handlePageClick}
-          onPreviousClick={pagination.handlePreviousClick}
-          onNextClick={pagination.handleNextClick}
-          canGoPrevious={pagination.canGoPrevious}
-          canGoNext={pagination.canGoNext}
+          onPageClick={handlePageChange}
+          onPreviousClick={() => handlePageChange(currentPage - 1)}
+          onNextClick={() => handlePageChange(currentPage + 1)}
+          canGoPrevious={currentPage > 1}
+          canGoNext={currentPage < pagination.totalPages}
         />
       </div>
     );
@@ -141,62 +132,14 @@ const DesktopMainContent = ({ showAllItems }: DesktopMainContentProps) => {
         }}
       >
         <CarouselContent className="-ml-2 md:-ml-4">
-          {performanceItems.map((performance) => {
-            const mainImage =
-              performance.images.find((img) => img.isMain) ||
-              performance.images[0];
-            const imageUrl = getImageUrl(mainImage?.filePath);
-            const artistsText = performance.artists
-              .map((artist) => artist.name)
-              .join(", ");
-
-            return (
-              <CarouselItem
-                key={performance.id}
-                className="pl-2 sm:pl-4 md:basis-1/3 lg:basis-1/4 xl:basis-1/5"
-              >
-                <Link href={`/performance/${performance.id}`}>
-                  <Card
-                    className="overflow-hidden"
-                    data-hero-key={performance.id}
-                  >
-                    <div className="aspect-[3/4] relative">
-                      {imageUrl ? (
-                        <Image
-                          src={imageUrl}
-                          alt={
-                            performance.title ||
-                            performance.club?.name ||
-                            "Performance image"
-                          }
-                          fill
-                          sizes="(max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                          <span className="text-gray-500 text-sm">
-                            이미지 없음
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                    <CardContent className="flex flex-col justify-start">
-                      <h3 className="text-gray-400 text-[16px] font-medium mb-1 truncate">
-                        {performance.club.name}
-                      </h3>
-                      <p className="font-bold text-[20px] text-[#202020] mb-1 truncate">
-                        {performance.title}
-                      </p>
-                      <p className="font-normal text-[14px] text-gray-400">
-                        {artistsText || "아티스트 정보 없음"}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </CarouselItem>
-            );
-          })}
+          {performanceItems.map((performance) => (
+            <CarouselItem
+              key={performance.id}
+              className="pl-2 sm:pl-4 md:basis-1/3 lg:basis-1/4 xl:basis-1/5"
+            >
+              <PerformanceCard performance={performance} />
+            </CarouselItem>
+          ))}
         </CarouselContent>
         <CarouselPrevious />
         <CarouselNext />

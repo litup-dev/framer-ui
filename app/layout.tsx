@@ -4,7 +4,6 @@ import "./globals.css";
 import ReactQueryProvider from "@/providers/react-query-provider";
 import NextAuthProvider from "@/providers/next-auth-provider";
 import SsgoiProvider from "@/providers/ssgoi-provider";
-import { CommonModal } from "@/components/shared/common-modal";
 import localFont from "next/font/local";
 import { Suspense } from "react";
 
@@ -44,10 +43,7 @@ export default function RootLayout({
         <NextAuthProvider>
           <Suspense fallback={<div>Loading...</div>}>
             <ReactQueryProvider>
-              <SsgoiProvider>
-                {children}
-                <CommonModal />
-              </SsgoiProvider>
+              <SsgoiProvider>{children}</SsgoiProvider>
             </ReactQueryProvider>
           </Suspense>
         </NextAuthProvider>

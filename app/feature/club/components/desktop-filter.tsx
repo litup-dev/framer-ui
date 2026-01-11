@@ -177,7 +177,7 @@ const DesktopFilter = ({
 
       <div className="w-3/5 relative flex-1 min-h-0">
         <div className="absolute inset-0 -right-5 md:-right-10 lg:-right-15 xl:-right-20">
-          <KakaoMap club={selectedClub} />
+          <KakaoMap club={selectedClub} clubs={clubs} />
         </div>
       </div>
     </div>

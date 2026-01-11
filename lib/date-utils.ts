@@ -142,7 +142,7 @@ export const getEndOfWeek = (
  * @returns 포맷된 날짜 문자열
  */
 export const formatDate = (
-  date: Date,
+  date: string,
   formatString: string = "yyyy-MM-dd"
 ): string => {
   return format(date, formatString, { locale: ko });

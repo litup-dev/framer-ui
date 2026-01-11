@@ -5,7 +5,7 @@ interface ButtonAction {
   onClick: () => void;
 }
 
-type TextAlign = "text-center" | "text-left";
+type TextAlign = "text-center" | "text-start";
 
 interface CommonModalState {
   isOpen: boolean;

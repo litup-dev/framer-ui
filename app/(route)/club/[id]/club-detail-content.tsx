@@ -33,6 +33,7 @@ import {
 } from "@/app/feature/club/detail/components";
 import ClubDetailReview from "@/app/feature/club/detail/components/club-detail-review";
 import ClubDetailFloating from "@/app/feature/club/detail/components/club-detail-floating";
+import Footer from "@/app/shared/components/footer";
 
 interface ClubDetailContentProps {
   id: string;
@@ -45,6 +46,8 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
   const { data } = useQuery<ClubDetail>(getClubByIdOptions(id));
   const [selectedMonth, setSelectedMonth] = useState(new Date());
   const [reviewPage, setReviewPage] = useState(1);
+  const [isMine, setIsMine] = useState(false);
+  const [sort, setSort] = useState<"-createdAt" | "+createdAt">("-createdAt");
   const reviewLimit = 5;
   const reviewOffset = (reviewPage - 1) * reviewLimit;
 
@@ -56,7 +59,7 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
     ...getClubDetailCalendarByIdOptions(Number(id), currentMonth),
   });
   const { data: reviewsData } = useQuery<ReviewPaginatedResponse>(
-    getReviewByIdOptions(id, reviewOffset, reviewLimit)
+    getReviewByIdOptions(id, reviewOffset, reviewLimit, isMine, sort)
   );
 
   const images = data?.data?.images || [];
@@ -109,6 +112,7 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
 
   if (!data?.data) return null;
 
+  console.log(data, "<<<< data");
   return (
     <div className="w-screen">
       <ClubDetailHeader images={imageUrls} clubName={data.data.name} />
@@ -130,30 +134,36 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
               </div>
             </div>
 
-            <div
-              id="schedule"
-              className="py-5 space-y-5 px-5 sm:px-10 lg:px-15"
-            >
-              <ClubDetailScheduleHeader
-                currentMonth={selectedMonth}
-                onMonthChange={setSelectedMonth}
-              />
-              <ClubDetailSchedule
-                events={events}
-                clubId={Number(id)}
-                month={currentMonth}
-              />
-            </div>
+            <div className="space-y-16 sm:space-y-20 xl:space-y-25">
+              <div
+                id="schedule"
+                className="py-5 space-y-5 px-5 sm:px-10 lg:px-15"
+              >
+                <ClubDetailScheduleHeader
+                  currentMonth={selectedMonth}
+                  onMonthChange={setSelectedMonth}
+                />
+                <ClubDetailSchedule
+                  events={events}
+                  clubId={Number(id)}
+                  month={currentMonth}
+                />
+              </div>
 
-            <div id="review" className="space-y-5 px-5 sm:px-10 lg:px-15">
-              <ClubDetailReview
-                data={data.data}
-                reviews={reviews}
-                total={reviewsData?.total || 0}
-                currentPage={reviewPage}
-                limit={reviewLimit}
-                onPageChange={setReviewPage}
-              />
+              <div id="review" className="space-y-5 px-5 sm:px-10 lg:px-15">
+                <ClubDetailReview
+                  data={data.data}
+                  reviews={reviews}
+                  total={reviewsData?.total || 0}
+                  currentPage={reviewPage}
+                  limit={reviewLimit}
+                  onPageChange={setReviewPage}
+                  isMine={isMine}
+                  setIsMine={setIsMine}
+                  sort={sort}
+                  setSort={setSort}
+                />
+              </div>
             </div>
           </div>
 
@@ -162,6 +172,7 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
           </div>
         </div>
       </div>
+      <Footer />
 
       {!isReviewModalOpen && <ClubDetailFloating />}
     </div>

@@ -55,6 +55,7 @@ const ClubDetailDescription = ({ data }: ClubDetailDescriptionProps) => {
     }
   };
 
+  console.log(data);
   return (
     <div className="px-5 sm:px-10 lg:px-15 lg:py-10 xl:mr-0 xl:w-full">
       <div className="flex flex-col lg:flex-row xl:flex-col lg:items-stretch gap-3 lg:gap-10">
@@ -70,12 +71,23 @@ const ClubDetailDescription = ({ data }: ClubDetailDescriptionProps) => {
             </div>
           </InfoRow>
 
-          <InfoRow label="SNS">
-            <div className="flex-[9] bg-gray flex gap-5">
-              <Description className="text-black">youtube ↗</Description>
-              <Description className="text-black">instagram ↗</Description>
-            </div>
-          </InfoRow>
+          {data.snsLinks && data.snsLinks.length > 0 && (
+            <InfoRow label="SNS">
+              <div className="flex-[9] bg-gray flex gap-5">
+                {data.snsLinks.map((sns, index) => (
+                  <span
+                    key={index}
+                    onClick={() => window.open(sns.url, "_blank")}
+                  >
+                    <Description
+                      key={index}
+                      className="text-black"
+                    >{`${sns.platform} ↗`}</Description>
+                  </span>
+                ))}
+              </div>
+            </InfoRow>
+          )}
         </div>
 
         <div className="flex flex-col  flex-1 space-y-10 lg:space-y-20 xl:space-y-0 lg:justify-between pb-14">
@@ -83,7 +95,6 @@ const ClubDetailDescription = ({ data }: ClubDetailDescriptionProps) => {
             <InfoRow label="위치" align="start">
               <div className={`${VALUE_COL_CLASS} bg-gray`}>
                 <Chip className="text-black">{data.address}</Chip>
-                <Chip className="text-black">상수역 3번 출구에서 115m</Chip>
               </div>
             </InfoRow>
 
@@ -99,7 +110,7 @@ const ClubDetailDescription = ({ data }: ClubDetailDescriptionProps) => {
                 />
               </Map>
             </div>
-            <ClubDetailFacilities />
+            {/* <ClubDetailFacilities /> */}
           </div>
         </div>
       </div>

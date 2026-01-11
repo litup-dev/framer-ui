@@ -59,7 +59,6 @@ const getClubsOptions = (params: GetClubsParams = {}) => {
   const page = params.page || 1;
   const offset = params.offset ?? (page - 1) * limit;
 
-  console.log(page, offset);
   const normalizedParams = {
     area: params.area || "other",
     sort: params.sort || "-reviewCount",
@@ -139,15 +138,23 @@ const mutateFavoriteClub = (id: string) =>
 const getReviewByIdOptions = (
   id: string,
   offset: number = 0,
-  limit: number = 5
+  limit: number = 5,
+  isMine: boolean = false,
+  sort: "-createdAt" | "+createdAt" = "-createdAt"
 ) =>
   queryOptions<ReviewPaginatedResponse>({
-    queryKey: ["reviews", id, offset, limit],
+    queryKey: ["reviews", id, offset, limit, isMine, sort],
     staleTime: 5 * 60 * 1000,
     queryFn: async () => {
+      const params = new URLSearchParams({
+        offset: String(offset),
+        limit: String(limit),
+        isMine: String(isMine),
+        sort: sort,
+      });
       const response = await apiClient.get<
         { data: ReviewPaginatedResponse } | ReviewPaginatedResponse
-      >(`/api/v1/clubs/${id}/reviews?offset=${offset}&limit=${limit}`);
+      >(`/api/v1/clubs/${id}/reviews?${params.toString()}`);
 
       if (
         "data" in response &&

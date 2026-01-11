@@ -13,7 +13,7 @@ import { Separator } from "@/components/ui/separator";
 
 const Footer = () => {
   return (
-    <footer className="w-full 2xl:p-20 bg-[#ffffff] 2xl:pt-40">
+    <footer className="w-full px-10 pt-12 2xl:p-20 bg-[#ffffff]2xl:pt-40">
       <div className="flex flex-col sm:flex-row sm:justify-between gap-8">
         <div className="flex flex-col gap-8">
           <div className="flex gap-3">

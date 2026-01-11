@@ -3,12 +3,12 @@ import GoogleProvider from "next-auth/providers/google";
 import KakaoProvider from "next-auth/providers/kakao";
 import jwt from "jsonwebtoken";
 
-const createAccessToken = (publicId: string, secret: string) => {
-  return jwt.sign({ publicId }, secret, { expiresIn: "1h" });
+const createAccessToken = (userId: string, secret: string) => {
+  return jwt.sign({ userId }, secret, { expiresIn: "1h" });
 };
 
-const createRefreshToken = (publicId: string, secret: string) => {
-  return jwt.sign({ publicId }, secret, { expiresIn: "30d" });
+const createRefreshToken = (userId: string, secret: string) => {
+  return jwt.sign({ userId }, secret, { expiresIn: "30d" });
 };
 
 export const authOptions: NextAuthOptions = {
@@ -107,24 +107,22 @@ export const authOptions: NextAuthOptions = {
 
           if (response && response.ok) {
             const result = await response.json();
-            console.log(result, "<<<<< result");
             const publicId = result.data?.publicId;
             const userId = result.data?.id;
 
-            console.log(userId, "<<<<< userId");
             if (userId) {
               const accessToken = createAccessToken(
-                String(publicId),
+                String(userId),
                 process.env.NEXTAUTH_SECRET!
               );
               const refreshToken = createRefreshToken(
-                String(publicId),
+                String(userId),
                 process.env.NEXTAUTH_SECRET!
               );
 
               try {
                 const userInfoResponse = await fetch(
-                  `${process.env.API_BASE_URL}/api/v1/users/${publicId}`,
+                  `${process.env.API_BASE_URL}/api/v1/users/${userId}`,
                   {
                     headers: {
                       Authorization: `Bearer ${accessToken}`,
@@ -135,7 +133,7 @@ export const authOptions: NextAuthOptions = {
                 if (userInfoResponse.ok) {
                   const userInfo = await userInfoResponse.json();
                   return {
-                    publicId: String(publicId),
+                    publicId: String(userId),
                     userId: userId,
                     nickname: userInfo.data?.nickname || "",
                     profilePath: userInfo.data?.profilePath || null,
@@ -145,7 +143,7 @@ export const authOptions: NextAuthOptions = {
                 }
 
                 return {
-                  publicId: String(publicId),
+                  publicId: String(userId),
                   userId: userId,
                   nickname: result.data?.nickname || "",
                   profilePath: result.data?.profilePath || null,
