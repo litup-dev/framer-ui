@@ -331,6 +331,38 @@ const uploadClubReviewImageOptions = (reviewId: number) =>
     },
   });
 
+const updateReviewOptions = (reviewId: number) =>
+  mutationOptions<
+    { data: CreateReviewResponse },
+    Error,
+    { content: string; categories: number[]; rating: number }
+  >({
+    mutationKey: ["update-review", reviewId],
+    mutationFn: async (params: {
+      content: string;
+      categories: number[];
+      rating: number;
+    }): Promise<{ data: CreateReviewResponse }> => {
+      const response = await apiClient.patch<{ data: CreateReviewResponse }>(
+        `/api/v1/reviews/${reviewId}`,
+        params
+      );
+      return response;
+    },
+  });
+
+const deleteReviewOptions = () =>
+  mutationOptions<void, Error, number>({
+    mutationKey: ["delete-review"],
+    mutationFn: async (reviewId: number) => {
+      const response = await apiClient.delete(
+        `/api/v1/reviews/${reviewId}`,
+        {}
+      );
+      return response;
+    },
+  });
+
 export {
   getClubsOptions,
   getClubByIdOptions,
@@ -342,4 +374,6 @@ export {
   performaceAttendByIdOptions,
   createReviewOptions,
   uploadClubReviewImageOptions,
+  updateReviewOptions,
+  deleteReviewOptions,
 };

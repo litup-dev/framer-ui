@@ -21,7 +21,7 @@ interface ClubReviewItemProps {
   clubName: string;
   reviewCount: number;
   reviews: ClubReview[];
-  onEdit?: (reviewId: string) => void;
+  onEdit?: (reviewId: string, review: ClubReview) => void;
   onDelete?: (reviewId: string) => void;
   isOpen: boolean;
   onToggle: () => void;
@@ -172,7 +172,7 @@ export default function ClubReviewItem({
                     </div>
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() => onEdit?.(review.id)}
+                        onClick={() => onEdit?.(review.id, review)}
                         className="hover:text-main transition-colors"
                       >
                         수정

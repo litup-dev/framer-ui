@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { cn } from "@/lib/utils";
@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { ReviewStep1 } from "@/app/feature/club/detail/components/review-step1";
 import { ReviewStep2 } from "@/app/feature/club/detail/components/review-step2";
 import { CreateReviewResponse } from "@/app/feature/club/types";
-import { createReviewOptions } from "@/app/feature/club/query-options";
+import { createReviewOptions, updateReviewOptions, getReviewCategoryOptions } from "@/app/feature/club/query-options";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
 
@@ -21,45 +21,71 @@ const ClubDetailReviewModal = ({ entityId }: { entityId: number }) => {
   const {
     isReviewModalOpen,
     closeReviewModal,
+    reviewMode,
+    reviewId,
     rating,
     resetReviewData,
     reviewContent,
     reviewCategories,
-    reviewImages,
+    existingReviewImages,
+    newReviewImages,
   } = useClubDetailStore();
+
+  // 리뷰 모달이 열릴 때마다 카테고리 조회
+  useEffect(() => {
+    if (isReviewModalOpen) {
+      queryClient.prefetchQuery(getReviewCategoryOptions());
+    }
+  }, [isReviewModalOpen, queryClient]);
+
+  const handleImageUpload = async (reviewId: number) => {
+    if (newReviewImages.length === 0) return;
+
+    try {
+      const formData = new FormData();
+      newReviewImages.forEach((image) => {
+        formData.append("image", image);
+      });
+
+      await apiClient.post(
+        `/api/v1/upload/club-review/${reviewId}`,
+        formData
+      );
+    } catch (error) {
+      console.error("이미지 업로드 실패:", error);
+    }
+  };
+
+  const handleMutationSuccess = async (reviewId: number) => {
+    await handleImageUpload(reviewId);
+
+    await Promise.all([
+      queryClient.invalidateQueries({
+        queryKey: ["reviews", String(entityId)],
+      }),
+      queryClient.invalidateQueries({
+        queryKey: ["userClubReviews"],
+      }),
+    ]);
+
+    resetReviewData();
+    closeReviewModal();
+  };
 
   const { mutate: createReview } = useMutation({
     ...createReviewOptions(Number(entityId)),
-    onSuccess: async (data: { data: CreateReviewResponse }) => {
-      if (data && reviewImages.length > 0) {
-        try {
-          const formData = new FormData();
-          reviewImages.forEach((image) => {
-            formData.append("image", image);
-          });
+    onSuccess: (data: { data: CreateReviewResponse }) => {
+      if (data?.data?.id) {
+        handleMutationSuccess(data.data.id);
+      }
+    },
+  });
 
-          const response = await apiClient.post(
-            `/api/v1/upload/club-review/${data?.data?.id}`,
-            formData
-          );
-
-          if (response.data.success) {
-            queryClient.invalidateQueries({
-              queryKey: ["reviews", String(entityId)],
-            });
-            resetReviewData();
-            closeReviewModal();
-          }
-        } catch (error) {
-          console.error("이미지 업로드 실패:", error);
-          console.log(error);
-        }
-      } else {
-        queryClient.invalidateQueries({
-          queryKey: ["reviews", String(entityId)],
-        });
-        resetReviewData();
-        closeReviewModal();
+  const { mutate: updateReview } = useMutation({
+    ...updateReviewOptions(reviewId || 0),
+    onSuccess: () => {
+      if (reviewId) {
+        handleMutationSuccess(reviewId);
       }
     },
   });
@@ -80,7 +106,11 @@ const ClubDetailReviewModal = ({ entityId }: { entityId: number }) => {
       rating: rating,
     };
 
-    createReview(params);
+    if (reviewMode === "edit") {
+      updateReview(params);
+    } else {
+      createReview(params);
+    }
   };
 
   const handleBack = () => {
@@ -138,7 +168,7 @@ const ClubDetailReviewModal = ({ entityId }: { entityId: number }) => {
             width={24}
             height={24}
           />
-          리뷰 작성하기
+          {reviewMode === "edit" ? "리뷰 수정하기" : "리뷰 작성하기"}
         </DialogTitle>
 
         <div className="flex-1 min-h-0 overflow-y-auto">

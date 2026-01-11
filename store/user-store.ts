@@ -7,6 +7,7 @@ export interface UserInfo {
   email?: string;
   profilePath?: string;
   bio?: string;
+  provider?: string;
 }
 
 interface UserState {

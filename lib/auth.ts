@@ -3,12 +3,12 @@ import GoogleProvider from "next-auth/providers/google";
 import KakaoProvider from "next-auth/providers/kakao";
 import jwt from "jsonwebtoken";
 
-const createAccessToken = (publicId: string, secret: string) => {
-  return jwt.sign({ publicId }, secret, { expiresIn: "1h" });
+const createAccessToken = (userId: string, secret: string) => {
+  return jwt.sign({ userId }, secret, { expiresIn: "1h" });
 };
 
-const createRefreshToken = (publicId: string, secret: string) => {
-  return jwt.sign({ publicId }, secret, { expiresIn: "30d" });
+const createRefreshToken = (userId: string, secret: string) => {
+  return jwt.sign({ userId }, secret, { expiresIn: "30d" });
 };
 
 export const authOptions: NextAuthOptions = {
@@ -48,7 +48,7 @@ export const authOptions: NextAuthOptions = {
           const currentTime = Math.floor(Date.now() / 1000);
 
           if (decoded && decoded.exp && decoded.exp <= currentTime) {
-            const publicId = decoded.publicId;
+            const userId = decoded.userId;
 
             if (token.refreshToken) {
               const refreshDecoded = jwt.decode(
@@ -61,7 +61,7 @@ export const authOptions: NextAuthOptions = {
                 refreshDecoded.exp > currentTime
               ) {
                 const newAccessToken = createAccessToken(
-                  publicId,
+                  userId,
                   process.env.NEXTAUTH_SECRET!
                 );
                 token.accessToken = newAccessToken;
@@ -70,7 +70,7 @@ export const authOptions: NextAuthOptions = {
               }
             } else {
               const newAccessToken = createAccessToken(
-                publicId,
+                userId,
                 process.env.NEXTAUTH_SECRET!
               );
               token.accessToken = newAccessToken;
@@ -114,17 +114,17 @@ export const authOptions: NextAuthOptions = {
             console.log(userId, "<<<<< userId");
             if (userId) {
               const accessToken = createAccessToken(
-                String(publicId),
+                String(userId),
                 process.env.NEXTAUTH_SECRET!
               );
               const refreshToken = createRefreshToken(
-                String(publicId),
+                String(userId),
                 process.env.NEXTAUTH_SECRET!
               );
 
               try {
                 const userInfoResponse = await fetch(
-                  `${process.env.API_BASE_URL}/api/v1/users/${publicId}`,
+                  `${process.env.API_BASE_URL}/api/v1/users/${userId}`,
                   {
                     headers: {
                       Authorization: `Bearer ${accessToken}`,

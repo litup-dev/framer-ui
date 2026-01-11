@@ -13,31 +13,31 @@ export const ReviewStep2 = ({ rating }: ReviewStep2Props) => {
   const {
     reviewContent,
     setReviewContent,
-    reviewImages,
+    existingReviewImages,
+    newReviewImages,
     addReviewImage,
-    removeReviewImage,
+    removeNewReviewImage,
+    removeExistingReviewImage,
   } = useClubDetailStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const maxImages = 3;
 
-  const imageUrls = useMemo(() => {
-    return reviewImages.map((image) => URL.createObjectURL(image));
-  }, [reviewImages]);
+  const newImageUrls = useMemo(() => {
+    return newReviewImages.map((image) => URL.createObjectURL(image));
+  }, [newReviewImages]);
 
   useEffect(() => {
     return () => {
-      imageUrls.forEach((url) => URL.revokeObjectURL(url));
+      newImageUrls.forEach((url) => URL.revokeObjectURL(url));
     };
-  }, [imageUrls]);
+  }, [newImageUrls]);
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
 
-    const newImages = Array.from(files).slice(
-      0,
-      maxImages - reviewImages.length
-    );
+    const totalImages = existingReviewImages.length + newReviewImages.length;
+    const newImages = Array.from(files).slice(0, maxImages - totalImages);
     newImages.forEach((file) => {
       if (file.type.startsWith("image/")) {
         addReviewImage(file);
@@ -49,13 +49,11 @@ export const ReviewStep2 = ({ rating }: ReviewStep2Props) => {
     }
   };
 
-  const handleImageRemove = (index: number) => {
-    removeReviewImage(index);
-  };
-
   const handleAddImageClick = () => {
     fileInputRef.current?.click();
   };
+
+  const totalImageCount = existingReviewImages.length + newReviewImages.length;
 
   return (
     <div className="flex flex-col w-full h-full">
@@ -71,26 +69,45 @@ export const ReviewStep2 = ({ rating }: ReviewStep2Props) => {
         <div className="flex flex-col gap-3">
           <div className="text-subtitle-16">사진 첨부</div>
           <div className="flex gap-3">
-            {reviewImages.map((image, index) => (
+            {existingReviewImages.map((imageUrl, index) => (
               <div
-                key={index}
+                key={`existing-${index}`}
                 className="relative w-20 h-20  rounded flex-shrink-0 overflow-hidden"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={imageUrls[index]}
-                  alt={`Review image ${index + 1}`}
+                  src={imageUrl}
+                  alt={`Existing review image ${index + 1}`}
                   className="w-full h-full object-cover"
                 />
                 <button
-                  onClick={() => handleImageRemove(index)}
+                  onClick={() => removeExistingReviewImage(index)}
                   className="absolute top-1 right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-white text-xs hover:bg-red-600"
                 >
                   ×
                 </button>
               </div>
             ))}
-            {reviewImages.length < maxImages && (
+            {newReviewImages.map((image, index) => (
+              <div
+                key={`new-${index}`}
+                className="relative w-20 h-20  rounded flex-shrink-0 overflow-hidden"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={newImageUrls[index]}
+                  alt={`Review image ${index + 1}`}
+                  className="w-full h-full object-cover"
+                />
+                <button
+                  onClick={() => removeNewReviewImage(index)}
+                  className="absolute top-1 right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-white text-xs hover:bg-red-600"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+            {totalImageCount < maxImages && (
               <>
                 <input
                   ref={fileInputRef}

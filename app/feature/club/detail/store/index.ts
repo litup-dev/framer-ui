@@ -2,7 +2,16 @@ import { create } from "zustand";
 
 interface ClubDetailState {
   isReviewModalOpen: boolean;
-  openReviewModal: () => void;
+  reviewMode: "create" | "edit";
+  reviewId: number | null;
+  openReviewModal: (params?: {
+    mode?: "create" | "edit";
+    reviewId?: number;
+    rating?: number;
+    content?: string;
+    categories?: number[];
+    images?: string[];
+  }) => void;
   closeReviewModal: () => void;
   rating: number;
   setRating: (rating: number) => void;
@@ -15,19 +24,24 @@ interface ClubDetailState {
   setImageGalleryIndex: (index: number) => void;
   reviewContent: string;
   reviewCategories: number[];
-  reviewImages: File[];
+  existingReviewImages: string[];
+  newReviewImages: File[];
   setReviewContent: (content: string) => void;
   setReviewCategories: (categoryId: number) => void;
   setReviewImages: (images: File[]) => void;
   addReviewImage: (image: File) => void;
-  removeReviewImage: (index: number) => void;
+  removeNewReviewImage: (index: number) => void;
+  removeExistingReviewImage: (index: number) => void;
 }
 
 export const useClubDetailStore = create<ClubDetailState>((set) => ({
   isReviewModalOpen: false,
+  reviewMode: "create",
+  reviewId: null,
   reviewContent: "",
   reviewCategories: [],
-  reviewImages: [],
+  existingReviewImages: [],
+  newReviewImages: [],
   setReviewContent: (content: string) => set({ reviewContent: content }),
   setReviewCategories: (categoryId: number) =>
     set((state) => {
@@ -38,25 +52,42 @@ export const useClubDetailStore = create<ClubDetailState>((set) => ({
           : [...state.reviewCategories, categoryId],
       };
     }),
-  setReviewImages: (images: File[]) => set({ reviewImages: images }),
+  setReviewImages: (images: File[]) => set({ newReviewImages: images }),
   addReviewImage: (image: File) =>
     set((state) => ({
-      reviewImages: [...state.reviewImages, image],
+      newReviewImages: [...state.newReviewImages, image],
     })),
-  removeReviewImage: (index: number) =>
+  removeNewReviewImage: (index: number) =>
     set((state) => ({
-      reviewImages: state.reviewImages.filter((_, i) => i !== index),
+      newReviewImages: state.newReviewImages.filter((_, i) => i !== index),
     })),
-  openReviewModal: () => set({ isReviewModalOpen: true }),
+  removeExistingReviewImage: (index: number) =>
+    set((state) => ({
+      existingReviewImages: state.existingReviewImages.filter(
+        (_, i) => i !== index
+      ),
+    })),
+  openReviewModal: (params) =>
+    set({
+      isReviewModalOpen: true,
+      reviewMode: params?.mode || "create",
+      reviewId: params?.reviewId || null,
+      rating: params?.rating || 0,
+      reviewContent: params?.content || "",
+      reviewCategories: params?.categories || [],
+      existingReviewImages: params?.images || [],
+      newReviewImages: [],
+    }),
   closeReviewModal: () =>
-    set((state) => {
-      return {
-        isReviewModalOpen: false,
-        rating: 0,
-        reviewContent: "",
-        reviewCategories: [],
-        reviewImages: [],
-      };
+    set({
+      isReviewModalOpen: false,
+      reviewMode: "create",
+      reviewId: null,
+      rating: 0,
+      reviewContent: "",
+      reviewCategories: [],
+      existingReviewImages: [],
+      newReviewImages: [],
     }),
   rating: 0,
   setRating: (rating: number) =>
@@ -66,7 +97,8 @@ export const useClubDetailStore = create<ClubDetailState>((set) => ({
       rating: 0,
       reviewContent: "",
       reviewCategories: [],
-      reviewImages: [],
+      existingReviewImages: [],
+      newReviewImages: [],
     }),
   isImageGalleryOpen: false,
   imageGalleryImages: [],

@@ -12,9 +12,9 @@ interface AuthProviderProps {
  * 유효하면 사용자 정보를 store에 로드
  */
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  useEffect(() => {
-    checkAuthStatus();
-  }, []);
+  // useEffect(() => {
+  //   checkAuthStatus();
+  // }, []);
 
   return <>{children}</>;
 };

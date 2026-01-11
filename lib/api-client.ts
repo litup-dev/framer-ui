@@ -91,6 +91,10 @@ class ApiClient {
         );
       }
 
+      if (response.status === 204) {
+        return undefined as any;
+      }
+
       return await response.json();
     } catch (error) {
       throw error;
