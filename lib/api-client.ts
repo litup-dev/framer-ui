@@ -19,6 +19,7 @@ class ApiClient {
 
   private async getAuthToken(): Promise<string | null> {
     if (this.isServer) {
+      // 서버사이드에서는 next-auth 세션 사용 (당분간 유지)
       try {
         const session = await getServerSession(authOptions);
         if (session?.accessToken) {
@@ -29,15 +30,10 @@ class ApiClient {
         return null;
       }
     } else {
+      // 클라이언트에서는 localStorage에서 토큰 가져오기
       try {
-        const response = await fetch("/api/auth/session");
-        if (response.ok) {
-          const session = await response.json();
-          if (session?.accessToken) {
-            return session.accessToken;
-          }
-        }
-        return null;
+        const token = localStorage.getItem("accessToken");
+        return token;
       } catch (error) {
         return null;
       }

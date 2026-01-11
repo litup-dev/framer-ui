@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import HeaderMenus from "@/app/shared/components/menus";
 import Link from "next/link";
 import { useClubDetailStore } from "@/app/feature/club/detail/store";
-import { useSession } from "next-auth/react";
 
 const DesktopHeader = () => {
   const pathname = usePathname();

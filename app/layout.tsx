@@ -4,7 +4,9 @@ import "./globals.css";
 import ReactQueryProvider from "@/providers/react-query-provider";
 import NextAuthProvider from "@/providers/next-auth-provider";
 import SsgoiProvider from "@/providers/ssgoi-provider";
+import { AuthProvider } from "@/providers/auth-provider";
 import { CommonModal } from "@/components/shared/common-modal";
+import { ReportModal } from "@/components/shared/report-modal";
 import localFont from "next/font/local";
 import { Suspense } from "react";
 
@@ -37,6 +39,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={suit.variable}>
+      <head>
+        <script
+          src="https://developers.kakao.com/sdk/js/kakao.js"
+          async
+        ></script>
+      </head>
       <body
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
@@ -44,10 +52,13 @@ export default function RootLayout({
         <NextAuthProvider>
           <Suspense fallback={<div>Loading...</div>}>
             <ReactQueryProvider>
-              <SsgoiProvider>
-                {children}
-                <CommonModal />
-              </SsgoiProvider>
+              <AuthProvider>
+                <SsgoiProvider>
+                  {children}
+                  <CommonModal />
+                  <ReportModal />
+                </SsgoiProvider>
+              </AuthProvider>
             </ReactQueryProvider>
           </Suspense>
         </NextAuthProvider>

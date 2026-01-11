@@ -1,58 +1,92 @@
-import FadeIn from "@/components/shared/fade-in";
-import {
-  Title,
-  Chip,
-  Subtitle,
-  Description,
-} from "@/components/shared/typography";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
-import { Separator } from "@/components/ui/separator";
-import { ChevronDown, Ellipsis, Heart } from "lucide-react";
+"use client";
 
-const CommentSection = () => {
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import FadeIn from "@/components/shared/fade-in";
+import { Title, Chip, Subtitle, Description } from "@/components/shared/typography";
+import { ChevronDown } from "lucide-react";
+import { getPerformanceCommentsOptions } from "../query-options";
+import { useCommentHandlers } from "../hooks/use-comment-handlers";
+import CommentForm from "./comment-form";
+import CommentItem from "./comment-item";
+import CommentPagination from "./comment-pagination";
+
+interface CommentSectionProps {
+  performanceId: number;
+  commentText: string;
+  setCommentText: (text: string) => void;
+  editingCommentId: number | null;
+  setEditingCommentId: (id: number | null) => void;
+  editingText: string;
+  setEditingText: (text: string) => void;
+}
+
+const CommentSection = ({
+  performanceId,
+  commentText,
+  setCommentText,
+  editingCommentId,
+  setEditingCommentId,
+  editingText,
+  setEditingText
+}: CommentSectionProps) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 10;
+  const offset = (currentPage - 1) * limit;
+
+  // Debug logging
+  console.log("[CommentSection] Received editing state:", { editingCommentId, editingText });
+
+  const { data, isLoading } = useQuery(
+    getPerformanceCommentsOptions(performanceId, offset, limit)
+  );
+
+  const {
+    maxLength,
+    isAuthenticated,
+    handleCommentSubmit,
+    handleTextChange,
+    handleEditClick,
+    handleEditCancel,
+    handleEditSubmit,
+    handleEditTextChange,
+    handleLikeClick,
+    handleDeleteClick,
+    isMyComment,
+    createCommentMutation,
+    updateCommentMutation,
+  } = useCommentHandlers(
+    performanceId,
+    commentText,
+    setCommentText,
+    setCurrentPage,
+    editingCommentId,
+    setEditingCommentId,
+    editingText,
+    setEditingText
+  );
+
+  const comments = data?.data.items || [];
+  const total = data?.data.total || 0;
+  const totalPages = Math.ceil(total / limit);
+
   return (
     <FadeIn>
       <div className="space-y-4 pb-20 md:pb-0">
-        {/* 데스크탑: 코멘트 타이틀 + 카운트 */}
-        <div className="hidden md:flex items-center">
+        <div className="hidden md:flex items-center gap-2">
           <Title className="text-[20px] xl:text-[22px] 2xl:text-[24px]">comment</Title>
+          <Chip className="text-black-60 text-[16px] xl:text-[18px]">({total})</Chip>
         </div>
 
-        {/* 데스크탑: Textarea + 등록 버튼 */}
-        <div className="hidden md:block space-y-4">
-          <Textarea
-            placeholder="댓글을 입력해주세요"
-            className="h-[100px] resize-none"
-          />
-          <div className="w-full flex justify-between items-center">
-            <Chip className="text-black-40 text-[14px] lg:text-[16px]">{`${10}/100`}</Chip>
-            <Button>등록</Button>
-          </div>
-        </div>
+        <CommentForm
+          commentText={commentText}
+          maxLength={maxLength}
+          isAuthenticated={isAuthenticated}
+          isPending={createCommentMutation.isPending}
+          onTextChange={handleTextChange}
+          onSubmit={handleCommentSubmit}
+        />
 
-        {/* 모바일: InputGroup inline */}
-        <div className="md:hidden flex flex-col gap-1">
-          <InputGroup className="h-12">
-            <InputGroupInput
-              placeholder="로그인 후 작성 가능합니다"
-              className="p-5 placeholder:font-medium text-[14px]"
-            />
-            <InputGroupAddon align="inline-end">
-              <Button>등록</Button>
-            </InputGroupAddon>
-          </InputGroup>
-          <div className="flex justify-end">
-            <Chip className="text-black-40 text-[12px]">{`${10}/100`}</Chip>
-          </div>
-        </div>
-
-        {/* 정렬 드롭다운 */}
         <div className="flex items-center gap-6 md:gap-4">
           <div className="flex items-center">
             <Subtitle className="font-semibold text-[14px] xl:text-[16px]">
@@ -62,36 +96,41 @@ const CommentSection = () => {
           </div>
         </div>
 
-        {/* 댓글 리스트 */}
-        <div className="flex flex-col gap-4 md:gap-6">
-          {Array.from({ length: 3 }).map((_, index) => (
-            <div key={index} className="space-y-3 md:space-y-4">
+        {isLoading ? (
+          <div className="flex justify-center items-center py-10">
+            <Description>로딩중...</Description>
+          </div>
+        ) : comments.length === 0 ? (
+          <div className="flex justify-center items-center py-10">
+            <Description>아직 댓글이 없습니다.</Description>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4 md:gap-6">
+            {comments.map((comment) => (
+              <CommentItem
+                key={comment.id}
+                comment={comment}
+                isMyComment={isMyComment(comment.user.publicId)}
+                isEditing={editingCommentId === comment.id}
+                editingText={editingText}
+                maxLength={maxLength}
+                onEditClick={() => handleEditClick(comment)}
+                onEditCancel={handleEditCancel}
+                onEditSubmit={() => handleEditSubmit(comment.id)}
+                onEditTextChange={handleEditTextChange}
+                onDeleteClick={() => handleDeleteClick(comment.id)}
+                onLikeClick={() => handleLikeClick(comment.id)}
+                isUpdating={updateCommentMutation.isPending}
+              />
+            ))}
+          </div>
+        )}
 
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 md:w-8 md:h-8 2xl:w-10 2xl:h-10rounded-full bg-gray-200" />
-                  <Subtitle className="text-[14px] md:text-[16px] 2xl:text-[18px]">이름</Subtitle>
-                  <Description className="text-black-40 text-[12px] md:text-[14px] 2xl:text-[16px]">1시간 전</Description>
-                </div>
-                <Ellipsis className="w-5 h-5 md:w-6 md:h-6" />
-              </div>
-
-              <Chip className="font-normal text-black-80 text-[14px] md:text-[16px] 2xl:text-[18px]">내용내용내용</Chip>
-
-              {/* 좋아요 */}
-              <div className="pt-6">
-                <div className="flex gap-1 items-center">
-                  <Heart fill="black" className="w-6 h-6 flex-shrink-0" />
-                  <Description className="font-medium text-[12px] md:text-[14px] 2xl:text-[16px]">
-                    12
-                  </Description>
-                </div>
-              </div>
-
-              <Separator />
-            </div>
-          ))}
-        </div>
+        <CommentPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </FadeIn>
   );
