@@ -93,7 +93,7 @@ export const CalendarDayEvents = ({
                           isHovered && isXl ? "text-white" : "text-black-60",
                         )}
                       >
-                        {performance.title}
+                        {performance.artists?.map((a) => a.name).join(", ")}
                       </Subtitle>
                       {isLastPerformance && (
                         <div
