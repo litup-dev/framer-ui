@@ -152,7 +152,7 @@ const MobileHeader = () => {
 
               <div className="flex flex-col">
                 {MENU_ITEMS.map((item, index) => (
-                  <p
+                  <div
                     key={index}
                     className="text-subtitle-14 cursor-pointer py-[21px] border-b px-6"
                     onClick={() => navigateTo(item.href)}
@@ -160,7 +160,7 @@ const MobileHeader = () => {
                     <Subtitle className="text-subtitle-14">
                       {item.label}
                     </Subtitle>
-                  </p>
+                  </div>
                 ))}
               </div>
             </div>

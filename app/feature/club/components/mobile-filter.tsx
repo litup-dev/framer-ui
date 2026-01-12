@@ -12,7 +12,7 @@ import { region, filterItems } from "@/app/feature/club/constants";
 import { useFilterState } from "@/app/feature/club/hooks/use-filter-state";
 import { getReviewCategoryOptions } from "@/app/feature/club/query-options";
 
-import { Subtitle } from "@/components/shared/typography";
+import { Description, Subtitle } from "@/components/shared/typography";
 import { Separator } from "@/components/ui/separator";
 import {
   Select,
@@ -124,63 +124,81 @@ const MobileFilter = ({
             <KeywordList categories={categories?.data} />
             <div>
               <div className="flex gap-2 items-center">
-                <Select
-                  value={selectedRegion || ""}
-                  onValueChange={handleRegionClick}
-                >
-                  <SelectTrigger className="rounded-full">
-                    <SelectValue
-                      placeholder="권역"
-                      className="placeholder:text-description-14 text-black-60"
-                    />
-                  </SelectTrigger>
-                  <SelectContent className="p-4">
-                    {region.map((item) => (
-                      <SelectItem key={item.id} value={item.value}>
-                        <Subtitle className="text-[12px] xl:text-[14px]">
-                          {item.label}
-                        </Subtitle>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {filterItems.map((filter) => {
-                  const currentOptionIndex = getCurrentOptionIndex(filter.id);
-                  return (
-                    <div
-                      key={filter.id}
-                      onClick={() =>
-                        handleFilterClick(filter.id, currentOptionIndex)
-                      }
-                      className={cn(
-                        "border rounded-full px-4 py-1 cursor-pointer transition-colors",
-                        isActive(filter.id)
-                          ? "border-2 border-main text-main"
-                          : "bg-transparent text-gray-700 hover:bg-gray-100"
-                      )}
-                    >
-                      <div className="flex items-center gap-1">
-                        <span className="text-description-14 text-black-60">
-                          {getFilterLabel(filter)}
-                        </span>
-                        {isActive(filter.id) && (
-                          <ChevronDown
-                            className={cn(
-                              "size-4 transition-transform",
-                              getChevronRotation(filter)
-                            )}
-                          />
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
+                {region.map((item) => (
+                  <div
+                    key={item.id}
+                    onClick={() => handleRegionClick(item.value)}
+                    className={cn(
+                      "border px-2.5 py-2 rounded-[3px] cursor-pointer transition-colors",
+                      selectedRegion === item.value
+                        ? "border-2 border-main text-main"
+                        : "bg-transparent text-gray-700"
+                    )}
+                  >
+                    {selectedRegion === item.value ? (
+                      <Subtitle className="text-[13px] xl:text-[14px] text-main">
+                        {item.label}
+                      </Subtitle>
+                    ) : (
+                      <Description className="text-[13px] xl:text-[14px] text-black/60">
+                        {item.label}
+                      </Description>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
           <Separator />
 
           <div className="space-y-5">
+            <div
+              className={cn(
+                "flex transition-all duration-200",
+                activeFilterId === null ? "gap-0" : "gap-4"
+              )}
+            >
+              {filterItems.map((filter) => {
+                const currentOptionIndex = getCurrentOptionIndex(filter.id);
+                return (
+                  <div
+                    key={filter.id}
+                    onClick={() =>
+                      handleFilterClick(filter.id, currentOptionIndex)
+                    }
+                    className={cn(
+                      "cursor-pointer transition-colors",
+                      isActive(filter.id)
+                        ? "text-black"
+                        : "bg-transparent text-gray-700"
+                    )}
+                  >
+                    <div className="flex items-center gap-0.5">
+                      {isActive(filter.id) ? (
+                        <Subtitle className="text-[13px] xl:text-[14px] text-black">
+                          {getFilterLabel(filter)}
+                        </Subtitle>
+                      ) : (
+                        <Description className="text-[13px] xl:text-[14px] text-black/60">
+                          {getFilterLabel(filter)}
+                        </Description>
+                      )}
+                      <div className="w-4 h-4 flex items-center justify-center">
+                        <ChevronDown
+                          className={cn(
+                            "size-4 transition-all duration-200",
+                            isActive(filter.id)
+                              ? "opacity-100 scale-100"
+                              : "opacity-0 scale-0",
+                            getChevronRotation(filter)
+                          )}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
             {clubs?.map((club: Club) => (
               <ClubCard
                 key={club.id}
@@ -195,7 +213,7 @@ const MobileFilter = ({
         </>
       ) : (
         <div
-          className="fixed inset-0 top-32 overflow-hidden"
+          className="fixed inset-0 top-32 md:top-40 overflow-hidden"
           style={{ touchAction: "none", height: "calc(100vh - 128px)" }}
         >
           <KakaoMap club={selectedClub} clubs={clubs} />

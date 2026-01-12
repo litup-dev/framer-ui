@@ -168,6 +168,16 @@ export const extractTimeFromISO = (isoDateString: string): string => {
 };
 
 /**
+ * 날짜를 월/일 형식으로 변환하는 함수 (예: "10/9")
+ * @param date - 포맷할 날짜 (Date 객체 또는 날짜 문자열)
+ * @returns 월/일 형식 문자열 (예: "10/9", "1/15")
+ */
+export const formatMonthDay = (date: Date | string): string => {
+  const dateObj = typeof date === "string" ? parseISO(date) : date;
+  return format(dateObj, "M/d");
+};
+
+/**
  * 가격 정보를 기반으로 입장료 문자열을 생성하는 함수
  * @param bookingPrice - 예약 가격
  * @param onsitePrice - 현장 가격

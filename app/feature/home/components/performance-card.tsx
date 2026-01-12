@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Description, Subtitle } from "@/components/shared/typography";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
+import { formatMonthDay } from "@/lib/date-utils";
 
 interface Performance {
   id: number;
@@ -17,6 +18,7 @@ interface Performance {
   artists?: Array<{
     name: string;
   }>;
+  performDate: string;
 }
 
 interface PerformanceCardProps {
@@ -95,6 +97,11 @@ export const PerformanceCard = ({ performance }: PerformanceCardProps) => {
       >
         <div className="aspect-[3/4] relative">
           <PerformanceImage imageUrl={imageUrl} alt={alt} />
+          <div className="absolute text-[#FFFFFF] rounded-[3px] bg-black/40 top-2.5 right-2.5 px-2 py-1.5 xl:top-3 xl:right-3 2xl:top-4 2xl:right-4 xl:px-2.5 xl:py-2 2xl:px-3 2xl:py-2">
+            <Subtitle className="text-[12px] xl:text-[14px] 2xl:text-[16px]">
+              {formatMonthDay(performance.performDate)}
+            </Subtitle>
+          </div>
         </div>
         <CardContent className="flex flex-col justify-start space-y-2.5">
           <Description className="text-gray-400 text-[16px] truncate">

@@ -55,7 +55,6 @@ const ClubDetailDescription = ({ data }: ClubDetailDescriptionProps) => {
     }
   };
 
-  console.log(data);
   return (
     <div className="px-5 sm:px-10 lg:px-15 lg:py-10 xl:mr-0 xl:w-full">
       <div className="flex flex-col lg:flex-row xl:flex-col lg:items-stretch gap-3 lg:gap-10">

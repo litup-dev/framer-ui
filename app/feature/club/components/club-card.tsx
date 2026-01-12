@@ -1,17 +1,23 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { Map, Info } from "lucide-react";
 
-import { Club } from "@/app/feature/club/types";
+import { Club, ClubDetail } from "@/app/feature/club/types";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
-import { clubFavoriteByIdOptions } from "@/app/feature/club/query-options";
+import {
+  clubFavoriteByIdOptions,
+  getClubByIdOptions,
+} from "@/app/feature/club/query-options";
 
 import { Separator } from "@/components/ui/separator";
 import ClubImage from "@/app/feature/club/components/club-image";
+import { filterItems } from "../constants";
+import { cn } from "@/lib/utils";
+import { Description } from "@/components/shared/typography";
 
 interface ClubCardProps {
   club: Club;
@@ -20,18 +26,24 @@ interface ClubCardProps {
 
 const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
   const queryClient = useQueryClient();
+
+  const { data: clubDetailData } = useQuery(
+    getClubByIdOptions(String(club.id))
+  );
+  const cacheFavorite = clubDetailData?.data?.isFavorite ?? club.isFavorite;
+
+  const [isFavorite, setIsFavorite] = useState(cacheFavorite);
   const { mutate: mutateFavorite } = useMutation(
     clubFavoriteByIdOptions(club.id, queryClient)
   );
 
+  useEffect(() => {
+    setIsFavorite(cacheFavorite);
+  }, [cacheFavorite]);
+
   const mutate = () => {
-    mutateFavorite(undefined, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ["reviews", String(club.id)],
-        });
-      },
-    });
+    setIsFavorite(!isFavorite);
+    mutateFavorite(undefined);
   };
 
   const mainImageUrl = useMemo(() => {
@@ -60,25 +72,26 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
             </div>
           </div>
         </Link>
-        {club.isFavorite ? (
-          <Image
-            className="w-8 h-8 sm:mr-4 text-main hover:text-main cursor-pointer"
-            onClick={() => mutate()}
-            src="/images/club_favorite_fill.svg"
-            alt="favorite"
-            width={16}
-            height={16}
-          />
-        ) : (
-          <Image
-            src="/images/club_favorite.svg"
-            alt="favorite"
-            width={16}
-            height={16}
-            className="w-8 h-8 sm:mr-4 text-black-60 hover:text-main cursor-pointer"
-            onClick={() => mutate()}
-          />
-        )}
+        <Image
+          src={
+            isFavorite
+              ? "/images/club_favorite_fill.svg"
+              : "/images/club_favorite.svg"
+          }
+          alt="favorite"
+          width={16}
+          height={16}
+          className={`w-8 h-8 sm:mr-4 cursor-pointer ${
+            isFavorite
+              ? "text-main hover:text-main"
+              : "text-black-60 hover:text-main"
+          }`}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            mutate();
+          }}
+        />
       </div>
       <div className="flex gap-[1px]">
         {mainImageUrl ? (

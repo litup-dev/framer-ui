@@ -1,13 +1,11 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { InfiniteData } from "@tanstack/react-query";
 
+import { PerformanceItem } from "@/app/feature/home/types";
 import { usePagination } from "@/app/feature/home/hooks/use-pagination";
-import { getPerformancesOptions } from "@/app/feature/home/query-options";
 import { useHomeStore } from "@/app/feature/home/store/home-store";
-import { getDateRange } from "@/app/feature/home/utils/get-date-range";
-import { getQueryParams } from "@/app/feature/home/utils/get-query-params";
 import { PerformancesPagination } from "@/app/feature/home/components/performances-pagination";
 import { PerformanceCard } from "@/app/feature/home/components/performance-card";
 
@@ -21,27 +19,30 @@ import {
 
 interface DesktopMainContentProps {
   showAllItems: boolean;
+  performances?: InfiniteData<{
+    data: PerformanceItem[];
+    offset: number;
+    hasMore: boolean;
+    total: number;
+  }>;
+  hasNextPage?: boolean;
+  fetchNextPage?: () => void;
+  isFetchingNextPage?: boolean;
 }
 
-const DesktopMainContent = ({ showAllItems }: DesktopMainContentProps) => {
+const DesktopMainContent = ({
+  showAllItems,
+  performances,
+  hasNextPage,
+  fetchNextPage,
+  isFetchingNextPage,
+}: DesktopMainContentProps) => {
   const { selectedCategory, selectedArea } = useHomeStore();
   const [currentPage, setCurrentPage] = useState(1);
-
-  const { startDate, endDate } = getDateRange(selectedCategory);
-  const { isFree, area } = getQueryParams(selectedCategory, selectedArea);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedCategory, selectedArea]);
-
-  const {
-    data: performances,
-    hasNextPage,
-    fetchNextPage,
-    isFetchingNextPage,
-  } = useInfiniteQuery(
-    getPerformancesOptions(startDate, endDate, area, isFree)
-  );
 
   const limit = 16;
   const total = (performances?.pages[0] as { total?: number })?.total || 0;
@@ -67,7 +68,9 @@ const DesktopMainContent = ({ showAllItems }: DesktopMainContentProps) => {
     currentPage,
     hasNextPage: hasNextPage ?? false,
     fetchNextPage: async () => {
-      await fetchNextPage();
+      if (fetchNextPage) {
+        await fetchNextPage();
+      }
     },
     pages: performances?.pages || [],
   });
@@ -83,7 +86,7 @@ const DesktopMainContent = ({ showAllItems }: DesktopMainContentProps) => {
         0
       );
 
-      while (targetOffset > currentMaxOffset && hasNextPage) {
+      while (targetOffset > currentMaxOffset && hasNextPage && fetchNextPage) {
         await fetchNextPage();
         await new Promise((resolve) => setTimeout(resolve, 50));
         currentMaxOffset = Math.max(

@@ -14,6 +14,7 @@ import {
   getTodayDate,
   getStartOfWeek,
   getEndOfWeek,
+  formatMonthDay,
 } from "@/lib/date-utils";
 import { addWeeks, format } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -97,17 +98,24 @@ const MobileMainContent = ({
                 <Card className="overflow-hidden gap-3 pb-2">
                   <div className="aspect-[3/4] relative">
                     {imageUrl ? (
-                      <Image
-                        src={imageUrl}
-                        alt={
-                          performance.title ||
-                          performance.club?.name ||
-                          "Performance image"
-                        }
-                        fill
-                        sizes="33vw"
-                        className="w-full h-full object-cover"
-                      />
+                      <div>
+                        <Image
+                          src={imageUrl}
+                          alt={
+                            performance.title ||
+                            performance.club?.name ||
+                            "Performance image"
+                          }
+                          fill
+                          sizes="33vw"
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute text-[#FFFFFF] rounded-[3px] bg-black/40 top-2 right-2 px-1.5 py-1">
+                          <Subtitle className="text-[12px] xl:text-[14px] 2xl:text-[16px]">
+                            {formatMonthDay(performance.performDate)}
+                          </Subtitle>
+                        </div>
+                      </div>
                     ) : (
                       <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                         <span className="text-gray-500 text-sm">

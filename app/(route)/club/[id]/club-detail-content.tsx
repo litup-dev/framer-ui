@@ -112,7 +112,6 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
 
   if (!data?.data) return null;
 
-  console.log(data, "<<<< data");
   return (
     <div className="w-screen">
       <ClubDetailHeader images={imageUrls} clubName={data.data.name} />

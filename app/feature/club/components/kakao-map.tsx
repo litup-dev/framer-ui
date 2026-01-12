@@ -61,7 +61,9 @@ const KakaoMap = ({ club, clubs, placeInfo }: KakaoMapProps) => {
             return null;
           })}
       </Map>
-      {!placeInfo && club && <ClubInfoCard club={club} />}
+      {!placeInfo && (club || (clubs && clubs.length > 0)) && (
+        <ClubInfoCard club={club || clubs![0]} />
+      )}
     </div>
   );
 };
