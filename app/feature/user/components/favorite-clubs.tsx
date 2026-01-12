@@ -7,9 +7,11 @@ import { Title, Description } from "@/components/shared/typography";
 import { Star } from "lucide-react";
 import SectionHeader from "./section-header";
 import LoadMoreButton from "./load-more-button";
-import { getFavoriteClubsOptions, deleteFavoriteClubs } from "@/app/feature/user/query-options";
+import { getFavoriteClubsOptions } from "@/app/feature/user/query-options";
 import { FavoriteClubItem } from "@/app/feature/user/types";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
+import { apiClient } from "@/lib/api-client";
+import { useApiErrorMessage } from "@/hooks/use-api-error-message";
 
 interface FavoriteClubsProps {
   className?: string;
@@ -25,13 +27,54 @@ export default function FavoriteClubs({ className, userId, isOwner = true }: Fav
   const { data, fetchNextPage, hasNextPage, isLoading, isError, error } = useInfiniteQuery(
     getFavoriteClubsOptions(userId)
   );
+  const errorMessage = useApiErrorMessage(error);
 
-  // 관심 클럽 삭제 mutation
-  const deleteMutation = useMutation({
-    mutationFn: deleteFavoriteClubs,
-    onSuccess: () => {
-      // 성공 시 관심 클럽 목록 refetch
-      queryClient.invalidateQueries({ queryKey: ["favoriteClubs", userId] });
+  // 관심 클럽 토글 mutation (optimistic update)
+  const toggleFavoriteMutation = useMutation({
+    mutationFn: async (clubId: number) => {
+      return apiClient.post(`/api/v1/clubs/${clubId}/favorite`, {
+        entityId: clubId,
+      });
+    },
+    onMutate: async (clubId: number) => {
+      // 쿼리 취소
+      await queryClient.cancelQueries({ queryKey: ["favoriteClubs", userId] });
+
+      // 이전 데이터 백업
+      const previousData = queryClient.getQueryData(["favoriteClubs", userId]);
+
+      // Optimistic update: 캐시 데이터에 isFavorite 필드 토글
+      queryClient.setQueryData(["favoriteClubs", userId], (old: any) => {
+        if (!old) return old;
+
+        return {
+          ...old,
+          pages: old.pages.map((page: any) => ({
+            ...page,
+            items: page.items.map((club: FavoriteClubItem) => {
+              if (club.id === clubId) {
+                // isFavorite이 없으면 false로 설정 (즐겨찾기 해제)
+                // isFavorite이 false면 undefined로 제거 (즐겨찾기 복원)
+                const newIsFavorite = club.isFavorite === false ? undefined : false;
+                if (newIsFavorite === undefined) {
+                  const { isFavorite, ...rest } = club;
+                  return rest as FavoriteClubItem;
+                }
+                return { ...club, isFavorite: newIsFavorite };
+              }
+              return club;
+            }),
+          })),
+        };
+      });
+
+      return { previousData };
+    },
+    onError: (err, clubId, context) => {
+      // 에러 발생 시 이전 데이터로 롤백
+      if (context?.previousData) {
+        queryClient.setQueryData(["favoriteClubs", userId], context.previousData);
+      }
     },
   });
 
@@ -50,8 +93,8 @@ export default function FavoriteClubs({ className, userId, isOwner = true }: Fav
   };
 
   const toggleFavorite = (e: React.MouseEvent, clubId: number) => {
-    e.stopPropagation(); // 이벤트 전파 방지
-    deleteMutation.mutate([clubId]);
+    e.stopPropagation();
+    toggleFavoriteMutation.mutate(clubId);
   };
 
   if (isLoading) {
@@ -67,7 +110,7 @@ export default function FavoriteClubs({ className, userId, isOwner = true }: Fav
     );
   }
 
-  if (isError) {
+  if (isError && errorMessage) {
     return (
       <div className={`flex flex-col ${className || ""}`}>
         <SectionHeader
@@ -75,8 +118,8 @@ export default function FavoriteClubs({ className, userId, isOwner = true }: Fav
           title="관심 클럽"
           iconClassName="w-6 h-6 lg:w-7 lg:h-7 fill-black"
         />
-        <div className="text-center py-8 text-red-500">
-          오류가 발생했습니다: {error?.message || "알 수 없는 오류"}
+        <div className="col-span-full text-center py-8 text-muted-foreground">
+          {errorMessage}
         </div>
       </div>
     );
@@ -97,6 +140,10 @@ export default function FavoriteClubs({ className, userId, isOwner = true }: Fav
           const imageUrl = club.mainImage
             ? getImageUrl(club.mainImage.filePath)
             : null;
+          // isFavorite이 없으면 fill-main, false면 fill-black/[0.04]
+          const starColorClass = club.isFavorite === false
+            ? 'fill-black/[0.04] text-black/[0.04]'
+            : 'fill-main text-main';
 
           return (
             <div
@@ -125,7 +172,7 @@ export default function FavoriteClubs({ className, userId, isOwner = true }: Fav
                   onClick={(e) => toggleFavorite(e, club.id)}
                   className="flex-shrink-0 w-7 h-7 md:w-7 md:h-7 lg:w-8 lg:h-8 2xl:w-10 2xl:h-10 flex items-center justify-center rounded-[4px] bg-black/[0.04] hover:bg-black/[0.08] transition-colors"
                 >
-                  <Star className="w-4 h-4 lg:w-5 lg:h-5 2xl:w-6 2xl:h-6 fill-main text-main" />
+                  <Star className={`w-4 h-4 lg:w-5 lg:h-5 2xl:w-6 2xl:h-6 ${starColorClass}`} />
                 </button>
               ) : (
                 <div className="flex-shrink-0 w-7 h-7 md:w-7 md:h-7 lg:w-8 lg:h-8 2xl:w-10 2xl:h-10 flex items-center justify-center rounded-[4px] bg-black/[0.04]">

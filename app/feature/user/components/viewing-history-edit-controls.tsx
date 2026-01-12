@@ -24,7 +24,7 @@ export default function ViewingHistoryEditControls({
           className="w-[15px] h-[15px] lg:w-[18px] lg:h-[18px] border-[#222222]/20 rounded-[3px] data-[state=checked]:bg-transparent data-[state=checked]:border-[#222222]/20 data-[state=checked]:text-[#202020]/80 shadow-none"
         />
         <span className="text-[14px] xl:text-[16px] font-semibold">
-          {selectedCount}개 선택
+          {selectedCount > 0 ? `${selectedCount}개 선택` : "전체 선택"}
         </span>
       </div>
       <button

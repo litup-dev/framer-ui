@@ -1,5 +1,25 @@
+import { getSession } from "next-auth/react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+
+export class ApiError extends Error {
+  status: number;
+  code: string | number;
+  data: any;
+
+  constructor(
+    message: string,
+    status: number,
+    code: string | number,
+    data: any
+  ) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.code = code;
+    this.data = data;
+  }
+}
 
 interface ApiRequestOptions {
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
@@ -18,25 +38,20 @@ class ApiClient {
   }
 
   private async getAuthToken(): Promise<string | null> {
-    if (this.isServer) {
-      // 서버사이드에서는 next-auth 세션 사용 (당분간 유지)
-      try {
-        const session = await getServerSession(authOptions);
-        if (session?.accessToken) {
-          return session.accessToken;
-        }
-        return null;
-      } catch (error) {
-        return null;
+    // 서버사이드와 클라이언트 모두 next-auth 세션 사용
+    try {
+      let session;
+      if (this.isServer) {
+        session = await getServerSession(authOptions);
+      } else {
+        session = await getSession();
       }
-    } else {
-      // 클라이언트에서는 localStorage에서 토큰 가져오기
-      try {
-        const token = localStorage.getItem("accessToken");
-        return token;
-      } catch (error) {
-        return null;
+      if (session?.accessToken) {
+        return session.accessToken;
       }
+      return null;
+    } catch (error) {
+      return null;
     }
   }
 
@@ -86,9 +101,33 @@ class ApiClient {
       const response = await fetch(url, config);
 
       if (!response.ok) {
-        throw new Error(
-          `API 요청 실패: ${response.status} ${response.statusText}`
-        );
+        let errorData;
+        let errorMessage = 'API 요청 중 알 수 없는 오류가 발생했습니다.';
+        // HTTP status를 기본 에러 코드로 사용
+        let errorCode: string | number = response.status;
+
+        try {
+          errorData = await response.json();
+
+          // 서버 응답 구조를 순서대로 확인
+          // 1. errorData.error.message, errorData.error.code (중첩 구조)
+          // 2. errorData.message, errorData.code (플랫 구조)
+          if (errorData.error) {
+            errorMessage = errorData.error.message || errorMessage;
+            errorCode = errorData.error.code || errorCode;
+          } else {
+            errorMessage = errorData.message || errorMessage;
+            errorCode = errorData.code || errorCode;
+          }
+        } catch (e) {
+          // 응답이 JSON 형식이 아닐 경우
+          errorData = {
+            message: `API 요청 실패: ${response.status} ${response.statusText}`,
+          };
+          errorMessage = errorData.message;
+        }
+
+        throw new ApiError(errorMessage, response.status, errorCode, errorData);
       }
 
       if (response.status === 204) {

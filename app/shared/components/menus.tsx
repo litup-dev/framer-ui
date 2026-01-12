@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signOut } from "next-auth/react";
 import { useUserStore } from "@/store/user-store";
 import { logout } from "@/lib/auth-utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -22,8 +21,8 @@ const HeaderMenus = () => {
   const { user, isAuthenticated } = useUserStore();
 
   const handleLogout = async () => {
-    await signOut({ redirect: false });
-    logout();
+    // logout 함수 내부에서 signOut 호출됨
+    await logout();
     router.push("/");
   };
 

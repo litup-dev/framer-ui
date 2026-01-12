@@ -1,5 +1,6 @@
 import { apiClient } from "./api-client";
 import { useUserStore, type UserInfo } from "@/store/user-store";
+import { signOut } from "next-auth/react";
 
 interface UserInfoResponse {
   data: UserInfo;
@@ -7,15 +8,12 @@ interface UserInfoResponse {
 }
 
 /**
- * accessToken을 localStorage에 저장하고 사용자 정보를 조회하여 store에 저장
+ * 사용자 정보를 조회하여 store에 저장 (next-auth 세션 사용)
  */
 export const loginWithToken = async (
-  accessToken: string,
   userId: number
 ): Promise<UserInfo> => {
   try {
-    localStorage.setItem("accessToken", accessToken);
-
     const response = await apiClient.get<UserInfoResponse>(
       `/api/v1/users/${userId}`
     );
@@ -25,36 +23,28 @@ export const loginWithToken = async (
 
     return response.data;
   } catch (error) {
-    localStorage.removeItem("accessToken");
     throw error;
   }
 };
 
 /**
- * 로그아웃: localStorage와 store 클리어
+ * 로그아웃: next-auth 세션과 store 클리어
  */
-export const logout = (): void => {
-  localStorage.removeItem("accessToken");
+export const logout = async (): Promise<void> => {
   const { clearUser } = useUserStore.getState();
   clearUser();
+  // next-auth 세션 무효화
+  await signOut({ redirect: false });
 };
 
 /**
- * 현재 로그인 상태 확인 및 사용자 정보 재조회
+ * 현재 로그인 상태 확인 및 사용자 정보 재조회 (next-auth 세션 사용)
  */
 export const checkAuthStatus = async (): Promise<boolean> => {
-  const token = localStorage.getItem("accessToken");
-
-  if (!token) {
-    const { clearUser } = useUserStore.getState();
-    clearUser();
-    return false;
-  }
-
   try {
     const { user } = useUserStore.getState();
-    if (!user?.publicId) {
-      logout();
+    if (!user?.id) {
+      await logout();
       return false;
     }
 
@@ -65,7 +55,7 @@ export const checkAuthStatus = async (): Promise<boolean> => {
     setUser(response.data);
     return true;
   } catch (error) {
-    logout();
+    await logout();
     return false;
   }
 };

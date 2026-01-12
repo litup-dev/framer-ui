@@ -32,13 +32,15 @@ export default function UserProfileInfo({
           type="text"
           value={nickname}
           onChange={(e) => onNicknameChange(e.target.value)}
-          className={`${inputHeight} text-lg font-bold`}
+          className={`${inputHeight} text-lg font-bold w-full md:w-[400px] lg:w-[480px] xl:w-full`}
+          maxLength={23}
         />
         <Textarea
           value={bio}
           onChange={(e) => onBioChange(e.target.value)}
           placeholder="자기소개를 입력하세요"
-          className={`${textareaHeight} text-sm resize-none mt-1`}
+          className={`${textareaHeight} text-sm resize-none mt-1 w-full md:w-[400px] lg:w-[480px] xl:w-full`}
+          maxLength={255}
         />
       </>
     );

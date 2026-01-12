@@ -23,7 +23,10 @@ export const useUserCommentHandlers = (
   editingCommentId: number | null,
   setEditingCommentId: (id: number | null) => void,
   editingText: string,
-  setEditingText: (text: string) => void
+  setEditingText: (text: string) => void,
+  sortBy: string = "-createdAt",
+  offset: number = 0,
+  limit: number = 10
 ) => {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -126,14 +129,39 @@ export const useUserCommentHandlers = (
       return;
     }
 
+    const queryKey = activeTab === "written"
+      ? ["myPerformanceComments", sortBy, offset, limit]
+      : ["myLikedPerformanceComments", sortBy, offset, limit];
+
+    // 이전 데이터 백업
+    const previousData = queryClient.getQueryData(queryKey);
+
+    // Optimistic update: 캐시에서 isLiked 토글
+    queryClient.setQueryData(queryKey, (old: any) => {
+      if (!old) return old;
+
+      return {
+        ...old,
+        items: old.items.map((comment: PerformanceComment) => {
+          if (comment.id === reviewId) {
+            return {
+              ...comment,
+              isLiked: !comment.isLiked,
+              likeCount: comment.isLiked ? comment.likeCount - 1 : comment.likeCount + 1,
+            };
+          }
+          return comment;
+        }),
+      };
+    });
+
+    // API 호출
     toggleLikeMutation.mutate(reviewId, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey:
-            activeTab === "written"
-              ? ["myPerformanceComments"]
-              : ["myLikedPerformanceComments"],
-        });
+      onError: () => {
+        // 에러 발생 시 롤백
+        if (previousData) {
+          queryClient.setQueryData(queryKey, previousData);
+        }
       },
     });
   };

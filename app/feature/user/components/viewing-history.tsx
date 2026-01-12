@@ -1,7 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Ticket, ChevronDown } from "lucide-react";
 import {
@@ -14,8 +18,12 @@ import SectionHeader from "./section-header";
 import LoadMoreButton from "./load-more-button";
 import ViewingHistoryEditControls from "./viewing-history-edit-controls";
 import ViewingHistoryItem from "./viewing-history-item";
-import { getPerformHistoryOptions, deletePerformHistory } from "@/app/feature/user/query-options";
+import {
+  getPerformHistoryOptions,
+  deletePerformHistory,
+} from "@/app/feature/user/query-options";
 import { PerformHistoryItem } from "@/app/feature/user/types";
+import { useApiErrorMessage } from "@/hooks/use-api-error-message";
 
 interface ViewingHistoryProps {
   className?: string;
@@ -38,9 +46,10 @@ export default function ViewingHistory({
   const [sortOrder, setSortOrder] = useState<"latest" | "oldest">("latest");
 
   // API 호출: 관람 기록
-  const { data, fetchNextPage, hasNextPage, isLoading, isError, error } = useInfiniteQuery(
-    getPerformHistoryOptions(userId)
-  );
+  const { data, fetchNextPage, hasNextPage, isLoading, isError, error } =
+    useInfiniteQuery(getPerformHistoryOptions(userId));
+
+  const errorMessage = useApiErrorMessage(error);
 
   // 관람 기록 삭제 mutation
   const deleteMutation = useMutation({
@@ -67,7 +76,9 @@ export default function ViewingHistory({
 
   // API 데이터를 평탄화
   const allHistoryItems =
-    data?.pages.flatMap((page: { items: PerformHistoryItem[] }) => page.items) ?? [];
+    data?.pages.flatMap(
+      (page: { items: PerformHistoryItem[] }) => page.items
+    ) ?? [];
   const totalCount = data?.pages[0]?.total ?? 0;
 
   const handleCheckboxChange = (itemId: number) => {
@@ -103,7 +114,7 @@ export default function ViewingHistory({
     );
   }
 
-  if (isError) {
+  if (isError && errorMessage) {
     return (
       <div className={`flex flex-col ${className || ""}`}>
         <SectionHeader
@@ -111,8 +122,8 @@ export default function ViewingHistory({
           title="관람 기록"
           iconClassName="w-8 h-8 lg:w-9 lg:h-9 fill-black text-white stroke-1"
         />
-        <div className="text-center py-8 text-red-500">
-          오류가 발생했습니다: {error?.message || "알 수 없는 오류"}
+        <div className="col-span-full text-center py-8 text-muted-foreground">
+          {errorMessage}
         </div>
       </div>
     );

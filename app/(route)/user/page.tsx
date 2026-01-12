@@ -1,45 +1,36 @@
 "use client";
 
 import { useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import UserPageContent from "@/app/shared/components/user-page-content";
-import { getUserStatsOptions, getUserInfo } from "@/app/feature/user/query-options";
+import { getUserStatsOptions } from "@/app/feature/user/query-options";
+import { useUserStore } from "@/store/user-store";
 
 export default function MyPage() {
-  const { data: session, status } = useSession();
   const router = useRouter();
+  const { user, isAuthenticated } = useUserStore();
 
   useEffect(() => {
-    if (status === "unauthenticated") {
+    if (!isAuthenticated) {
       router.push("/login");
     }
-  }, [status, router]);
+  }, [isAuthenticated, router]);
 
-  // 유저 정보 조회
-  const { data: userInfoResponse, isLoading: isUserLoading } = useQuery({
-    queryKey: ["userInfo", session?.userId],
-    queryFn: () => getUserInfo(Number(session?.userId)),
-    enabled: !!session?.userId,
-  });
+  const userId = user?.id ? Number(user.id) : 0;
 
   // 유저 통계 조회
-  const { data: userStats } = useQuery({
-    ...getUserStatsOptions(session?.userId ? Number(session.userId) : 0),
-    enabled: !!session?.userId,
+  const { data: userStats, isLoading: isStatsLoading } = useQuery({
+    ...getUserStatsOptions(userId),
+    enabled: !!userId,
   });
 
-  if (status === "loading" || isUserLoading) {
+  if (isStatsLoading) {
     return <div>Loading...</div>;
   }
 
-  if (!session || !session.userId) {
+  if (!user) {
     return null;
-  }
-
-  if (!userInfoResponse?.data) {
-    return <div>유저 정보를 불러올 수 없습니다.</div>;
   }
 
   // 마이페이지는 모든 권한 허용
@@ -54,6 +45,7 @@ export default function MyPage() {
       isOwner={true}
       permissions={permissions}
       userStats={userStats}
+      viewingUserId={userId}
     />
   );
 }

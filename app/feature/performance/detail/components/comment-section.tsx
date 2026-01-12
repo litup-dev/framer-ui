@@ -34,9 +34,6 @@ const CommentSection = ({
   const limit = 10;
   const offset = (currentPage - 1) * limit;
 
-  // Debug logging
-  console.log("[CommentSection] Received editing state:", { editingCommentId, editingText });
-
   const { data, isLoading } = useQuery(
     getPerformanceCommentsOptions(performanceId, offset, limit)
   );
