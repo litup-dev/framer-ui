@@ -49,11 +49,12 @@ const CommentItem = ({
   const { openModal } = useReportModalStore();
   const reportMutation = useReportContent();
 
-  const formatRelativeTime = (dateString: string) => {
-    return formatDistanceToNow(new Date(dateString), {
+  const formatRelativeTime = (dateString: string, isEdited: boolean = false) => {
+    const timeStr = formatDistanceToNow(new Date(dateString), {
       addSuffix: true,
       locale: ko,
     });
+    return isEdited ? `${timeStr} (수정됨)` : timeStr;
   };
 
   const handleReportClick = () => {
@@ -64,7 +65,7 @@ const CommentItem = ({
             <div className="w-6 h-6 rounded-full bg-gray-200" />
             <Subtitle className="text-[14px]">{comment.user.nickname}</Subtitle>
             <Description className="text-black-40 text-[12px]">
-              {formatRelativeTime(comment.createdAt)}
+              {formatRelativeTime(comment.updatedAt || comment.createdAt, !!comment.updatedAt)}
             </Description>
           </div>
           <Chip className="font-normal text-black-80 text-[14px]">
@@ -106,7 +107,7 @@ const CommentItem = ({
                 {comment.user.nickname}
               </Subtitle>
               <Description className="text-black-40 text-[12px] md:text-[14px] 2xl:text-[16px]">
-                {formatRelativeTime(comment.createdAt)}
+                {formatRelativeTime(comment.updatedAt || comment.createdAt, !!comment.updatedAt)}
               </Description>
             </div>
             <Button
@@ -154,7 +155,7 @@ const CommentItem = ({
             {comment.user.nickname}
           </Subtitle>
           <Description className="text-black-40 text-[12px] md:text-[14px] 2xl:text-[16px]">
-            {formatRelativeTime(comment.createdAt)}
+            {formatRelativeTime(comment.updatedAt || comment.createdAt, !!comment.updatedAt)}
           </Description>
         </div>
 

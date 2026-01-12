@@ -22,6 +22,8 @@ const SelectShow = ({
         onCategoryChange={onCategoryChange}
         selectedCategory={selectedCategory}
         isAnimating={isAnimating}
+        selectedArea={selectedArea}
+        onAreaChange={onAreaChange}
       />
       <DesktopSelectShow
         onCategoryChange={(value: "week" | "today" | "free" | "area") =>

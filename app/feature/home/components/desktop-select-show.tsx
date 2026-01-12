@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { SELECT_ITEMS } from "@/app/feature/home/constants";
 
 interface SelectShowProps {
   onCategoryChange: (value: "week" | "today" | "free" | "area") => void;
@@ -16,48 +17,8 @@ interface SelectShowProps {
   onAreaChange?: (value: string | "seoul" | "hongdae" | "busan") => void;
 }
 
-const selectItems = [
-  {
-    id: 1,
-    label: "금주공연",
-    value: "week",
-  },
-  {
-    id: 2,
-    label: "오늘공연",
-    value: "today",
-  },
-  {
-    id: 3,
-    label: "무료공연",
-    value: "free",
-  },
-  {
-    id: 4,
-    label: "지역별",
-    value: "area",
-    region: [
-      {
-        id: 1,
-        label: "서울",
-        value: "seoul",
-      },
-      {
-        id: 2,
-        label: "홍대",
-        value: "hongdae",
-      },
-      {
-        id: 3,
-        label: "부산",
-        value: "busan",
-      },
-    ],
-  },
-];
-
 interface CategorySelectItemProps {
-  item: (typeof selectItems)[0];
+  item: (typeof SELECT_ITEMS)[number];
   onCategoryChange: (value: "week" | "today" | "free" | "area") => void;
   selectedCategory?: string;
   isAnimating?: boolean;
@@ -105,7 +66,7 @@ const DesktopSelectShow = ({
       className={cn("hidden md:flex md:flex-col gap-4 xl:gap-4.5 2xl:gap-5")}
     >
       <div className={cn("flex gap-4")}>
-        {selectItems.slice(0, 2).map((item) => (
+        {SELECT_ITEMS.slice(0, 2).map((item) => (
           <CategorySelectItem
             key={item.id}
             item={item}
@@ -117,7 +78,7 @@ const DesktopSelectShow = ({
         ))}
       </div>
       <div className={cn("flex gap-4 md:pl-8.5 lg:pl-11.5 items-center")}>
-        {selectItems.slice(2, 4).map((item) => {
+        {SELECT_ITEMS.slice(2, 4).map((item) => {
           if (item.value === "area") {
             return (
               <Select

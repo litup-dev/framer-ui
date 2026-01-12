@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { Map } from "lucide-react";
 import { ChevronDown, List } from "lucide-react";
 import { useFormContext } from "react-hook-form";
@@ -10,14 +11,21 @@ import { ClubSearchFormSchema } from "@/app/feature/club/schema";
 import { region, filterItems } from "@/app/feature/club/constants";
 import { useFilterState } from "@/app/feature/club/hooks/use-filter-state";
 import { getReviewCategoryOptions } from "@/app/feature/club/query-options";
-import { ReviewCategory } from "@/app/feature/club/types";
 
-import { Title } from "@/components/shared/typography";
+import { Description, Subtitle } from "@/components/shared/typography";
 import { Separator } from "@/components/ui/separator";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import KakaoMap from "@/app/feature/club/components/kakao-map";
 import SearchFormField from "@/app/feature/club/components/search-form-field";
 import { Club } from "@/app/feature/club/types";
 import ClubCard from "@/app/feature/club/components/club-card";
+import KeywordList from "@/app/feature/club/components/keyword-list";
 
 type FilterItem = (typeof filterItems)[number];
 
@@ -66,6 +74,24 @@ const MobileFilter = ({
     return optionIndex === 0 ? "rotate-0" : "rotate-180";
   };
 
+  useEffect(() => {
+    if (viewType === "map") {
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+    } else {
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+    };
+  }, [viewType]);
+
   return (
     <div className="space-y-6 ">
       <div className="relative">
@@ -94,74 +120,85 @@ const MobileFilter = ({
 
       {viewType === "list" ? (
         <>
-          <div className="space-y-3">
-            <Title className="text-title-16">권역</Title>
-            <div className="flex gap-2.5">
-              {region.map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => handleRegionClick(item.value)}
-                  className={cn(
-                    "border rounded-full px-3 py-2 cursor-pointer transition-colors",
-                    selectedRegion === item.value
-                      ? "border-2 border-main text-main"
-                      : "bg-transparent text-gray-700 hover:bg-gray-100"
-                  )}
-                >
-                  <p className="text-chip-14">{item.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="space-y-3">
-            <Title className="text-title-16">키워드</Title>
-            <div className={cn("space-y-2")}>
-              <div className="grid grid-cols-4 gap-2.5 max-w-[82%]">
-                {Array.from({ length: 8 }).map((_, idx) => (
+          <div className="space-y-4">
+            <KeywordList categories={categories?.data} />
+            <div>
+              <div className="flex gap-2 items-center">
+                {region.map((item) => (
                   <div
-                    key={idx}
-                    className="bg-[#2020200A] rounded-full px-3 py-2 cursor-pointer transition-colors text-center"
+                    key={item.id}
+                    onClick={() => handleRegionClick(item.value)}
+                    className={cn(
+                      "border px-2.5 py-2 rounded-[3px] cursor-pointer transition-colors",
+                      selectedRegion === item.value
+                        ? "border-2 border-main text-main"
+                        : "bg-transparent text-gray-700"
+                    )}
                   >
-                    <p className="text-chip-14">키워드</p>
+                    {selectedRegion === item.value ? (
+                      <Subtitle className="text-[13px] xl:text-[14px] text-main">
+                        {item.label}
+                      </Subtitle>
+                    ) : (
+                      <Description className="text-[13px] xl:text-[14px] text-black/60">
+                        {item.label}
+                      </Description>
+                    )}
                   </div>
                 ))}
               </div>
             </div>
           </div>
           <Separator />
-          <div className="flex gap-2.5">
-            {filterItems.map((filter) => {
-              const currentOptionIndex = getCurrentOptionIndex(filter.id);
-              return (
-                <div
-                  key={filter.id}
-                  onClick={() =>
-                    handleFilterClick(filter.id, currentOptionIndex)
-                  }
-                  className={cn(
-                    "border rounded-full px-3 py-2 cursor-pointer transition-colors",
-                    isActive(filter.id)
-                      ? "border-2 border-main text-main"
-                      : "bg-transparent text-gray-700 hover:bg-gray-100"
-                  )}
-                >
-                  <div className="flex items-center">
-                    <p className="text-chip-14">{getFilterLabel(filter)}</p>
-                    {isActive(filter.id) && (
-                      <ChevronDown
-                        className={cn(
-                          "size-5 transition-transform",
-                          getChevronRotation(filter)
-                        )}
-                      />
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
 
           <div className="space-y-5">
+            <div
+              className={cn(
+                "flex transition-all duration-200",
+                activeFilterId === null ? "gap-0" : "gap-4"
+              )}
+            >
+              {filterItems.map((filter) => {
+                const currentOptionIndex = getCurrentOptionIndex(filter.id);
+                return (
+                  <div
+                    key={filter.id}
+                    onClick={() =>
+                      handleFilterClick(filter.id, currentOptionIndex)
+                    }
+                    className={cn(
+                      "cursor-pointer transition-colors",
+                      isActive(filter.id)
+                        ? "text-black"
+                        : "bg-transparent text-gray-700"
+                    )}
+                  >
+                    <div className="flex items-center gap-0.5">
+                      {isActive(filter.id) ? (
+                        <Subtitle className="text-[13px] xl:text-[14px] text-black">
+                          {getFilterLabel(filter)}
+                        </Subtitle>
+                      ) : (
+                        <Description className="text-[13px] xl:text-[14px] text-black/60">
+                          {getFilterLabel(filter)}
+                        </Description>
+                      )}
+                      <div className="w-4 h-4 flex items-center justify-center">
+                        <ChevronDown
+                          className={cn(
+                            "size-4 transition-all duration-200",
+                            isActive(filter.id)
+                              ? "opacity-100 scale-100"
+                              : "opacity-0 scale-0",
+                            getChevronRotation(filter)
+                          )}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
             {clubs?.map((club: Club) => (
               <ClubCard
                 key={club.id}
@@ -175,8 +212,11 @@ const MobileFilter = ({
           </div>
         </>
       ) : (
-        <div className="fixed top-32 left-0 right-0 bottom-0 h-[calc(100vh-120px)] overflow-hidden">
-          <KakaoMap club={selectedClub} />
+        <div
+          className="fixed inset-0 top-32 md:top-40 overflow-hidden"
+          style={{ touchAction: "none", height: "calc(100vh - 128px)" }}
+        >
+          <KakaoMap club={selectedClub} clubs={clubs} />
         </div>
       )}
     </div>

@@ -14,6 +14,9 @@ import ClubDetailReviewModal from "@/app/feature/club/detail/components/club-det
 import ClubDetailImageGallery from "@/app/feature/club/detail/components/club-detail-image-gallery";
 import { ReviewPagination } from "@/app/feature/club/detail/components/review-pagination";
 import { useReviewPagination } from "@/app/feature/club/detail/hooks/use-review-pagination";
+import { cn } from "@/lib/utils";
+import { Description } from "@/components/shared/typography";
+import Footer from "@/app/shared/components/footer";
 
 interface ClubDetailReviewProps {
   data: ClubDetailData;
@@ -22,6 +25,10 @@ interface ClubDetailReviewProps {
   currentPage: number;
   limit: number;
   onPageChange: (page: number) => void;
+  isMine: boolean;
+  setIsMine: (isMine: boolean) => void;
+  sort: "-createdAt" | "+createdAt";
+  setSort: (sort: "-createdAt" | "+createdAt") => void;
 }
 
 interface ReviewItem {
@@ -45,6 +52,10 @@ const ClubDetailReview = ({
   currentPage,
   limit,
   onPageChange,
+  isMine,
+  setIsMine,
+  sort,
+  setSort,
 }: ClubDetailReviewProps) => {
   const { openReviewModal } = useClubDetailStore();
   const { data: session } = useSession();
@@ -146,26 +157,37 @@ const ClubDetailReview = ({
       <div className="pt-4 flex justify-between text-description-14">
         <div className="flex items-center gap-1 text-black-80 font-semibold text-[14px]">
           내가 쓴 리뷰 보기
-          <Checkbox />
+          <Checkbox checked={isMine} onCheckedChange={setIsMine} />
         </div>
         <div className="flex items-center gap-1 text-black-60 font-semibold text-[14px]">
-          최신순
-          <ChevronDown className="h-4 w-4" />
+          {sort === "-createdAt" ? "최신순" : "오래된순"}
+          <ChevronDown
+            className={cn(
+              "h-4 w-4 transition-transform duration-200",
+              sort === "-createdAt" ? "rotate-180" : "",
+              "cursor-pointer"
+            )}
+            onClick={() =>
+              setSort(sort === "-createdAt" ? "+createdAt" : "-createdAt")
+            }
+          />
         </div>
       </div>
-      <div className="pt-4">
+      <div className="">
         {reviewItems.length > 0 ? (
           reviewItems.map((review) => (
             <ClubDetailReviewItem key={review.id} review={review} />
           ))
         ) : (
-          <div className="py-8 text-center text-black-60">
-            아직 작성된 리뷰가 없습니다.
+          <div className="py-20">
+            <Description className="py-8 text-center text-[14px] sm:text-[16px] text-black-60">
+              아직 작성된 리뷰가 없습니다.
+            </Description>
           </div>
         )}
       </div>
       {totalPages > 1 && (
-        <div className="pt-6 flex justify-center">
+        <div className="pt-14 sm:pt-20 pb-24 sm:pb-30 flex justify-center">
           <ReviewPagination
             totalPages={totalPages}
             currentPage={currentPage}
@@ -178,6 +200,7 @@ const ClubDetailReview = ({
           />
         </div>
       )}
+
       <ClubDetailReviewModal entityId={data.id} />
       <ClubDetailImageGallery />
     </div>

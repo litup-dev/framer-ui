@@ -163,8 +163,9 @@ export const getUserClubReviewsOptions = (sort: string = "-createdAt") =>
   queryOptions({
     queryKey: ["userClubReviews", sort],
     queryFn: async () => {
+      const encodedSort = encodeURIComponent(sort);
       const response = await apiClient.get<UserClubReviewsResponse>(
-        `/api/v1/users/me/club-reviews?sort=${sort}`
+        `/api/v1/users/me/club-reviews?sort=${encodedSort}`
       );
       return response.data;
     },
@@ -181,8 +182,9 @@ export const getMyPerformanceCommentsOptions = (
   queryOptions({
     queryKey: ["myPerformanceComments", sort, offset, limit],
     queryFn: async () => {
+      const encodedSort = encodeURIComponent(sort);
       const response = await apiClient.get<PerformanceCommentResponse>(
-        `/api/v1/users/me/perform-review?sort=${sort}&offset=${offset}&limit=${limit}`
+        `/api/v1/users/me/perform-review?sort=${encodedSort}&offset=${offset}&limit=${limit}`
       );
       return response.data;
     },
@@ -199,8 +201,9 @@ export const getMyLikedPerformanceCommentsOptions = (
   queryOptions({
     queryKey: ["myLikedPerformanceComments", sort, offset, limit],
     queryFn: async () => {
+      const encodedSort = encodeURIComponent(sort);
       const response = await apiClient.get<PerformanceCommentResponse>(
-        `/api/v1/users/me/liked-review?sort=${sort}&offset=${offset}&limit=${limit}`
+        `/api/v1/users/me/liked-review?sort=${encodedSort}&offset=${offset}&limit=${limit}`
       );
       return response.data;
     },

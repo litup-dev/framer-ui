@@ -51,6 +51,7 @@ export interface FavoriteClubItem {
     filePath: string;
     isMain: boolean;
   };
+  isFavorite?: boolean; // 캐시에서 관리하는 즐겨찾기 상태 (옵셔널)
 }
 
 export interface FavoriteClubsResponse {

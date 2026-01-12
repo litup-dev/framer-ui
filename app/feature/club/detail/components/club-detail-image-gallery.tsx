@@ -68,6 +68,7 @@ const ClubDetailImageGallery = () => {
   return (
     <Dialog open={isImageGalleryOpen} onOpenChange={closeImageGallery}>
       <DialogContent
+        overlayClassName="z-[999999]"
         className="!w-screen h-[90vh] !max-w-none p-0 bg-white border-none z-[1000000] !left-0 !translate-x-0 top-[5vh] !translate-y-0"
         style={{
           width: "100vw",

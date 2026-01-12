@@ -89,7 +89,7 @@ const ClubSearchForm = () => {
   return (
     <FormProvider {...form}>
       <div className="h-full">
-        <div className="sm:hidden h-full">
+        <div className="lg:hidden h-full">
           <MobileFilter
             clubs={clubs}
             setViewType={setViewType}
@@ -98,7 +98,7 @@ const ClubSearchForm = () => {
             setSelectedClub={setSelectedClub}
           />
         </div>
-        <div className="hidden sm:block h-full">
+        <div className="hidden lg:block h-full">
           <DesktopFilter
             clubs={clubs}
             selectedClub={selectedClub}

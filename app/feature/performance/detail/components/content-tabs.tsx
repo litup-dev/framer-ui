@@ -69,13 +69,13 @@ const ContentTabs = ({
       <TabsList className="!w-full h-12 lg:h-15 xl:h-16 2xl:h-20 bg-white">
         <TabsTrigger
           value="notice"
-          className="data-[state=active]:border-b-2 data-[state=active]:border-[#FF491A] data-[state=active]:text-[#202020]"
+          className="cursor-pointer data-[state=active]:border-b-2 data-[state=active]:border-[#FF491A] data-[state=active]:text-[#202020]"
         >
           <Subtitle className={fontSize}>공연 안내</Subtitle>
         </TabsTrigger>
         <TabsTrigger
           value="comment"
-          className="data-[state=active]:border-b-2 data-[state=active]:border-[#FF491A] data-[state=active]:text-[#202020]"
+          className="cursor-pointer data-[state=active]:border-b-2 data-[state=active]:border-[#FF491A] data-[state=active]:text-[#202020]"
         >
           <Subtitle className={fontSize}>코멘트({totalComments})</Subtitle>
         </TabsTrigger>

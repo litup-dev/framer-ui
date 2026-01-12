@@ -107,7 +107,6 @@ export const authOptions: NextAuthOptions = {
 
           if (response && response.ok) {
             const result = await response.json();
-            console.log(result, "<<<<< result");
             const publicId = result.data?.publicId;
             const userId = result.data?.id;
 

@@ -18,22 +18,43 @@ interface UserPageContentProps {
   isOwner: boolean;
   permissions: UserPermissions;
   userStats?: UserStatsType;
+  viewingUserId: number;
+  viewingUserInfo?: {
+    userId: number;
+    nickname: string;
+    bio: string;
+    profilePath: string | null;
+  };
 }
 
 export default function UserPageContent({
   isOwner,
   permissions,
   userStats,
+  viewingUserId,
+  viewingUserInfo,
 }: UserPageContentProps) {
-  const { user } = useUserStore();
+  const { user: currentUser } = useUserStore();
   const [isProfileEditing, setIsProfileEditing] = useState(false);
   const [isHistoryEditing, setIsHistoryEditing] = useState(false);
 
-  const userId = user?.publicId ?? 0;
-  const userIdNumber = Number(userId); // API 호출을 위해 number로 변환
+  // isOwner면 currentUser 사용, 아니면 viewingUserInfo 사용
+  const displayUser = isOwner
+    ? currentUser
+    : viewingUserInfo
+    ? {
+        id: String(viewingUserInfo.userId),
+        publicId: String(viewingUserInfo.userId),
+        nickname: viewingUserInfo.nickname,
+        bio: viewingUserInfo.bio || "",
+        profilePath: viewingUserInfo.profilePath || undefined,
+      }
+    : null;
+
+  const userIdNumber = viewingUserId;
   const pageTitle = isOwner
     ? "마이페이지"
-    : `${user?.nickname || "사용자"}님의 활동`;
+    : `${displayUser?.nickname || "사용자"}님의 활동`;
 
   // 공통 콘텐츠
   const renderContent = () => (
@@ -62,7 +83,7 @@ export default function UserPageContent({
   const renderProfileSection = () => (
     <>
       <UserProfile
-        user={user}
+        user={displayUser}
         isOwner={isOwner}
         isEditing={isProfileEditing}
         setIsEditing={setIsProfileEditing}
@@ -96,7 +117,7 @@ export default function UserPageContent({
           {pageTitle}
         </Title>
         <UserProfile
-          user={user}
+          user={displayUser}
           isOwner={isOwner}
           isEditing={isProfileEditing}
           setIsEditing={setIsProfileEditing}

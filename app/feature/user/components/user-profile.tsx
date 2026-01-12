@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
 import UserProfileAvatar from "./user-profile-avatar";
 import UserProfileInfo from "./user-profile-info";
 import UserProfileActions from "./user-profile-actions";
@@ -10,6 +9,8 @@ import ProfileImageCropModal from "./profile-image-crop-modal";
 import { updateUserInfo, getUserInfo } from "@/app/feature/user/query-options";
 import { apiClient } from "@/lib/api-client";
 import { UserInfo, useUserStore } from "@/store/user-store";
+import { userProfileSchema } from "@/app/feature/user/validation/user-profile";
+import { useCommonModalStore } from "@/store/common-modal-store";
 
 interface UserProfileProps {
   user: UserInfo | null;
@@ -25,6 +26,7 @@ export default function UserProfile({
   setIsEditing: externalSetIsEditing,
 }: UserProfileProps) {
   const { setUser } = useUserStore();
+  const { openModal } = useCommonModalStore();
   const [internalIsEditing, setInternalIsEditing] = useState(false);
   const [bio, setBio] = useState(user?.bio || "");
   const [nickname, setNickname] = useState(user?.nickname || "");
@@ -64,6 +66,21 @@ export default function UserProfile({
   });
 
   const handleSave = async () => {
+    // Validation
+    const validationResult = userProfileSchema.safeParse({ nickname, bio });
+
+    if (!validationResult.success) {
+      const firstError = validationResult.error.issues[0];
+      openModal({
+        description: firstError?.message || "입력값이 올바르지 않습니다.",
+        confirmButton: {
+          label: "확인",
+          onClick: () => {},
+        },
+      });
+      return;
+    }
+
     try {
       // 1. 프로필 이미지가 변경되었으면 먼저 업로드
       if (tempProfileImage) {
@@ -91,7 +108,13 @@ export default function UserProfile({
         bio,
       });
     } catch (error) {
-      alert("프로필 사진 업로드에 실패했습니다.");
+      openModal({
+        description: "프로필 사진 업로드에 실패했습니다.",
+        confirmButton: {
+          label: "확인",
+          onClick: () => {},
+        },
+      });
     }
   };
 

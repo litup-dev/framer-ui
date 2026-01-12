@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CalendarEvent } from "@/components/shared/calendar/types";
@@ -61,15 +62,20 @@ export const CalendarDayEvents = ({
 
             <div className="flex flex-col xl:gap-2 2xl:gap-2.5">
               {event.performances?.map((performance, performanceIndex) => (
-                <Title
+                <Link
                   key={performanceIndex}
-                  className={cn(
-                    "font-medium xl:text-[14px] 2xl:text-[16px] text-black-60",
-                    isHovered && isXl ? "text-white" : "text-black"
-                  )}
+                  href={`/performance/${performance.id}`}
+                  className="cursor-pointer hover:opacity-80 transition-opacity"
                 >
-                  {performance.title}
-                </Title>
+                  <Title
+                    className={cn(
+                      "font-medium xl:text-[14px] 2xl:text-[16px] text-black-60",
+                      isHovered && isXl ? "text-white" : "text-black"
+                    )}
+                  >
+                    {performance.title}
+                  </Title>
+                </Link>
               ))}
             </div>
           </div>

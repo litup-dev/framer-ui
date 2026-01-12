@@ -16,7 +16,8 @@ const LoginForm = () => {
     const initializeAuth = async () => {
       if (session?.accessToken && session?.userId) {
         try {
-          await loginWithToken(session.accessToken, session.userId);
+          // next-auth 세션에서 토큰을 관리하므로 userId만 전달
+          await loginWithToken(session.userId);
           router.push(callbackUrl);
         } catch (error) {
           console.error("Failed to initialize auth:", error);

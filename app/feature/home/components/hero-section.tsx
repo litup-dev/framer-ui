@@ -44,10 +44,7 @@ const HeroSection = () => {
 
   return (
     <div
-      className={cn(
-        "cursor-pointer",
-        selectedMobileBottomNavigation === "calendar" && "hidden"
-      )}
+      className={cn(selectedMobileBottomNavigation === "calendar" && "hidden")}
     >
       <div
         className="relative overflow-hidden w-[250px] md:w-[270px] lg:w-[400px] xl:w-[600px] aspect-[590/259]"

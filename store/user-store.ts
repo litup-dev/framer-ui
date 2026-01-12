@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 
 export interface UserInfo {
   publicId: string;
+  id: string;
   nickname: string;
   email?: string;
   profilePath?: string;

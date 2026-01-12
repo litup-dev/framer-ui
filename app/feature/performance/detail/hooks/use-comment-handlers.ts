@@ -9,6 +9,7 @@ import {
   useUpdateComment,
 } from "../query-options";
 import type { PerformanceCommentItem } from "../types";
+import { ApiError } from "@/lib/api-client";
 
 const COMMENT_MAX_LENGTH = 100;
 
@@ -79,12 +80,14 @@ export const useCommentHandlers = (
         setCommentText("");
         setCurrentPage(1);
       },
-      onError: (error: any) => {
-        const message =
-          error?.statusCode === 409
-            ? error.message
-            : "댓글 등록 중 오류가 발생했습니다.";
-        showErrorModal(message);
+      onError: (error: unknown) => {
+        if (error instanceof ApiError && error.status === 409) {
+          showErrorModal(error.message);
+        } else if (error instanceof Error) {
+          showErrorModal(error.message);
+        } else {
+          showErrorModal("댓글 등록 중 오류가 발생했습니다.");
+        }
       },
     });
   };

@@ -10,6 +10,65 @@ import {
 import { useClubDetailStore } from "@/app/feature/club/detail/store";
 
 import { StarRating } from "@/app/feature/club/detail/components/review-star-rating";
+import { Subtitle } from "@/components/shared/typography";
+
+interface KeywordButtonProps {
+  keyword: { id: number; keyword: string };
+  isSelected: boolean;
+  onClick: () => void;
+}
+
+const KeywordButton = ({
+  keyword,
+  isSelected,
+  onClick,
+}: KeywordButtonProps) => {
+  return (
+    <div
+      onClick={onClick}
+      className={cn(
+        "flex items-center justify-center px-2 py-2 border cursor-pointer transition-colors w-fit lg:min-w-[96px] lg:h-[34px] rounded-[3px]",
+        isSelected ? "bg-main text-white border-main" : "hover:bg-gray-100"
+      )}
+    >
+      <Subtitle className="text-[14px] whitespace-nowrap">
+        {keyword.keyword}
+      </Subtitle>
+    </div>
+  );
+};
+
+interface CategorySectionProps {
+  category: ReviewCategory | undefined;
+  categoryName: string;
+  selectedCategoryIds: number[];
+  onToggleCategory: (id: number) => void;
+}
+
+const CategorySection = ({
+  category,
+  categoryName,
+  selectedCategoryIds,
+  onToggleCategory,
+}: CategorySectionProps) => {
+  if (!category) return null;
+
+  return (
+    <div className="flex flex-col gap-5">
+      <div className="text-subtitle-12">{category.name || categoryName}</div>
+      <div className="grid grid-cols-3 lg:flex lg:flex-col gap-3 lg:gap-4">
+        {category.keywords.map((keyword) => (
+          <KeywordButton
+            key={keyword.id}
+            keyword={keyword}
+            isSelected={selectedCategoryIds.includes(keyword.id)}
+            onClick={() => onToggleCategory(keyword.id)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export const ReviewStep1 = () => {
   const queryClient = useQueryClient();
@@ -44,103 +103,31 @@ export const ReviewStep1 = () => {
           <StarRating />
         </div>
       </div>
-      <div className="bg-white pt-10 px-5 space-y-10">
-        <div className="flex flex-col gap-5">
-          <div className="text-subtitle-12">
-            {locationCategory?.name || "위치"}
-          </div>
-          <div className="grid grid-cols-3 gap-3">
-            {locationCategory?.keywords.map((keyword) => {
-              const isSelected = reviewCategories.includes(keyword.id);
-              return (
-                <div
-                  onClick={() => setReviewCategories(keyword.id)}
-                  key={keyword.id}
-                  className={cn(
-                    "p-2 border text-center text-description-14 cursor-pointer transition-colors",
-                    isSelected
-                      ? "bg-main text-white border-main"
-                      : "hover:bg-gray-100"
-                  )}
-                >
-                  {keyword.keyword}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <div className="flex flex-col gap-5">
-          <div className="text-subtitle-12">
-            {facilityCategory?.name || "시설"}
-          </div>
-          <div className="grid grid-cols-3 gap-3">
-            {facilityCategory?.keywords.map((keyword) => {
-              const isSelected = reviewCategories.includes(keyword.id);
-              return (
-                <div
-                  onClick={() => setReviewCategories(keyword.id)}
-                  key={keyword.id}
-                  className={cn(
-                    "p-2 border text-center text-description-14 cursor-pointer transition-colors",
-                    isSelected
-                      ? "bg-main text-white border-main"
-                      : "hover:bg-gray-100"
-                  )}
-                >
-                  {keyword.keyword}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <div className="flex flex-col gap-5">
-          <div className="text-subtitle-12">
-            {soundCategory?.name || "음향"}
-          </div>
-          <div className="grid grid-cols-3 gap-3">
-            {soundCategory?.keywords.map((keyword) => {
-              const isSelected = reviewCategories.includes(keyword.id);
-              return (
-                <div
-                  onClick={() => setReviewCategories(keyword.id)}
-                  key={keyword.id}
-                  className={cn(
-                    "p-2 border text-center text-description-14 cursor-pointer transition-colors",
-                    isSelected
-                      ? "bg-main text-white border-main"
-                      : "hover:bg-gray-100"
-                  )}
-                >
-                  {keyword.keyword}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <div className="flex flex-col gap-5">
-          <div className="text-subtitle-12">
-            {cultureCategory?.name || "문화"}
-          </div>
-          <div className="grid grid-cols-3 gap-3">
-            {cultureCategory?.keywords.map((keyword) => {
-              const isSelected = reviewCategories.includes(keyword.id);
-              return (
-                <div
-                  onClick={() => setReviewCategories(keyword.id)}
-                  key={keyword.id}
-                  className={cn(
-                    "p-2 border text-center text-description-14 cursor-pointer transition-colors",
-                    isSelected
-                      ? "bg-main text-white border-main"
-                      : "hover:bg-gray-100"
-                  )}
-                >
-                  {keyword.keyword}
-                </div>
-              );
-            })}
-          </div>
-        </div>
+      <div className="bg-white pt-10 px-5 lg:px-19 space-y-10 lg:space-y-0 lg:grid lg:grid-cols-4 lg:gap-13">
+        <CategorySection
+          category={locationCategory}
+          categoryName="위치"
+          selectedCategoryIds={reviewCategories}
+          onToggleCategory={setReviewCategories}
+        />
+        <CategorySection
+          category={facilityCategory}
+          categoryName="시설"
+          selectedCategoryIds={reviewCategories}
+          onToggleCategory={setReviewCategories}
+        />
+        <CategorySection
+          category={soundCategory}
+          categoryName="음향"
+          selectedCategoryIds={reviewCategories}
+          onToggleCategory={setReviewCategories}
+        />
+        <CategorySection
+          category={cultureCategory}
+          categoryName="문화"
+          selectedCategoryIds={reviewCategories}
+          onToggleCategory={setReviewCategories}
+        />
       </div>
     </div>
   );

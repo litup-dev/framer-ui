@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { format, getDate } from "date-fns";
 import { ko } from "date-fns/locale";
-import { Check } from "lucide-react";
+import { Check, Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -57,6 +57,16 @@ const ClubDetailSchedule = ({
     return acc;
   }, {} as Record<string, ScheduleEvent[]>);
 
+  if (events.length === 0 || Object.keys(groupedEvents).length === 0) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Description className="text-black-60 text-[14px] sm:text-[16px]">
+          공연 일정이 없습니다.
+        </Description>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
       {Object.entries(groupedEvents).map(([dateKey, events]) => {
@@ -67,7 +77,7 @@ const ClubDetailSchedule = ({
         return (
           <div
             key={dateKey}
-            className="border rounded-lg py-5 px-4 space-y-4 lg:space-y-8"
+            className="border rounded-lg py-5 px-4 space-y-4 lg:space-y-8 relative"
           >
             {events.map((event, eventIndex) => (
               <div key={eventIndex} className="flex gap-4 items-center">
@@ -118,10 +128,10 @@ const ClubDetailSchedule = ({
                     </Description>
                   </div>
                 </div>
-                <div className="flex-shrink-0 flex flex-col items-center justify-start">
+                <div className="absolute top-5 right-5 lg:static lg:top-auto lg:right-auto flex-shrink-0 flex flex-col items-center justify-start">
                   {event.isAttend ? (
                     <div onClick={() => handleAttend(event.id)}>
-                      <Button className="lg:hidden w-10 h-10 border-2 border-orange-500 bg-orange-500 rounded flex items-center justify-center hover:bg-orange-600 transition-colors">
+                      <Button className="lg:hidden w-9 h-9 border-2 border-orange-500 bg-orange-500 rounded flex items-center justify-center hover:bg-orange-600 transition-colors">
                         <Check className="w-5 h-5 text-white" />
                       </Button>
                       <Button
@@ -137,8 +147,8 @@ const ClubDetailSchedule = ({
                     </div>
                   ) : (
                     <div onClick={() => handleAttend(event.id)}>
-                      <Button className="lg:hidden w-10 h-10 border-2 border-orange-500 bg-orange-500 rounded flex items-center justify-center hover:bg-orange-600 transition-colors">
-                        <Check className="w-5 h-5 text-white" />
+                      <Button className="lg:hidden bg-gray w-9 h-9 rounded flex items-center justify-center hover:bg-orange-600 transition-colors">
+                        <Plus className="text-black w-10 h-10" />
                       </Button>
                       <Button
                         className={cn("hidden lg:flex bg-gray-100 text-black")}

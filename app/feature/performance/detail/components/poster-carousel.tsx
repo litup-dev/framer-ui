@@ -43,7 +43,7 @@ const PosterCarousel = ({ images, title, variant }: PosterCarouselProps) => {
     return (
       <div className="w-full">
         {/* 메인 포스터 슬라이드 */}
-        <Carousel setApi={setApi} className="w-full">
+        <Carousel setApi={setApi} opts={{ loop: true }} className="w-full">
           <CarouselContent className="-ml-0">
             {images.map((img, index) => (
               <CarouselItem key={index} className="pl-0">
@@ -95,7 +95,7 @@ const PosterCarousel = ({ images, title, variant }: PosterCarouselProps) => {
   return (
     <div className="relative w-full">
       {/* 메인 포스터 슬라이드 */}
-      <Carousel setApi={setApi} className="w-full">
+      <Carousel setApi={setApi} opts={{ loop: true }} className="w-full">
         <CarouselContent className="-ml-0">
           {images.map((img, index) => (
             <CarouselItem key={index} className="pl-0">
@@ -115,7 +115,7 @@ const PosterCarousel = ({ images, title, variant }: PosterCarouselProps) => {
       </Carousel>
 
       {/* 커스텀 인디케이터: 우측 하단 */}
-      <div className="absolute bottom-4 right-4 bg-black/60 text-white px-3 py-1.5 rounded-[4px] text-[14px] font-medium">
+      <div className="absolute bottom-4 right-4 bg-black/60 text-white px-3 py-1.5 rounded text-[14px] font-medium">
         {current + 1}/{images.length.toString().padStart(2, "0")}
       </div>
     </div>

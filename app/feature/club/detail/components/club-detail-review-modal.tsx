@@ -12,9 +12,14 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { ReviewStep1 } from "@/app/feature/club/detail/components/review-step1";
 import { ReviewStep2 } from "@/app/feature/club/detail/components/review-step2";
 import { CreateReviewResponse } from "@/app/feature/club/types";
-import { createReviewOptions, updateReviewOptions, getReviewCategoryOptions } from "@/app/feature/club/query-options";
+import {
+  createReviewOptions,
+  updateReviewOptions,
+  getReviewCategoryOptions,
+} from "@/app/feature/club/query-options";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
+import { Subtitle } from "@/components/shared/typography";
 
 const ClubDetailReviewModal = ({ entityId }: { entityId: number }) => {
   const queryClient = useQueryClient();
@@ -47,10 +52,7 @@ const ClubDetailReviewModal = ({ entityId }: { entityId: number }) => {
         formData.append("image", image);
       });
 
-      await apiClient.post(
-        `/api/v1/upload/club-review/${reviewId}`,
-        formData
-      );
+      await apiClient.post(`/api/v1/upload/club-review/${reviewId}`, formData);
     } catch (error) {
       console.error("이미지 업로드 실패:", error);
     }
@@ -155,23 +157,30 @@ const ClubDetailReviewModal = ({ entityId }: { entityId: number }) => {
         if (!open) handleClose();
       }}
     >
-      <DialogContent className="bg-white max-h-[90vh] flex flex-col p-0 overflow-hidden gap-0 z-[99999999]">
-        <DialogTitle
-          className={cn(
-            "flex justify-start w-full items-center gap-1 p-6 pb-0 flex-shrink-0 ",
-            currentStep === 1 && "bg-[#F2F1EE]"
-          )}
-        >
-          <Image
-            src="/images/review_modal.svg"
-            alt="review-modal"
-            width={24}
-            height={24}
-          />
-          {reviewMode === "edit" ? "리뷰 수정하기" : "리뷰 작성하기"}
-        </DialogTitle>
-
+      <DialogContent
+        overlayClassName="z-[99999998]"
+        className="bg-white max-h-[90vh] flex flex-col p-0 overflow-hidden gap-0 z-[99999999] lg:w-[664px] lg:max-w-[664px]"
+      >
         <div className="flex-1 min-h-0 overflow-y-auto">
+          <DialogTitle
+            className={cn(
+              "flex justify-start w-full items-center gap-1 p-6 pb-0",
+              currentStep === 1 && "bg-[#F2F1EE]"
+            )}
+          >
+            <Image
+              src="/images/review_modal.svg"
+              alt="review-modal"
+              width={24}
+              height={24}
+            />
+            <div className="flex gap-1">
+              <Subtitle>리뷰 작성하기</Subtitle>
+              <Subtitle className="text-gray">
+                {currentStep === 1 ? "1/2" : "2/2"}
+              </Subtitle>
+            </div>
+          </DialogTitle>
           <AnimatePresence mode="wait" custom={direction}>
             {currentStep === 1 && (
               <motion.div
@@ -204,29 +213,24 @@ const ClubDetailReviewModal = ({ entityId }: { entityId: number }) => {
 
           <div
             className={cn(
-              "flex gap-1 items-center p-6  bg-white flex-shrink-0",
-              currentStep === 1 ? "justify-end" : "justify-between"
+              "flex gap-1 items-center lg:pt-14 lg:pb-12 lg:px-12 bg-white flex-shrink-0",
+              "justify-end"
             )}
           >
-            {currentStep > 1 && (
-              <Button className="bg-black" onClick={handleBack}>
-                뒤로가기
-              </Button>
-            )}
-
-            <div>
+            <div className="flex gap-1 lg:gap-2">
+              {currentStep > 1 && (
+                <Button
+                  className="bg-gray text-black lg:w-[64px] lg:h-[44px] w-fit h-fit lg:py-3.5 lg:text-[16px]"
+                  onClick={handleBack}
+                >
+                  이전
+                </Button>
+              )}
               <Button
                 onClick={handleNext}
-                className="bg-black rounded-[4px] hover:bg-black/80"
+                className="bg-black hover:bg-black/80 lg:w-[64px] lg:h-[44px] w-fit h-fit lg:py-3.5 lg:text-[16px]"
               >
-                다음
-              </Button>
-              <Button
-                variant="outline"
-                onClick={handleClose}
-                className="rounded-[4px]"
-              >
-                취소
+                {currentStep === 1 ? "다음" : "등록"}
               </Button>
             </div>
           </div>

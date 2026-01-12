@@ -46,7 +46,13 @@ const getPerformancesOptions = (
   isFree?: boolean
 ) => {
   return infiniteQueryOptions({
-    queryKey: ["performances", startDate, endDate, area, isFree],
+    queryKey: [
+      "performances",
+      startDate,
+      endDate,
+      area ?? null,
+      isFree ?? null,
+    ],
     queryFn: async ({ pageParam }) => {
       const offset = pageParam as number;
       const params: string[] = [`startDate=${startDate}`, `endDate=${endDate}`];

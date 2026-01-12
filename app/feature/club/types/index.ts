@@ -45,6 +45,11 @@ export interface UpcomingPerform {
   [key: string]: any;
 }
 
+export interface SnsLink {
+  platform: string;
+  url: string;
+}
+
 export interface ClubDetailData {
   id: number;
   name: string;
@@ -65,6 +70,7 @@ export interface ClubDetailData {
   images: ClubImage[];
   keywords: ClubKeyword[];
   upcomingPerforms?: UpcomingPerform[];
+  snsLinks: SnsLink[];
 }
 
 export interface ClubDetail {
