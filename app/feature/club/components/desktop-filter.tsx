@@ -23,9 +23,9 @@ import ClubCard from "@/app/feature/club/components/club-card";
 import { ClubsPagination } from "@/app/feature/club/components/clubs-pagination";
 import { useQuery } from "@tanstack/react-query";
 import { getReviewCategoryOptions } from "../query-options";
-import { ReviewCategory } from "@/app/feature/club/types";
 import KeywordList from "@/app/feature/club/components/keyword-list";
-import { Subtitle } from "@/components/shared/typography";
+import { Description, Subtitle } from "@/components/shared/typography";
+import Image from "next/image";
 
 type FilterItem = (typeof filterItems)[number];
 
@@ -92,25 +92,59 @@ const DesktopFilter = ({
               <div>
                 <div className="flex gap-2 items-center">
                   <Select
-                    value={selectedRegion || ""}
+                    value={
+                      selectedRegion === "nearby" ? "" : selectedRegion || ""
+                    }
                     onValueChange={handleRegionClick}
                   >
-                    <SelectTrigger className="rounded-full">
-                      <SelectValue
-                        placeholder="권역"
-                        className="placeholder:text-description-14 text-black-60"
-                      />
+                    <SelectTrigger
+                      className="rounded-[3px] p-2.5 border-gray-300 h-auto"
+                      visibleIcon={false}
+                    >
+                      <div className="flex items-center gap-1">
+                        <SelectValue
+                          placeholder="권역"
+                          className="text-[14px] xl:text-[16px]"
+                        />
+                        <Image
+                          src="/images/location.svg"
+                          alt="arrow-down"
+                          width={16}
+                          height={16}
+                        />
+                      </div>
                     </SelectTrigger>
                     <SelectContent className="p-4">
-                      {region.map((item) => (
-                        <SelectItem key={item.id} value={item.value}>
-                          <Subtitle className="text-[12px] xl:text-[14px]">
-                            {item.label}
-                          </Subtitle>
-                        </SelectItem>
-                      ))}
+                      {region
+                        .filter((item) => item.label !== "내 주변")
+                        .map((item) => (
+                          <SelectItem key={item.id} value={item.value}>
+                            <Subtitle className="text-[14px] xl:text-[16px]">
+                              {item.label}
+                            </Subtitle>
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
+                  <div
+                    onClick={() => handleRegionClick("nearby")}
+                    className={cn(
+                      "rounded-[4px] cursor-pointer transition-colors p-2.5 border box-border",
+                      selectedRegion === "nearby"
+                        ? "border-main text-main"
+                        : "bg-transparent text-gray-700 hover:bg-gray-100 border-gray-300"
+                    )}
+                  >
+                    {selectedRegion === "nearby" ? (
+                      <Subtitle className="text-[14px] xl:text-[16px] text-main">
+                        내 주변
+                      </Subtitle>
+                    ) : (
+                      <Description className="text-[14px] xl:text-[16px] text-black/60">
+                        내 주변
+                      </Description>
+                    )}
+                  </div>
                   {filterItems.map((filter) => {
                     const currentOptionIndex = getCurrentOptionIndex(filter.id);
                     return (
@@ -120,22 +154,37 @@ const DesktopFilter = ({
                           handleFilterClick(filter.id, currentOptionIndex)
                         }
                         className={cn(
-                          "border rounded-full px-4 py-1 cursor-pointer transition-colors",
+                          "rounded-[4px] cursor-pointer transition-colors p-2.5 border box-border",
                           isActive(filter.id)
-                            ? "border-2 border-main text-main"
-                            : "bg-transparent text-gray-700 hover:bg-gray-100"
+                            ? "border-main text-main"
+                            : "bg-transparent text-gray-700 hover:bg-gray-100 border-gray-300"
                         )}
                       >
                         <div className="flex items-center gap-1">
-                          {getFilterLabel(filter)}
-                          {isActive(filter.id) && (
-                            <ChevronDown
-                              className={cn(
-                                "size-4 transition-transform",
-                                getChevronRotation(filter)
-                              )}
-                            />
+                          {isActive(filter.id) ? (
+                            <Subtitle className="text-[14px] xl:text-[16px] text-main">
+                              {getFilterLabel(filter)}
+                            </Subtitle>
+                          ) : (
+                            <Description className="text-[14px] xl:text-[16px] text-black/60">
+                              {getFilterLabel(filter)}
+                            </Description>
                           )}
+                          <div
+                            className={cn(
+                              "flex items-center justify-center flex-shrink-0",
+                              isActive(filter.id) ? "w-4 h-4 " : "w-0 h-0"
+                            )}
+                          >
+                            {isActive(filter.id) && (
+                              <ChevronDown
+                                className={cn(
+                                  "size-4 transition-transform",
+                                  getChevronRotation(filter)
+                                )}
+                              />
+                            )}
+                          </div>
                         </div>
                       </div>
                     );
@@ -177,7 +226,7 @@ const DesktopFilter = ({
 
       <div className="w-3/5 relative flex-1 min-h-0">
         <div className="absolute inset-0 -right-5 md:-right-10 lg:-right-15 xl:-right-20">
-          <KakaoMap club={selectedClub} />
+          <KakaoMap club={selectedClub} clubs={clubs} />
         </div>
       </div>
     </div>

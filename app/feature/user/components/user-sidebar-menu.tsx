@@ -9,7 +9,6 @@ interface UserSidebarMenuProps {
   className?: string;
 }
 
-// 뷰포트 전체 너비 구분선 컴포넌트
 const FullWidthDivider = () => (
   <div className="h-3 bg-[#F5F5F5] xl:hidden w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]" />
 );

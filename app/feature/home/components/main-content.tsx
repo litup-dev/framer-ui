@@ -1,12 +1,31 @@
 "use client";
 
+import { InfiniteData } from "@tanstack/react-query";
+import { PerformanceItem } from "@/app/feature/home/types";
 import { useHomeStore } from "@/app/feature/home/store/home-store";
 
 import SelectShow from "@/app/feature/home/components/select-show";
 import MobileMainContent from "@/app/feature/home/components/mobile-main-content";
 import DesktopMainContent from "@/app/feature/home/components/desktop-main-content";
 
-export default function MainContent() {
+interface MainContentProps {
+  performances?: InfiniteData<{
+    data: PerformanceItem[];
+    offset: number;
+    hasMore: boolean;
+    total: number;
+  }>;
+  hasNextPage?: boolean;
+  fetchNextPage?: () => void;
+  isFetchingNextPage?: boolean;
+}
+
+export default function MainContent({
+  performances,
+  hasNextPage,
+  fetchNextPage,
+  isFetchingNextPage,
+}: MainContentProps) {
   const {
     selectedCategory,
     showAllItems,
@@ -34,7 +53,13 @@ export default function MainContent() {
         <MobileMainContent
           selectedMobileBottomNavigation={selectedMobileBottomNavigation}
         />
-        <DesktopMainContent showAllItems={showAllItems} />
+        <DesktopMainContent
+          showAllItems={showAllItems}
+          performances={performances}
+          hasNextPage={hasNextPage}
+          fetchNextPage={fetchNextPage}
+          isFetchingNextPage={isFetchingNextPage}
+        />
       </div>
     </div>
   );

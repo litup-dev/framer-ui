@@ -26,24 +26,24 @@ export const filterItems = [
     id: 1,
     fieldName: "reviewSort" as const,
     options: [
-      { label: "리뷰 많은 순", value: "-reviewCount" },
-      { label: "리뷰 적은 순", value: "+reviewCount" },
+      { label: "리뷰 많은순", value: "-reviewCount" },
+      { label: "리뷰 적은순", value: "+reviewCount" },
     ],
   },
   {
     id: 2,
     fieldName: "reviewDate" as const,
     options: [
-      { label: "최근 리뷰 순", value: "-reviewCreatedAt" },
-      { label: "오래된 리뷰 순", value: "+reviewCreatedAt" },
+      { label: "최근 리뷰순", value: "-reviewCreatedAt" },
+      { label: "오래된 리뷰순", value: "+reviewCreatedAt" },
     ],
   },
   {
     id: 3,
     fieldName: "ratingSort" as const,
     options: [
-      { label: "평점 높은 순", value: "-rating" },
-      { label: "평점 낮은 순", value: "+rating" },
+      { label: "평점 높은순", value: "-rating" },
+      { label: "평점 낮은순", value: "+rating" },
     ],
   },
 ] as const;

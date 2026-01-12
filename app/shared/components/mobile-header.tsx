@@ -13,6 +13,7 @@ import { Subtitle } from "@/components/shared/typography";
 import { cn } from "@/lib/utils";
 
 const MENU_ITEMS = [
+  { label: "전체 공연", href: "/all-performances" },
   { label: "클럽 찾기", href: "/club" },
   { label: "커뮤니티", href: "/community" },
 ] as const;
@@ -85,12 +86,12 @@ const MobileHeader = () => {
               <X className="w-6 h-6 cursor-pointer" onClick={closeMenu} />
             </div>
 
-            <div className="px-10 space-y-14">
-              <div className="flex items-center gap-2">
+            <div className="">
+              <div className="flex items-center gap-2 py-[21px] border-b px-6">
                 {isAuthenticated ? (
                   <div className="relative">
                     <div
-                      className="flex items-center gap-2 cursor-pointer"
+                      className="flex items-center gap-2 cursor-pointerh-[72px]"
                       onClick={toggleUserDropdown}
                     >
                       <Avatar className="w-8 h-8">
@@ -100,7 +101,7 @@ const MobileHeader = () => {
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex items-center">
-                        <Subtitle className="text-[16px]">
+                        <Subtitle className="text-[14px]">
                           {session?.nickname}
                         </Subtitle>
                         <ChevronRight
@@ -139,7 +140,9 @@ const MobileHeader = () => {
                     </div>
                     <div className="flex">
                       <Link href="/login">
-                        <p className="text-subtitle-14">로그인하세요</p>
+                        <Subtitle className="text-subtitle-14">
+                          로그인하세요
+                        </Subtitle>
                       </Link>
                       <ChevronRight className="w-5 h-5" />
                     </div>
@@ -147,15 +150,17 @@ const MobileHeader = () => {
                 )}
               </div>
 
-              <div className="flex flex-col gap-6">
+              <div className="flex flex-col">
                 {MENU_ITEMS.map((item, index) => (
-                  <p
+                  <div
                     key={index}
-                    className="text-subtitle-14 cursor-pointer"
+                    className="text-subtitle-14 cursor-pointer py-[21px] border-b px-6"
                     onClick={() => navigateTo(item.href)}
                   >
-                    {item.label}
-                  </p>
+                    <Subtitle className="text-subtitle-14">
+                      {item.label}
+                    </Subtitle>
+                  </div>
                 ))}
               </div>
             </div>

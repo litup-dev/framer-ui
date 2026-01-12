@@ -179,7 +179,6 @@ export default function ProfileImageCropModal({
             </button>
           </div>
         </DialogHeader>
-
         <DialogDescription className="sr-only">
           프로필 사진을 업로드하고 원형으로 크롭할 수 있습니다.
         </DialogDescription>

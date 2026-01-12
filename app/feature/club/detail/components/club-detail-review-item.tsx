@@ -1,8 +1,11 @@
 "use client";
 
+import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import { Bell } from "lucide-react";
 import { useClubDetailStore } from "@/app/feature/club/detail/store";
+import { formatDate } from "@/lib/date-utils";
+import { Textarea } from "@/components/ui/textarea";
 
 interface ReviewItem {
   id: number;
@@ -24,12 +27,56 @@ interface ClubDetailReviewItemProps {
 
 const ClubDetailReviewItem = ({ review }: ClubDetailReviewItemProps) => {
   const { openImageGallery } = useClubDetailStore();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [showMoreButton, setShowMoreButton] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      const textarea = textareaRef.current;
+
+      textarea.style.height = "auto";
+      textarea.style.overflow = "visible";
+      const fullHeight = textarea.scrollHeight;
+
+      if (isExpanded) {
+        textarea.style.height = `${fullHeight}px`;
+        textarea.style.overflow = "visible";
+      } else {
+        textarea.style.height = "auto";
+        const computedStyle = getComputedStyle(textarea);
+        const lineHeight = parseFloat(computedStyle.lineHeight) || 20;
+        const paddingTop = parseFloat(computedStyle.paddingTop) || 8;
+        const paddingBottom = parseFloat(computedStyle.paddingBottom) || 8;
+        const borderTop = parseFloat(computedStyle.borderTopWidth) || 0;
+        const borderBottom = parseFloat(computedStyle.borderBottomWidth) || 0;
+
+        const threeLineHeight =
+          lineHeight * 3 +
+          paddingTop +
+          paddingBottom +
+          borderTop +
+          borderBottom -
+          2;
+
+        textarea.style.height = `${threeLineHeight}px`;
+        textarea.style.overflow = "hidden";
+
+        setShowMoreButton(fullHeight > threeLineHeight + 2);
+      }
+    }
+  }, [review.content, isExpanded]);
 
   const handleImageClick = (index: number) => {
     if (review.images.length > 0) {
       openImageGallery(review.images, index);
     }
   };
+
+  const handleMoreClick = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   return (
     <div className="space-y-3 py-4 border-b">
       <div className="flex items-center gap-2">
@@ -46,10 +93,20 @@ const ClubDetailReviewItem = ({ review }: ClubDetailReviewItemProps) => {
           <span>{review.rating}</span>
         </div>
       </div>
-      <div className="text-description-14">{review.content}</div>
-      <div className="flex justify-end text-description-14 text-black-40">
-        더보기
-      </div>
+      <Textarea
+        ref={textareaRef}
+        className="border-none shadow-none text-[14px] text-black-60 resize-none"
+        rows={3}
+        value={review.content}
+        readOnly
+      />
+      {showMoreButton && (
+        <div className="flex justify-end text-description-14 text-black-40">
+          <button onClick={handleMoreClick} className="hover:opacity-70">
+            {isExpanded ? "접기" : "더보기"}
+          </button>
+        </div>
+      )}
       {review.images.length > 0 && (
         <div className="flex gap-2">
           {review.images.map((image, index) => (
@@ -83,8 +140,8 @@ const ClubDetailReviewItem = ({ review }: ClubDetailReviewItemProps) => {
 
       <div className="flex items-center justify-between text-subtitle-12 text-black-40">
         <div className="flex gap-1 text-description-12">
-          <div>작성: {review.createdAt}</div>
-          <div>수정: {review.updatedAt}</div>
+          <div>작성: {formatDate(review.createdAt)}</div>
+          <div>수정: {formatDate(review.updatedAt)}</div>
         </div>
         <button className="flex items-center gap-0.5 hover:opacity-70 ">
           <span>신고</span>

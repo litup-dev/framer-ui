@@ -21,41 +21,54 @@ function SelectGroup({
 }
 
 function SelectValue({
+  className,
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.Value>) {
-  return <SelectPrimitive.Value data-slot="select-value" {...props} />;
+}: React.ComponentProps<typeof SelectPrimitive.Value> & {
+  className?: string;
+}) {
+  return (
+    <SelectPrimitive.Value
+      data-slot="select-value"
+      className={className}
+      {...props}
+    />
+  );
 }
 
 function SelectTrigger({
   className,
   size = "default",
+  visibleIcon = true,
   children,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Trigger> & {
   size?: "sm" | "default";
+  visibleIcon?: boolean;
 }) {
   return (
     <SelectPrimitive.Trigger
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "border-input data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-current focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex w-fit items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none  disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 leading-percent",
+        "border-input data-[placeholder]:text-[14px] data-[placeholder]:xl:text-[16px] data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-current focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex w-fit items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none  disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 leading-percent",
         className
       )}
       {...props}
     >
       {children}
-      <SelectPrimitive.Icon asChild>
-        <div className="relative size-4 xl:size-6">
-          <Image
-            src="/images/arrow-down.svg"
-            alt="arrow-down"
-            fill
-            className="object-contain"
-            sizes="(min-width: 1536px) 32px, (min-width: 1280px) 24px, 16px"
-          />
-        </div>
-      </SelectPrimitive.Icon>
+      {visibleIcon && (
+        <SelectPrimitive.Icon asChild>
+          <div className="relative size-4 xl:size-6">
+            <Image
+              src="/images/arrow-down.svg"
+              alt="arrow-down"
+              fill
+              className="object-contain"
+              sizes="(min-width: 1536px) 32px, (min-width: 1280px) 24px, 16px"
+            />
+          </div>
+        </SelectPrimitive.Icon>
+      )}
     </SelectPrimitive.Trigger>
   );
 }
