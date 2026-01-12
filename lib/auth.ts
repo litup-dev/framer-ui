@@ -107,11 +107,9 @@ export const authOptions: NextAuthOptions = {
 
           if (response && response.ok) {
             const result = await response.json();
-            console.log(result, "<<<<< result");
             const publicId = result.data?.publicId;
             const userId = result.data?.id;
 
-            console.log(userId, "<<<<< userId");
             if (userId) {
               const accessToken = createAccessToken(
                 String(userId),
@@ -135,7 +133,7 @@ export const authOptions: NextAuthOptions = {
                 if (userInfoResponse.ok) {
                   const userInfo = await userInfoResponse.json();
                   return {
-                    publicId: String(publicId),
+                    publicId: String(userId),
                     userId: userId,
                     nickname: userInfo.data?.nickname || "",
                     profilePath: userInfo.data?.profilePath || null,
@@ -145,7 +143,7 @@ export const authOptions: NextAuthOptions = {
                 }
 
                 return {
-                  publicId: String(publicId),
+                  publicId: String(userId),
                   userId: userId,
                   nickname: result.data?.nickname || "",
                   profilePath: result.data?.profilePath || null,

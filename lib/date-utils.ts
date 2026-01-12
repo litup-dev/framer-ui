@@ -142,7 +142,7 @@ export const getEndOfWeek = (
  * @returns 포맷된 날짜 문자열
  */
 export const formatDate = (
-  date: Date,
+  date: string,
   formatString: string = "yyyy-MM-dd"
 ): string => {
   return format(date, formatString, { locale: ko });
@@ -165,6 +165,16 @@ export const parseDateKey = (dateKey: string): Date => {
 export const extractTimeFromISO = (isoDateString: string): string => {
   const date = parseISO(isoDateString);
   return format(date, "HH:mm");
+};
+
+/**
+ * 날짜를 월/일 형식으로 변환하는 함수 (예: "10/9")
+ * @param date - 포맷할 날짜 (Date 객체 또는 날짜 문자열)
+ * @returns 월/일 형식 문자열 (예: "10/9", "1/15")
+ */
+export const formatMonthDay = (date: Date | string): string => {
+  const dateObj = typeof date === "string" ? parseISO(date) : date;
+  return format(dateObj, "M/d");
 };
 
 /**

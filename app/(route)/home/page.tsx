@@ -1,10 +1,15 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 
-import { getCalendarEventsOptions } from "@/app/feature/home/query-options";
+import {
+  getCalendarEventsOptions,
+  getPerformancesOptions,
+} from "@/app/feature/home/query-options";
+import { getDateRange } from "@/app/feature/home/utils/get-date-range";
+import { getQueryParams } from "@/app/feature/home/utils/get-query-params";
 import PageWrapper from "@/app/shared/components/page-wrapper";
 import CustomCalendar from "@/components/shared/calendar/custom-calendar";
 import { convertCalendarEvents } from "@/app/(route)/home/utils/convert-calendar-events";
@@ -31,7 +36,20 @@ export default function Home() {
   const { data: calendarEvents } = useQuery(calendarEventsQueryOptions);
 
   const isXl = useResponsive();
-  const { selectedMobileBottomNavigation } = useHomeStore();
+  const { selectedMobileBottomNavigation, selectedCategory, selectedArea } =
+    useHomeStore();
+
+  const { startDate, endDate } = getDateRange(selectedCategory);
+  const { isFree, area } = getQueryParams(selectedCategory, selectedArea);
+
+  const {
+    data: performances,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery(
+    getPerformancesOptions(startDate, endDate, area, isFree)
+  );
 
   const events = useMemo(() => {
     if (!calendarEvents) return {};
@@ -52,8 +70,13 @@ export default function Home() {
       {shouldShowMainContent && (
         <PageWrapper>
           <HeroSection />
-          <CharacterSection />
-          <MainContent />
+          <CharacterSection performances={performances} />
+          <MainContent
+            performances={performances}
+            hasNextPage={hasNextPage}
+            fetchNextPage={fetchNextPage}
+            isFetchingNextPage={isFetchingNextPage}
+          />
         </PageWrapper>
       )}
 
@@ -69,7 +92,9 @@ export default function Home() {
           />
         </div>
       )}
-      <Footer />
+      <div className="xl:pt-35">
+        <Footer />
+      </div>
 
       <MobileBottomNavigation />
     </>

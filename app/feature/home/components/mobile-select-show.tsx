@@ -2,38 +2,25 @@ import { Subtitle } from "@/components/shared/typography";
 import { cn } from "@/lib/utils";
 import { useHomeStore } from "@/app/feature/home/store/home-store";
 import { useEffect } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem as UISelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { SELECT_ITEMS } from "@/app/feature/home/constants";
 
 interface SelectShowProps {
   onCategoryChange: (value: "week" | "today" | "free" | "area") => void;
   selectedCategory?: string;
   isAnimating?: boolean;
+  selectedArea?: string;
+  onAreaChange?: (value: string | "seoul" | "hongdae" | "busan") => void;
 }
 
-const selectItems = [
-  {
-    id: 1,
-    label: "금주공연",
-    value: "week",
-  },
-  {
-    id: 2,
-    label: "월간공연",
-    value: "month",
-  },
-  {
-    id: 3,
-    label: "무료공연",
-    value: "free",
-  },
-  {
-    id: 4,
-    label: "지역별",
-    value: "local",
-  },
-];
-
 interface SelectItemProps {
-  item: (typeof selectItems)[0];
+  item: (typeof SELECT_ITEMS)[number];
   onCategoryChange: (value: "week" | "today" | "free" | "area") => void;
   selectedCategory?: string;
   isAnimating?: boolean;
@@ -69,6 +56,8 @@ const MobileSelectShow = ({
   onCategoryChange,
   selectedCategory,
   isAnimating = false,
+  selectedArea,
+  onAreaChange,
 }: SelectShowProps) => {
   const { selectedMobileBottomNavigation, resetMobileNavigationOnDesktop } =
     useHomeStore();
@@ -84,6 +73,8 @@ const MobileSelectShow = ({
     return () => window.removeEventListener("resize", handleResize);
   }, [resetMobileNavigationOnDesktop]);
 
+  const isAreaSelected = selectedCategory === "area" && selectedArea;
+
   return (
     <div
       className={cn(
@@ -91,15 +82,71 @@ const MobileSelectShow = ({
         selectedMobileBottomNavigation === "calendar" && "hidden"
       )}
     >
-      {selectItems.map((item) => (
-        <SelectItem
-          key={item.id}
-          item={item}
-          onCategoryChange={onCategoryChange}
-          selectedCategory={selectedCategory}
-          isAnimating={isAnimating}
-        />
-      ))}
+      {SELECT_ITEMS.map((item) => {
+        if (item.value === "area") {
+          const displayLabel = selectedArea
+            ? item.region?.find((area) => area.value === selectedArea)?.label ||
+              "지역별"
+            : "지역별";
+
+          return (
+            <div
+              key={item.id}
+              className={cn(
+                "relative",
+                !isAnimating && "cursor-pointer",
+                isAreaSelected
+                  ? "text-black underline decoration-2 underline-offset-4"
+                  : "text-[#20202066]"
+              )}
+            >
+              <Select
+                value={selectedArea}
+                onValueChange={(value) => {
+                  if (!isAnimating && onAreaChange) {
+                    onAreaChange(value);
+                    if (!isAreaSelected) {
+                      onCategoryChange("area");
+                    }
+                  }
+                }}
+                disabled={isAnimating}
+              >
+                <SelectTrigger
+                  className={cn(
+                    "border-none shadow-none p-0 h-auto w-auto gap-0 min-w-0",
+                    "focus-visible:ring-0 focus-visible:ring-offset-0",
+                    "items-center justify-start",
+                    "[&>span]:opacity-0 [&>span]:p-0 [&>span]:h-auto [&>span]:min-w-0",
+                    "[&>div]:hidden",
+                    "absolute inset-0"
+                  )}
+                >
+                  <SelectValue placeholder="지역별" />
+                </SelectTrigger>
+                <SelectContent className="p-4">
+                  {item.region &&
+                    item.region.map((area) => (
+                      <UISelectItem key={area.id} value={area.value}>
+                        {area.label}
+                      </UISelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+              <Subtitle>{displayLabel}</Subtitle>
+            </div>
+          );
+        }
+        return (
+          <SelectItem
+            key={item.id}
+            item={item}
+            onCategoryChange={onCategoryChange}
+            selectedCategory={selectedCategory}
+            isAnimating={isAnimating}
+          />
+        );
+      })}
     </div>
   );
 };

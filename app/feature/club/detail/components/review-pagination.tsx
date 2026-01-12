@@ -74,7 +74,7 @@ export const ReviewPagination = ({
                   }
                 }}
                 isActive={isActive}
-                className="cursor-pointer"
+                className="cursor-pointer hover:text-white"
                 role="button"
               >
                 {pageNum}
@@ -99,13 +99,3 @@ export const ReviewPagination = ({
     </Pagination>
   );
 };
-
-
-
-
-
-
-
-
-
-

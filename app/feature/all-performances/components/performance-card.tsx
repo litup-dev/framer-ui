@@ -20,7 +20,7 @@ export const PerformanceCard = ({ performance }: PerformanceCardProps) => {
     .join(", ");
 
   return (
-    <Link href={`/home/detail/${performance.id}`}>
+    <Link href={`/performance/${performance.id}`}>
       <Card
         className="overflow-hidden gap-3 pb-2"
         data-hero-key={performance.id}

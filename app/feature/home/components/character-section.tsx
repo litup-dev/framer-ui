@@ -2,13 +2,27 @@
 
 import Image from "next/image";
 import { characterSvg } from "@/public/images";
-import { getTodayDay } from "@/lib/date-utils";
 import { ChevronDown } from "lucide-react";
+import { InfiniteData } from "@tanstack/react-query";
+import { PerformanceItem } from "@/app/feature/home/types";
 import { useHomeStore } from "@/app/feature/home/store/home-store";
-import { Chip, Description } from "@/components/shared/typography";
+import { Description, Subtitle, Title } from "@/components/shared/typography";
 
-export default function CharacterSection() {
+interface CharacterSectionProps {
+  performances?: InfiniteData<{
+    data: PerformanceItem[];
+    offset: number;
+    hasMore: boolean;
+    total: number;
+  }>;
+}
+
+export default function CharacterSection({
+  performances,
+}: CharacterSectionProps) {
   const { showAllItems, handleShowAllClick } = useHomeStore();
+
+  const total = (performances?.pages?.[0] as { total?: number })?.total || 0;
 
   return (
     <div className="hidden md:block absolute top-[180px] lg:top-[210px] xl:top-[280px] 2xl:top-[250px] right-4 md:right-6 lg:right-8 xl:right-[80px] z-5">
@@ -25,18 +39,16 @@ export default function CharacterSection() {
       <div className="relative w-full md:w-[550px] lg:w-[600px] xl:w-[700px] 2xl:w-[860px]">
         <Image src={characterSvg} alt="character" />
         <div className="absolute top-[75px] lg:top-[80px] xl:top-[45px] 2xl:top-[75px] right-5 xl:right-0 flex flex-col items-center gap-2">
-          <div className="text-[#222222] bg-[#FF491A] inline-block leading-[0.8]">
-            <span className="font-bold text-[44px] lg:text-[64px] xl:text-[76px] tracking-[-0.08em] pr-1.5">
-              {getTodayDay()}
-            </span>
-          </div>
+          <Title className="text-[44px] lg:text-[64px] xl:text-[76px] pr-1.5 leading-[0.8] bg-[#FF491A] text-black">
+            {total}
+          </Title>
           <span
             className="hidden xl:flex border rounded-full bg-white border-gray-400 px-2 py-1 items-center font-bold cursor-pointer hover:bg-gray-50"
             onClick={handleShowAllClick}
           >
-            <p className="text-chip-14 xl:text-chip-16">
+            <Subtitle className="text-[16px]">
               {showAllItems ? "기본보기" : "전체보기"}
-            </p>
+            </Subtitle>
             <ChevronDown
               className={`w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5 transition-transform ${
                 showAllItems ? "rotate-180" : ""

@@ -8,7 +8,12 @@ import ReactCrop, {
   makeAspectCrop,
 } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
 
@@ -120,10 +125,15 @@ export default function ProfileImageCropModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="bg-white max-h-[90vh] flex flex-col p-0 overflow-hidden gap-0 z-[99999999] max-w-[90vw] sm:max-w-[500px] md:max-w-[600px] lg:max-w-[700px]">
+      <DialogContent
+        overlayClassName="z-[99999998]"
+        className="bg-white max-h-[90vh] flex flex-col p-0 overflow-hidden gap-0 z-[99999999] max-w-[90vw] sm:max-w-[500px] md:max-w-[600px] lg:max-w-[700px]"
+      >
         <DialogTitle className="flex justify-start w-full items-center gap-2 p-4 sm:p-6 pb-0 flex-shrink-0">
           <Upload className="w-5 h-5 sm:w-6 sm:h-6" />
-          <span className="text-sm sm:text-base md:text-lg">프로필 사진 편집</span>
+          <span className="text-sm sm:text-base md:text-lg">
+            프로필 사진 편집
+          </span>
         </DialogTitle>
         <DialogDescription className="sr-only">
           프로필 사진을 업로드하고 원형으로 크롭할 수 있습니다.

@@ -59,7 +59,6 @@ const getClubsOptions = (params: GetClubsParams = {}) => {
   const page = params.page || 1;
   const offset = params.offset ?? (page - 1) * limit;
 
-  console.log(page, offset);
   const normalizedParams = {
     area: params.area || "other",
     sort: params.sort || "-reviewCount",
@@ -139,15 +138,23 @@ const mutateFavoriteClub = (id: string) =>
 const getReviewByIdOptions = (
   id: string,
   offset: number = 0,
-  limit: number = 5
+  limit: number = 5,
+  isMine: boolean = false,
+  sort: "-createdAt" | "+createdAt" = "-createdAt"
 ) =>
   queryOptions<ReviewPaginatedResponse>({
-    queryKey: ["reviews", id, offset, limit],
+    queryKey: ["reviews", id, offset, limit, isMine, sort],
     staleTime: 5 * 60 * 1000,
     queryFn: async () => {
+      const params = new URLSearchParams({
+        offset: String(offset),
+        limit: String(limit),
+        isMine: String(isMine),
+        sort: sort,
+      });
       const response = await apiClient.get<
         { data: ReviewPaginatedResponse } | ReviewPaginatedResponse
-      >(`/api/v1/clubs/${id}/reviews?offset=${offset}&limit=${limit}`);
+      >(`/api/v1/clubs/${id}/reviews?${params.toString()}`);
 
       if (
         "data" in response &&
@@ -180,8 +187,13 @@ const clubFavoriteByIdOptions = (id: number, queryClient?: QueryClient) =>
       if (!queryClient) return;
 
       await queryClient.cancelQueries({ queryKey: ["clubs"] });
+      await queryClient.cancelQueries({ queryKey: ["club", String(id)] });
 
       const previousClubs = queryClient.getQueriesData({ queryKey: ["clubs"] });
+      const previousClub = queryClient.getQueryData<ClubDetail>([
+        "club",
+        String(id),
+      ]);
 
       queryClient.setQueriesData<{ data: { items: Club[]; total: number } }>(
         { queryKey: ["clubs"] },
@@ -201,7 +213,18 @@ const clubFavoriteByIdOptions = (id: number, queryClient?: QueryClient) =>
         }
       );
 
-      return { previousClubs };
+      queryClient.setQueryData<ClubDetail>(["club", String(id)], (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          data: {
+            ...old.data,
+            isFavorite: !old.data.isFavorite,
+          },
+        };
+      });
+
+      return { previousClubs, previousClub };
     },
     onError: (err, variables, context) => {
       if (!queryClient || !context) return;
@@ -209,11 +232,16 @@ const clubFavoriteByIdOptions = (id: number, queryClient?: QueryClient) =>
       context.previousClubs.forEach(([queryKey, data]) => {
         queryClient.setQueryData(queryKey, data);
       });
+
+      if (context.previousClub) {
+        queryClient.setQueryData(["club", String(id)], context.previousClub);
+      }
     },
     onSettled: () => {
       if (!queryClient) return;
 
       queryClient.invalidateQueries({ queryKey: ["clubs"] });
+      queryClient.invalidateQueries({ queryKey: ["club", String(id)] });
     },
   });
 
