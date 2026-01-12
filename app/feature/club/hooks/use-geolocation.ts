@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { useCommonModalStore } from "@/store/common-modal-store";
+import { useCommonModalStore, TextAlign } from "@/store/common-modal-store";
 
 interface GeolocationState {
   latitude: number | null;
@@ -38,7 +38,7 @@ const handleGeolocationError = (
   error: GeolocationPositionError,
   openModal: (params: {
     description: string;
-    textAlign?: "text-center" | "text-left";
+    textAlign: TextAlign;
     confirmButton: { label: string; onClick: () => void };
     cancelButton?: { label: string; onClick: () => void };
   }) => void,
@@ -54,7 +54,7 @@ const handleGeolocationError = (
 
   openModal({
     description: `${errorConfig.title}\n\n${errorConfig.message}`,
-    textAlign: "text-left",
+    textAlign: "text-start" as TextAlign,
     confirmButton: {
       label: "확인",
       onClick: () => {},
@@ -84,7 +84,7 @@ export const useGeolocation = () => {
     if (!navigator.geolocation) {
       openModal({
         description: "이 브라우저는 위치 정보를 지원하지 않습니다.",
-        textAlign: "text-left",
+        textAlign: "text-start",
         confirmButton: {
           label: "확인",
           onClick: () => {},
