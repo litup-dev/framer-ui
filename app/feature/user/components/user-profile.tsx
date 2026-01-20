@@ -137,6 +137,7 @@ export default function UserProfile({
         isOpen={isImageModalOpen}
         onClose={() => setIsImageModalOpen(false)}
         onSave={handleProfileImageSelect}
+        existingImageUrl={profileImageUrl}
       />
 
       {/* xl 이상: 아바타 + ... 버튼 */}
