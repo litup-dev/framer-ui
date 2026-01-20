@@ -63,8 +63,8 @@ export default function ProfileImageCropModal({
         );
 
         // 박스에 맞춘(화면에 보일) 가상의 이미지 크기
-        let boxFitWidth = Math.floor(img.width * scaleToFit);
-        let boxFitHeight = Math.floor(img.height * scaleToFit);
+        const boxFitWidth = Math.floor(img.width * scaleToFit);
+        const boxFitHeight = Math.floor(img.height * scaleToFit);
 
         // === 3. 예외 케이스 처리 (Zoom 필요 여부 판단) ===
         let canvasWidth = boxFitWidth;

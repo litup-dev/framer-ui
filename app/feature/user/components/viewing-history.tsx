@@ -29,7 +29,7 @@ interface ViewingHistoryProps {
   className?: string;
   isEditing?: boolean;
   setIsEditing?: (value: boolean) => void;
-  userId: number;
+  publicId: string;
   isOwner?: boolean;
 }
 
@@ -37,7 +37,7 @@ export default function ViewingHistory({
   className,
   isEditing: externalIsEditing,
   setIsEditing: externalSetIsEditing,
-  userId,
+  publicId,
   isOwner = true,
 }: ViewingHistoryProps) {
   const queryClient = useQueryClient();
@@ -47,7 +47,7 @@ export default function ViewingHistory({
 
   // API 호출: 관람 기록
   const { data, fetchNextPage, hasNextPage, isLoading, isError, error } =
-    useInfiniteQuery(getPerformHistoryOptions(userId));
+    useInfiniteQuery(getPerformHistoryOptions(publicId));
 
   const errorMessage = useApiErrorMessage(error);
 
@@ -56,7 +56,7 @@ export default function ViewingHistory({
     mutationFn: deletePerformHistory,
     onSuccess: () => {
       // 성공 시 관람 기록 목록 refetch
-      queryClient.invalidateQueries({ queryKey: ["performHistory", userId] });
+      queryClient.invalidateQueries({ queryKey: ["performHistory", publicId] });
       setSelectedItems([]);
       setIsEditing(false);
     },

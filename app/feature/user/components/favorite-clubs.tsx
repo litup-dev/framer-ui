@@ -15,17 +15,17 @@ import { useApiErrorMessage } from "@/hooks/use-api-error-message";
 
 interface FavoriteClubsProps {
   className?: string;
-  userId: number;
+  publicId: string;
   isOwner?: boolean;
 }
 
-export default function FavoriteClubs({ className, userId, isOwner = true }: FavoriteClubsProps) {
+export default function FavoriteClubs({ className, publicId, isOwner = true }: FavoriteClubsProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
 
   // API 호출: 관심 클럽
   const { data, fetchNextPage, hasNextPage, isLoading, isError, error } = useInfiniteQuery(
-    getFavoriteClubsOptions(userId)
+    getFavoriteClubsOptions(publicId)
   );
   const errorMessage = useApiErrorMessage(error);
 
@@ -38,13 +38,13 @@ export default function FavoriteClubs({ className, userId, isOwner = true }: Fav
     },
     onMutate: async (clubId: number) => {
       // 쿼리 취소
-      await queryClient.cancelQueries({ queryKey: ["favoriteClubs", userId] });
+      await queryClient.cancelQueries({ queryKey: ["favoriteClubs", publicId] });
 
       // 이전 데이터 백업
-      const previousData = queryClient.getQueryData(["favoriteClubs", userId]);
+      const previousData = queryClient.getQueryData(["favoriteClubs", publicId]);
 
       // Optimistic update: 캐시 데이터에 isFavorite 필드 토글
-      queryClient.setQueryData(["favoriteClubs", userId], (old: any) => {
+      queryClient.setQueryData(["favoriteClubs", publicId], (old: any) => {
         if (!old) return old;
 
         return {
@@ -73,7 +73,7 @@ export default function FavoriteClubs({ className, userId, isOwner = true }: Fav
     onError: (err, clubId, context) => {
       // 에러 발생 시 이전 데이터로 롤백
       if (context?.previousData) {
-        queryClient.setQueryData(["favoriteClubs", userId], context.previousData);
+        queryClient.setQueryData(["favoriteClubs", publicId], context.previousData);
       }
     },
   });
