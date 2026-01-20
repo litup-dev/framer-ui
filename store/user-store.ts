@@ -3,12 +3,12 @@ import { persist } from "zustand/middleware";
 
 export interface UserInfo {
   publicId: string;
-  id: string;
   nickname: string;
   email?: string;
-  profilePath?: string;
+  profilePath?: string | null;
   bio?: string;
   provider?: string;
+  token?: string;
 }
 
 interface UserState {

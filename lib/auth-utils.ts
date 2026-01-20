@@ -1,6 +1,5 @@
 import { apiClient } from "./api-client";
 import { useUserStore, type UserInfo } from "@/store/user-store";
-import { signOut } from "next-auth/react";
 
 interface UserInfoResponse {
   data: UserInfo;
@@ -33,8 +32,6 @@ export const loginWithToken = async (
 export const logout = async (): Promise<void> => {
   const { clearUser } = useUserStore.getState();
   clearUser();
-  // next-auth 세션 무효화
-  await signOut({ redirect: false });
 };
 
 /**
@@ -43,7 +40,7 @@ export const logout = async (): Promise<void> => {
 export const checkAuthStatus = async (): Promise<boolean> => {
   try {
     const { user } = useUserStore.getState();
-    if (!user?.id) {
+    if (!user?.publicId) {
       await logout();
       return false;
     }

@@ -7,8 +7,10 @@ import { cn } from "@/lib/utils";
 import HeaderMenus from "@/app/shared/components/menus";
 import Link from "next/link";
 import { useClubDetailStore } from "@/app/feature/club/detail/store";
+import { useUserStore } from "@/store/user-store";
 
 const DesktopHeader = () => {
+  const { user } = useUserStore()
   const pathname = usePathname();
   const isClubDetailPage =
     pathname?.startsWith("/club/") && pathname !== "/club";

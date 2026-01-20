@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { ChevronLeft, Share2, Plus, Check } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { isAfter, parseISO } from "date-fns";
 import { useToggleAttendance } from "../query-options";
 import { useCommonModalStore } from "@/store/common-modal-store";
 import ShareModal from "./share-modal";
+import { useUserStore } from "@/store/user-store";
 
 interface DetailMobileHeaderProps {
   performanceId: number;
@@ -19,12 +19,11 @@ interface DetailMobileHeaderProps {
 
 const DetailMobileHeader = ({ performanceId, performDate, isAttend, performanceTitle, clubName }: DetailMobileHeaderProps) => {
   const router = useRouter();
-  const { status } = useSession();
+  const { isAuthenticated } = useUserStore();
   const toggleAttendMutation = useToggleAttendance();
   const { openModal } = useCommonModalStore();
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
-  const isAuthenticated = status === "authenticated";
   const isFutureEvent = isAfter(parseISO(performDate), new Date());
 
   const showLoginModal = () => {

@@ -1,53 +1,15 @@
 "use client";
 
-import { signIn, useSession } from "next-auth/react";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { loginWithToken } from "@/lib/auth-utils";
 import { LoginIcons } from "@/app/feature/login/components/icons";
 import { Button } from "@/components/ui/button";
 
 const LoginForm = () => {
-  const router = useRouter();
-  const { data: session } = useSession();
-  const callbackUrl = "/home";
-
-  useEffect(() => {
-    const initializeAuth = async () => {
-      if (session?.accessToken && session?.userId) {
-        try {
-          // next-auth 세션에서 토큰을 관리하므로 userId만 전달
-          await loginWithToken(session.userId);
-          router.push(callbackUrl);
-        } catch (error) {
-          console.error("Failed to initialize auth:", error);
-        }
-      }
-    };
-
-    initializeAuth();
-  }, [session, router]);
-
   const handleGoogleLogin = async () => {
-    try {
-      await signIn("google", {
-        callbackUrl,
-        redirect: true,
-      });
-    } catch (error) {
-      console.error("Google login error:", error);
-    }
+    
   };
 
   const handleKakaoLogin = async () => {
-    try {
-      await signIn("kakao", {
-        callbackUrl,
-        redirect: true,
-      });
-    } catch (error) {
-      console.error("Kakao login error:", error);
-    }
+    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/kakao`;
   };
 
   return (

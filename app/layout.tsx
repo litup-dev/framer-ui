@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ReactQueryProvider from "@/providers/react-query-provider";
-import NextAuthProvider from "@/providers/next-auth-provider";
-import SsgoiProvider from "@/providers/ssgoi-provider";
+
 import { AuthProvider } from "@/providers/auth-provider";
 import { CommonModal } from "@/components/shared/common-modal";
 import { ReportModal } from "@/components/shared/report-modal";
@@ -49,19 +48,15 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NextAuthProvider>
-          <Suspense fallback={<div>Loading...</div>}>
-            <ReactQueryProvider>
-              <AuthProvider>
-                <SsgoiProvider>
-                  {children}
-                  <CommonModal />
-                  <ReportModal />
-                </SsgoiProvider>
-              </AuthProvider>
-            </ReactQueryProvider>
-          </Suspense>
-        </NextAuthProvider>
+        <Suspense fallback={<div>Loading...</div>}>
+          <ReactQueryProvider>
+            <AuthProvider>
+                {children}
+                <CommonModal />
+                <ReportModal />
+            </AuthProvider>
+          </ReactQueryProvider>
+        </Suspense>
       </body>
     </html>
   );
