@@ -85,7 +85,7 @@ export interface DeletePerformHistoryResponse {
 // 유저 정보 조회 응답 타입
 export interface UserInfoResponse {
   data: {
-    userId: number;
+    publicId: string;
     nickname: string;
     bio: string;
     profilePath: string | null;

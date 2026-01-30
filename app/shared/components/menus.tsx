@@ -5,26 +5,16 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/user-store";
 import { logout } from "@/lib/auth-utils";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useSession, signOut } from "next-auth/react";
 
 import { MenuItems } from "@/app/shared/constants";
 import Image from "next/image";
 
 const HeaderMenus = () => {
+  const { user } = useUserStore()
   const router = useRouter();
-  const { data: session, status } = useSession();
   const [mounted, setMounted] = useState(false);
 
   const handleLogout = async () => {
-    // logout 함수 내부에서 signOut 호출됨
     await logout();
     router.push("/");
   };
@@ -32,6 +22,7 @@ const HeaderMenus = () => {
   useEffect(() => {
     setMounted(true);
   }, []);
+
 
   return (
     <div className="flex gap-10 xl:gap-15 2xl:gap-20 items-center">
@@ -43,12 +34,12 @@ const HeaderMenus = () => {
         </Link>
       ))}
 
-      {!mounted || status === "loading" ? (
+      {!mounted ? (
         <div className="flex gap-4">
           <div className="w-6 h-6 2xl:w-7 2xl:h-7 bg-gray-200 rounded-full animate-pulse" />
           <div className="w-6 h-6 2xl:w-7 2xl:h-7 bg-gray-200 rounded-full animate-pulse" />
         </div>
-      ) : session ? (
+      ) : user ? (
         <div className="flex gap-4">
           <Image
             src={"/images/user.svg"}
@@ -63,11 +54,7 @@ const HeaderMenus = () => {
             width={28}
             height={28}
             alt="logout"
-            onClick={() =>
-              signOut({
-                callbackUrl: "/",
-              })
-            }
+            onClick={handleLogout}
             className="cursor-pointer w-6 h-6 2xl:w-7 2xl:h-7"
           />
         </div>

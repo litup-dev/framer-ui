@@ -1,6 +1,4 @@
-import { getSession } from "next-auth/react";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { useUserStore } from "@/store/user-store";
 
 export class ApiError extends Error {
   status: number;
@@ -31,28 +29,22 @@ interface ApiRequestOptions {
 class ApiClient {
   private baseURL: string;
   private isServer: boolean;
+  private accessToken: string | null = null;
 
   constructor(baseURL: string, isServer: boolean = false) {
     this.baseURL = baseURL;
     this.isServer = isServer;
   }
 
+  setAccessToken(token: string | null) {
+    this.accessToken = token;
+  }
+
   private async getAuthToken(): Promise<string | null> {
-    // 서버사이드와 클라이언트 모두 next-auth 세션 사용
-    try {
-      let session;
-      if (this.isServer) {
-        session = await getServerSession(authOptions);
-      } else {
-        session = await getSession();
-      }
-      if (session?.accessToken) {
-        return session.accessToken;
-      }
-      return null;
-    } catch (error) {
-      return null;
-    }
+    if (this.accessToken) return this.accessToken;
+    if (this.isServer) return null;
+    const { user } = useUserStore.getState();
+    return user?.token || null;
   }
 
   private async createHeaders(

@@ -18,7 +18,12 @@ import { PerformanceCommentItem as PerformanceComment } from "@/app/feature/perf
 import { useUserCommentHandlers } from "@/app/feature/user/hooks/use-user-comment-handlers";
 import { useReportContent } from "@/app/feature/performance/detail/query-options";
 import { REPORT_CATEGORIES } from "@/app/shared/constants";
-import { Chip, Subtitle, Description, Title } from "@/components/shared/typography";
+import {
+  Chip,
+  Subtitle,
+  Description,
+  Title,
+} from "@/components/shared/typography";
 import { formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
 import { ChevronRight } from "lucide-react";
@@ -70,11 +75,11 @@ export default function CommentsPage() {
     setCurrentPage(1);
   }, [activeTab, sortBy]);
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      router.push("/login");
-    }
-  }, [isAuthenticated, router]);
+  // useEffect(() => {
+  //   if (!isAuthenticated) {
+  //     router.push("/login");
+  //   }
+  // }, [isAuthenticated, router]);
 
   const queryOptions =
     activeTab === "written"
@@ -209,65 +214,71 @@ export default function CommentsPage() {
               : "좋아요 한 코멘트가 없습니다."}
           </div>
         ) : (
-          performanceGroups.map((performance: any, performanceIndex: number) => (
-            <div
-              key={performance.performanceId}
-              className={performanceIndex > 0 ? "mt-10" : ""}
-            >
-              {/* 공연명 */}
-              <button
-                className="flex items-center gap-1 mb-4 hover:opacity-70 transition-opacity"
-                onClick={() =>
-                  router.push(`/performance/${performance.performanceId}`)
-                }
+          performanceGroups.map(
+            (performance: any, performanceIndex: number) => (
+              <div
+                key={performance.performanceId}
+                className={performanceIndex > 0 ? "mt-10" : ""}
               >
-                <Title className="text-[14px] md:text-[18px]">
-                  {performance.performanceName}
-                </Title>
-                <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
-              </button>
+                {/* 공연명 */}
+                <button
+                  className="flex items-center gap-1 mb-4 hover:opacity-70 transition-opacity"
+                  onClick={() =>
+                    router.push(`/performance/${performance.performanceId}`)
+                  }
+                >
+                  <Title className="text-[14px] md:text-[18px]">
+                    {performance.performanceName}
+                  </Title>
+                  <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+                </button>
 
-              {/* 해당 공연의 코멘트들 */}
-              <div className="flex flex-col gap-4">
-                {performance.comments.map((comment: any) => {
-                  return (
-                    <PerformanceCommentItem
-                      key={comment.id}
-                      comment={{
-                        id: String(comment.id),
-                        content: comment.content,
-                        likeCount: comment.likeCount,
-                        createdAt: comment.createdAt,
-                        isLiked: comment.isLiked,
-                      }}
-                      userNickname={
-                        activeTab === "written"
-                          ? user?.nickname || "익명"
-                          : comment.user.nickname
-                      }
-                      userProfilePath={
-                        activeTab === "written"
-                          ? user?.profilePath || undefined
-                          : comment.user.profilePath
-                      }
-                      tabType={activeTab === "written" ? "myComments" : "likedComments"}
-                      isEditing={editingCommentId === comment.id}
-                      editingText={editingText}
-                      maxLength={maxLength}
-                      onEditClick={() => handleEditClick(comment)}
-                      onEditCancel={handleEditCancel}
-                      onEditSubmit={() => handleEditSubmit(comment.id)}
-                      onEditTextChange={handleEditTextChange}
-                      onDelete={() => handleDelete(comment.id)}
-                      onReport={() => handleReport(comment)}
-                      onLikeClick={() => handleLikeClick(comment.id)}
-                      isUpdating={updateCommentMutation.isPending}
-                    />
-                  );
-                })}
+                {/* 해당 공연의 코멘트들 */}
+                <div className="flex flex-col gap-4">
+                  {performance.comments.map((comment: any) => {
+                    return (
+                      <PerformanceCommentItem
+                        key={comment.id}
+                        comment={{
+                          id: String(comment.id),
+                          content: comment.content,
+                          likeCount: comment.likeCount,
+                          createdAt: comment.createdAt,
+                          isLiked: comment.isLiked,
+                        }}
+                        userNickname={
+                          activeTab === "written"
+                            ? user?.nickname || "익명"
+                            : comment.user.nickname
+                        }
+                        userProfilePath={
+                          activeTab === "written"
+                            ? user?.profilePath || undefined
+                            : comment.user.profilePath
+                        }
+                        tabType={
+                          activeTab === "written"
+                            ? "myComments"
+                            : "likedComments"
+                        }
+                        isEditing={editingCommentId === comment.id}
+                        editingText={editingText}
+                        maxLength={maxLength}
+                        onEditClick={() => handleEditClick(comment)}
+                        onEditCancel={handleEditCancel}
+                        onEditSubmit={() => handleEditSubmit(comment.id)}
+                        onEditTextChange={handleEditTextChange}
+                        onDelete={() => handleDelete(comment.id)}
+                        onReport={() => handleReport(comment)}
+                        onLikeClick={() => handleLikeClick(comment.id)}
+                        isUpdating={updateCommentMutation.isPending}
+                      />
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ))
+            )
+          )
         )}
       </div>
 

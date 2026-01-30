@@ -12,8 +12,8 @@ const PageWrapper = ({ children, className = "" }: PageWrapperProps) => {
     <FadeIn>
       <div
         className={cn(
-          "w-full flex flex-col h-full px-5 md:px-10 lg:px-15 xl:px-20 pb-20 md:pt-20 gap-10 md:gap-[140px]",
-          className
+          "w-full flex flex-col h-full px-5 md:px-10 lg:px-15 xl:px-20 pb-20 md:pt-20 xl:pt-24 gap-10 md:gap-[140px]",
+          className,
         )}
       >
         {children}

@@ -41,7 +41,7 @@ const AllPerformancesPage = () => {
       area,
       offset,
       limit,
-    })
+    }),
   );
 
   const performances = data?.items || [];
@@ -59,7 +59,7 @@ const AllPerformancesPage = () => {
 
   return (
     <FormProvider {...form}>
-      <div className="w-full min-h-screen px-5 md:px-10 md:pt-20 lg:px-15 xl:px-20 flex flex-col">
+      <div className="w-full min-h-screen px-5 md:px-10 md:pt-20 xl:pt-24 lg:px-15 xl:px-20 flex flex-col">
         <AllPerformancesContent
           performances={performances}
           isLoading={isLoading}
