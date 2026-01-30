@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useSession } from "next-auth/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useUserStore } from "@/store/user-store";
 
 import { mutateFavoriteClub } from "@/app/feature/club/query-options";
 
@@ -29,11 +29,11 @@ const ClubDetailInfo = ({
   favoriteCount,
 }: ClubDetailInfoProps) => {
   const queryClient = useQueryClient();
-  const { data: session } = useSession();
+  const { isAuthenticated } = useUserStore();
   const { mutate: mutateFavorite } = useMutation(mutateFavoriteClub(id));
 
   const handleFavorite = () => {
-    if (!session) {
+    if (!isAuthenticated) {
       alert("로그인 후 이용해주세요");
       return;
     }

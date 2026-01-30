@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { ChevronRight, MenuIcon, X, User, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useUserStore } from "@/store/user-store";
+import { logout } from "@/lib/auth-utils";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
@@ -19,7 +20,7 @@ const MENU_ITEMS = [
 ] as const;
 
 const MobileHeader = () => {
-  const { data: session, status } = useSession();
+  const { user, isAuthenticated } = useUserStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const router = useRouter();
@@ -33,15 +34,14 @@ const MobileHeader = () => {
   };
 
   const handleLogout = async () => {
-    await signOut({ callbackUrl: "/home" });
+    await logout();
+    router.push("/home");
     closeMenu();
   };
 
   const toggleUserDropdown = () => {
     setIsUserDropdownOpen(!isUserDropdownOpen);
   };
-
-  const isAuthenticated = status === "authenticated";
 
   return (
     <>
@@ -95,14 +95,14 @@ const MobileHeader = () => {
                       onClick={toggleUserDropdown}
                     >
                       <Avatar className="w-8 h-8">
-                        <AvatarImage src={session?.user?.image || ""} />
+                        <AvatarImage src={user?.profilePath || ""} />
                         <AvatarFallback>
-                          {session?.user?.name?.charAt(0) || ""}
+                          {user?.nickname?.charAt(0) || ""}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex items-center">
                         <Subtitle className="text-[14px]">
-                          {session?.nickname}
+                          {user?.nickname}
                         </Subtitle>
                         <ChevronRight
                           className={cn(

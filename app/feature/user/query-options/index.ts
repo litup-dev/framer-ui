@@ -19,12 +19,12 @@ import {
 import { PerformanceCommentResponse } from "@/app/feature/performance/detail/types";
 
 // 유저 통계 API
-export const getUserStatsOptions = (userId: number) =>
+export const getUserStatsOptions = (publicId: string) =>
   queryOptions({
-    queryKey: ["userStats", userId],
+    queryKey: ["userStats", publicId],
     queryFn: async () => {
       const response = await apiClient.get<UserStatsResponse>(
-        `/api/v1/users/stats/${userId}`
+        `/api/v1/users/stats/${publicId}`
       );
       return response.data;
     },
@@ -33,13 +33,13 @@ export const getUserStatsOptions = (userId: number) =>
   });
 
 // 유저 관람 기록 API (Infinite Query)
-export const getPerformHistoryOptions = (userId: number, limit: number = 4) =>
+export const getPerformHistoryOptions = (publicId: string, limit: number = 4) =>
   infiniteQueryOptions({
-    queryKey: ["performHistory", userId],
+    queryKey: ["performHistory", publicId],
     queryFn: async ({ pageParam }: { pageParam: number }) => {
       const offset = pageParam;
       const response = await apiClient.get<PerformHistoryResponse>(
-        `/api/v1/users/perform-history/${userId}?offset=${offset}&limit=${limit}`
+        `/api/v1/users/perform-history/${publicId}?offset=${offset}&limit=${limit}`
       );
       const items = response.data.items;
       const total = response.data.total;
@@ -63,13 +63,13 @@ export const getPerformHistoryOptions = (userId: number, limit: number = 4) =>
   });
 
 // 유저 관심 클럽 API (Infinite Query)
-export const getFavoriteClubsOptions = (userId: number, limit: number = 4) =>
+export const getFavoriteClubsOptions = (publicId: string, limit: number = 4) =>
   infiniteQueryOptions({
-    queryKey: ["favoriteClubs", userId],
+    queryKey: ["favoriteClubs", publicId],
     queryFn: async ({ pageParam }: { pageParam: number }) => {
       const offset = pageParam;
       const response = await apiClient.get<FavoriteClubsResponse>(
-        `/api/v1/users/favorite-clubs/${userId}?offset=${offset}&limit=${limit}`
+        `/api/v1/users/favorite-clubs/${publicId}?offset=${offset}&limit=${limit}`
       );
       const items = response.data.items;
       const total = response.data.total;
@@ -115,9 +115,9 @@ export const deletePerformHistory = async (
 };
 
 // 유저 정보 조회 API
-export const getUserInfo = async (userId: number): Promise<UserInfoResponse> => {
+export const getUserInfo = async (publicId: string): Promise<UserInfoResponse> => {
   const response = await apiClient.get<UserInfoResponse>(
-    `/api/v1/users/${userId}`
+    `/api/v1/users/${publicId}`
   );
   return response;
 };

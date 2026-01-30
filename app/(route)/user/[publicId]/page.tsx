@@ -1,29 +1,33 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import UserPageContent from "@/app/shared/components/user-page-content";
-import { useUserStore } from "@/store/user-store";
 import { useUserPageData } from "@/app/feature/user/hooks/use-user-page-data";
 
-export default function MyPage() {
-  const router = useRouter();
-  const { user, isAuthenticated } = useUserStore();
+interface UserPageProps {
+  params: Promise<{ publicId: string }>;
+}
+
+export default function UserPage({ params }: UserPageProps) {
+  const [publicId, setPublicId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push("/login");
-    }
-  }, [isAuthenticated, router]);
+    params.then((p) => {
+      setPublicId(p.publicId);
+    });
+  }, [params]);
 
-  const publicId = user?.publicId || "";
   const { userInfo, userStats, isLoading } = useUserPageData(publicId);
 
-  if (isLoading) {
+  if (isLoading || !publicId) {
     return <div>Loading...</div>;
   }
 
-  // 마이페이지는 모든 권한 허용
+  if (!userInfo) {
+    return <div>유저 정보를 불러올 수 없습니다.</div>;
+  }
+
+  // 임시: 모든 권한 허용 (나중에 권한 API 추가 예정)
   const permissions = {
     canViewStats: true,
     canViewPerformHistory: true,
@@ -32,7 +36,7 @@ export default function MyPage() {
 
   return (
     <UserPageContent
-      isOwner={true}
+      isOwner={false}
       permissions={permissions}
       userStats={userStats}
       viewingUserId={publicId}

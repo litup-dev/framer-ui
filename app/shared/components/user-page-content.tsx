@@ -8,7 +8,6 @@ import ViewingHistory from "@/app/feature/user/components/viewing-history";
 import FavoriteClubs from "@/app/feature/user/components/favorite-clubs";
 import UserSidebarMenu from "@/app/feature/user/components/user-sidebar-menu";
 import { Title } from "@/components/shared/typography";
-import { useUserStore } from "@/store/user-store";
 import {
   UserStats as UserStatsType,
   UserPermissions,
@@ -18,9 +17,9 @@ interface UserPageContentProps {
   isOwner: boolean;
   permissions: UserPermissions;
   userStats?: UserStatsType;
-  viewingUserId: number;
+  viewingUserId: string;
   viewingUserInfo?: {
-    userId: number;
+    publicId: string;
     nickname: string;
     bio: string;
     profilePath: string | null;
@@ -34,24 +33,20 @@ export default function UserPageContent({
   viewingUserId,
   viewingUserInfo,
 }: UserPageContentProps) {
-  const { user: currentUser } = useUserStore();
   const [isProfileEditing, setIsProfileEditing] = useState(false);
   const [isHistoryEditing, setIsHistoryEditing] = useState(false);
 
-  // isOwner면 currentUser 사용, 아니면 viewingUserInfo 사용
-  const displayUser = isOwner
-    ? currentUser
-    : viewingUserInfo
+  // 항상 viewingUserInfo 사용 (API에서 가져온 최신 데이터)
+  const displayUser = viewingUserInfo
     ? {
-        id: String(viewingUserInfo.userId),
-        publicId: String(viewingUserInfo.userId),
+        publicId: viewingUserInfo.publicId,
         nickname: viewingUserInfo.nickname,
         bio: viewingUserInfo.bio || "",
         profilePath: viewingUserInfo.profilePath || undefined,
       }
     : null;
 
-  const userIdNumber = viewingUserId;
+  const publicId = viewingUserId;
   const pageTitle = isOwner
     ? "마이페이지"
     : `${displayUser?.nickname || "사용자"}님의 활동`;
@@ -65,14 +60,14 @@ export default function UserPageContent({
           className="mt-12 md:mt-16 lg:mt-20 xl:mt-20 2xl:mt-[100px]"
           isEditing={isHistoryEditing}
           setIsEditing={setIsHistoryEditing}
-          userId={userIdNumber}
+          publicId={publicId}
           isOwner={isOwner}
         />
       )}
       {permissions.canViewFavoriteClubs && (
         <FavoriteClubs
           className="mt-12 md:mt-16 lg:mt-20 xl:mt-20 2xl:mt-[100px]"
-          userId={userIdNumber}
+          publicId={publicId}
           isOwner={isOwner}
         />
       )}

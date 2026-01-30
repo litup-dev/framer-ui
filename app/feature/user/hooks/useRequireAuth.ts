@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useUserStore } from "@/store/user-store";
 
 /**
  * Custom hook to require authentication for user pages
@@ -10,18 +10,18 @@ import { useRouter } from "next/navigation";
  * Returns session and loading state
  */
 export function useRequireAuth() {
-  const { data: session, status } = useSession();
+  const { user, isAuthenticated } = useUserStore();
   const router = useRouter();
 
   useEffect(() => {
-    if (status === "unauthenticated") {
+    if (!isAuthenticated) {
       router.push("/login");
     }
-  }, [status, router]);
+  }, [isAuthenticated, router]);
 
   return {
-    session,
-    status,
-    isLoading: status === "loading",
+    user,
+    isAuthenticated,
+    isLoading: false,
   };
 }

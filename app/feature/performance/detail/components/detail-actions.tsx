@@ -5,12 +5,12 @@ import { Share2, Plus, Check, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Subtitle } from "@/components/shared/typography";
 import { cn } from "@/lib/utils";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useToggleAttendance } from "../query-options";
 import { useCommonModalStore } from "@/store/common-modal-store";
 import { isAfter, parseISO } from "date-fns";
 import ShareModal from "./share-modal";
+import { useUserStore } from "@/store/user-store";
 
 interface DetailActionsProps {
   performanceId: number;
@@ -30,13 +30,11 @@ const DetailActions = ({
   performanceTitle,
   clubName,
 }: DetailActionsProps) => {
-  const { status } = useSession();
+  const { isAuthenticated } = useUserStore();
   const router = useRouter();
   const toggleAttendMutation = useToggleAttendance();
   const { openModal } = useCommonModalStore();
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-
-  const isAuthenticated = status === "authenticated";
   const isFutureEvent = isAfter(parseISO(performDate), new Date());
 
   const showLoginModal = () => {

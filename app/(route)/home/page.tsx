@@ -30,7 +30,7 @@ export default function Home() {
 
   const calendarEventsQueryOptions = useMemo(
     () => getCalendarEventsOptions(currentMonthKey),
-    [currentMonthKey]
+    [currentMonthKey],
   );
 
   const { data: calendarEvents } = useQuery(calendarEventsQueryOptions);
@@ -48,7 +48,7 @@ export default function Home() {
     fetchNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery(
-    getPerformancesOptions(startDate, endDate, area, isFree)
+    getPerformancesOptions(startDate, endDate, area, isFree),
   );
 
   const events = useMemo(() => {

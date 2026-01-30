@@ -4,8 +4,8 @@ import Image from "next/image";
 import { format, getDate } from "date-fns";
 import { ko } from "date-fns/locale";
 import { Check, Plus } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useUserStore } from "@/store/user-store";
 
 import { cn } from "@/lib/utils";
 
@@ -35,13 +35,13 @@ const ClubDetailSchedule = ({
   month,
 }: ClubDetailScheduleProps) => {
   const queryClient = useQueryClient();
-  const { data: session } = useSession();
+  const { isAuthenticated } = useUserStore();
   const { mutate } = useMutation(
     performaceAttendByIdOptions(clubId, month, queryClient)
   );
 
   const handleAttend = (id: number) => {
-    if (!session) {
+    if (!isAuthenticated) {
       alert("로그인 후 이용해주세요");
       return;
     }

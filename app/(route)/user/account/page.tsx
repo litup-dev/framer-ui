@@ -8,7 +8,6 @@ import { useUserStore } from "@/store/user-store";
 import UserPageLayout from "@/app/shared/components/user-page-layout";
 import { Subtitle, Description } from "@/components/shared/typography";
 import { GoogleIcon, KakaoIcon } from "@/app/feature/login/components/icons";
-import { updateUserInfo } from "@/app/feature/user/query-options";
 import { apiClient } from "@/lib/api-client";
 
 export default function AccountPage() {
@@ -18,7 +17,7 @@ export default function AccountPage() {
   // 회원 탈퇴 mutation - 훅은 최상위에서 호출
   const withdrawMutation = useMutation({
     mutationFn: async () => {
-      return apiClient.delete("/api/v1/auth/withdraw");
+      return apiClient.delete("/api/v1/auth/withdraw", {});
     },
     onSuccess: () => {
       signOut({ callbackUrl: "/" });
