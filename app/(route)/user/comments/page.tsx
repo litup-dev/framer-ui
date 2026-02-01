@@ -107,21 +107,23 @@ export default function CommentsPage() {
   const totalItems = commentsData?.total || 0;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  // 공연별로 코멘트 그룹화
-  const groupedComments = comments.reduce((acc: any, comment: any) => {
+  // 공연별로 코멘트 그룹화 (정렬 순서 유지)
+  const groupedCommentsMap = new Map<number, any>();
+  const performanceGroups: any[] = [];
+
+  comments.forEach((comment: any) => {
     const performId = comment.performId;
-    if (!acc[performId]) {
-      acc[performId] = {
+    if (!groupedCommentsMap.has(performId)) {
+      const group = {
         performanceId: performId,
         performanceName: comment.performTitle,
         comments: [],
       };
+      groupedCommentsMap.set(performId, group);
+      performanceGroups.push(group);
     }
-    acc[performId].comments.push(comment);
-    return acc;
-  }, {});
-
-  const performanceGroups = Object.values(groupedComments);
+    groupedCommentsMap.get(performId)!.comments.push(comment);
+  });
 
   const handlePageChange = (page: number) => {
     if (page < 1 || page > totalPages) return;

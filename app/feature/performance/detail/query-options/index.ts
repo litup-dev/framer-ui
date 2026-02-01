@@ -222,6 +222,11 @@ export const useToggleAttendance = () => {
       queryClient.invalidateQueries({
         queryKey: ["performanceDetail", performanceId],
       });
+
+      // userStats 무효화 - publicId는 모든 사용자의 stats를 무효화
+      queryClient.invalidateQueries({
+        queryKey: ["userStats"],
+      });
     },
   });
 };

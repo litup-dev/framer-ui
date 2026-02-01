@@ -23,7 +23,6 @@ export const userProfileSchema = z.object({
 
   bio: z
     .string()
-    .min(1, "자기소개를 입력해주세요")
     .max(255, "자기소개는 최대 255자까지 입력 가능합니다"),
 });
 

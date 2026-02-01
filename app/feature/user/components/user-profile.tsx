@@ -38,6 +38,10 @@ export default function UserProfile({
   const [tempProfileImage, setTempProfileImage] = useState<Blob | null>(null);
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
 
+  // 원본 데이터 저장 (변경 감지용)
+  const [originalBio] = useState(user?.bio || "");
+  const [originalNickname] = useState(user?.nickname || "");
+
   // props로 받은 isEditing을 사용하거나, 내부 state 사용
   const isEditing =
     externalIsEditing !== undefined ? externalIsEditing : internalIsEditing;
@@ -60,8 +64,14 @@ export default function UserProfile({
       setPreviewImageUrl(null);
       setIsEditing(false);
     },
-    onError: () => {
-      alert("프로필 수정에 실패했습니다.");
+    onError: (error: any) => {
+      openModal({
+        description: error?.message || "프로필 수정에 실패했습니다.",
+        confirmButton: {
+          label: "확인",
+          onClick: () => {},
+        },
+      });
     },
   });
 
@@ -81,32 +91,44 @@ export default function UserProfile({
       return;
     }
 
+    // 변경 여부 확인
+    const isNicknameChanged = nickname !== originalNickname;
+    const isBioChanged = bio !== originalBio;
+    const isProfileImageChanged = tempProfileImage !== null;
+
+    // 아무것도 변경되지 않았으면 편집 모드만 종료
+    if (!isNicknameChanged && !isBioChanged && !isProfileImageChanged) {
+      setIsEditing(false);
+      return;
+    }
+
     try {
       // 1. 프로필 이미지가 변경되었으면 먼저 업로드
-      if (tempProfileImage) {
+      if (isProfileImageChanged && tempProfileImage) {
         const formData = new FormData();
         formData.append("image", tempProfileImage, "profile.jpg");
 
-        const response: any = await apiClient.post(
-          "/api/v1/upload/avatar",
-          formData
-        );
+        await apiClient.post("/api/v1/upload/avatar", formData);
 
-        // 이미지 업로드 API 응답에서 최신 유저 정보 받기 (id, nickname, profilePath, bio)
-        const updatedUserInfo = response.data;
-
-        // user store 업데이트
-        setUser(updatedUserInfo);
-        setProfileImageUrl(updatedUserInfo.profilePath);
         setTempProfileImage(null);
         setPreviewImageUrl(null);
       }
 
-      // 2. 닉네임/bio 업데이트 (항상 호출)
-      updateMutation.mutate({
-        nickname,
-        bio,
-      });
+      // 2. 닉네임/bio가 변경되었으면 업데이트
+      if (isNicknameChanged || isBioChanged) {
+        updateMutation.mutate({
+          nickname,
+          bio,
+        });
+      } else if (isProfileImageChanged) {
+        // 프로필 이미지만 변경된 경우 - 최신 유저 정보 조회
+        if (user?.publicId) {
+          const userInfoResponse = await getUserInfo(user.publicId);
+          setUser(userInfoResponse.data);
+          setProfileImageUrl(userInfoResponse.data.profilePath);
+        }
+        setIsEditing(false);
+      }
     } catch (error) {
       openModal({
         description: "프로필 사진 업로드에 실패했습니다.",

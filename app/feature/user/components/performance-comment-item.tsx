@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useEffect, useState } from "react";
 import { Ellipsis, Heart } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Description, Title, Chip } from "@/components/shared/typography";
@@ -13,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
+import { getImageUrl } from "@/lib/utils";
 
 interface PerformanceComment {
   id: string;
@@ -57,12 +59,47 @@ export default function PerformanceCommentItem({
   onLikeClick,
   isUpdating = false,
 }: PerformanceCommentItemProps) {
+  const contentRef = useRef<HTMLParagraphElement>(null);
+  const [showMoreButton, setShowMoreButton] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const formatRelativeTime = (dateString: string) => {
     return formatDistanceToNow(new Date(dateString), {
       addSuffix: true,
       locale: ko,
     });
   };
+
+  useEffect(() => {
+    if (!isEditing && comment.content) {
+      // 줄바꿈 개수로 더보기 버튼 표시 여부 결정
+      const lineCount = (comment.content.match(/\n/g) || []).length + 1;
+      setShowMoreButton(lineCount > 3);
+
+      if (contentRef.current) {
+        const element = contentRef.current;
+        element.style.display = "block";
+        element.style.maxHeight = "none";
+        element.style.overflow = "visible";
+        const fullHeight = element.scrollHeight;
+
+        if (isExpanded) {
+          element.style.maxHeight = `${fullHeight}px`;
+          element.style.overflow = "visible";
+        } else {
+          const computedStyle = getComputedStyle(element);
+          const lineHeight = parseFloat(computedStyle.lineHeight) || 20;
+          const paddingTop = parseFloat(computedStyle.paddingTop) || 0;
+          const paddingBottom = parseFloat(computedStyle.paddingBottom) || 0;
+
+          const threeLineHeight = lineHeight * 3 + paddingTop + paddingBottom;
+
+          element.style.maxHeight = `${threeLineHeight}px`;
+          element.style.overflow = "hidden";
+        }
+      }
+    }
+  }, [comment.content, isExpanded, isEditing]);
 
   // 수정 상태 UI (comment-item.tsx와 동일)
   if (isEditing && tabType === "myComments") {
@@ -71,7 +108,7 @@ export default function PerformanceCommentItem({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Avatar className="w-6 h-6 md:w-8 md:h-8">
-              <AvatarImage src={userProfilePath} alt={userNickname} />
+              <AvatarImage src={getImageUrl(userProfilePath) || ""} alt={userNickname} />
               <AvatarFallback className="bg-muted text-black text-xs">
                 {userNickname?.charAt(0)}
               </AvatarFallback>
@@ -117,12 +154,12 @@ export default function PerformanceCommentItem({
 
   // 일반 상태 UI
   return (
-    <div className="h-[170px] bg-[#F5F5F5]/60 rounded p-6 flex flex-col">
+    <div className="min-h-[170px] bg-[#F5F5F5]/60 rounded p-6 flex flex-col">
       {/* 상단: 프로필 + 닉네임 + 시간 + ... 버튼 */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Avatar className="w-6 h-6 md:w-8 md:h-8 flex-shrink-0">
-            <AvatarImage src={userProfilePath} alt={userNickname} />
+            <AvatarImage src={getImageUrl(userProfilePath) || ""} alt={userNickname} />
             <AvatarFallback className="bg-muted text-black text-xs">
               {userNickname?.charAt(0)}
             </AvatarFallback>
@@ -158,13 +195,26 @@ export default function PerformanceCommentItem({
       </div>
 
       {/* 코멘트 내용 */}
-      <p className="text-[14px] md:text-[16px] mb-6 flex-1">
-        {comment.content}
-      </p>
+      <div className="flex-1">
+        <p
+          ref={contentRef}
+          className="text-[14px] md:text-[16px] whitespace-pre-wrap"
+        >
+          {comment.content}
+        </p>
+        {showMoreButton && (
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="text-sm text-black-40 hover:opacity-70 mt-3 md:mt-4 text-left"
+          >
+            {isExpanded ? "접기" : "더보기"}
+          </button>
+        )}
+      </div>
 
       {/* 좋아요 */}
       <div
-        className="flex items-center gap-1.5 cursor-pointer"
+        className="flex items-center gap-1.5 cursor-pointer mt-6"
         onClick={onLikeClick}
       >
         <Heart

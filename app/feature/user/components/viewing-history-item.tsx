@@ -3,6 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Title, Description } from "@/components/shared/typography";
 import { PerformHistoryItem } from "@/app/feature/user/types";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
+import { formatDate } from "@/lib/date-utils";
 
 interface ViewingHistoryItemProps {
   item: PerformHistoryItem;
@@ -65,7 +66,7 @@ export default function ViewingHistoryItem({
         </Description>
         {/* 공연 날짜 - 간격: 2xl/xl/lg 67px, md/sm 42px */}
         <Description className="text-[12px] md:text-[14px] lg:text-[16px] text-muted-foreground mt-[42px] lg:mt-[67px]">
-          {item.performDate}
+          {formatDate(new Date(item.performDate), "yyyy.MM.dd HH:mm")}
         </Description>
       </div>
     </div>
