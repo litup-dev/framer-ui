@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { cn } from "@/lib/utils";
@@ -8,6 +9,7 @@ import {
   ReviewCategoryResponse,
 } from "@/app/feature/club/types";
 import { useClubDetailStore } from "@/app/feature/club/detail/store";
+import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
 
 import { StarRating } from "@/app/feature/club/detail/components/review-star-rating";
 import { Subtitle } from "@/components/shared/typography";
@@ -70,7 +72,13 @@ const CategorySection = ({
   );
 };
 
-export const ReviewStep1 = () => {
+interface ReviewStep1Props {
+  clubName?: string;
+  clubImage?: string;
+}
+
+export const ReviewStep1 = ({ clubName, clubImage }: ReviewStep1Props) => {
+  const imageUrl = clubImage ? getImageUrl(clubImage) : null;
   const queryClient = useQueryClient();
   const categoriesData = queryClient.getQueryData<ReviewCategoryResponse>([
     "review-category",
@@ -93,8 +101,17 @@ export const ReviewStep1 = () => {
     <div className="flex flex-col">
       <div className="flex flex-col text-subtitle-18 p-6 space-y-14 bg-[#F2F1EE]">
         <div className="flex flex-col items-center justify-center gap-5">
-          <div className="w-22.5 h-22.5 bg-gray-300 rounded-full flex-shrink-0" />
-          <div>제비다방에서의 시간이 어떠셨나요?</div>
+          <div className="w-22.5 h-22.5 bg-gray-300 rounded-full flex-shrink-0 relative overflow-hidden">
+            {imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt={clubName || "클럽"}
+                fill
+                className="object-cover rounded-full"
+              />
+            ) : null}
+          </div>
+          <div>{clubName || "클럽"}에서의 시간이 어떠셨나요?</div>
         </div>
         <div className="flex flex-col items-center justify-center gap-4">
           <div className="bg-white border p-2 rounded-full text-description-12 text-main">
@@ -129,6 +146,11 @@ export const ReviewStep1 = () => {
           onToggleCategory={setReviewCategories}
         />
       </div>
+      {reviewCategories.length === 0 && (
+        <p className="text-description-12 text-red-500 pt-4 px-5 lg:px-19">
+          키워드를 1개 이상 선택해주세요.
+        </p>
+      )}
     </div>
   );
 };

@@ -1,15 +1,36 @@
 "use client";
 
-import { useRef, useMemo, useEffect } from "react";
+import Image from "next/image";
+import { useState, useRef, useMemo, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { StarDisplay } from "./review-star-display";
 import { useClubDetailStore } from "@/app/feature/club/detail/store";
+import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
+
+const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
+const ALLOWED_IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp"];
+
+const isValidImageExtension = (fileName: string): boolean => {
+  const extension = fileName.split(".").pop()?.toLowerCase();
+  return extension ? ALLOWED_IMAGE_EXTENSIONS.includes(extension) : false;
+};
 
 interface ReviewStep2Props {
   rating: number;
+  clubName?: string;
+  clubImage?: string;
 }
 
-export const ReviewStep2 = ({ rating }: ReviewStep2Props) => {
+export const ReviewStep2 = ({
+  rating,
+  clubName,
+  clubImage,
+}: ReviewStep2Props) => {
+  const imageUrl = clubImage ? getImageUrl(clubImage) : null;
+  const [imageSizeError, setImageSizeError] = useState<string | null>(null);
+  const [imageExtensionError, setImageExtensionError] = useState<string | null>(
+    null
+  );
   const {
     reviewContent,
     setReviewContent,
@@ -36,13 +57,41 @@ export const ReviewStep2 = ({ rating }: ReviewStep2Props) => {
     const files = e.target.files;
     if (!files) return;
 
+    setImageSizeError(null);
+    setImageExtensionError(null);
+
     const totalImages = existingReviewImages.length + newReviewImages.length;
-    const newImages = Array.from(files).slice(0, maxImages - totalImages);
-    newImages.forEach((file) => {
-      if (file.type.startsWith("image/")) {
-        addReviewImage(file);
-      }
-    });
+    const slotsLeft = maxImages - totalImages;
+
+    // 확장자 검증
+    const invalidExtensionFiles = Array.from(files).filter(
+      (f) => !isValidImageExtension(f.name)
+    );
+
+    if (invalidExtensionFiles.length > 0) {
+      setImageExtensionError("PNG, JPG, WEBP 파일만 업로드 가능합니다.");
+    }
+
+    // 크기 및 확장자 검증을 통과한 파일들
+    const candidates = Array.from(files).filter(
+      (f) =>
+        f.type.startsWith("image/") &&
+        f.size <= MAX_IMAGE_SIZE_BYTES &&
+        isValidImageExtension(f.name)
+    );
+
+    const oversized = Array.from(files).filter(
+      (f) =>
+        f.type.startsWith("image/") &&
+        f.size > MAX_IMAGE_SIZE_BYTES &&
+        isValidImageExtension(f.name)
+    );
+
+    if (oversized.length > 0) {
+      setImageSizeError("파일 크기는 5MB 이하여야 합니다.");
+    }
+
+    candidates.slice(0, slotsLeft).forEach((file) => addReviewImage(file));
 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -59,9 +108,18 @@ export const ReviewStep2 = ({ rating }: ReviewStep2Props) => {
     <div className="flex flex-col w-full h-full">
       <div className="px-5 py-15 space-y-6 w-full h-full flex flex-col">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-black rounded-full flex-shrink-0" />
-          <div className="flex items-center gap-2">
-            <span className="text-subtitle-18">제비다방</span>
+          <div className="w-12 h-12 bg-gray-300 rounded-full flex-shrink-0 relative overflow-hidden">
+            {imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt={clubName || "클럽"}
+                fill
+                className="object-cover rounded-full"
+              />
+            ) : null}
+          </div>
+          <div className="flex items-center justify-between w-full">
+            <span className="text-subtitle-18">{clubName || "클럽"}</span>
             <StarDisplay rating={rating} size="sm" />
           </div>
         </div>
@@ -112,7 +170,7 @@ export const ReviewStep2 = ({ rating }: ReviewStep2Props) => {
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept="image/*"
+                  accept="image/png,image/jpeg,image/jpg,image/webp"
                   multiple
                   onChange={handleImageSelect}
                   className="hidden"
@@ -126,6 +184,14 @@ export const ReviewStep2 = ({ rating }: ReviewStep2Props) => {
               </>
             )}
           </div>
+          {imageSizeError && (
+            <p className="text-description-12 text-red-500">{imageSizeError}</p>
+          )}
+          {imageExtensionError && (
+            <p className="text-description-12 text-red-500">
+              {imageExtensionError}
+            </p>
+          )}
         </div>
 
         <div className="flex flex-col gap-3 flex-1">

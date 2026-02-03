@@ -3,10 +3,13 @@
 import Image from "next/image";
 import { ChevronDown } from "lucide-react";
 import { useUserStore } from "@/store/user-store";
+import { useRouter } from "next/navigation";
 
 import { ClubDetailData, Review } from "@/app/feature/club/types";
 import { Checkbox } from "@/components/ui/checkbox";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
+import { useCommonModalStore } from "@/store/common-modal-store";
+import { cn } from "@/lib/utils";
 
 import { useClubDetailStore } from "@/app/feature/club/detail/store";
 import ClubDetailReviewItem from "@/app/feature/club/detail/components/club-detail-review-item";
@@ -14,9 +17,7 @@ import ClubDetailReviewModal from "@/app/feature/club/detail/components/club-det
 import ClubDetailImageGallery from "@/app/feature/club/detail/components/club-detail-image-gallery";
 import { ReviewPagination } from "@/app/feature/club/detail/components/review-pagination";
 import { useReviewPagination } from "@/app/feature/club/detail/hooks/use-review-pagination";
-import { cn } from "@/lib/utils";
 import { Description } from "@/components/shared/typography";
-import Footer from "@/app/shared/components/footer";
 
 interface ClubDetailReviewProps {
   data: ClubDetailData;
@@ -41,8 +42,11 @@ interface ReviewItem {
   user: {
     name: string;
     profileImage?: string;
+    id: number;
   };
   rating: number;
+  keywordIds: number[];
+  publicId: number;
 }
 
 const ClubDetailReview = ({
@@ -57,9 +61,10 @@ const ClubDetailReview = ({
   sort,
   setSort,
 }: ClubDetailReviewProps) => {
+  const router = useRouter();
   const { openReviewModal } = useClubDetailStore();
   const { isAuthenticated } = useUserStore();
-
+  const { openModal } = useCommonModalStore();
   const {
     totalPages,
     pageNumbers,
@@ -102,6 +107,7 @@ const ClubDetailReview = ({
           updatedAt: review.updatedAt || review.createdAt || "",
           user: {
             name: review.user.nickname || "",
+            id: review.user.id,
             ...(review.user.profilePath && {
               profileImage: (() => {
                 const url = getImageUrl(review.user.profilePath);
@@ -110,6 +116,8 @@ const ClubDetailReview = ({
             }),
           },
           rating: review.rating || 0,
+          keywordIds: review.keywords.map((k) => k.id),
+          publicId: review.publicId,
         };
       });
   };
@@ -140,7 +148,14 @@ const ClubDetailReview = ({
         <button
           onClick={() => {
             if (isAuthenticated) openReviewModal();
-            else alert("로그인 후 이용해주세요");
+            else
+              openModal({
+                description: "로그인 후 이용해주세요",
+                confirmButton: {
+                  label: "확인",
+                  onClick: () => router.push("/login"),
+                },
+              });
           }}
           className="text-subtitle-12 flex items-center gap-1 border px-2.5 py-1.5 cursor-pointer hover:opacity-80 transition-opacity"
         >
@@ -159,7 +174,12 @@ const ClubDetailReview = ({
           내가 쓴 리뷰 보기
           <Checkbox checked={isMine} onCheckedChange={setIsMine} />
         </div>
-        <div className="flex items-center gap-1 text-black-60 font-semibold text-[14px]">
+        <div
+          className="flex items-center gap-1 text-black-60 font-semibold text-[14px] cursor-pointer"
+          onClick={() =>
+            setSort(sort === "-createdAt" ? "+createdAt" : "-createdAt")
+          }
+        >
           {sort === "-createdAt" ? "최신순" : "오래된순"}
           <ChevronDown
             className={cn(
@@ -167,16 +187,17 @@ const ClubDetailReview = ({
               sort === "-createdAt" ? "rotate-180" : "",
               "cursor-pointer"
             )}
-            onClick={() =>
-              setSort(sort === "-createdAt" ? "+createdAt" : "-createdAt")
-            }
           />
         </div>
       </div>
       <div className="">
         {reviewItems.length > 0 ? (
           reviewItems.map((review) => (
-            <ClubDetailReviewItem key={review.id} review={review} />
+            <ClubDetailReviewItem
+              key={review.id}
+              review={review}
+              entityId={data.id}
+            />
           ))
         ) : (
           <div className="py-20">
@@ -201,7 +222,15 @@ const ClubDetailReview = ({
         </div>
       )}
 
-      <ClubDetailReviewModal entityId={data.id} />
+      <ClubDetailReviewModal
+        entityId={data.id}
+        clubName={data.name}
+        clubImage={
+          data.images && data.images.length > 0
+            ? data.images[0].filePath
+            : undefined
+        }
+      />
       <ClubDetailImageGallery />
     </div>
   );

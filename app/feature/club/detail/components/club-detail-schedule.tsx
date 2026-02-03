@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { format, getDate } from "date-fns";
 import { ko } from "date-fns/locale";
 import { Check, Plus } from "lucide-react";
@@ -8,6 +9,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useUserStore } from "@/store/user-store";
 
 import { cn } from "@/lib/utils";
+import { useCommonModalStore } from "@/store/common-modal-store";
 
 import { Description, Subtitle } from "@/components/shared/typography";
 import { Button } from "@/components/ui/button";
@@ -39,10 +41,17 @@ const ClubDetailSchedule = ({
   const { mutate } = useMutation(
     performaceAttendByIdOptions(clubId, month, queryClient)
   );
-
+  const { openModal } = useCommonModalStore();
+  const router = useRouter();
   const handleAttend = (id: number) => {
     if (!isAuthenticated) {
-      alert("로그인 후 이용해주세요");
+      openModal({
+        description: "로그인 후 이용해주세요",
+        confirmButton: {
+          label: "확인",
+          onClick: () => router.push("/login"),
+        },
+      });
       return;
     }
     mutate(id);

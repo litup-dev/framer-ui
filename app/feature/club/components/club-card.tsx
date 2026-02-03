@@ -5,19 +5,19 @@ import Link from "next/link";
 import Image from "next/image";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { Map, Info } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-import { Club, ClubDetail } from "@/app/feature/club/types";
+import { Club } from "@/app/feature/club/types";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
 import {
   clubFavoriteByIdOptions,
   getClubByIdOptions,
 } from "@/app/feature/club/query-options";
+import { useUserStore } from "@/store/user-store";
+import { useCommonModalStore } from "@/store/common-modal-store";
 
 import { Separator } from "@/components/ui/separator";
 import ClubImage from "@/app/feature/club/components/club-image";
-import { filterItems } from "../constants";
-import { cn } from "@/lib/utils";
-import { Description } from "@/components/shared/typography";
 
 interface ClubCardProps {
   club: Club;
@@ -25,12 +25,15 @@ interface ClubCardProps {
 }
 
 const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
+  const router = useRouter();
   const queryClient = useQueryClient();
-
+  const { isAuthenticated } = useUserStore();
+  const { openModal } = useCommonModalStore();
   const { data: clubDetailData } = useQuery(
     getClubByIdOptions(String(club.id))
   );
-  const cacheFavorite = clubDetailData?.data?.isFavorite ?? club.isFavorite;
+  const cacheFavorite =
+    club.isFavorite ?? clubDetailData?.data?.isFavorite ?? false;
 
   const [isFavorite, setIsFavorite] = useState(cacheFavorite);
   const { mutate: mutateFavorite } = useMutation(
@@ -39,9 +42,19 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
 
   useEffect(() => {
     setIsFavorite(cacheFavorite);
-  }, [cacheFavorite]);
+  }, [club.id, cacheFavorite]);
 
   const mutate = () => {
+    if (!isAuthenticated) {
+      openModal({
+        description: "로그인 후 이용해주세요",
+        confirmButton: {
+          label: "확인",
+          onClick: () => router.push("/login"),
+        },
+      });
+      return;
+    }
     setIsFavorite(!isFavorite);
     mutateFavorite(undefined);
   };
@@ -125,7 +138,7 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
           </span>
         </Link>
       </div>
-      <Separator className="hidden sm:block" />
+      <Separator className="hidden lg:block" />
     </div>
   );
 };

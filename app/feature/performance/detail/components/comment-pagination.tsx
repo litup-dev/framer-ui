@@ -1,4 +1,13 @@
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext, PaginationEllipsis } from "@/components/ui/pagination";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+  PaginationEllipsis,
+} from "@/components/ui/pagination";
+import { cn } from "@/lib/utils";
 
 interface CommentPaginationProps {
   currentPage: number;
@@ -6,7 +15,11 @@ interface CommentPaginationProps {
   onPageChange: (page: number) => void;
 }
 
-const CommentPagination = ({ currentPage, totalPages, onPageChange }: CommentPaginationProps) => {
+const CommentPagination = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+}: CommentPaginationProps) => {
   const renderPageNumbers = () => {
     const pages = [];
     const maxVisiblePages = 5;
@@ -21,18 +34,22 @@ const CommentPagination = ({ currentPage, totalPages, onPageChange }: CommentPag
     if (startPage > 1) {
       pages.push(
         <PaginationItem key="ellipsis-start">
-          <PaginationEllipsis />
+          <PaginationEllipsis className="text-gray" />
         </PaginationItem>
       );
     }
 
     for (let i = startPage; i <= endPage; i++) {
+      const isActive = currentPage === i;
       pages.push(
         <PaginationItem key={i}>
           <PaginationLink
             onClick={() => onPageChange(i)}
-            isActive={currentPage === i}
-            style={{ cursor: "pointer" }}
+            isActive={isActive}
+            className={cn(
+              "cursor-pointer hover:bg-white",
+              !isActive && "text-gray"
+            )}
           >
             {i}
           </PaginationLink>
@@ -43,7 +60,7 @@ const CommentPagination = ({ currentPage, totalPages, onPageChange }: CommentPag
     if (endPage < totalPages) {
       pages.push(
         <PaginationItem key="ellipsis-end">
-          <PaginationEllipsis />
+          <PaginationEllipsis className="text-gray" />
         </PaginationItem>
       );
     }
@@ -62,20 +79,26 @@ const CommentPagination = ({ currentPage, totalPages, onPageChange }: CommentPag
           <PaginationItem>
             <PaginationPrevious
               onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-              style={{
-                cursor: currentPage === 1 ? "not-allowed" : "pointer",
-                opacity: currentPage === 1 ? 0.5 : 1,
-              }}
+              className={cn(
+                "hover:bg-white",
+                currentPage === 1
+                  ? "cursor-not-allowed opacity-50"
+                  : "cursor-pointer"
+              )}
             />
           </PaginationItem>
           {renderPageNumbers()}
           <PaginationItem>
             <PaginationNext
-              onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
-              style={{
-                cursor: currentPage === totalPages ? "not-allowed" : "pointer",
-                opacity: currentPage === totalPages ? 0.5 : 1,
-              }}
+              onClick={() =>
+                onPageChange(Math.min(totalPages, currentPage + 1))
+              }
+              className={cn(
+                "hover:bg-white",
+                currentPage === totalPages
+                  ? "cursor-not-allowed opacity-50"
+                  : "cursor-pointer"
+              )}
             />
           </PaginationItem>
         </PaginationContent>

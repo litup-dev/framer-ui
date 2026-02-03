@@ -9,6 +9,7 @@ import {
   PaginationPrevious,
   PaginationEllipsis,
 } from "@/components/ui/pagination";
+import { cn } from "@/lib/utils";
 
 interface AllPerformancesPaginationProps {
   totalPages: number;
@@ -47,7 +48,7 @@ export const AllPerformancesPagination = ({
             }}
             className={
               canGoPrevious
-                ? "cursor-pointer"
+                ? "cursor-pointer hover:bg-white"
                 : "pointer-events-none opacity-50"
             }
             role="button"
@@ -57,7 +58,7 @@ export const AllPerformancesPagination = ({
           if (page === "ellipsis-start" || page === "ellipsis-end") {
             return (
               <PaginationItem key={`ellipsis-${index}`}>
-                <PaginationEllipsis />
+                <PaginationEllipsis className="text-gray" />
               </PaginationItem>
             );
           }
@@ -74,7 +75,10 @@ export const AllPerformancesPagination = ({
                   }
                 }}
                 isActive={isActive}
-                className="cursor-pointer"
+                className={cn(
+                  "cursor-pointer hover:bg-white",
+                  !isActive && "text-gray"
+                )}
                 role="button"
               >
                 {pageNum}
@@ -89,9 +93,10 @@ export const AllPerformancesPagination = ({
               e.preventDefault();
               onNextClick();
             }}
-            className={
+            className={cn(
+              "hover:bg-white",
               canGoNext ? "cursor-pointer" : "pointer-events-none opacity-50"
-            }
+            )}
             role="button"
           />
         </PaginationItem>
@@ -99,12 +104,3 @@ export const AllPerformancesPagination = ({
     </Pagination>
   );
 };
-
-
-
-
-
-
-
-
-
