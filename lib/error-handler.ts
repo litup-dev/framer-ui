@@ -1,5 +1,6 @@
 import { ApiError } from "@/lib/api-client";
 import { API_ERROR_CODES } from "@/lib/error-codes";
+import { saveReturnUrl } from "@/lib/login-utils";
 
 /**
  * 글로벌 에러 핸들러
@@ -27,10 +28,9 @@ export function handleGlobalError(error: unknown): void {
     error.status === API_ERROR_CODES.JWT_AUTH_STATUS;
 
   if (isAuthError) {
-    // next-auth 세션 무효화는 signOut으로 처리
     if (typeof window !== "undefined") {
-      // 현재 페이지가 로그인 페이지가 아니면 로그인 페이지로 리다이렉트
       if (!window.location.pathname.includes("/login")) {
+        saveReturnUrl(window.location.pathname);
         window.location.href = "/login";
       }
     }

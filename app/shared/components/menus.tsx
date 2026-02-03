@@ -2,19 +2,32 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useUserStore } from "@/store/user-store";
 import { logout } from "@/lib/auth-utils";
+import { apiClient } from "@/lib/api-client";
+import { getQueryClient } from "@/providers/get-query-client";
 
 import { MenuItems } from "@/app/shared/constants";
 import Image from "next/image";
+import { saveReturnUrl } from "@/lib/login-utils";
 
 const HeaderMenus = () => {
-  const { user } = useUserStore()
+  const { user } = useUserStore();
   const router = useRouter();
+  const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
+  const queryClient = getQueryClient();
+
+  const handleLoginClick = () => {
+    saveReturnUrl(pathname);
+  };
 
   const handleLogout = async () => {
+    apiClient.setAccessToken(null);
+
+    queryClient.invalidateQueries();
+
     await logout();
     router.push("/");
   };
@@ -22,7 +35,6 @@ const HeaderMenus = () => {
   useEffect(() => {
     setMounted(true);
   }, []);
-
 
   return (
     <div className="flex gap-10 xl:gap-15 2xl:gap-20 items-center">
@@ -59,7 +71,11 @@ const HeaderMenus = () => {
           />
         </div>
       ) : (
-        <Link href="/login" className="font-semibold">
+        <Link
+          href="/login"
+          className="font-semibold"
+          onClick={handleLoginClick}
+        >
           <span className="text-[16px] 2xl:text-[20px]">로그인</span>
         </Link>
       )}

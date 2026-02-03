@@ -20,7 +20,8 @@ const ClubInfoCard = ({ club }: ClubInfoCardProps) => {
   const { data: clubDetailData } = useQuery(
     getClubByIdOptions(String(club.id))
   );
-  const cacheFavorite = clubDetailData?.data?.isFavorite ?? club.isFavorite;
+  const cacheFavorite =
+    club.isFavorite ?? clubDetailData?.data?.isFavorite ?? false;
 
   const [isFavorite, setIsFavorite] = useState(cacheFavorite);
   const { mutate: mutateFavorite } = useMutation(
@@ -29,7 +30,7 @@ const ClubInfoCard = ({ club }: ClubInfoCardProps) => {
 
   useEffect(() => {
     setIsFavorite(cacheFavorite);
-  }, [cacheFavorite]);
+  }, [club.id, cacheFavorite]);
 
   const mutate = () => {
     setIsFavorite(!isFavorite);

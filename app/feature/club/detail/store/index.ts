@@ -46,10 +46,14 @@ export const useClubDetailStore = create<ClubDetailState>((set) => ({
   setReviewCategories: (categoryId: number) =>
     set((state) => {
       const isSelected = state.reviewCategories.includes(categoryId);
+      if (isSelected) {
+        return {
+          reviewCategories: state.reviewCategories.filter((id) => id !== categoryId),
+        };
+      }
+      if (state.reviewCategories.length >= 4) return state;
       return {
-        reviewCategories: isSelected
-          ? state.reviewCategories.filter((id) => id !== categoryId)
-          : [...state.reviewCategories, categoryId],
+        reviewCategories: [...state.reviewCategories, categoryId],
       };
     }),
   setReviewImages: (images: File[]) => set({ newReviewImages: images }),
@@ -72,9 +76,9 @@ export const useClubDetailStore = create<ClubDetailState>((set) => ({
       isReviewModalOpen: true,
       reviewMode: params?.mode || "create",
       reviewId: params?.reviewId || null,
-      rating: params?.rating || 0,
+      rating: params?.rating ?? 0.5,
       reviewContent: params?.content || "",
-      reviewCategories: params?.categories || [],
+      reviewCategories: (params?.categories || []).slice(0, 4),
       existingReviewImages: params?.images || [],
       newReviewImages: [],
     }),
@@ -83,18 +87,18 @@ export const useClubDetailStore = create<ClubDetailState>((set) => ({
       isReviewModalOpen: false,
       reviewMode: "create",
       reviewId: null,
-      rating: 0,
+      rating: 0.5,
       reviewContent: "",
       reviewCategories: [],
       existingReviewImages: [],
       newReviewImages: [],
     }),
-  rating: 0,
+  rating: 0.5,
   setRating: (rating: number) =>
     set({ rating: Math.max(0, Math.min(5, rating)) }),
   resetReviewData: () =>
     set({
-      rating: 0,
+      rating: 0.5,
       reviewContent: "",
       reviewCategories: [],
       existingReviewImages: [],

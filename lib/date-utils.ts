@@ -109,21 +109,24 @@ export const getTodayDayPadded = (): string => {
   return format(today, "dd");
 };
 
+/** 주를 월요일~일요일로 정의할 때 사용하는 옵션 */
+const WEEK_OPTIONS = { weekStartsOn: 1 } as const; // 1 = Monday
+
 /**
- * 주어진 날짜의 주 시작일(일요일)을 포맷된 문자열로 가져오는 함수
+ * 주 기준 조회 시 사용하는 시작일. 오늘 이전 데이터가 보이지 않도록 항상 오늘을 반환한다.
  * @param date - 기준 날짜 (기본값: 오늘)
  * @param formatString - 날짜 포맷 문자열 (기본값: 'yyyy-MM-dd')
- * @returns 포맷된 주 시작일 문자열
+ * @returns 포맷된 시작일 문자열 (항상 해당 날짜 = 오늘)
  */
 export const getStartOfWeek = (
   date: Date = new Date(),
   formatString: string = "yyyy-MM-dd"
 ): string => {
-  return format(startOfWeek(date), formatString, { locale: ko });
+  return format(startOfDay(date), formatString, { locale: ko });
 };
 
 /**
- * 주어진 날짜의 주 마지막일(토요일)을 포맷된 문자열로 가져오는 함수
+ * 주어진 날짜의 주 마지막일(일요일)을 포맷된 문자열로 가져오는 함수
  * @param date - 기준 날짜 (기본값: 오늘)
  * @param formatString - 날짜 포맷 문자열 (기본값: 'yyyy-MM-dd')
  * @returns 포맷된 주 마지막일 문자열
@@ -132,7 +135,7 @@ export const getEndOfWeek = (
   date: Date = new Date(),
   formatString: string = "yyyy-MM-dd"
 ): string => {
-  return format(endOfWeek(date), formatString, { locale: ko });
+  return format(endOfWeek(date, WEEK_OPTIONS), formatString, { locale: ko });
 };
 
 /**

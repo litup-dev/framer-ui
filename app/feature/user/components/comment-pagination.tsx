@@ -1,4 +1,12 @@
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext, PaginationEllipsis } from "@/components/ui/pagination";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+  PaginationEllipsis,
+} from "@/components/ui/pagination";
 
 interface CommentPaginationProps {
   currentPage: number;
@@ -6,7 +14,11 @@ interface CommentPaginationProps {
   onPageChange: (page: number) => void;
 }
 
-const CommentPagination = ({ currentPage, totalPages, onPageChange }: CommentPaginationProps) => {
+const CommentPagination = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+}: CommentPaginationProps) => {
   const renderPageNumbers = () => {
     const pages = [];
     const maxVisiblePages = 5;
@@ -71,7 +83,9 @@ const CommentPagination = ({ currentPage, totalPages, onPageChange }: CommentPag
           {renderPageNumbers()}
           <PaginationItem>
             <PaginationNext
-              onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+              onClick={() =>
+                onPageChange(Math.min(totalPages, currentPage + 1))
+              }
               style={{
                 cursor: currentPage === totalPages ? "not-allowed" : "pointer",
                 opacity: currentPage === totalPages ? 0.5 : 1,

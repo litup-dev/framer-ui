@@ -21,7 +21,24 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
 import { Subtitle } from "@/components/shared/typography";
 
-const ClubDetailReviewModal = ({ entityId }: { entityId: number }) => {
+const ALLOWED_IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp"];
+
+const isValidImageExtension = (fileName: string): boolean => {
+  const extension = fileName.split(".").pop()?.toLowerCase();
+  return extension ? ALLOWED_IMAGE_EXTENSIONS.includes(extension) : false;
+};
+
+interface ClubDetailReviewModalProps {
+  entityId: number;
+  clubName?: string;
+  clubImage?: string;
+}
+
+const ClubDetailReviewModal = ({
+  entityId,
+  clubName,
+  clubImage,
+}: ClubDetailReviewModalProps) => {
   const queryClient = useQueryClient();
   const {
     isReviewModalOpen,
@@ -36,10 +53,11 @@ const ClubDetailReviewModal = ({ entityId }: { entityId: number }) => {
     newReviewImages,
   } = useClubDetailStore();
 
-  // 리뷰 모달이 열릴 때마다 카테고리 조회
   useEffect(() => {
     if (isReviewModalOpen) {
       queryClient.prefetchQuery(getReviewCategoryOptions());
+      setCurrentStep(1);
+      setDirection(1);
     }
   }, [isReviewModalOpen, queryClient]);
 
@@ -66,7 +84,7 @@ const ClubDetailReviewModal = ({ entityId }: { entityId: number }) => {
         queryKey: ["reviews", String(entityId)],
       }),
       queryClient.invalidateQueries({
-        queryKey: ["userClubReviews"],
+        queryKey: ["user-club-reviews"],
       }),
     ]);
 
@@ -74,7 +92,7 @@ const ClubDetailReviewModal = ({ entityId }: { entityId: number }) => {
     closeReviewModal();
   };
 
-  const { mutate: createReview } = useMutation({
+  const { mutate: createReview, isPending: isCreatingReview } = useMutation({
     ...createReviewOptions(Number(entityId)),
     onSuccess: (data: { data: CreateReviewResponse }) => {
       if (data?.data?.id) {
@@ -83,7 +101,7 @@ const ClubDetailReviewModal = ({ entityId }: { entityId: number }) => {
     },
   });
 
-  const { mutate: updateReview } = useMutation({
+  const { mutate: updateReview, isPending: isUpdatingReview } = useMutation({
     ...updateReviewOptions(reviewId || 0),
     onSuccess: () => {
       if (reviewId) {
@@ -96,15 +114,31 @@ const ClubDetailReviewModal = ({ entityId }: { entityId: number }) => {
   const totalSteps = 2;
 
   const handleNext = () => {
+    if (currentStep === 1 && reviewCategories.length === 0) return;
     if (currentStep < totalSteps) {
       setDirection(1);
       setCurrentStep(currentStep + 1);
       return;
     }
 
+    const hasContent = reviewContent.trim().length > 0;
+    const hasImages = existingReviewImages.length + newReviewImages.length > 0;
+
+    if (!hasContent || !hasImages) {
+      return;
+    }
+
+    const hasInvalidExtension = newReviewImages.some(
+      (image) => !isValidImageExtension(image.name)
+    );
+
+    if (hasInvalidExtension) {
+      return;
+    }
+
     const params = {
       content: reviewContent,
-      categories: reviewCategories,
+      keywords: reviewCategories,
       rating: rating,
     };
 
@@ -192,7 +226,7 @@ const ClubDetailReviewModal = ({ entityId }: { entityId: number }) => {
                 exit="exit"
                 transition={slideTransition}
               >
-                <ReviewStep1 />
+                <ReviewStep1 clubName={clubName} clubImage={clubImage} />
               </motion.div>
             )}
 
@@ -206,14 +240,18 @@ const ClubDetailReviewModal = ({ entityId }: { entityId: number }) => {
                 exit="exit"
                 transition={slideTransition}
               >
-                <ReviewStep2 rating={rating} />
+                <ReviewStep2
+                  rating={rating}
+                  clubName={clubName}
+                  clubImage={clubImage}
+                />
               </motion.div>
             )}
           </AnimatePresence>
 
           <div
             className={cn(
-              "flex gap-1 items-center lg:pt-14 lg:pb-12 lg:px-12 bg-white flex-shrink-0",
+              "flex gap-1 items-center p-5 lg:pt-14 lg:pb-12 lg:px-12 bg-white flex-shrink-0",
               "justify-end"
             )}
           >
@@ -228,9 +266,24 @@ const ClubDetailReviewModal = ({ entityId }: { entityId: number }) => {
               )}
               <Button
                 onClick={handleNext}
-                className="bg-black hover:bg-black/80 lg:w-[64px] lg:h-[44px] w-fit h-fit lg:py-3.5 lg:text-[16px]"
+                disabled={
+                  isCreatingReview ||
+                  isUpdatingReview ||
+                  (currentStep === 2 &&
+                    (reviewContent.trim().length === 0 ||
+                      existingReviewImages.length + newReviewImages.length ===
+                        0 ||
+                      newReviewImages.some(
+                        (image) => !isValidImageExtension(image.name)
+                      )))
+                }
+                className="bg-black hover:bg-black/80 disabled:bg-gray-300 disabled:cursor-not-allowed lg:w-[64px] lg:h-[44px] w-fit h-fit lg:py-3.5 lg:text-[16px]"
               >
-                {currentStep === 1 ? "다음" : "등록"}
+                {currentStep === 1
+                  ? "다음"
+                  : isCreatingReview || isUpdatingReview
+                  ? "등록 중..."
+                  : "등록"}
               </Button>
             </div>
           </div>
