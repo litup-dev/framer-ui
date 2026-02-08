@@ -36,7 +36,8 @@ const getMainImageUrl = (
 
   if (!images || images.length === 0) return defaultLogoUrl;
   const mainImage = images.find((img) => img.isMain) || images[0];
-  return mainImage ? getImageUrl(mainImage.filePath) : defaultLogoUrl;
+  const url = getImageUrl(mainImage.filePath);
+  return url ?? defaultLogoUrl;
 };
 
 /**

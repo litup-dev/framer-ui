@@ -7,7 +7,7 @@ import UserSidebarMenu from "@/app/feature/user/components/user-sidebar-menu";
 import { Title } from "@/components/shared/typography";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { useRequireAuth } from "@/app/feature/user/hooks/useRequireAuth";
+import { useRequireAuth } from "@/app/feature/user/hooks/use-require-auth";
 
 interface UserPageLayoutProps {
   title: string;
