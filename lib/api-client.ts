@@ -12,7 +12,7 @@ export class ApiError extends Error {
     data: any
   ) {
     super(message);
-    this.name = 'ApiError';
+    this.name = "ApiError";
     this.status = status;
     this.code = code;
     this.data = data;
@@ -29,7 +29,7 @@ interface ApiRequestOptions {
 class ApiClient {
   private baseURL: string;
   private isServer: boolean;
-  private accessToken: string | null = null;
+  private accessToken: string | null | undefined = undefined;
 
   constructor(baseURL: string, isServer: boolean = false) {
     this.baseURL = baseURL;
@@ -40,8 +40,12 @@ class ApiClient {
     this.accessToken = token;
   }
 
+  getAccessToken(): string | null | undefined {
+    return this.accessToken;
+  }
+
   private async getAuthToken(): Promise<string | null> {
-    if (this.accessToken) return this.accessToken;
+    if (this.accessToken !== undefined) return this.accessToken ?? null;
     if (this.isServer) return null;
     const { user } = useUserStore.getState();
     return user?.token || null;
@@ -94,7 +98,7 @@ class ApiClient {
 
       if (!response.ok) {
         let errorData;
-        let errorMessage = 'API 요청 중 알 수 없는 오류가 발생했습니다.';
+        let errorMessage = "API 요청 중 알 수 없는 오류가 발생했습니다.";
         // HTTP status를 기본 에러 코드로 사용
         let errorCode: string | number = response.status;
 

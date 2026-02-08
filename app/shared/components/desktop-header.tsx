@@ -8,9 +8,10 @@ import HeaderMenus from "@/app/shared/components/menus";
 import Link from "next/link";
 import { useClubDetailStore } from "@/app/feature/club/detail/store";
 import { useUserStore } from "@/store/user-store";
+import Image from "next/image";
 
 const DesktopHeader = () => {
-  const { user } = useUserStore()
+  const { user } = useUserStore();
   const pathname = usePathname();
   const isClubDetailPage =
     pathname?.startsWith("/club/") && pathname !== "/club";
@@ -84,8 +85,9 @@ const DesktopHeader = () => {
       }
     >
       <div className="flex items-center gap-1">
-        <div className="w-6 h-6 rounded-full bg-black" />
-        <Link href="/home">logo</Link>
+        <Link href="/home">
+          <Image src="/images/logo.svg" alt="logo" width={120} height={38} />
+        </Link>
       </div>
       <HeaderMenus />
     </div>

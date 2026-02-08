@@ -127,6 +127,7 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
                 address={data.data.address}
                 isFavorite={data.data.isFavorite}
                 favoriteCount={data.data.favoriteCount}
+                images={data.data.images}
               />
               <div className="xl:hidden">
                 <ClubDetailDescription data={data.data} />

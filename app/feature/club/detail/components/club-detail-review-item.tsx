@@ -4,8 +4,13 @@ import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import { Bell } from "lucide-react";
 import { useClubDetailStore } from "@/app/feature/club/detail/store";
+import { useUserStore } from "@/store/user-store";
+import { useCommonModalStore } from "@/store/common-modal-store";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteReviewOptions } from "@/app/feature/club/query-options";
 import { formatDate } from "@/lib/date-utils";
 import { Textarea } from "@/components/ui/textarea";
+import { Description } from "@/components/shared/typography";
 
 interface ReviewItem {
   id: number;
@@ -17,19 +22,68 @@ interface ReviewItem {
   user: {
     name: string;
     profileImage?: string;
+    id: number;
   };
   rating: number;
+  keywordIds: number[];
+  publicId: number;
 }
 
 interface ClubDetailReviewItemProps {
   review: ReviewItem;
+  entityId: number;
 }
 
-const ClubDetailReviewItem = ({ review }: ClubDetailReviewItemProps) => {
-  const { openImageGallery } = useClubDetailStore();
+const ClubDetailReviewItem = ({
+  review,
+  entityId,
+}: ClubDetailReviewItemProps) => {
+  const { openImageGallery, openReviewModal } = useClubDetailStore();
+  const { user } = useUserStore();
+  const { openModal } = useCommonModalStore();
+  const queryClient = useQueryClient();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [showMoreButton, setShowMoreButton] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const isMyReview = user?.publicId === String(review.publicId);
+
+  const deleteReviewMutation = useMutation({
+    ...deleteReviewOptions(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["reviews", String(entityId)],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["userClubReviews"],
+      });
+    },
+  });
+
+  const handleEditClick = () => {
+    openReviewModal({
+      mode: "edit",
+      reviewId: review.id,
+      rating: review.rating,
+      content: review.content,
+      categories: review.keywordIds,
+      images: review.images,
+    });
+  };
+
+  const handleDeleteClick = () => {
+    openModal({
+      description: "해당 리뷰를 삭제하시겠습니까?",
+      confirmButton: {
+        label: "삭제",
+        onClick: () => deleteReviewMutation.mutate(review.id),
+      },
+      cancelButton: {
+        label: "취소",
+        onClick: () => {},
+      },
+    });
+  };
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -143,10 +197,27 @@ const ClubDetailReviewItem = ({ review }: ClubDetailReviewItemProps) => {
           <div>작성: {formatDate(review.createdAt)}</div>
           <div>수정: {formatDate(review.updatedAt)}</div>
         </div>
-        <button className="flex items-center gap-0.5 hover:opacity-70 ">
-          <span>신고</span>
-          <Bell className="w-4 h-4" />
-        </button>
+        {isMyReview ? (
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleEditClick}
+              className="flex items-center gap-0.5 hover:opacity-70"
+            >
+              <Description className="text-[14px]">수정</Description>
+            </button>
+            <button
+              onClick={handleDeleteClick}
+              className="flex items-center gap-0.5 hover:opacity-70"
+            >
+              <Description className="text-[14px]">삭제</Description>
+            </button>
+          </div>
+        ) : (
+          <button className="flex items-center gap-0.5 hover:opacity-70">
+            <Description className="text-[14px]">신고</Description>
+            <Bell className="w-4 h-4" />
+          </button>
+        )}
       </div>
     </div>
   );

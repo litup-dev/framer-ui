@@ -1,9 +1,10 @@
-'use client'
+"use client";
 
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUserStore } from "@/store/user-store";
 import { apiClient } from "@/lib/api-client";
+import { getReturnUrl, clearReturnUrl } from "@/lib/login-utils";
 
 const LoginSuccessPage = () => {
   const router = useRouter();
@@ -31,7 +32,13 @@ const LoginSuccessPage = () => {
 
     apiClient.setAccessToken?.(token);
 
-    router.replace("/home");
+    const returnUrl = getReturnUrl();
+    if (returnUrl && returnUrl !== "/login" && returnUrl !== "/login/success") {
+      clearReturnUrl();
+      router.replace(returnUrl);
+    } else {
+      router.replace("/home");
+    }
   }, [router, searchParams, setUser]);
 
   return null;

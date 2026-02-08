@@ -119,6 +119,7 @@ const getClubByIdOptions = (id: string) =>
     queryKey: ["club", id],
     queryFn: async () => {
       const response = await apiClient.get<ClubDetail>(`/api/v1/clubs/${id}`);
+
       return response;
     },
   });
@@ -331,12 +332,12 @@ const createReviewOptions = (entityId: number) =>
   mutationOptions<
     { data: CreateReviewResponse },
     Error,
-    { content: string; categories: number[]; rating: number }
+    { content: string; keywords: number[]; rating: number }
   >({
     mutationKey: ["create-review"],
     mutationFn: async (params: {
       content: string;
-      categories: number[];
+      keywords: number[];
       rating: number;
     }): Promise<{ data: CreateReviewResponse }> => {
       const response = await apiClient.post<{ data: CreateReviewResponse }>(
@@ -363,12 +364,12 @@ const updateReviewOptions = (reviewId: number) =>
   mutationOptions<
     { data: CreateReviewResponse },
     Error,
-    { content: string; categories: number[]; rating: number }
+    { content: string; keywords: number[]; rating: number }
   >({
     mutationKey: ["update-review", reviewId],
     mutationFn: async (params: {
       content: string;
-      categories: number[];
+      keywords: number[];
       rating: number;
     }): Promise<{ data: CreateReviewResponse }> => {
       const response = await apiClient.patch<{ data: CreateReviewResponse }>(

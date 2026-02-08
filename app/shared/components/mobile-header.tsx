@@ -3,15 +3,17 @@
 import { useState } from "react";
 import { ChevronRight, MenuIcon, X, User, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useUserStore } from "@/store/user-store";
 import { logout } from "@/lib/auth-utils";
+import { saveReturnUrl } from "@/lib/login-utils";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Subtitle } from "@/components/shared/typography";
 import { cn, getImageUrl } from "@/lib/utils";
+import Image from "next/image";
 
 const MENU_ITEMS = [
   { label: "전체 공연", href: "/all-performances" },
@@ -24,6 +26,7 @@ const MobileHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   const closeMenu = () => setIsMenuOpen(false);
   const openMenu = () => setIsMenuOpen(true);
@@ -47,8 +50,9 @@ const MobileHeader = () => {
     <>
       <div className="px-5 py-2 justify-between flex items-center md:hidden">
         <div className="flex items-center gap-1">
-          <div className="w-6 h-6 rounded-full bg-black" />
-          <Link href="/home">logo</Link>
+          <Link href="/home">
+            <Image src="/images/logo.svg" alt="logo" width={80} height={26} />
+          </Link>
         </div>
         <button onClick={openMenu} className="p-2">
           <MenuIcon className="w-6 h-6" />
@@ -139,7 +143,10 @@ const MobileHeader = () => {
                       <User className="w-8 h-8 text-gray-300 fill-gray-300 p-1" />
                     </div>
                     <div className="flex">
-                      <Link href="/login">
+                      <Link
+                        href="/login"
+                        onClick={() => saveReturnUrl(pathname)}
+                      >
                         <Subtitle className="text-subtitle-14">
                           로그인하세요
                         </Subtitle>

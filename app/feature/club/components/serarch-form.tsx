@@ -1,15 +1,16 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { usePathname } from "next/navigation";
 
 import { Club } from "@/app/feature/club/types";
 import { getClubsOptions } from "@/app/feature/club/query-options";
 import {
   clubSearchFormSchema,
-  ClubSearchFormSchema,
   defaultValues,
+  ClubSearchFormSchema,
 } from "@/app/feature/club/schema";
 import { useQuery } from "@tanstack/react-query";
 
@@ -17,16 +18,16 @@ import MobileFilter from "@/app/feature/club/components/mobile-filter";
 import DesktopFilter from "@/app/feature/club/components/desktop-filter";
 import { useClubPagination } from "@/app/feature/club/hooks/use-club-pagination";
 import { useGeolocation } from "@/app/feature/club/hooks/use-geolocation";
+import { useClubSearchStorage } from "@/app/feature/club/hooks/use-club-search-storage";
 
 const ClubSearchForm = () => {
   const [viewType, setViewType] = useState<"list" | "map">("list");
   const [selectedClub, setSelectedClub] = useState<Club | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
   const [prevRegion, setPrevRegion] = useState<string>("");
   const { latitude, longitude, requestGeolocation, resetGeolocation } =
     useGeolocation();
 
-  const form = useForm<ClubSearchFormSchema>({
+  const form = useForm({
     resolver: zodResolver(clubSearchFormSchema),
     defaultValues: defaultValues,
   });
@@ -38,11 +39,46 @@ const ClubSearchForm = () => {
   const ratingSort = useWatch({ control: form.control, name: "ratingSort" });
   const keywords = useWatch({ control: form.control, name: "keywords" });
 
-  const sort = reviewSort || reviewDate || ratingSort || "-reviewCount";
+  const {
+    currentPage,
+    setCurrentPage,
+    initialFilters,
+    shouldResetFilters,
+    setShouldResetFilters,
+  } = useClubSearchStorage({
+    filters: {
+      search: search || "",
+      region: region || "",
+      reviewSort: reviewSort || undefined,
+      reviewDate: reviewDate || undefined,
+      ratingSort: ratingSort || undefined,
+      keywords: keywords || undefined,
+    },
+  });
+
+  const prevInitialFiltersRef = useRef<ClubSearchFormSchema | null>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
-    setCurrentPage(1);
-  }, [search, region, sort, keywords]);
+    if (initialFilters) {
+      const prevFiltersStr = prevInitialFiltersRef.current
+        ? JSON.stringify(prevInitialFiltersRef.current)
+        : "";
+      const currentFiltersStr = JSON.stringify(initialFilters);
+
+      if (prevFiltersStr !== currentFiltersStr || shouldResetFilters) {
+        form.reset(initialFilters, { keepDefaultValues: false });
+        prevInitialFiltersRef.current = initialFilters;
+        if (shouldResetFilters) {
+          setShouldResetFilters(false);
+        }
+      }
+    } else if (prevInitialFiltersRef.current !== null) {
+      prevInitialFiltersRef.current = null;
+    }
+  }, [initialFilters, shouldResetFilters, setShouldResetFilters, form]);
+
+  const sort = reviewSort || reviewDate || ratingSort || "-reviewCount";
 
   useEffect(() => {
     if (region === "nearby" && prevRegion !== "nearby") {
@@ -96,6 +132,8 @@ const ClubSearchForm = () => {
             viewType={viewType}
             selectedClub={selectedClub}
             setSelectedClub={setSelectedClub}
+            pagination={pagination}
+            currentPage={currentPage}
           />
         </div>
         <div className="hidden lg:block h-full">

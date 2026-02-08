@@ -1,20 +1,28 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import UserPageContent from "@/app/shared/components/user-page-content";
 import { useUserStore } from "@/store/user-store";
 import { useUserPageData } from "@/app/feature/user/hooks/use-user-page-data";
+import { saveReturnUrl } from "@/lib/login-utils";
 
 export default function MyPage() {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, isAuthenticated } = useUserStore();
 
   useEffect(() => {
     if (!isAuthenticated) {
-      router.push("/login");
+      if (typeof window !== "undefined") {
+        const currentUrl = pathname + window.location.search;
+        saveReturnUrl(pathname);
+        router.push(`/login?returnUrl=${encodeURIComponent(currentUrl)}`);
+      } else {
+        router.push("/login");
+      }
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router, pathname]);
 
   const publicId = user?.publicId || "";
   const { userInfo, userStats, isLoading } = useUserPageData(publicId);

@@ -5,7 +5,10 @@ import { useFormContext } from "react-hook-form";
 
 import { cn } from "@/lib/utils";
 import { ClubSearchFormSchema } from "@/app/feature/club/schema";
-import { region, filterItems } from "@/app/feature/club/constants";
+import {
+  region as regionOptions,
+  filterItems,
+} from "@/app/feature/club/constants";
 import { useFilterState } from "@/app/feature/club/hooks/use-filter-state";
 
 import { Separator } from "@/components/ui/separator";
@@ -50,7 +53,12 @@ const DesktopFilter = ({
   };
   currentPage: number;
 }) => {
-  const { setValue } = useFormContext<ClubSearchFormSchema>();
+  const { setValue, watch } = useFormContext<ClubSearchFormSchema>();
+  const reviewSort = watch("reviewSort");
+  const reviewDate = watch("reviewDate");
+  const ratingSort = watch("ratingSort");
+  const region = watch("region");
+
   const {
     activeFilterId,
     selectedRegion,
@@ -58,7 +66,12 @@ const DesktopFilter = ({
     getCurrentOptionIndex,
     isActive,
     handleRegionClick: handleRegionClickHook,
-  } = useFilterState();
+  } = useFilterState({
+    reviewSort,
+    reviewDate,
+    ratingSort,
+    region,
+  });
   const { data: categories } = useQuery(getReviewCategoryOptions());
 
   const handleFilterClick = (filterId: number, optionIndex: number) => {
@@ -115,7 +128,7 @@ const DesktopFilter = ({
                       </div>
                     </SelectTrigger>
                     <SelectContent className="p-4">
-                      {region
+                      {regionOptions
                         .filter((item) => item.label !== "내 주변")
                         .map((item) => (
                           <SelectItem key={item.id} value={item.value}>

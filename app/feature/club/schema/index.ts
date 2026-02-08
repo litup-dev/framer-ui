@@ -14,8 +14,8 @@ export type ClubSearchFormSchema = z.infer<typeof clubSearchFormSchema>;
 export const defaultValues: ClubSearchFormSchema = {
   search: "",
   region: "",
-  reviewSort: "-reviewCount",
-  reviewDate: "-reviewCreatedAt",
-  ratingSort: "-rating",
+  reviewSort: undefined,
+  reviewDate: undefined,
+  ratingSort: undefined,
   keywords: [],
 };
