@@ -26,13 +26,17 @@ export const initializeKakao = () => {
 
 /**
  * 메인 이미지 URL 가져오기
+ * 이미지가 없으면 기본 로고 이미지 반환
  */
 const getMainImageUrl = (
   images?: Array<{ filePath: string; isMain: boolean }>
-): string | null => {
-  if (!images || images.length === 0) return null;
+): string => {
+  // 기본 로고 이미지 (절대 경로)
+  const defaultLogoUrl = `${process.env.NEXT_PUBLIC_BASE_URL || window.location.origin}/images/logo_color.svg`;
+
+  if (!images || images.length === 0) return defaultLogoUrl;
   const mainImage = images.find((img) => img.isMain) || images[0];
-  return mainImage ? getImageUrl(mainImage.filePath) : null;
+  return mainImage ? getImageUrl(mainImage.filePath) : defaultLogoUrl;
 };
 
 /**
@@ -71,54 +75,7 @@ const createKakaoItems = (
 };
 
 /**
- * 텍스트 형식 Kakao 공유 (이미지 없을 때)
- */
-const shareAsText = (
-  kakao: any,
-  performanceTitle: string,
-  performDate?: string,
-  artists?: Array<{ name: string }>,
-  clubName?: string,
-  shareUrl?: string
-) => {
-  const textDetails: string[] = [];
-
-  if (performDate) {
-    textDetails.push(
-      `📅 ${new Date(performDate).toLocaleDateString("ko-KR")}`
-    );
-  }
-
-  if (artists && artists.length > 0) {
-    const artistNames = artists.map((a) => a.name).join(", ");
-    textDetails.push(`🎤 ${artistNames}`);
-  }
-
-  if (clubName) {
-    textDetails.push(`🏛️ ${clubName}`);
-  }
-
-  kakao.Share.sendDefault({
-    objectType: "text",
-    text: `${performanceTitle}\n\n${textDetails.join("\n")}`,
-    link: {
-      mobileWebUrl: shareUrl,
-      webUrl: shareUrl,
-    },
-    buttons: [
-      {
-        title: "공연 정보 확인",
-        link: {
-          mobileWebUrl: shareUrl,
-          webUrl: shareUrl,
-        },
-      },
-    ],
-  });
-};
-
-/**
- * 피드 형식 Kakao 공유 (이미지 있을 때)
+ * 피드 형식 Kakao 공유
  */
 const shareAsFeed = (
   kakao: any,
@@ -176,13 +133,7 @@ export const shareToKakao = ({
   const performanceDescription =
     description || "인디 씬을 사랑하는 사람들이 모이는 공간.";
 
-  // 이미지가 없으면 text 타입으로 공유
-  if (!imageUrl) {
-    shareAsText(kakao, performanceTitle, performDate, artists, clubName, shareUrl);
-    return;
-  }
-
-  // 이미지가 있으면 feed 타입으로 공유
+  // 항상 feed 타입으로 공유 (이미지가 없으면 기본 로고 사용)
   const items = createKakaoItems(performDate, artists, clubName);
   shareAsFeed(kakao, performanceTitle, performanceDescription, imageUrl, items, shareUrl);
 };
