@@ -1,3 +1,4 @@
+import React from "react";
 import { Subtitle } from "@/components/shared/typography";
 import DetailActions from "./detail-actions";
 import InfoSections from "./info-sections";
@@ -15,6 +16,10 @@ interface DetailContentProps {
   setEditingCommentId: (id: number | null) => void;
   editingText: string;
   setEditingText: (text: string) => void;
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+  expandedComments: Map<number, boolean>;
+  setExpandedComments: React.Dispatch<React.SetStateAction<Map<number, boolean>>>;
 }
 
 const DetailContent = ({
@@ -25,7 +30,11 @@ const DetailContent = ({
   editingCommentId,
   setEditingCommentId,
   editingText,
-  setEditingText
+  setEditingText,
+  activeTab,
+  setActiveTab,
+  expandedComments,
+  setExpandedComments
 }: DetailContentProps) => {
 
   return (
@@ -49,6 +58,9 @@ const DetailContent = ({
               isAttend={performance.isAttend}
               performanceTitle={title}
               clubName={performance.club.name}
+              description={performance.description}
+              artists={performance.artists}
+              images={performance.images}
             />
           </div>
         </div>
@@ -68,6 +80,9 @@ const DetailContent = ({
               isAttend={performance.isAttend}
               performanceTitle={title}
               clubName={performance.club.name}
+              description={performance.description}
+              artists={performance.artists}
+              images={performance.images}
             />
           </div>
         </div>
@@ -96,6 +111,9 @@ const DetailContent = ({
             isAttend={performance.isAttend}
             performanceTitle={title}
             clubName={performance.club.name}
+            description={performance.description}
+            artists={performance.artists}
+            images={performance.images}
           />
         </div>
 
@@ -110,6 +128,10 @@ const DetailContent = ({
             setEditingCommentId={setEditingCommentId}
             editingText={editingText}
             setEditingText={setEditingText}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            expandedComments={expandedComments}
+            setExpandedComments={setExpandedComments}
             noticeContent={
               <>
                 <InfoSections variant="md" performance={performance} />
@@ -143,6 +165,10 @@ const DetailContent = ({
             setEditingCommentId={setEditingCommentId}
             editingText={editingText}
             setEditingText={setEditingText}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            expandedComments={expandedComments}
+            setExpandedComments={setExpandedComments}
             noticeContent={
               <>
                 <InfoSections variant="sm" performance={performance} />

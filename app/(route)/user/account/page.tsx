@@ -1,18 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { signOut } from "next-auth/react";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { useUserStore } from "@/store/user-store";
 import UserPageLayout from "@/app/shared/components/user-page-layout";
 import { Subtitle, Description } from "@/components/shared/typography";
 import { GoogleIcon, KakaoIcon } from "@/app/feature/login/components/icons";
 import { apiClient } from "@/lib/api-client";
+import { useUserStore } from "@/store/user-store";
 
 export default function AccountPage() {
-  const router = useRouter();
-  const { user, setUser, isAuthenticated } = useUserStore();
+  const { user } = useUserStore();
 
   // 회원 탈퇴 mutation - 훅은 최상위에서 호출
   const withdrawMutation = useMutation({
@@ -27,16 +24,6 @@ export default function AccountPage() {
     },
   });
 
-  // useEffect(() => {
-  //   if (!isAuthenticated) {
-  //     router.push("/login");
-  //   }
-  // }, [isAuthenticated, router]);
-
-  // if (!isAuthenticated) {
-  //   return null;
-  // }
-
   const handleLogout = async () => {
     await signOut({ callbackUrl: "/" });
   };
@@ -48,11 +35,11 @@ export default function AccountPage() {
   };
 
   // 소셜 로그인 제공자 정보
-  const socialProvider = user?.provider || "google";
-  const providerName = socialProvider === "google" ? "Google" : "Kakao";
+  const socialCode = user?.socialCode || "google";
+  const socialName = user?.socialName || "Google";
 
-  // provider에 따라 아이콘 컴포넌트 선택
-  const ProviderIcon = socialProvider === "google" ? GoogleIcon : KakaoIcon;
+  // socialCode에 따라 아이콘 컴포넌트 선택
+  const ProviderIcon = socialCode === "google" ? GoogleIcon : KakaoIcon;
 
   return (
     <UserPageLayout
@@ -75,7 +62,7 @@ export default function AccountPage() {
           </div>
           {/* 소셜명 */}
           <Description as="span" className="text-sm">
-            {providerName}
+            {socialName}
           </Description>
         </div>
         {/* 로그아웃 */}

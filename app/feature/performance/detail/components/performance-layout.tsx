@@ -25,6 +25,9 @@ const PerformanceLayout = ({ posterImages, title, performance }: PerformanceLayo
   const [commentText, setCommentText] = useState("");
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editingText, setEditingText] = useState("");
+  // 탭 및 더보기 상태를 최상위 레벨에서 관리
+  const [activeTab, setActiveTab] = useState<string>("notice");
+  const [expandedComments, setExpandedComments] = useState<Map<number, boolean>>(new Map());
 
   return (
     <>
@@ -36,6 +39,9 @@ const PerformanceLayout = ({ posterImages, title, performance }: PerformanceLayo
           isAttend={performance.isAttend}
           performanceTitle={title}
           clubName={performance.club.name}
+          description={performance.description}
+          artists={performance.artists}
+          images={performance.images}
         />
       </div>
 
@@ -52,6 +58,10 @@ const PerformanceLayout = ({ posterImages, title, performance }: PerformanceLayo
             setEditingCommentId={setEditingCommentId}
             editingText={editingText}
             setEditingText={setEditingText}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            expandedComments={expandedComments}
+            setExpandedComments={setExpandedComments}
           />
         </div>
         <BookingButton variant="fixed" height="md" className="md:block lg:hidden" bookingUrl={performance.bookingUrl} />
@@ -76,6 +86,10 @@ const PerformanceLayout = ({ posterImages, title, performance }: PerformanceLayo
                   setEditingCommentId={setEditingCommentId}
                   editingText={editingText}
                   setEditingText={setEditingText}
+                  activeTab={activeTab}
+                  setActiveTab={setActiveTab}
+                  expandedComments={expandedComments}
+                  setExpandedComments={setExpandedComments}
                 />
               </div>
               <BookingButton variant="fixed" height="sm" className="md:hidden" bookingUrl={performance.bookingUrl} />
@@ -97,6 +111,10 @@ const PerformanceLayout = ({ posterImages, title, performance }: PerformanceLayo
                     setEditingCommentId={setEditingCommentId}
                     editingText={editingText}
                     setEditingText={setEditingText}
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
+                    expandedComments={expandedComments}
+                    setExpandedComments={setExpandedComments}
                   />
                 </div>
               </div>
@@ -111,6 +129,10 @@ const PerformanceLayout = ({ posterImages, title, performance }: PerformanceLayo
                   setEditingCommentId={setEditingCommentId}
                   editingText={editingText}
                   setEditingText={setEditingText}
+                  activeTab={activeTab}
+                  setActiveTab={setActiveTab}
+                  expandedComments={expandedComments}
+                  setExpandedComments={setExpandedComments}
                   noticeContent={
                     <NoticeSection
                       description={performance.description}

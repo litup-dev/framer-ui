@@ -17,6 +17,8 @@ interface UserProfileProps {
   isOwner: boolean;
   isEditing?: boolean;
   setIsEditing?: (value: boolean) => void;
+  isBioExpanded?: boolean;
+  setIsBioExpanded?: (value: boolean) => void;
 }
 
 export default function UserProfile({
@@ -24,6 +26,8 @@ export default function UserProfile({
   isOwner,
   isEditing: externalIsEditing,
   setIsEditing: externalSetIsEditing,
+  isBioExpanded: externalIsBioExpanded,
+  setIsBioExpanded: externalSetIsBioExpanded,
 }: UserProfileProps) {
   const { setUser } = useUserStore();
   const { openModal } = useCommonModalStore();
@@ -37,6 +41,7 @@ export default function UserProfile({
   );
   const [tempProfileImage, setTempProfileImage] = useState<Blob | null>(null);
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
+  const [internalIsBioExpanded, setInternalIsBioExpanded] = useState(false);
 
   // 원본 데이터 저장 (변경 감지용)
   const [originalBio] = useState(user?.bio || "");
@@ -46,6 +51,11 @@ export default function UserProfile({
   const isEditing =
     externalIsEditing !== undefined ? externalIsEditing : internalIsEditing;
   const setIsEditing = externalSetIsEditing || setInternalIsEditing;
+
+  // props로 받은 isBioExpanded를 사용하거나, 내부 state 사용
+  const isBioExpanded =
+    externalIsBioExpanded !== undefined ? externalIsBioExpanded : internalIsBioExpanded;
+  const setIsBioExpanded = externalSetIsBioExpanded || setInternalIsBioExpanded;
 
   // 유저 프로필 수정 mutation (닉네임/bio만)
   const updateMutation = useMutation({
@@ -193,6 +203,8 @@ export default function UserProfile({
           bioClass="text-[16px] text-muted-foreground mt-6"
           inputHeight="h-12"
           textareaHeight="h-[100px]"
+          isExpanded={isBioExpanded}
+          onToggleExpand={() => setIsBioExpanded(!isBioExpanded)}
         />
       </div>
 
@@ -220,6 +232,8 @@ export default function UserProfile({
               bioClass="text-[14px] lg:text-[16px] text-muted-foreground mt-[10px] lg:mt-4"
               inputHeight="h-12"
               textareaHeight="h-[100px]"
+              isExpanded={isBioExpanded}
+              onToggleExpand={() => setIsBioExpanded(!isBioExpanded)}
             />
           </div>
         </div>
@@ -268,6 +282,8 @@ export default function UserProfile({
               bioClass="text-[12px] text-muted-foreground mt-4"
               inputHeight="h-7"
               textareaHeight="h-16"
+              isExpanded={isBioExpanded}
+              onToggleExpand={() => setIsBioExpanded(!isBioExpanded)}
             />
           </div>
         </div>

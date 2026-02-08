@@ -40,6 +40,8 @@ interface PerformanceCommentItemProps {
   onReport?: () => void;
   onLikeClick?: () => void;
   isUpdating?: boolean;
+  isExpanded: boolean;
+  onToggleExpand: () => void;
 }
 
 export default function PerformanceCommentItem({
@@ -58,10 +60,15 @@ export default function PerformanceCommentItem({
   onReport,
   onLikeClick,
   isUpdating = false,
+  isExpanded,
+  onToggleExpand,
 }: PerformanceCommentItemProps) {
-  const contentRef = useRef<HTMLParagraphElement>(null);
   const [showMoreButton, setShowMoreButton] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
+
+  useEffect(() => {
+    const lineCount = (comment.content.match(/\n/g) || []).length + 1;
+    setShowMoreButton(lineCount > 3);
+  }, [comment.content]);
 
   const formatRelativeTime = (dateString: string) => {
     return formatDistanceToNow(new Date(dateString), {
@@ -69,37 +76,6 @@ export default function PerformanceCommentItem({
       locale: ko,
     });
   };
-
-  useEffect(() => {
-    if (!isEditing && comment.content) {
-      // 줄바꿈 개수로 더보기 버튼 표시 여부 결정
-      const lineCount = (comment.content.match(/\n/g) || []).length + 1;
-      setShowMoreButton(lineCount > 3);
-
-      if (contentRef.current) {
-        const element = contentRef.current;
-        element.style.display = "block";
-        element.style.maxHeight = "none";
-        element.style.overflow = "visible";
-        const fullHeight = element.scrollHeight;
-
-        if (isExpanded) {
-          element.style.maxHeight = `${fullHeight}px`;
-          element.style.overflow = "visible";
-        } else {
-          const computedStyle = getComputedStyle(element);
-          const lineHeight = parseFloat(computedStyle.lineHeight) || 20;
-          const paddingTop = parseFloat(computedStyle.paddingTop) || 0;
-          const paddingBottom = parseFloat(computedStyle.paddingBottom) || 0;
-
-          const threeLineHeight = lineHeight * 3 + paddingTop + paddingBottom;
-
-          element.style.maxHeight = `${threeLineHeight}px`;
-          element.style.overflow = "hidden";
-        }
-      }
-    }
-  }, [comment.content, isExpanded, isEditing]);
 
   // 수정 상태 UI (comment-item.tsx와 동일)
   if (isEditing && tabType === "myComments") {
@@ -130,7 +106,8 @@ export default function PerformanceCommentItem({
 
         <Textarea
           placeholder="댓글을 입력해주세요"
-          className="h-[100px] resize-none border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-white"
+          className="h-[100px] resize-none border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-white leading-[160%] tracking-[-0.04em]"
+          style={{ letterSpacing: '-0.04em', lineHeight: '160%' }}
           value={editingText}
           onChange={onEditTextChange}
           maxLength={maxLength}
@@ -197,14 +174,15 @@ export default function PerformanceCommentItem({
       {/* 코멘트 내용 */}
       <div className="flex-1">
         <p
-          ref={contentRef}
-          className="text-[14px] md:text-[16px] whitespace-pre-wrap"
+          className={`text-[14px] md:text-[16px] whitespace-pre-wrap ${
+            !isExpanded && showMoreButton ? "line-clamp-3" : ""
+          }`}
         >
           {comment.content}
         </p>
         {showMoreButton && (
           <button
-            onClick={() => setIsExpanded(!isExpanded)}
+            onClick={onToggleExpand}
             className="text-sm text-black-40 hover:opacity-70 mt-3 md:mt-4 text-left"
           >
             {isExpanded ? "접기" : "더보기"}

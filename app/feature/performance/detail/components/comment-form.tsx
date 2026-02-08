@@ -3,18 +3,13 @@
 import { Chip } from "@/components/shared/typography";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
 
 interface CommentFormProps {
   commentText: string;
   maxLength: number;
   isAuthenticated: boolean;
   isPending: boolean;
-  onTextChange: (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
+  onTextChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onSubmit: () => void;
 }
 
@@ -26,58 +21,32 @@ const CommentForm = ({
   onTextChange,
   onSubmit,
 }: CommentFormProps) => {
-  return (
-    <>
-      {/* 데스크탑: Textarea + 등록 버튼 */}
-      <div className="hidden md:block space-y-4">
-        <Textarea
-          placeholder={isAuthenticated ? "댓글을 입력해주세요" : "로그인 후 작성 가능합니다"}
-          className="h-[100px] resize-none"
-          value={commentText}
-          onChange={onTextChange}
-          disabled={!isAuthenticated}
-          maxLength={maxLength}
-        />
-        <div className="w-full flex justify-between items-center">
-          <Chip className="text-black-40 text-[14px] lg:text-[16px]">
-            {(commentText || "").length}/{maxLength}
-          </Chip>
-          <Button
-            onClick={onSubmit}
-            disabled={!isAuthenticated || !(commentText || "").trim() || isPending}
-          >
-            {isPending ? "등록중..." : "등록"}
-          </Button>
-        </div>
-      </div>
+  const placeholder = isAuthenticated ? "댓글을 입력해주세요" : "로그인 후 작성 가능합니다";
+  const isDisabled = !isAuthenticated || !commentText.trim() || isPending;
 
-      {/* 모바일: InputGroup inline */}
-      <div className="md:hidden flex flex-col gap-1">
-        <InputGroup className="h-12">
-          <InputGroupInput
-            placeholder={isAuthenticated ? "댓글을 입력해주세요" : "로그인 후 작성 가능합니다"}
-            className="p-5 placeholder:font-medium text-[14px]"
-            value={commentText || ""}
-            onChange={onTextChange}
-            disabled={!isAuthenticated}
-            maxLength={maxLength}
-          />
-          <InputGroupAddon align="inline-end">
-            <Button
-              onClick={onSubmit}
-              disabled={!isAuthenticated || !(commentText || "").trim() || isPending}
-            >
-              {isPending ? "등록중..." : "등록"}
-            </Button>
-          </InputGroupAddon>
-        </InputGroup>
-        <div className="flex justify-end">
-          <Chip className="text-black-40 text-[12px]">
-            {(commentText || "").length}/{maxLength}
-          </Chip>
-        </div>
+  return (
+    <div className="space-y-4">
+      <Textarea
+        placeholder={placeholder}
+        className="h-[100px] md:h-[70px] resize-none overflow-y-auto leading-[160%] tracking-[-0.04em]"
+        style={{ letterSpacing: '-0.04em', lineHeight: '160%' }}
+        value={commentText}
+        onChange={onTextChange}
+        disabled={!isAuthenticated}
+        maxLength={maxLength}
+      />
+      <div className="w-full flex justify-between items-center">
+        <Chip className="text-black-40 text-[12px] md:text-[14px] lg:text-[16px]">
+          {commentText.length}/{maxLength}
+        </Chip>
+        <Button
+          onClick={onSubmit}
+          disabled={isDisabled}
+        >
+          {isPending ? "등록중..." : "등록"}
+        </Button>
       </div>
-    </>
+    </div>
   );
 };
 
