@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useUserStore } from "@/store/user-store";
 import { useReportModalStore } from "@/store/report-modal-store";
+import { useCommonModalStore } from "@/store/common-modal-store";
 import UserPageLayout from "@/app/shared/components/user-page-layout";
 import PerformanceCommentItem from "@/app/feature/user/components/performance-comment-item";
 import SortDropdown from "@/app/shared/components/sort-dropdown";
@@ -24,9 +25,11 @@ import {
   Description,
   Title,
 } from "@/components/shared/typography";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
 import { ChevronRight } from "lucide-react";
+import { getImageUrl } from "@/lib/utils";
 
 type TabType = "written" | "liked";
 type SortOption = "-createdAt" | "+createdAt";
@@ -38,14 +41,17 @@ const sortOptions = [
 
 export default function CommentsPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { user, isAuthenticated } = useUserStore();
   const { openModal: openReportModal } = useReportModalStore();
+  const { openModal: openCommonModal } = useCommonModalStore();
 
   const [activeTab, setActiveTab] = useState<TabType>("written");
   const [sortBy, setSortBy] = useState<SortOption>("-createdAt");
   const [currentPage, setCurrentPage] = useState(1);
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editingText, setEditingText] = useState("");
+  const [expandedComments, setExpandedComments] = useState<Map<number, boolean>>(new Map());
 
   const itemsPerPage = 10;
 
@@ -73,7 +79,18 @@ export default function CommentsPage() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [activeTab, sortBy]);
+
+    // 탭 전환 시 해당 탭의 데이터 무효화하여 최신 데이터 가져오기
+    if (activeTab === "liked") {
+      queryClient.invalidateQueries({
+        queryKey: ["myLikedPerformanceComments"],
+      });
+    } else {
+      queryClient.invalidateQueries({
+        queryKey: ["myPerformanceComments"],
+      });
+    }
+  }, [activeTab, sortBy, queryClient]);
 
   // useEffect(() => {
   //   if (!isAuthenticated) {
@@ -99,29 +116,27 @@ export default function CommentsPage() {
     enabled: isAuthenticated,
   });
 
-  if (!isAuthenticated) {
-    return null;
-  }
-
   const comments = commentsData?.items || [];
   const totalItems = commentsData?.total || 0;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  // 공연별로 코멘트 그룹화
-  const groupedComments = comments.reduce((acc: any, comment: any) => {
+  // 공연별로 코멘트 그룹화 (정렬 순서 유지)
+  const groupedCommentsMap = new Map<number, any>();
+  const performanceGroups: any[] = [];
+
+  comments.forEach((comment: any) => {
     const performId = comment.performId;
-    if (!acc[performId]) {
-      acc[performId] = {
+    if (!groupedCommentsMap.has(performId)) {
+      const group = {
         performanceId: performId,
         performanceName: comment.performTitle,
         comments: [],
       };
+      groupedCommentsMap.set(performId, group);
+      performanceGroups.push(group);
     }
-    acc[performId].comments.push(comment);
-    return acc;
-  }, {});
-
-  const performanceGroups = Object.values(groupedComments);
+    groupedCommentsMap.get(performId)!.comments.push(comment);
+  });
 
   const handlePageChange = (page: number) => {
     if (page < 1 || page > totalPages) return;
@@ -129,7 +144,34 @@ export default function CommentsPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const toggleExpanded = (commentId: number) => {
+    setExpandedComments((prev: Map<number, boolean>) => {
+      const newMap = new Map(prev);
+      if (newMap.get(commentId)) {
+        newMap.delete(commentId);
+      } else {
+        newMap.set(commentId, true);
+      }
+      return newMap;
+    });
+  };
+
   const handleReport = (comment: PerformanceComment) => {
+    if (!isAuthenticated) {
+      openCommonModal({
+        description: "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?",
+        confirmButton: {
+          label: "확인",
+          onClick: () => router.push("/login"),
+        },
+        cancelButton: {
+          label: "취소",
+          onClick: () => {},
+        },
+      });
+      return;
+    }
+
     const formatRelativeTime = (dateString: string) => {
       return formatDistanceToNow(new Date(dateString), {
         addSuffix: true,
@@ -141,7 +183,10 @@ export default function CommentsPage() {
       targetContent: (
         <div className="p-4 bg-gray-50 rounded-lg">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-6 h-6 rounded-full bg-gray-200" />
+            <Avatar className="w-6 h-6">
+              <AvatarImage src={getImageUrl(comment.user.profile_path) || undefined} alt={comment.user.nickname} />
+              <AvatarFallback>{comment.user.nickname[0]}</AvatarFallback>
+            </Avatar>
             <Subtitle className="text-[14px]">{comment.user.nickname}</Subtitle>
             <Description className="text-black-40 text-[12px]">
               {formatRelativeTime(comment.createdAt)}
@@ -254,7 +299,7 @@ export default function CommentsPage() {
                         userProfilePath={
                           activeTab === "written"
                             ? user?.profilePath || undefined
-                            : comment.user.profilePath
+                            : comment.user.profile_path
                         }
                         tabType={
                           activeTab === "written"
@@ -272,6 +317,8 @@ export default function CommentsPage() {
                         onReport={() => handleReport(comment)}
                         onLikeClick={() => handleLikeClick(comment.id)}
                         isUpdating={updateCommentMutation.isPending}
+                        isExpanded={expandedComments.get(comment.id) || false}
+                        onToggleExpand={() => toggleExpanded(comment.id)}
                       />
                     );
                   })}

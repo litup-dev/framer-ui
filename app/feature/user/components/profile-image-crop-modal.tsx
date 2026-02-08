@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import AvatarEditor from "react-avatar-editor";
 import {
   Dialog,
@@ -31,13 +31,70 @@ export default function ProfileImageCropModal({
   const [isDragging, setIsDragging] = useState(false);
   const [isWideImage, setIsWideImage] = useState(false);
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+  const [isMobile, setIsMobile] = useState(false);
+  const [cropSize, setCropSize] = useState(300);
   const editorRef = useRef<AvatarEditor>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragAreaRef = useRef<HTMLDivElement>(null);
+  const originalImageRef = useRef<HTMLImageElement | null>(null);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+
+      if (imgSrc && originalImageRef.current) {
+        // 이미지가 있는 경우 재계산
+        const size = calculateImageSize(originalImageRef.current, mobile);
+        setImageSize({ width: size.width, height: size.height });
+        setCropSize(size.cropSize);
+        setIsWideImage(size.isWide);
+      } else {
+        // 이미지가 없는 경우 기본 cropSize만 설정
+        setCropSize(mobile ? 180 : 300);
+      }
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, [imgSrc]);
 
   const validateFile = (file: File): boolean => {
     const validTypes = ["image/jpeg", "image/jpg", "image/png"];
     return validTypes.includes(file.type);
+  };
+
+  const calculateImageSize = (img: HTMLImageElement, mobile: boolean) => {
+    const EDITOR_MAX_WIDTH = mobile ? 305 : 568;
+    const EDITOR_MAX_HEIGHT = mobile ? 240 : 400;
+    const CROP_SIZE = mobile ? 180 : 300;
+
+    const scaleToFit = Math.min(
+      EDITOR_MAX_WIDTH / img.width,
+      EDITOR_MAX_HEIGHT / img.height,
+    );
+
+    const boxFitWidth = Math.floor(img.width * scaleToFit);
+    const boxFitHeight = Math.floor(img.height * scaleToFit);
+
+    let canvasWidth = boxFitWidth;
+    let canvasHeight = boxFitHeight;
+
+    if (boxFitWidth < CROP_SIZE) {
+      canvasWidth = CROP_SIZE;
+      canvasHeight = Math.min(boxFitHeight, EDITOR_MAX_HEIGHT);
+    } else if (boxFitHeight < CROP_SIZE) {
+      canvasHeight = CROP_SIZE;
+      canvasWidth = Math.min(boxFitWidth, EDITOR_MAX_WIDTH);
+    }
+
+    return {
+      width: canvasWidth,
+      height: canvasHeight,
+      cropSize: CROP_SIZE,
+      isWide: img.width > img.height,
+    };
   };
 
   const handleFileSelect = (file: File) => {
@@ -50,42 +107,13 @@ export default function ProfileImageCropModal({
     reader.addEventListener("load", () => {
       const img = new Image();
       img.onload = () => {
-        // === 1. 설정값 정의 ===
-        const EDITOR_MAX_WIDTH = 568;
-        const EDITOR_MAX_HEIGHT = 400;
-        const CROP_SIZE = 300;
+        originalImageRef.current = img;
+        const size = calculateImageSize(img, isMobile);
 
-        // === 2. 이미지를 '박스 안'에 다 보이게 넣었을 때의 크기 계산 ===
-        // (object-fit: contain 과 같은 원리)
-        const scaleToFit = Math.min(
-          EDITOR_MAX_WIDTH / img.width,
-          EDITOR_MAX_HEIGHT / img.height,
-        );
-
-        // 박스에 맞춘(화면에 보일) 가상의 이미지 크기
-        const boxFitWidth = Math.floor(img.width * scaleToFit);
-        const boxFitHeight = Math.floor(img.height * scaleToFit);
-
-        // === 3. 예외 케이스 처리 (Zoom 필요 여부 판단) ===
-        let canvasWidth = boxFitWidth;
-        let canvasHeight = boxFitHeight;
-
-        // Case A: 세로로 너무 길어서, 너비가 300px(구멍)보다 작아진 경우
-        if (boxFitWidth < CROP_SIZE) {
-          canvasWidth = CROP_SIZE; // 캔버스 너비는 최소 300 확보
-          canvasHeight = Math.min(boxFitHeight, EDITOR_MAX_HEIGHT); // 높이는 최대치(400) 유지
-        }
-
-        // Case B: 가로로 너무 길어서, 높이가 300px(구멍)보다 작아진 경우
-        else if (boxFitHeight < CROP_SIZE) {
-          canvasHeight = CROP_SIZE; // 캔버스 높이는 최소 300 확보
-          canvasWidth = Math.min(boxFitWidth, EDITOR_MAX_WIDTH); // 너비는 최대치(568) 유지
-        }
-
-        // === 4. 상태 업데이트 ===
-        setImageSize({ width: canvasWidth, height: canvasHeight });
+        setImageSize({ width: size.width, height: size.height });
+        setCropSize(size.cropSize);
         setImgSrc(reader.result?.toString() || "");
-        setIsWideImage(img.width > img.height);
+        setIsWideImage(size.isWide);
       };
       img.src = reader.result?.toString() || "";
     });
@@ -151,14 +179,16 @@ export default function ProfileImageCropModal({
     setImgSrc("");
     setScale(1);
     setIsWideImage(false);
-    setImageSize({ width: 300, height: 300 });
+    setImageSize({ width: 0, height: 0 });
+    setCropSize(isMobile ? 180 : 300);
+    originalImageRef.current = null;
     onClose();
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent
-        className="!w-[355px] md:!w-[664px] h-[470px] md:h-[716px] p-0 rounded-[8px] overflow-hidden !max-w-none flex flex-col"
+        className="!w-[353px] md:!w-[664px] h-[470px] md:h-[716px] p-0 rounded-[8px] overflow-hidden !max-w-none flex flex-col"
         showCloseButton={false}
       >
         <DialogHeader className="pt-5 md:pt-6 px-6 md:px-11 flex-shrink-0">
@@ -206,25 +236,41 @@ export default function ProfileImageCropModal({
             /* File upload area */
             <div
               ref={dragAreaRef}
-              className="w-full max-w-[305px] md:max-w-[568px] h-[240px] md:h-[400px] border border-black-20 mx-auto relative mt-10"
+              className={`w-full mx-auto relative ${
+                isMobile
+                  ? "flex flex-col items-center justify-center flex-1"
+                  : "max-w-[568px] h-[400px] border border-black-20 mt-10"
+              }`}
               onDragEnter={handleDragEnter}
               onDragLeave={handleDragLeave}
               onDragOver={handleDragOver}
               onDrop={handleDrop}
             >
-              <div className="flex flex-col items-center pt-[80px] md:pt-[160px]">
+              <div
+                className={`flex flex-col items-center ${
+                  isMobile ? "" : "pt-[160px]"
+                }`}
+              >
                 <Button
                   onClick={() => fileInputRef.current?.click()}
                   className="bg-white text-black border border-black-30 rounded-[3px] hover:bg-gray-100 w-[107px] h-[44px]"
                 >
                   <Subtitle className="text-[16px]">파일 업로드</Subtitle>
                 </Button>
-                <Description className="text-[14px] mt-4">
-                  여기로 이미지를 드래그하거나 파일을 업로드하세요
-                </Description>
-                <Description className="text-[14px] mt-1">
-                  * jpg, png 파일
-                </Description>
+                {isMobile ? (
+                  <Description className="text-[14px] mt-4">
+                    * jpg, png 파일
+                  </Description>
+                ) : (
+                  <>
+                    <Description className="text-[14px] mt-4">
+                      여기로 이미지를 드래그하거나 파일을 업로드하세요
+                    </Description>
+                    <Description className="text-[14px] mt-1">
+                      * jpg, png 파일
+                    </Description>
+                  </>
+                )}
               </div>
               {isDragging && (
                 <div className="absolute inset-0 bg-black-10 bg-opacity-50 flex items-center justify-center pointer-events-none">
@@ -243,13 +289,13 @@ export default function ProfileImageCropModal({
                   <AvatarEditor
                     ref={editorRef}
                     image={imgSrc}
-                    width={300} // 고정
-                    height={300} // 고정
+                    width={cropSize}
+                    height={cropSize}
                     border={[
-                      (imageSize.width - 300) / 2,
-                      (imageSize.height - 300) / 2,
+                      (imageSize.width - cropSize) / 2,
+                      (imageSize.height - cropSize) / 2,
                     ]}
-                    borderRadius={150}
+                    borderRadius={cropSize / 2}
                     color={[0, 0, 0, 0.5]}
                     scale={scale}
                     rotate={0}
@@ -261,8 +307,8 @@ export default function ProfileImageCropModal({
                       top: "50%",
                       left: "50%",
                       transform: "translate(-50%, -50%)",
-                      width: "300px",
-                      height: "300px",
+                      width: `${cropSize}px`,
+                      height: `${cropSize}px`,
                       borderRadius: "50%",
                       border: "4px solid #FF491A",
                       boxSizing: "border-box",
@@ -273,7 +319,9 @@ export default function ProfileImageCropModal({
                 {/* 파일 재업로드 버튼 - absolute positioning */}
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="absolute w-[44px] h-[44px] p-2 border border-black-30 rounded bg-white hover:bg-gray-100 transition-colors flex items-center justify-center"
+                  className={`absolute p-2 border border-black-30 rounded bg-white hover:bg-gray-100 transition-colors flex items-center justify-center ${
+                    isMobile ? "w-[38px] h-[38px]" : "w-[44px] h-[44px]"
+                  }`}
                   style={{
                     right: 0,
                     ...(isWideImage
@@ -283,16 +331,16 @@ export default function ProfileImageCropModal({
                         }
                       : {
                           // 세로가 긴 이미지: 이미지 하단과 정렬
-                          top: `calc(50% + ${imageSize.height / 2}px - 44px)`,
+                          top: `calc(50% + ${imageSize.height / 2}px - ${isMobile ? 38 : 44}px)`,
                         }),
                   }}
                 >
-                  <Upload className="w-[28px] h-[28px]" />
+                  <Upload className={isMobile ? "w-[22px] h-[22px]" : "w-[28px] h-[28px]"} />
                 </button>
               </div>
 
               {/* 줌 슬라이더 */}
-              <div className="flex-shrink-0">
+              <div className={`flex-shrink-0 ${isWideImage ? (isMobile ? "pt-[44px]" : "pt-[50px]") : ""}`}>
                 <div className="flex items-center gap-2 md:gap-3 justify-center">
                   <button
                     onClick={() => setScale((prev) => Math.max(prev - 0.1, 1))}
@@ -336,7 +384,9 @@ export default function ProfileImageCropModal({
                 <Button
                   onClick={handleSave}
                   disabled={!imgSrc}
-                  className={`rounded-[4px] h-10 px-6 ${
+                  className={`rounded-[4px] px-6 ${
+                    isMobile ? "h-7 text-[14px]" : "h-10"
+                  } ${
                     imgSrc
                       ? "bg-black text-white hover:bg-black/80"
                       : "bg-[#BBBBBB] text-white cursor-not-allowed"
@@ -355,7 +405,9 @@ export default function ProfileImageCropModal({
             <Button
               onClick={handleSave}
               disabled={!imgSrc}
-              className="rounded-[4px] h-10 px-6 bg-[#BBBBBB] text-white cursor-not-allowed"
+              className={`rounded-[4px] px-6 bg-[#BBBBBB] text-white cursor-not-allowed ${
+                isMobile ? "h-7 text-[14px]" : "h-10"
+              }`}
             >
               완료
             </Button>
@@ -381,7 +433,7 @@ export default function ProfileImageCropModal({
           }
 
           @media (min-width: 768px) {
-            ㅊ {
+            .zoom-slider::-webkit-slider-thumb {
               width: 20px;
               height: 20px;
             }

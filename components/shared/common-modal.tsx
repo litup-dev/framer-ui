@@ -36,10 +36,8 @@ export const CommonModal = () => {
     <Dialog open={isOpen} onOpenChange={closeModal}>
       <DialogContent showCloseButton={false} className="p-10">
         <DialogTitle className="sr-only">알림</DialogTitle>
-        <DialogDescription className={cn("whitespace-pre-line", textAlign)}>
-          <Subtitle as="span" className="text-[18px] text-black">
-            {description}
-          </Subtitle>
+        <DialogDescription className={cn("whitespace-pre-line text-[18px] text-black font-bold", textAlign)}>
+          {description}
         </DialogDescription>
         <DialogFooter className="flex-row gap-2 pt-12">
           <Button

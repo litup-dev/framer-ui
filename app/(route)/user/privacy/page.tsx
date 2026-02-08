@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/user-store";
 import UserPageLayout from "@/app/shared/components/user-page-layout";
 import PrivacySettingGroup from "@/app/feature/user/components/privacy-setting-group";
@@ -32,9 +31,8 @@ const settingLabels: {
 ];
 
 export default function PrivacyPage() {
-  const router = useRouter();
-  const { isAuthenticated } = useUserStore();
   const queryClient = useQueryClient();
+  const { isAuthenticated } = useUserStore();
   const [settings, setSettings] = useState<PrivacySettings>({
     attendance: "public",
     performHistory: "public",
@@ -70,19 +68,9 @@ export default function PrivacyPage() {
     }
   }, [privacyData]);
 
-  // useEffect(() => {
-  //   if (!isAuthenticated) {
-  //     router.push("/login");
-  //   }
-  // }, [isAuthenticated, router]);
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
-  // if (!isAuthenticated) {
-  //   return null;
-  // }
 
   const handleSettingChange = (
     key: keyof PrivacySettings,

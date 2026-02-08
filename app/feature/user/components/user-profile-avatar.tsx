@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Camera } from "lucide-react";
-import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
+import { getImageUrl } from "@/lib/utils";
 
 interface UserProfileAvatarProps {
   profilePath?: string | null;

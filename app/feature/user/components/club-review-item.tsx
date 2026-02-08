@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { ChevronDown, Star, Circle, Hash } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
@@ -39,6 +39,11 @@ export default function ClubReviewItem({
   const [expandedReviews, setExpandedReviews] = useState<Set<string>>(
     new Set()
   );
+
+  // reviews의 ID 배열이 변경되면 expandedReviews 초기화
+  useEffect(() => {
+    setExpandedReviews(new Set());
+  }, [reviews.map(r => r.id).join(',')]);
 
   const toggleReview = (reviewId: string) => {
     const newExpanded = new Set(expandedReviews);
@@ -126,12 +131,14 @@ export default function ClubReviewItem({
                       {displayContent}
                     </Description>
                     {showMoreButton && (
-                      <button
-                        onClick={() => toggleReview(review.id)}
-                        className="mt-2 text-[16px] text-muted-foreground hover:underline text-left"
-                      >
-                        {isExpanded ? "접기" : "더보기"}
-                      </button>
+                      <div className="mt-2">
+                        <button
+                          onClick={() => toggleReview(review.id)}
+                          className="text-[16px] text-muted-foreground hover:underline text-left"
+                        >
+                          {isExpanded ? "접기" : "더보기"}
+                        </button>
+                      </div>
                     )}
                   </div>
                   {/* 이미지 */}

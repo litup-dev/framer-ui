@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Subtitle } from "@/components/shared/typography";
-import { cn } from "@/lib/utils";
+import { cn, getImageUrl } from "@/lib/utils";
 import Image from "next/image";
 
 const MENU_ITEMS = [
@@ -99,7 +99,7 @@ const MobileHeader = () => {
                       onClick={toggleUserDropdown}
                     >
                       <Avatar className="w-8 h-8">
-                        <AvatarImage src={user?.profilePath || ""} />
+                        <AvatarImage src={getImageUrl(user?.profilePath) || ""} />
                         <AvatarFallback>
                           {user?.nickname?.charAt(0) || ""}
                         </AvatarFallback>

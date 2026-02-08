@@ -7,7 +7,7 @@ import UserSidebarMenu from "@/app/feature/user/components/user-sidebar-menu";
 import { Title } from "@/components/shared/typography";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { useUserStore } from "@/store/user-store";
+import { useRequireAuth } from "@/app/feature/user/hooks/use-require-auth";
 
 interface UserPageLayoutProps {
   title: string;
@@ -32,8 +32,13 @@ export default function UserPageLayout({
     "2xl": "2xl:mt-20",
   },
 }: UserPageLayoutProps) {
-  const { user } = useUserStore();
+  const { user, isLoading } = useRequireAuth();
   const [isProfileEditing, setIsProfileEditing] = useState(false);
+  const [isBioExpanded, setIsBioExpanded] = useState(false);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <PageWrapper className="pt-6 2xl:pt-[124px]">
@@ -52,6 +57,8 @@ export default function UserPageLayout({
             isOwner={true}
             isEditing={isProfileEditing}
             setIsEditing={setIsProfileEditing}
+            isBioExpanded={isBioExpanded}
+            setIsBioExpanded={setIsBioExpanded}
           />
 
           <UserSidebarMenu className="xl:mt-20 2xl:mt-[100px]" />

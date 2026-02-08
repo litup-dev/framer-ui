@@ -93,7 +93,7 @@ export const useCommentHandlers = (
   };
 
   const handleTextChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+    e: React.ChangeEvent<HTMLTextAreaElement>
   ): void => {
     const value = e.target.value;
     if (value.length <= COMMENT_MAX_LENGTH) {
@@ -165,7 +165,8 @@ export const useCommentHandlers = (
   };
 
   const isMyComment = (userPublicId: string): boolean => {
-    return user?.publicId === userPublicId;
+    if (!user || !user.publicId || !isAuthenticated) return false;
+    return user.publicId === userPublicId;
   };
 
   return {

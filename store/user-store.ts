@@ -7,7 +7,8 @@ export interface UserInfo {
   email?: string;
   profilePath?: string | null;
   bio?: string;
-  provider?: string;
+  socialCode?: string; // "google" | "kakao"
+  socialName?: string; // "Google" | "카카오"
   token?: string;
 }
 

@@ -16,6 +16,8 @@ const LoginSuccessPage = () => {
     const publicId = searchParams.get("publicId");
     const nickname = searchParams.get("nickname");
     const profilePath = searchParams.get("profilePath");
+    const socialCode = searchParams.get("socialCode");
+    const socialName = searchParams.get("socialName");
 
     if (!token || !publicId) return;
 
@@ -23,6 +25,8 @@ const LoginSuccessPage = () => {
       publicId,
       nickname: nickname!,
       profilePath: profilePath || null,
+      socialCode: socialCode || undefined,
+      socialName: socialName || undefined,
       token,
     });
 

@@ -35,6 +35,7 @@ export default function UserPageContent({
 }: UserPageContentProps) {
   const [isProfileEditing, setIsProfileEditing] = useState(false);
   const [isHistoryEditing, setIsHistoryEditing] = useState(false);
+  const [isBioExpanded, setIsBioExpanded] = useState(false);
 
   // 항상 viewingUserInfo 사용 (API에서 가져온 최신 데이터)
   const displayUser = viewingUserInfo
@@ -82,6 +83,8 @@ export default function UserPageContent({
         isOwner={isOwner}
         isEditing={isProfileEditing}
         setIsEditing={setIsProfileEditing}
+        isBioExpanded={isBioExpanded}
+        setIsBioExpanded={setIsBioExpanded}
       />
       {isOwner && <UserSidebarMenu className="xl:mt-20 2xl:mt-[100px]" />}
     </>
@@ -116,6 +119,8 @@ export default function UserPageContent({
           isOwner={isOwner}
           isEditing={isProfileEditing}
           setIsEditing={setIsProfileEditing}
+          isBioExpanded={isBioExpanded}
+          setIsBioExpanded={setIsBioExpanded}
         />
         {renderContent()}
         {isOwner && <UserSidebarMenu className="mt-12 md:mt-16 lg:mt-20" />}

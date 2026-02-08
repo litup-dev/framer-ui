@@ -55,8 +55,9 @@ export default function ViewingHistory({
   const deleteMutation = useMutation({
     mutationFn: deletePerformHistory,
     onSuccess: () => {
-      // 성공 시 관람 기록 목록 refetch
+      // 성공 시 관람 기록 목록 및 통계 refetch
       queryClient.invalidateQueries({ queryKey: ["performHistory", publicId] });
+      queryClient.invalidateQueries({ queryKey: ["userStats", publicId] });
       setSelectedItems([]);
       setIsEditing(false);
     },
