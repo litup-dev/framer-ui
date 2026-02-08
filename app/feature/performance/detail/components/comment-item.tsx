@@ -1,9 +1,11 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import { Chip, Subtitle, Description } from "@/components/shared/typography";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,8 +16,12 @@ import { Ellipsis, Heart } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
 import { useReportModalStore } from "@/store/report-modal-store";
+import { useCommonModalStore } from "@/store/common-modal-store";
+import { useUserStore } from "@/store/user-store";
+import { useRouter } from "next/navigation";
 import { useReportContent } from "../query-options";
 import { REPORT_CATEGORIES } from "@/app/shared/constants";
+import { getImageUrl } from "@/lib/utils";
 
 interface CommentItemProps {
   comment: any;
@@ -30,6 +36,8 @@ interface CommentItemProps {
   onDeleteClick: () => void;
   onLikeClick: () => void;
   isUpdating: boolean;
+  isExpanded: boolean;
+  onToggleExpand: () => void;
 }
 
 const CommentItem = ({
@@ -45,9 +53,20 @@ const CommentItem = ({
   onDeleteClick,
   onLikeClick,
   isUpdating,
+  isExpanded,
+  onToggleExpand,
 }: CommentItemProps) => {
-  const { openModal } = useReportModalStore();
+  const router = useRouter();
+  const { openModal: openReportModal } = useReportModalStore();
+  const { openModal: openCommonModal } = useCommonModalStore();
+  const { isAuthenticated } = useUserStore();
   const reportMutation = useReportContent();
+  const [showMoreButton, setShowMoreButton] = useState(false);
+
+  useEffect(() => {
+    const lineCount = (comment.content.match(/\n/g) || []).length + 1;
+    setShowMoreButton(lineCount >= 3);
+  }, [comment.content]);
 
   const formatRelativeTime = (dateString: string, isEdited: boolean = false) => {
     const timeStr = formatDistanceToNow(new Date(dateString), {
@@ -58,11 +77,29 @@ const CommentItem = ({
   };
 
   const handleReportClick = () => {
-    openModal({
+    if (!isAuthenticated) {
+      openCommonModal({
+        description: "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?",
+        confirmButton: {
+          label: "확인",
+          onClick: () => router.push("/login"),
+        },
+        cancelButton: {
+          label: "취소",
+          onClick: () => {},
+        },
+      });
+      return;
+    }
+
+    openReportModal({
       targetContent: (
         <div className="p-4 bg-gray-50 rounded-lg">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-6 h-6 rounded-full bg-gray-200" />
+            <Avatar className="w-6 h-6">
+              <AvatarImage src={getImageUrl(comment.user.profile_path) || undefined} alt={comment.user.nickname} />
+              <AvatarFallback>{comment.user.nickname[0]}</AvatarFallback>
+            </Avatar>
             <Subtitle className="text-[14px]">{comment.user.nickname}</Subtitle>
             <Description className="text-black-40 text-[12px]">
               {formatRelativeTime(comment.updatedAt || comment.createdAt, !!comment.updatedAt)}
@@ -102,7 +139,10 @@ const CommentItem = ({
         <div className="bg-[#202020]/[0.04] px-6 py-6 md:px-10 md:py-10 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 md:w-8 md:h-8 2xl:w-10 2xl:h-10 rounded-full bg-gray-200" />
+              <Avatar className="w-6 h-6 md:w-8 md:h-8 2xl:w-10 2xl:h-10">
+                <AvatarImage src={getImageUrl(comment.user.profile_path) || undefined} alt={comment.user.nickname} />
+                <AvatarFallback>{comment.user.nickname[0]}</AvatarFallback>
+              </Avatar>
               <Subtitle className="text-[14px] md:text-[16px] 2xl:text-[18px]">
                 {comment.user.nickname}
               </Subtitle>
@@ -150,7 +190,10 @@ const CommentItem = ({
     <div className="space-y-3 md:space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 md:w-8 md:h-8 2xl:w-10 2xl:h-10 rounded-full bg-gray-200" />
+          <Avatar className="w-6 h-6 md:w-8 md:h-8 2xl:w-10 2xl:h-10">
+            <AvatarImage src={getImageUrl(comment.user.profile_path) || undefined} alt={comment.user.nickname} />
+            <AvatarFallback>{comment.user.nickname[0]}</AvatarFallback>
+          </Avatar>
           <Subtitle className="text-[14px] md:text-[16px] 2xl:text-[18px]">
             {comment.user.nickname}
           </Subtitle>
@@ -185,9 +228,27 @@ const CommentItem = ({
         </DropdownMenu>
       </div>
 
-      <Chip className="font-normal text-black-80 text-[14px] md:text-[16px] 2xl:text-[18px]">
-        {comment.content}
-      </Chip>
+      <div>
+        <Chip
+          className={`font-normal text-black-80 text-[14px] md:text-[16px] 2xl:text-[18px] whitespace-pre-wrap ${
+            !isExpanded && showMoreButton ? "line-clamp-3" : ""
+          }`}
+        >
+          {comment.content}
+        </Chip>
+        {showMoreButton && (
+          <div className="mt-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onToggleExpand}
+              className="h-auto p-0 text-[12px] md:text-[14px] text-black-60 hover:text-black-80"
+            >
+              {isExpanded ? "접기" : "더보기"}
+            </Button>
+          </div>
+        )}
+      </div>
 
       <div className="pt-6">
         <div

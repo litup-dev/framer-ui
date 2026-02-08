@@ -15,9 +15,12 @@ interface DetailMobileHeaderProps {
   isAttend: boolean;
   performanceTitle: string;
   clubName: string;
+  description?: string;
+  artists?: Array<{ name: string }>;
+  images?: Array<{ filePath: string; isMain: boolean }>;
 }
 
-const DetailMobileHeader = ({ performanceId, performDate, isAttend, performanceTitle, clubName }: DetailMobileHeaderProps) => {
+const DetailMobileHeader = ({ performanceId, performDate, isAttend, performanceTitle, clubName, description, artists, images }: DetailMobileHeaderProps) => {
   const router = useRouter();
   const { isAuthenticated } = useUserStore();
   const toggleAttendMutation = useToggleAttendance();
@@ -82,7 +85,11 @@ const DetailMobileHeader = ({ performanceId, performDate, isAttend, performanceT
         onClose={() => setIsShareModalOpen(false)}
         performanceTitle={performanceTitle}
         clubName={clubName}
+        description={description}
+        performDate={performDate}
+        artists={artists}
         performanceId={performanceId}
+        images={images}
       />
     </div>
   );

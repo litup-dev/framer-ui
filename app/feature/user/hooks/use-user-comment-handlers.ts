@@ -33,7 +33,10 @@ export const useUserCommentHandlers = (
   const { isAuthenticated } = useUserStore();
   const { openModal } = useCommonModalStore();
 
-  const toggleLikeMutation = useToggleCommentLike(0);
+  // 좋아요한 코멘트 탭일 때는 invalidation 스킵
+  const toggleLikeMutation = useToggleCommentLike(0, {
+    skipLikedCommentsInvalidation: activeTab === "liked",
+  });
   const deleteCommentMutation = useDeleteComment(0);
   const updateCommentMutation = useUpdateComment(0);
 
@@ -157,6 +160,14 @@ export const useUserCommentHandlers = (
 
     // API 호출
     toggleLikeMutation.mutate(reviewId, {
+      onSuccess: () => {
+        // 좋아요한 코멘트 탭이 아닐 때만 invalidate
+        if (activeTab !== "liked") {
+          queryClient.invalidateQueries({
+            queryKey: ["myLikedPerformanceComments"],
+          });
+        }
+      },
       onError: () => {
         // 에러 발생 시 롤백
         if (previousData) {

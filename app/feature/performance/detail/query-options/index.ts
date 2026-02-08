@@ -44,7 +44,7 @@ export const getPerformanceCommentsOptions = (
   });
 
 // 댓글 좋아요 토글 Mutation
-export const useToggleCommentLike = (performanceId: number) => {
+export const useToggleCommentLike = (performanceId: number, options?: { skipLikedCommentsInvalidation?: boolean }) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -120,6 +120,14 @@ export const useToggleCommentLike = (performanceId: number) => {
           };
         }
       );
+
+      // 공연 상세 페이지에서만 myLikedPerformanceComments 무효화
+      // (skipLikedCommentsInvalidation이 false이거나 undefined일 때만)
+      if (!options?.skipLikedCommentsInvalidation) {
+        queryClient.invalidateQueries({
+          queryKey: ["myLikedPerformanceComments"],
+        });
+      }
     },
     onError: (_err, _reviewId, context) => {
       // 에러 발생 시 이전 상태로 롤백
@@ -221,6 +229,11 @@ export const useToggleAttendance = () => {
       // 공연 상세 정보 쿼리 무효화하여 자동 refetch
       queryClient.invalidateQueries({
         queryKey: ["performanceDetail", performanceId],
+      });
+
+      // userStats 무효화 - publicId는 모든 사용자의 stats를 무효화
+      queryClient.invalidateQueries({
+        queryKey: ["userStats"],
       });
     },
   });

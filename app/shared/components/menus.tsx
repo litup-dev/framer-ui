@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/user-store";
 import { logout } from "@/lib/auth-utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getImageUrl } from "@/lib/utils";
 
 import { MenuItems } from "@/app/shared/constants";
 import Image from "next/image";
@@ -40,15 +42,19 @@ const HeaderMenus = () => {
           <div className="w-6 h-6 2xl:w-7 2xl:h-7 bg-gray-200 rounded-full animate-pulse" />
         </div>
       ) : user ? (
-        <div className="flex gap-4">
-          <Image
-            src={"/images/user.svg"}
-            width={28}
-            height={28}
-            alt="user"
+        <div className="flex gap-4 items-center">
+          <Avatar
             onClick={() => router.push("/user")}
             className="cursor-pointer w-6 h-6 2xl:w-7 2xl:h-7"
-          />
+          >
+            <AvatarImage
+              src={getImageUrl(user.profilePath) || ""}
+              alt={user.nickname}
+            />
+            <AvatarFallback className="bg-muted text-black text-xs 2xl:text-sm">
+              {user.nickname?.charAt(0)}
+            </AvatarFallback>
+          </Avatar>
           <Image
             src={"/images/logout.svg"}
             width={28}

@@ -52,7 +52,7 @@ export interface PerformanceCommentItem {
   user: {
     publicId: string;
     nickname: string;
-    profilePath?: string;
+    profile_path?: string;
   };
   isLiked: boolean;
 }

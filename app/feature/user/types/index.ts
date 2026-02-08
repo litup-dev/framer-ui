@@ -89,7 +89,8 @@ export interface UserInfoResponse {
     nickname: string;
     bio: string;
     profilePath: string | null;
-    provider: string;
+    socialCode: string;
+    socialName: string;
   };
   message?: string;
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useEffect, useState } from "react";
 import { Ellipsis, Heart } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Description, Title, Chip } from "@/components/shared/typography";
@@ -13,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
+import { getImageUrl } from "@/lib/utils";
 
 interface PerformanceComment {
   id: string;
@@ -38,6 +40,8 @@ interface PerformanceCommentItemProps {
   onReport?: () => void;
   onLikeClick?: () => void;
   isUpdating?: boolean;
+  isExpanded: boolean;
+  onToggleExpand: () => void;
 }
 
 export default function PerformanceCommentItem({
@@ -56,7 +60,16 @@ export default function PerformanceCommentItem({
   onReport,
   onLikeClick,
   isUpdating = false,
+  isExpanded,
+  onToggleExpand,
 }: PerformanceCommentItemProps) {
+  const [showMoreButton, setShowMoreButton] = useState(false);
+
+  useEffect(() => {
+    const lineCount = (comment.content.match(/\n/g) || []).length + 1;
+    setShowMoreButton(lineCount > 3);
+  }, [comment.content]);
+
   const formatRelativeTime = (dateString: string) => {
     return formatDistanceToNow(new Date(dateString), {
       addSuffix: true,
@@ -71,7 +84,7 @@ export default function PerformanceCommentItem({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Avatar className="w-6 h-6 md:w-8 md:h-8">
-              <AvatarImage src={userProfilePath} alt={userNickname} />
+              <AvatarImage src={getImageUrl(userProfilePath) || ""} alt={userNickname} />
               <AvatarFallback className="bg-muted text-black text-xs">
                 {userNickname?.charAt(0)}
               </AvatarFallback>
@@ -93,7 +106,8 @@ export default function PerformanceCommentItem({
 
         <Textarea
           placeholder="댓글을 입력해주세요"
-          className="h-[100px] resize-none border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-white"
+          className="h-[100px] resize-none border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-white leading-[160%] tracking-[-0.04em]"
+          style={{ letterSpacing: '-0.04em', lineHeight: '160%' }}
           value={editingText}
           onChange={onEditTextChange}
           maxLength={maxLength}
@@ -117,12 +131,12 @@ export default function PerformanceCommentItem({
 
   // 일반 상태 UI
   return (
-    <div className="h-[170px] bg-[#F5F5F5]/60 rounded p-6 flex flex-col">
+    <div className="min-h-[170px] bg-[#F5F5F5]/60 rounded p-6 flex flex-col">
       {/* 상단: 프로필 + 닉네임 + 시간 + ... 버튼 */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Avatar className="w-6 h-6 md:w-8 md:h-8 flex-shrink-0">
-            <AvatarImage src={userProfilePath} alt={userNickname} />
+            <AvatarImage src={getImageUrl(userProfilePath) || ""} alt={userNickname} />
             <AvatarFallback className="bg-muted text-black text-xs">
               {userNickname?.charAt(0)}
             </AvatarFallback>
@@ -158,13 +172,27 @@ export default function PerformanceCommentItem({
       </div>
 
       {/* 코멘트 내용 */}
-      <p className="text-[14px] md:text-[16px] mb-6 flex-1">
-        {comment.content}
-      </p>
+      <div className="flex-1">
+        <p
+          className={`text-[14px] md:text-[16px] whitespace-pre-wrap ${
+            !isExpanded && showMoreButton ? "line-clamp-3" : ""
+          }`}
+        >
+          {comment.content}
+        </p>
+        {showMoreButton && (
+          <button
+            onClick={onToggleExpand}
+            className="text-sm text-black-40 hover:opacity-70 mt-3 md:mt-4 text-left"
+          >
+            {isExpanded ? "접기" : "더보기"}
+          </button>
+        )}
+      </div>
 
       {/* 좋아요 */}
       <div
-        className="flex items-center gap-1.5 cursor-pointer"
+        className="flex items-center gap-1.5 cursor-pointer mt-6"
         onClick={onLikeClick}
       >
         <Heart

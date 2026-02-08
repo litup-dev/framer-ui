@@ -11,6 +11,8 @@ import CommentForm from "./comment-form";
 import CommentItem from "./comment-item";
 import CommentPagination from "./comment-pagination";
 
+import React from "react";
+
 interface CommentSectionProps {
   performanceId: number;
   commentText: string;
@@ -19,6 +21,8 @@ interface CommentSectionProps {
   setEditingCommentId: (id: number | null) => void;
   editingText: string;
   setEditingText: (text: string) => void;
+  expandedComments: Map<number, boolean>;
+  setExpandedComments: React.Dispatch<React.SetStateAction<Map<number, boolean>>>;
 }
 
 const CommentSection = ({
@@ -28,7 +32,9 @@ const CommentSection = ({
   editingCommentId,
   setEditingCommentId,
   editingText,
-  setEditingText
+  setEditingText,
+  expandedComments,
+  setExpandedComments
 }: CommentSectionProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 10;
@@ -66,6 +72,18 @@ const CommentSection = ({
   const comments = data?.data.items || [];
   const total = data?.data.total || 0;
   const totalPages = Math.ceil(total / limit);
+
+  const toggleExpanded = (commentId: number) => {
+    setExpandedComments(prev => {
+      const newMap = new Map(prev);
+      if (newMap.get(commentId)) {
+        newMap.delete(commentId);
+      } else {
+        newMap.set(commentId, true);
+      }
+      return newMap;
+    });
+  };
 
   return (
     <FadeIn>
@@ -118,6 +136,8 @@ const CommentSection = ({
                 onDeleteClick={() => handleDeleteClick(comment.id)}
                 onLikeClick={() => handleLikeClick(comment.id)}
                 isUpdating={updateCommentMutation.isPending}
+                isExpanded={expandedComments.get(comment.id) || false}
+                onToggleExpand={() => toggleExpanded(comment.id)}
               />
             ))}
           </div>

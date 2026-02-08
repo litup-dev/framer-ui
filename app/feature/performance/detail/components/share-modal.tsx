@@ -9,13 +9,18 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { shareToKakao } from "../utils/kakao-share";
 
 interface ShareModalProps {
   isOpen: boolean;
   onClose: () => void;
   performanceTitle: string;
   clubName: string;
+  description?: string;
+  performDate?: string;
+  artists?: Array<{ name: string }>;
   performanceId: number;
+  images?: Array<{ filePath: string; isMain: boolean }>;
 }
 
 const ShareModal = ({
@@ -23,13 +28,16 @@ const ShareModal = ({
   onClose,
   performanceTitle,
   clubName,
+  description,
+  performDate,
+  artists = [],
   performanceId,
+  images = [],
 }: ShareModalProps) => {
   const [showCopyToast, setShowCopyToast] = useState(false);
 
-  const shareUrl = typeof window !== "undefined"
-    ? `${window.location.origin}/performance/${performanceId}`
-    : "";
+  const shareUrl =
+    typeof window !== "undefined" ? window.location.href : "";
 
   useEffect(() => {
     if (showCopyToast) {
@@ -50,37 +58,15 @@ const ShareModal = ({
   };
 
   const handleKakaoShare = () => {
-    if (typeof window !== "undefined" && (window as any).Kakao) {
-      const kakao = (window as any).Kakao;
-
-      if (!kakao.isInitialized()) {
-        kakao.init(process.env.NEXT_PUBLIC_KAKAO_JS_KEY);
-      }
-
-      kakao.Share.sendDefault({
-        objectType: "feed",
-        content: {
-          title: performanceTitle,
-          description: clubName,
-          imageUrl: shareUrl + "/og-image.jpg",
-          link: {
-            mobileWebUrl: shareUrl,
-            webUrl: shareUrl,
-          },
-        },
-        buttons: [
-          {
-            title: "공연 보기",
-            link: {
-              mobileWebUrl: shareUrl,
-              webUrl: shareUrl,
-            },
-          },
-        ],
-      });
-    } else {
-      console.error("Kakao SDK가 로드되지 않았습니다");
-    }
+    shareToKakao({
+      performanceTitle,
+      clubName,
+      description,
+      performDate,
+      artists,
+      images,
+      shareUrl,
+    });
   };
 
   return (
@@ -88,9 +74,9 @@ const ShareModal = ({
       <DialogContent className="w-[355px] h-[260px] md:w-[495px] md:h-[305px] p-0 rounded-[8px]" showCloseButton={false}>
         <DialogHeader className="px-6 pt-6 md:px-8 md:pt-8">
           <div className="flex items-center justify-between">
-            <DialogTitle className="flex items-center gap-2">
+            <DialogTitle className="flex items-center gap-2 text-[18px] md:text-[20px]">
               <Share2 className="w-5 h-5" />
-              <Subtitle className="text-[18px] md:text-[20px]">공유하기</Subtitle>
+              공유하기
             </DialogTitle>
             <button
               onClick={onClose}

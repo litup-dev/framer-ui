@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useUserStore } from "@/store/user-store";
-import { useRouter } from "next/navigation";
 import { useClubDetailStore } from "@/app/feature/club/detail/store";
 import { useCommonModalStore } from "@/store/common-modal-store";
 import UserPageLayout from "@/app/shared/components/user-page-layout";
@@ -15,7 +14,6 @@ import {
   getReviewCategoryOptions,
   deleteReviewOptions,
 } from "@/app/feature/club/query-options";
-
 import { ClubReviewsItem } from "@/app/feature/user/types";
 
 type SortOption = "-createdAt" | "+createdAt";
@@ -26,7 +24,6 @@ const sortOptions = [
 ];
 
 export default function ReviewsPage() {
-  const router = useRouter();
   const queryClient = useQueryClient();
   const { isAuthenticated } = useUserStore();
   const { openReviewModal } = useClubDetailStore();
@@ -53,11 +50,6 @@ export default function ReviewsPage() {
       });
     },
   });
-
-  // if (!isAuthenticated) {
-  //   router.push("/login");
-  //   return null;
-  // }
 
   if (isLoading) {
     return <div>Loading...</div>;
