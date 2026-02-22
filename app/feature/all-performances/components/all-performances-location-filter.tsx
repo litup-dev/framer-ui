@@ -29,12 +29,12 @@ export const AllPerformancesLocationFilter = () => {
   };
 
   return (
-    <div className="sm:pt-14 flex gap-4 sm:gap-6">
+    <div className="sm:pt-22 flex gap-4 sm:gap-6">
       {locations.map((location) => (
         <Button
           key={location.id}
           className={cn(
-            "text-black bg-white rounded-none hover:bg-white w-auto p-0"
+            "text-black bg-white rounded-none hover:bg-white w-auto p-0",
           )}
           onClick={() => handleLocationChange(location.value)}
         >
@@ -43,7 +43,7 @@ export const AllPerformancesLocationFilter = () => {
               "text-[16px] md:text-[18px] xl:text-[20px] 2xl:text-[24px] whitespace-nowrap",
               isSelected(location.value)
                 ? "border-b-2 border-black"
-                : "text-black/40"
+                : "text-black/40",
             )}
           >
             {location.label}

@@ -96,8 +96,8 @@ const DesktopFilter = ({
 
   return (
     <div className="flex h-full gap-[40px]">
-      <div className="w-2/5 bg-white border-gray-200 flex flex-col h-full">
-        <div className="flex-1 overflow-y-auto pr-2 min-h-0">
+      <div className="w-3/8 bg-white border-gray-200 flex flex-col h-full">
+        <div className="flex-1 overflow-y-auto  min-h-0">
           <div className="space-y-6">
             <SearchFormField />
             <div className="space-y-4">
@@ -114,7 +114,7 @@ const DesktopFilter = ({
                       className="rounded-[3px] p-2.5 border-gray-300 h-auto"
                       visibleIcon={false}
                     >
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-0.5">
                         <SelectValue
                           placeholder="권역"
                           className="text-[14px] xl:text-[16px]"
@@ -122,8 +122,8 @@ const DesktopFilter = ({
                         <Image
                           src="/images/location.svg"
                           alt="arrow-down"
-                          width={16}
-                          height={16}
+                          width={20}
+                          height={20}
                         />
                       </div>
                     </SelectTrigger>
@@ -144,8 +144,8 @@ const DesktopFilter = ({
                     className={cn(
                       "rounded-[4px] cursor-pointer transition-colors p-2.5 border box-border",
                       selectedRegion === "nearby"
-                        ? "border-main text-main"
-                        : "bg-transparent text-gray-700 hover:bg-gray-100 border-gray-300"
+                        ? "border-main text-main border-2"
+                        : "bg-transparent text-gray-700 hover:bg-gray-100 border-gray-300",
                     )}
                   >
                     {selectedRegion === "nearby" ? (
@@ -169,8 +169,8 @@ const DesktopFilter = ({
                         className={cn(
                           "rounded-[4px] cursor-pointer transition-colors p-2.5 border box-border",
                           isActive(filter.id)
-                            ? "border-main text-main"
-                            : "bg-transparent text-gray-700 hover:bg-gray-100 border-gray-300"
+                            ? "border-main text-main border-2"
+                            : "bg-transparent text-gray-700 hover:bg-gray-100 border-gray-300",
                         )}
                       >
                         <div className="flex items-center gap-1">
@@ -186,14 +186,14 @@ const DesktopFilter = ({
                           <div
                             className={cn(
                               "flex items-center justify-center flex-shrink-0",
-                              isActive(filter.id) ? "w-4 h-4 " : "w-0 h-0"
+                              isActive(filter.id) ? "w-4 h-4 " : "w-0 h-0",
                             )}
                           >
                             {isActive(filter.id) && (
                               <ChevronDown
                                 className={cn(
-                                  "size-4 transition-transform",
-                                  getChevronRotation(filter)
+                                  "size-6 transition-transform",
+                                  getChevronRotation(filter),
                                 )}
                               />
                             )}
@@ -207,22 +207,30 @@ const DesktopFilter = ({
             </div>
             <Separator />
 
-            <div className="space-y-5">
-              {clubs?.map((club: Club) => (
-                <ClubCard
-                  key={club.id}
-                  club={club}
-                  onMapClick={(selectedClub: Club) => {
-                    setSelectedClub(selectedClub);
-                  }}
-                />
+            <div className="space-y-5 pb-5 flex flex-col">
+              {clubs?.map((club: Club, index: number) => (
+                <div key={club.id}>
+                  <ClubCard
+                    club={club}
+                    onMapClick={(selectedClub: Club) => {
+                      setSelectedClub(selectedClub);
+                    }}
+                  />
+                  {index !== clubs.length - 1 && (
+                    <Separator className="hidden lg:block lg:mt-6" />
+                  )}
+                </div>
               ))}
             </div>
           </div>
         </div>
 
         {clubs.length > 0 && (
-          <div className="flex-shrink-0 bg-white pt-4 pb-4 pr-2 border-t">
+          <div className="flex-shrink-0 bg-white flex flex-col min-h-[80px] items-center justify-center relative">
+            <div
+              className="absolute left-1/2 top-0 -translate-x-1/2 w-screen border-t border-black/20 pointer-events-none"
+              aria-hidden
+            />
             <ClubsPagination
               totalPages={pagination.totalPages}
               currentPage={currentPage}
@@ -237,7 +245,7 @@ const DesktopFilter = ({
         )}
       </div>
 
-      <div className="w-3/5 relative flex-1 min-h-0">
+      <div className="hidden xl:block w-3/5 relative flex-1 min-h-0">
         <div className="absolute inset-0 -right-5 md:-right-10 lg:-right-15 xl:-right-20">
           <KakaoMap club={selectedClub} clubs={clubs} />
         </div>

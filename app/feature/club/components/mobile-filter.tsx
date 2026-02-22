@@ -127,7 +127,7 @@ const MobileFilter = ({
 
             viewType === "list"
               ? "opacity-70 bg-[#0000004D]"
-              : "opacity-100 bg-main"
+              : "opacity-100 bg-main",
           )}
         >
           {viewType === "list" ? (
@@ -152,7 +152,7 @@ const MobileFilter = ({
                       "border px-2.5 py-2 rounded-[3px] cursor-pointer transition-colors",
                       selectedRegion === item.value
                         ? "border-2 border-main text-main"
-                        : "bg-transparent text-gray-700"
+                        : "bg-transparent text-gray-700",
                     )}
                   >
                     {selectedRegion === item.value ? (
@@ -175,7 +175,7 @@ const MobileFilter = ({
             <div
               className={cn(
                 "flex transition-all duration-200",
-                activeFilterId === null ? "gap-0" : "gap-4"
+                activeFilterId === null ? "gap-0" : "gap-4",
               )}
             >
               {filterItems.map((filter) => {
@@ -190,7 +190,7 @@ const MobileFilter = ({
                       "cursor-pointer transition-colors",
                       isActive(filter.id)
                         ? "text-black"
-                        : "bg-transparent text-gray-700"
+                        : "bg-transparent text-gray-700",
                     )}
                   >
                     <div className="flex items-center gap-0.5">
@@ -210,7 +210,7 @@ const MobileFilter = ({
                             isActive(filter.id)
                               ? "opacity-100 scale-100"
                               : "opacity-0 scale-0",
-                            getChevronRotation(filter)
+                            getChevronRotation(filter),
                           )}
                         />
                       </div>
@@ -220,14 +220,16 @@ const MobileFilter = ({
               })}
             </div>
             {clubs?.map((club: Club) => (
-              <ClubCard
-                key={club.id}
-                club={club}
-                onMapClick={(selectedClub: Club) => {
-                  setSelectedClub(selectedClub);
-                  setViewType("map");
-                }}
-              />
+              <div key={club.id}>
+                <ClubCard
+                  club={club}
+                  onMapClick={(selectedClub: Club) => {
+                    setSelectedClub(selectedClub);
+                    setViewType("map");
+                  }}
+                />
+                <Separator className="block lg:hidden mt-6" />
+              </div>
             ))}
           </div>
           {clubs.length > 0 && (

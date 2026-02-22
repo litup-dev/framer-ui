@@ -11,8 +11,9 @@ import { getQueryClient } from "@/providers/get-query-client";
 import { MenuItems } from "@/app/shared/constants";
 import Image from "next/image";
 import { saveReturnUrl } from "@/lib/login-utils";
+import { cn } from "@/lib/utils";
 
-const HeaderMenus = () => {
+const HeaderMenus = ({ isWhiteIcons = false }: { isWhiteIcons?: boolean }) => {
   const { user } = useUserStore();
   const router = useRouter();
   const pathname = usePathname();
@@ -37,7 +38,7 @@ const HeaderMenus = () => {
   }, []);
 
   return (
-    <div className="flex gap-10 xl:gap-15 2xl:gap-20 items-center">
+    <div className="flex gap-10 xl:gap-15 items-center">
       {MenuItems.map((item) => (
         <Link key={item.id} href={item.href}>
           <span className="font-semibold lg:text-[16px] 2xl:text-[20px]">
@@ -59,7 +60,10 @@ const HeaderMenus = () => {
             height={28}
             alt="user"
             onClick={() => router.push("/user")}
-            className="cursor-pointer w-6 h-6 2xl:w-7 2xl:h-7"
+            className={cn(
+              "cursor-pointer w-6 h-6 2xl:w-7 2xl:h-7",
+              isWhiteIcons && "brightness-0 invert",
+            )}
           />
           <Image
             src={"/images/logout.svg"}
@@ -67,7 +71,10 @@ const HeaderMenus = () => {
             height={28}
             alt="logout"
             onClick={handleLogout}
-            className="cursor-pointer w-6 h-6 2xl:w-7 2xl:h-7"
+            className={cn(
+              "cursor-pointer w-6 h-6 2xl:w-7 2xl:h-7",
+              isWhiteIcons && "brightness-0 invert",
+            )}
           />
         </div>
       ) : (

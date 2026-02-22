@@ -77,7 +77,7 @@ export const ClubsPagination = ({
                 isActive={isActive}
                 className={cn(
                   "cursor-pointer hover:bg-white",
-                  !isActive && "text-gray"
+                  !isActive && "text-gray",
                 )}
                 role="button"
               >
@@ -95,7 +95,7 @@ export const ClubsPagination = ({
             }}
             className={cn(
               "hover:bg-white",
-              canGoNext ? "cursor-pointer" : "pointer-events-none opacity-50"
+              canGoNext ? "cursor-pointer" : "pointer-events-none opacity-50",
             )}
             role="button"
           />

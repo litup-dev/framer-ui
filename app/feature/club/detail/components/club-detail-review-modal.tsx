@@ -8,7 +8,12 @@ import { cn } from "@/lib/utils";
 import { useClubDetailStore } from "@/app/feature/club/detail/store";
 
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogClose,
+} from "@/components/ui/dialog";
 import { ReviewStep1 } from "@/app/feature/club/detail/components/review-step1";
 import { ReviewStep2 } from "@/app/feature/club/detail/components/review-step2";
 import { CreateReviewResponse } from "@/app/feature/club/types";
@@ -57,7 +62,6 @@ const ClubDetailReviewModal = ({
     if (isReviewModalOpen) {
       queryClient.prefetchQuery(getReviewCategoryOptions());
       setCurrentStep(1);
-      setDirection(1);
     }
   }, [isReviewModalOpen, queryClient]);
 
@@ -110,13 +114,11 @@ const ClubDetailReviewModal = ({
     },
   });
   const [currentStep, setCurrentStep] = useState(1);
-  const [direction, setDirection] = useState(1);
   const totalSteps = 2;
 
   const handleNext = () => {
     if (currentStep === 1 && reviewCategories.length === 0) return;
     if (currentStep < totalSteps) {
-      setDirection(1);
       setCurrentStep(currentStep + 1);
       return;
     }
@@ -129,7 +131,7 @@ const ClubDetailReviewModal = ({
     }
 
     const hasInvalidExtension = newReviewImages.some(
-      (image) => !isValidImageExtension(image.name)
+      (image) => !isValidImageExtension(image.name),
     );
 
     if (hasInvalidExtension) {
@@ -151,37 +153,14 @@ const ClubDetailReviewModal = ({
 
   const handleBack = () => {
     if (currentStep > 1) {
-      setDirection(-1);
       setCurrentStep(currentStep - 1);
     }
   };
 
   const handleClose = () => {
     setCurrentStep(1);
-    setDirection(1);
     resetReviewData();
     closeReviewModal();
-  };
-
-  const slideVariants = {
-    enter: (direction: number) => ({
-      x: direction > 0 ? 300 : -300,
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-    },
-    exit: (direction: number) => ({
-      x: direction > 0 ? -300 : 300,
-      opacity: 0,
-    }),
-  };
-
-  const slideTransition = {
-    type: "tween" as const,
-    ease: [0.4, 0, 0.2, 1] as const,
-    duration: 0.3,
   };
 
   return (
@@ -193,57 +172,75 @@ const ClubDetailReviewModal = ({
     >
       <DialogContent
         overlayClassName="z-[99999998]"
-        className="bg-white max-h-[90vh] flex flex-col p-0 overflow-hidden gap-0 z-[99999999] lg:w-[664px] lg:max-w-[664px]"
+        showCloseButton={false}
+        className="bg-white max-h-[90vh] flex flex-col p-0 overflow-hidden gap-0 z-[99999999] lg:w-[664px] lg:max-w-[664px] rounded-[6px]"
       >
         <div className="flex-1 min-h-0 overflow-y-auto">
-          <DialogTitle
+          <div
             className={cn(
-              "flex justify-start w-full items-center gap-1 p-6 pb-0",
-              currentStep === 1 && "bg-[#F2F1EE]"
+              "sticky top-0 z-10 flex justify-start w-full items-center gap-1 lg:gap-2 p-6 pb-0 lg:pt-12 lg:px-12 lg:pb-8",
+              currentStep === 1 ? "bg-[#F2F1EE]" : "bg-white",
             )}
           >
-            <Image
-              src="/images/review_modal.svg"
-              alt="review-modal"
-              width={24}
-              height={24}
-            />
-            <div className="flex gap-1">
-              <Subtitle>리뷰 작성하기</Subtitle>
-              <Subtitle className="text-gray">
-                {currentStep === 1 ? "1/2" : "2/2"}
-              </Subtitle>
-            </div>
-          </DialogTitle>
-          <AnimatePresence mode="wait" custom={direction}>
+            <DialogTitle
+              className="flex justify-start w-full items-center gap-1 lg:gap-2 flex-1 min-w-0"
+            >
+              <Image
+                src="/images/review-modal-icon.svg"
+                alt="review-modal"
+                width={24}
+                height={24}
+              />
+              <div className="flex gap-1 lg:gap-2">
+                <Subtitle>리뷰 작성하기</Subtitle>
+                <Subtitle className="text-black/40">
+                  {currentStep === 1 ? "1/2" : "2/2"}
+                </Subtitle>
+              </div>
+            </DialogTitle>
+            <DialogClose
+              className="absolute right-4 top-6 2xl:right-12 2xl:top-12 rounded-xs opacity-70 transition-opacity hover:opacity-100 p-1 -m-1"
+              aria-label="닫기"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </svg>
+            </DialogClose>
+          </div>
+          <AnimatePresence mode="wait">
             {currentStep === 1 && (
               <motion.div
                 key="step1"
-                custom={direction}
-                variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={slideTransition}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
               >
                 <ReviewStep1 clubName={clubName} clubImage={clubImage} />
               </motion.div>
             )}
-
             {currentStep === 2 && (
               <motion.div
                 key="step2"
-                custom={direction}
-                variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={slideTransition}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
               >
                 <ReviewStep2
                   rating={rating}
-                  clubName={clubName}
-                  clubImage={clubImage}
+                  clubName={clubName || ""}
+                  clubImage={clubImage || ""}
                 />
               </motion.div>
             )}
@@ -251,17 +248,17 @@ const ClubDetailReviewModal = ({
 
           <div
             className={cn(
-              "flex gap-1 items-center p-5 lg:pt-14 lg:pb-12 lg:px-12 bg-white flex-shrink-0",
-              "justify-end"
+              "flex gap-1 items-center px-5 py-10 lg:pt-10 lg:pb-10.5 lg:px-12 bg-white flex-shrink-0",
+              "justify-end",
             )}
           >
             <div className="flex gap-1 lg:gap-2">
               {currentStep > 1 && (
                 <Button
-                  className="bg-gray text-black lg:w-[64px] lg:h-[44px] w-fit h-fit lg:py-3.5 lg:text-[16px]"
+                  className="bg-gray text-black lg:w-[64px] lg:h-[44px] w-[60px] h-[38px] lg:py-3.5 lg:text-[16px] hover:bg-gray"
                   onClick={handleBack}
                 >
-                  이전
+                  <Subtitle className="text-[16px]">이전</Subtitle>
                 </Button>
               )}
               <Button
@@ -274,16 +271,18 @@ const ClubDetailReviewModal = ({
                       existingReviewImages.length + newReviewImages.length ===
                         0 ||
                       newReviewImages.some(
-                        (image) => !isValidImageExtension(image.name)
+                        (image) => !isValidImageExtension(image.name),
                       )))
                 }
-                className="bg-black hover:bg-black/80 disabled:bg-gray-300 disabled:cursor-not-allowed lg:w-[64px] lg:h-[44px] w-fit h-fit lg:py-3.5 lg:text-[16px]"
+                className="bg-black hover:bg-black/80 disabled:cursor-not-allowed w-[60px] h-[38px] lg:w-[64px] lg:h-[44px]  lg:py-3.5 lg:text-[16px] disabled:bg-[#BBBBBB]"
               >
-                {currentStep === 1
-                  ? "다음"
-                  : isCreatingReview || isUpdatingReview
-                  ? "등록 중..."
-                  : "등록"}
+                <Subtitle className="text-[16px]">
+                  {currentStep === 1
+                    ? "다음"
+                    : isCreatingReview || isUpdatingReview
+                      ? "등록 중..."
+                      : "등록"}
+                </Subtitle>
               </Button>
             </div>
           </div>

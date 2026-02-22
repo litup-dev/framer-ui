@@ -42,7 +42,7 @@ const CategorySelectItem = ({
         !isAnimating && "cursor-pointer",
         selectedCategory === item.value
           ? cn("text-black underline underline-offset-4", underlineDecoration)
-          : "text-[#20202066]"
+          : "text-[#20202066]",
       )}
     >
       <Subtitle className="text-[16px] xl:text-[20px] 2xl:text-[24px]">
@@ -62,9 +62,7 @@ const DesktopSelectShow = ({
   const isAreaSelected = selectedCategory === "area";
 
   return (
-    <div
-      className={cn("hidden md:flex md:flex-col gap-4 xl:gap-4.5 2xl:gap-5")}
-    >
+    <div className={cn("hidden md:flex md:flex-col gap-4 xl:gap-4 2xl:gap-4")}>
       <div className={cn("flex gap-4")}>
         {SELECT_ITEMS.slice(0, 2).map((item) => (
           <CategorySelectItem
@@ -77,7 +75,11 @@ const DesktopSelectShow = ({
           />
         ))}
       </div>
-      <div className={cn("flex gap-4 md:pl-8.5 lg:pl-11.5 items-center")}>
+      <div
+        className={cn(
+          "flex gap-4 md:pl-8.5 lg:pl-11.5 xl:pl-[64px] items-center",
+        )}
+      >
         {SELECT_ITEMS.slice(2, 4).map((item) => {
           if (item.value === "area") {
             return (
@@ -109,16 +111,16 @@ const DesktopSelectShow = ({
                     isAreaSelected
                       ? cn(
                           "text-black underline underline-offset-4 decoration-3",
-                          "[&_span]:text-black"
+                          "[&_span]:text-black",
                         )
-                      : cn("text-[#20202066]", "[&_span]:text-[#20202066]")
+                      : cn("text-[#20202066]", "[&_span]:text-[#20202066]"),
                   )}
                 >
                   <Subtitle>
                     <SelectValue placeholder="지역별" />
                   </Subtitle>
                 </SelectTrigger>
-                <SelectContent className="p-4 xl:p-5">
+                <SelectContent className="p-4 xl:p-5" fitContent>
                   {item.region &&
                     item.region.map((area) => (
                       <UISelectItem key={area.id} value={area.value}>

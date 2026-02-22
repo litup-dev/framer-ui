@@ -22,7 +22,7 @@ export const Title = ({
         "font-bold",
         "tracking-[-0.08em]",
         !hasLeadingClass(className) && "leading-percent",
-        className
+        className,
       )}
     >
       {children}
@@ -33,15 +33,17 @@ export const Title = ({
 export const Subtitle = ({
   children,
   className,
+  onClick,
   as: Component = "h2",
-}: TypographyProps) => {
+}: TypographyProps & { onClick?: () => void }) => {
   return (
     <Component
+      onClick={onClick}
       className={cn(
         "font-bold",
         "tracking-[-0.04em]",
         !hasLeadingClass(className) && "leading-percent",
-        className
+        className,
       )}
     >
       {children}
@@ -57,10 +59,10 @@ export const Description = ({
   return (
     <Component
       className={cn(
-        "font-medium",
+        "font-semibold",
         "tracking-[-0.04em]",
         !hasLeadingClass(className) && "leading-percent",
-        className
+        className,
       )}
     >
       {children}
@@ -79,7 +81,7 @@ export const Chip = ({
         "font-medium",
         "tracking-[0]",
         !hasLeadingClass(className) && "leading-percent",
-        className
+        className,
       )}
     >
       {children}

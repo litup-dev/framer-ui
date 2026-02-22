@@ -25,10 +25,10 @@ export const AllPerformancesSearch = () => {
 
   return (
     <div className="pb-5">
-      <InputGroup className="border-0 rounded-none shadow-none pb-5 w-full border-b-2 border-black">
+      <InputGroup className="border-0 rounded-none shadow-none  w-full border-b-2 border-black min-h-[60px]">
         <Input
           placeholder="공연명 또는 아티스트를 검색하세요"
-          className="border-none p-0 placeholder:text-black/30"
+          className="border-none p-0 placeholder:text-black/30 shadow-none 2xl:placeholder:text-[18px] 2xl:text-[18px] text-black"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyPress={handleKeyPress}

@@ -69,26 +69,20 @@ const ClubDetailImageGallery = () => {
     <Dialog open={isImageGalleryOpen} onOpenChange={closeImageGallery}>
       <DialogContent
         overlayClassName="z-[999999]"
-        className="!w-screen h-[90vh] !max-w-none p-0 bg-white border-none z-[1000000] !left-0 !translate-x-0 top-[5vh] !translate-y-0"
-        style={{
-          width: "100vw",
-          maxWidth: "none",
-          left: 0,
-          transform: "translateX(0) translateY(0)",
-          top: "5vh",
-        }}
+        className="!fixed !left-[50%] rounded-[6px] !top-[50%] !w-[calc(100vw-2.5rem)] xl:!w-[calc(40vw-2rem)] xl:!h-[90vh]  !max-w-none !p-0 bg-white border-none z-[1000000] !-translate-x-1/2 !-translate-y-1/2 overflow-hidden flex flex-col"
         showCloseButton={false}
       >
         <DialogTitle className="sr-only">이미지 갤러리</DialogTitle>
-        <div className="relative w-full h-full flex flex-col px-10">
+        <div className="relative flex-1 flex flex-col min-h-0 min-w-0 px-5 overflow-hidden">
           <button
             onClick={closeImageGallery}
-            className="absolute top-7 right-7 z-50 text-white hover:opacity-70 transition-opacity"
+            className="absolute top-5 right-5 z-50 hover:opacity-70 transition-opacity"
+            aria-label="닫기"
           >
-            <X className="w-6 h-6 text-black" />
+            <X className="w-4 h-4 text-black" />
           </button>
 
-          <div className="flex-1 flex items-center justify-center pb-24">
+          <div className="flex-1 flex items-center justify-center min-h-0 min-w-0 overflow-hidden pb-24 xl:pb-32">
             <AnimatePresence mode="wait">
               <motion.div
                 key={imageGalleryCurrentIndex}
@@ -96,29 +90,29 @@ const ClubDetailImageGallery = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="relative w-full h-full max-w-5xl max-h-full"
+                className="relative w-full h-full min-w-0 min-h-0 flex items-center justify-center xl:max-w-3xl xl:max-h-[50vh] xl:mx-auto"
               >
                 <Image
                   src={imageGalleryImages[imageGalleryCurrentIndex]}
                   alt={`Gallery image ${imageGalleryCurrentIndex + 1}`}
                   fill
                   className="object-contain"
-                  sizes="90vw"
+                  sizes="(max-width: 640px) 80vw, 90vw"
                 />
               </motion.div>
             </AnimatePresence>
           </div>
 
           {imageGalleryImages.length > 1 && (
-            <div className="absolute bottom-10 left-0 right-0 bg-white overflow-x-auto">
-              <div className="flex gap-3 justify-center">
+            <div className="absolute bottom-4 left-10 right-10 overflow-x-auto overflow-y-hidden">
+              <div className="flex gap-2 sm:gap-3 justify-center py-2 min-w-max">
                 {imageGalleryImages.map((image, index) => (
                   <button
                     key={index}
                     onClick={() => setImageGalleryIndex(index)}
-                    className={`relative w-[120px] h-[120px] flex-shrink-0 overflow-hidden transition-all ${
+                    className={`relative w-[clamp(80px,10vw,120px)] aspect-square flex-shrink-0 overflow-hidden transition-all ${
                       index === imageGalleryCurrentIndex
-                        ? ""
+                        ? "ring-2 ring-main"
                         : "opacity-60 hover:opacity-100"
                     }`}
                   >
@@ -127,17 +121,8 @@ const ClubDetailImageGallery = () => {
                       alt={`Thumbnail ${index + 1}`}
                       fill
                       className="object-cover"
-                      sizes="80px"
+                      sizes="(max-width: 640px) 80px, 120px"
                     />
-                    {index === imageGalleryCurrentIndex && (
-                      <div
-                        className="absolute inset-0 pointer-events-none z-10"
-                        style={{
-                          border: "2px solid #ff491a",
-                          boxSizing: "border-box",
-                        }}
-                      />
-                    )}
                   </button>
                 ))}
               </div>

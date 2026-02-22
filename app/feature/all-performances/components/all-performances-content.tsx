@@ -8,6 +8,7 @@ import { AllPerformancesSearch } from "@/app/feature/all-performances/components
 import { AllPerformancesLocationFilter } from "@/app/feature/all-performances/components/all-performances-location-filter";
 import { AllPerformancesTabs } from "@/app/feature/all-performances/components/all-performances-tabs";
 import { AllPerformancesHeader } from "@/app/feature/all-performances/components/all-performances-header";
+import Footer from "@/app/shared/components/footer";
 
 interface AllPerformancesContentProps {
   performances: PerformanceItem[];
@@ -33,7 +34,7 @@ export const AllPerformancesContent = ({
     <>
       <AllPerformancesHeader />
       <div className="pt-15 flex flex-col sm:flex-row justify-between">
-        <div className="md:w-[285px] lg:w-full max-w-[560px] space-y-5">
+        <div className="md:w-[285px] lg:w-full max-w-[560px] space-y-[10px]">
           <AllPerformancesTabs />
           <AllPerformancesSearch />
         </div>
@@ -46,7 +47,7 @@ export const AllPerformancesContent = ({
             isLoading={isLoading}
           />
           {!isLoading && (
-            <div className="flex justify-center">
+            <div className="flex justify-center pt-14 2xl:pt-40">
               <AllPerformancesPagination
                 totalPages={pagination.totalPages}
                 currentPage={pagination.currentPage}

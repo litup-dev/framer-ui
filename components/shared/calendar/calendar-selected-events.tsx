@@ -46,7 +46,7 @@ export const CalendarSelectedEvents = ({
                   });
 
                   const mainImage = performance.images?.find(
-                    (img) => img.isMain
+                    (img) => img.isMain,
                   );
                   const imageUrl = mainImage?.filePath
                     ? isValidImageUrl(mainImage.filePath)
@@ -85,7 +85,7 @@ export const CalendarSelectedEvents = ({
                                             {artist.name}
                                           </Subtitle>
                                         </div>
-                                      )
+                                      ),
                                     )}
                                   </div>
                                 )}
@@ -111,7 +111,7 @@ export const CalendarSelectedEvents = ({
                       </div>
                     </div>
                   );
-                })
+                }),
               )}
             </div>
           )}

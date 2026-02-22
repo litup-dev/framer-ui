@@ -15,9 +15,10 @@ interface ClubDetailDescriptionProps {
 
 const DEFAULT_TIME_MESSAGE = "운영시간을 등록해주세요.";
 
-const LABEL_CLASS = "text-[14px] md:text-[16px] flex-[3]";
-const VALUE_CLASS = "text-[14px] md:text-[16px] flex-[9]";
-const VALUE_COL_CLASS = "flex flex-col flex-[9] gap-1";
+const LABEL_CLASS =
+  "text-[14px] md:text-[16px] w-[80px] md:w-[88px] flex-shrink-0";
+const VALUE_CLASS = "text-[14px] md:text-[16px] flex-1 min-w-0";
+const VALUE_COL_CLASS = "flex flex-col flex-1 min-w-0 gap-1";
 
 interface InfoRowProps {
   label: string;
@@ -72,7 +73,7 @@ const ClubDetailDescription = ({ data }: ClubDetailDescriptionProps) => {
 
           {data.snsLinks && data.snsLinks.length > 0 && (
             <InfoRow label="SNS">
-              <div className="flex-[9] bg-gray flex gap-5">
+              <div className="flex-1 min-w-0 bg-gray flex gap-5">
                 {data.snsLinks.map((sns, index) => (
                   <span
                     key={index}
@@ -97,17 +98,19 @@ const ClubDetailDescription = ({ data }: ClubDetailDescriptionProps) => {
               </div>
             </InfoRow>
 
-            <div className="w-full border h-[300px] md:h-[376px] lg:h-[210px] xl:w-full xl:h-[249px]">
-              <Map
-                center={{ lat: data.latitude, lng: data.longitude }}
-                className="w-full h-full"
-                draggable={false}
-              >
-                <MapMarker
-                  position={{ lat: data.latitude, lng: data.longitude }}
-                  title={data.name}
-                />
-              </Map>
+            <div className="flex bg-gray p-5 md:p-6 rounded-[3px]">
+              <div className="flex-1 min-w-0 h-[300px] md:h-[376px] lg:h-[210px] xl:h-[249px] rounded-[3px] overflow-hidden">
+                <Map
+                  center={{ lat: data.latitude, lng: data.longitude }}
+                  className="w-full h-full"
+                  draggable={false}
+                >
+                  <MapMarker
+                    position={{ lat: data.latitude, lng: data.longitude }}
+                    title={data.name}
+                  />
+                </Map>
+              </div>
             </div>
             {/* <ClubDetailFacilities /> */}
           </div>
