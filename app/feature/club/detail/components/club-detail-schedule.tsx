@@ -39,7 +39,7 @@ const ClubDetailSchedule = ({
   const queryClient = useQueryClient();
   const { isAuthenticated } = useUserStore();
   const { mutate } = useMutation(
-    performaceAttendByIdOptions(clubId, month, queryClient)
+    performaceAttendByIdOptions(clubId, month, queryClient),
   );
   const { openModal } = useCommonModalStore();
   const router = useRouter();
@@ -57,14 +57,17 @@ const ClubDetailSchedule = ({
     mutate(id);
   };
 
-  const groupedEvents = events.reduce((acc, event) => {
-    const dateKey = format(event.date, "yyyy-MM-dd");
-    if (!acc[dateKey]) {
-      acc[dateKey] = [];
-    }
-    acc[dateKey].push(event);
-    return acc;
-  }, {} as Record<string, ScheduleEvent[]>);
+  const groupedEvents = events.reduce(
+    (acc, event) => {
+      const dateKey = format(event.date, "yyyy-MM-dd");
+      if (!acc[dateKey]) {
+        acc[dateKey] = [];
+      }
+      acc[dateKey].push(event);
+      return acc;
+    },
+    {} as Record<string, ScheduleEvent[]>,
+  );
 
   if (events.length === 0 || Object.keys(groupedEvents).length === 0) {
     return (
@@ -104,7 +107,7 @@ const ClubDetailSchedule = ({
                 </div>
                 <div className="flex-1 flex flex-col lg:flex-row gap-3 lg:gap-6">
                   <div className="flex flex-col justify-center border-l-2 border-gray pl-4 space-y-1.5 lg:min-w-[240px] lg:flex-shrink-0">
-                    <div className="flex items-center gap-1.5 text-sm text-black-60">
+                    <div className="flex items-center gap-1.5 text-sm text-black-80">
                       <Image
                         src="/images/watch.svg"
                         alt="clock"
@@ -115,7 +118,7 @@ const ClubDetailSchedule = ({
                         {event.time}
                       </Description>
                     </div>
-                    <div className="flex items-center gap-1.5 text-sm text-black-60">
+                    <div className="flex items-center gap-1.5 text-sm text-black-80">
                       <Image
                         src="/images/wallet.svg"
                         alt="clock"
@@ -132,9 +135,9 @@ const ClubDetailSchedule = ({
                     <Subtitle className="text-black text-[15px] sm:text-[18px]">
                       {event.title}
                     </Subtitle>
-                    <Description className="text-[13px] sm:text-[16px] text-black-60">
+                    {/* <Description className="text-[13px] sm:text-[16px] text-black-60">
                       {event.description}
-                    </Description>
+                    </Description> */}
                   </div>
                 </div>
                 <div className="absolute top-5 right-5 lg:static lg:top-auto lg:right-auto flex-shrink-0 flex flex-col items-center justify-start">
@@ -145,7 +148,8 @@ const ClubDetailSchedule = ({
                       </Button>
                       <Button
                         className={cn(
-                          "hidden lg:flex border-2 border-orange-500 bg-white text-main"
+                          "hidden lg:flex border-2 border-orange-500 bg-white text-main",
+                          "hover:bg-orange-500 hover:text-white",
                         )}
                       >
                         <Subtitle className="text-[14px] xl:text-[16px]">
@@ -156,13 +160,13 @@ const ClubDetailSchedule = ({
                     </div>
                   ) : (
                     <div onClick={() => handleAttend(event.id)}>
-                      <Button className="lg:hidden bg-gray w-9 h-9 rounded flex items-center justify-center hover:bg-orange-600 transition-colors">
-                        <Plus className="text-black w-10 h-10" />
+                      <Button className="group lg:hidden bg-gray w-9 h-9 rounded flex items-center justify-center hover:bg-main transition-colors hover:text-white">
+                        <Plus className="text-black w-10 group-hover:text-white transition-colors" />
                       </Button>
                       <Button
                         className={cn("hidden lg:flex bg-gray-100 text-black")}
                       >
-                        <Subtitle className="text-[14px] xl:text-[16px]">
+                        <Subtitle className="text-[14px] xl:text-[16px] hover:text-white">
                           보고 싶어요 +
                         </Subtitle>
                       </Button>

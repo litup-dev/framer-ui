@@ -1,10 +1,11 @@
 "use client";
 
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 import { useClubDetailStore } from "@/app/feature/club/detail/store";
 
@@ -12,8 +13,11 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel";
+import { Subtitle } from "@/components/shared/typography";
 
 interface ClubDetailHeaderProps {
   images: string[];
@@ -25,7 +29,12 @@ const ClubDetailHeader = ({ images, clubName }: ClubDetailHeaderProps) => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [api, setApi] = useState<CarouselApi>();
+  const [mounted, setMounted] = useState(false);
   const { isImageGalleryOpen } = useClubDetailStore();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     let rafId: number | null = null;
@@ -55,14 +64,15 @@ const ClubDetailHeader = ({ images, clubName }: ClubDetailHeaderProps) => {
     };
   }, []);
 
-  const carouselImages = images.length > 0 
-    ? images 
-    : [
-        "/images/club_detail1.png",
-        "/images/club_detail2.png",
-        "/images/club_detail3.png",
-        "/images/club_detail4.png",
-      ];
+  const carouselImages =
+    images.length > 0
+      ? images
+      : [
+          "/images/club_detail1.png",
+          "/images/club_detail2.png",
+          "/images/club_detail3.png",
+          "/images/club_detail4.png",
+        ];
 
   useEffect(() => {
     if (!api) return;
@@ -101,9 +111,20 @@ const ClubDetailHeader = ({ images, clubName }: ClubDetailHeaderProps) => {
               src={imageSrc}
               alt={clubName || `Club image ${index + 1}`}
               fill
-              className="object-cover blur-[10px]"
+              className="object-cover blur-[1px]"
               sizes="100vw"
             />
+            <div className="absolute bottom-5 right-5 z-[1000000]">
+              <div className="flex items-center rounded-full min-h-[12px] min-w-[26px] py-1.5 px-2 gap-1">
+                <Subtitle className="text-white text-[12px]">
+                  {currentIndex + 1}
+                </Subtitle>
+                <Subtitle className="text-gray-400 text-[12px]">/</Subtitle>
+                <Subtitle className="text-gray-400 text-[12px]">
+                  {carouselImages.length}
+                </Subtitle>
+              </div>
+            </div>
             <div className="absolute inset-0 bg-[#000000]/70" />
           </motion.div>
         ))}
@@ -118,6 +139,14 @@ const ClubDetailHeader = ({ images, clubName }: ClubDetailHeaderProps) => {
             }}
             setApi={setApi}
           >
+            <CarouselPrevious
+              className="hidden 2xl:flex left-20 -translate-y-1/2 z-50"
+              isClubDetailCarousel
+            />
+            <CarouselNext
+              className="hidden 2xl:flex right-20 left-auto -translate-y-1/2 z-50"
+              isClubDetailCarousel
+            />
             <CarouselContent className="h-[220px] sm:h-[490px] xl:h-[490px] 2xl:h-[600px] -ml-0">
               {carouselImages.map((imageSrc, index) => (
                 <CarouselItem
@@ -149,21 +178,29 @@ const ClubDetailHeader = ({ images, clubName }: ClubDetailHeaderProps) => {
           </Carousel>
         </div>
       </div>
-      <div
-        onClick={() => router.back()}
-        className="md:hidden flex items-center gap-2 p-2 hover:opacity-80 z-[1000000] w-full fixed top-0 left-0"
-        style={{
-          backgroundColor: isImageGalleryOpen
-            ? "transparent"
-            : `rgba(255, 255, 255, ${scrollProgress})`,
-          color:
-            isImageGalleryOpen || scrollProgress > 0.5 ? "#111827" : "#ffffff",
-          opacity: isImageGalleryOpen ? 0 : 1,
-          pointerEvents: isImageGalleryOpen ? "none" : "auto",
-        }}
-      >
-        <ChevronLeft className="w-8 h-8" />
-      </div>
+      {mounted &&
+        createPortal(
+          <div
+            onClick={() => router.back()}
+            className="md:hidden flex items-center gap-2 p-2 hover:opacity-80 z-[999999] w-full fixed top-0 left-0 right-0"
+            style={{
+              backgroundColor: isImageGalleryOpen
+                ? "transparent"
+                : `rgba(255, 255, 255, ${scrollProgress})`,
+              opacity: isImageGalleryOpen ? 0 : 1,
+              pointerEvents: isImageGalleryOpen ? "none" : "auto",
+            }}
+          >
+            <Image
+              src="/images/arrow-white.svg"
+              width={48}
+              height={48}
+              alt="arrow-up"
+              className={cn(scrollProgress > 0.3 && "brightness-0")}
+            />
+          </div>,
+          document.body,
+        )}
     </div>
   );
 };

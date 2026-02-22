@@ -10,7 +10,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteReviewOptions } from "@/app/feature/club/query-options";
 import { formatDate } from "@/lib/date-utils";
 import { Textarea } from "@/components/ui/textarea";
-import { Description } from "@/components/shared/typography";
+import { Description, Subtitle } from "@/components/shared/typography";
 
 interface ReviewItem {
   id: number;
@@ -132,11 +132,11 @@ const ClubDetailReviewItem = ({
   };
 
   return (
-    <div className="space-y-3 py-4 border-b">
+    <div className="space-y-3 py-4 lg:py-6.5 xl:space-y-6.5 border-b">
       <div className="flex items-center gap-2">
         <div className="w-8 h-8 bg-gray-300 rounded-full flex-shrink-0" />
         <div className="flex-1 text-subtitle-14">{review.user.name}</div>
-        <div className="flex items-center text-description-14">
+        <div className="flex items-center text-description-14 gap-0.5">
           <Image
             src="/images/review_rate.svg"
             alt="rating"
@@ -144,12 +144,17 @@ const ClubDetailReviewItem = ({
             height={16}
             className="pb-1"
           />
-          <span>{review.rating}</span>
+          <Description className="text-[16px]">
+            {Number(review.rating).toLocaleString("ko-KR", {
+              minimumFractionDigits: 1,
+              maximumFractionDigits: 1,
+            })}
+          </Description>
         </div>
       </div>
       <Textarea
         ref={textareaRef}
-        className="border-none shadow-none text-[14px] text-black-60 resize-none"
+        className="border-none shadow-none text-[14px] text-black-60 resize-none px-0"
         rows={3}
         value={review.content}
         readOnly
@@ -167,7 +172,7 @@ const ClubDetailReviewItem = ({
             <button
               key={`${review.id}-image-${index}-${image}`}
               onClick={() => handleImageClick(index)}
-              className="relative w-[110px] h-[140px] bg-gray-200 rounded flex-shrink-0 overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
+              className="relative w-[110px] h-[140px] xl:w-[140px] xl:h-[170px] bg-gray-200 rounded flex-shrink-0 overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
             >
               <Image
                 src={image}
@@ -182,14 +187,18 @@ const ClubDetailReviewItem = ({
       )}
 
       <div className="flex flex-wrap gap-2">
-        {review.tags.map((tag, index) => (
-          <span
-            key={`${review.id}-tag-${index}-${tag}`}
-            className="p-2 w-fit bg-white border rounded-[3px] text-subtitle-14"
-          >
-            {tag}
-          </span>
-        ))}
+        {review.tags.length > 0 ? (
+          <div className="flex flex-wrap gap-2">
+            {review.tags.map((tag, index) => (
+              <Subtitle
+                key={`${review.id}-tag-${index}-${tag}`}
+                className="p-2 w-fit bg-white border rounded-[3px] text-subtitle-14"
+              >
+                {tag}
+              </Subtitle>
+            ))}
+          </div>
+        ) : null}
       </div>
 
       <div className="flex items-center justify-between text-subtitle-12 text-black-40">
@@ -215,7 +224,12 @@ const ClubDetailReviewItem = ({
         ) : (
           <button className="flex items-center gap-0.5 hover:opacity-70">
             <Description className="text-[14px]">신고</Description>
-            <Bell className="w-4 h-4" />
+            <Image
+              src="/images/siren.svg"
+              alt="report"
+              width={16}
+              height={16}
+            />
           </button>
         )}
       </div>

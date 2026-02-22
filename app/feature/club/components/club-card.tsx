@@ -16,8 +16,8 @@ import {
 import { useUserStore } from "@/store/user-store";
 import { useCommonModalStore } from "@/store/common-modal-store";
 
-import { Separator } from "@/components/ui/separator";
 import ClubImage from "@/app/feature/club/components/club-image";
+import { Description, Subtitle } from "@/components/shared/typography";
 
 interface ClubCardProps {
   club: Club;
@@ -30,14 +30,14 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
   const { isAuthenticated } = useUserStore();
   const { openModal } = useCommonModalStore();
   const { data: clubDetailData } = useQuery(
-    getClubByIdOptions(String(club.id))
+    getClubByIdOptions(String(club.id)),
   );
   const cacheFavorite =
     club.isFavorite ?? clubDetailData?.data?.isFavorite ?? false;
 
   const [isFavorite, setIsFavorite] = useState(cacheFavorite);
   const { mutate: mutateFavorite } = useMutation(
-    clubFavoriteByIdOptions(club.id, queryClient)
+    clubFavoriteByIdOptions(club.id, queryClient),
   );
 
   useEffect(() => {
@@ -66,22 +66,34 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
   }, [club.mainImage]);
 
   return (
-    <div className="space-y-3 block cursor-pointer">
+    <div className="space-y-4 block cursor-pointer">
       <div className="flex justify-between">
         <Link href={`/club/${club.id}`}>
           <div className="flex items-center gap-4">
             <ClubImage club={club} size="md" />
-            <div className="flex flex-col text-subtitle-16">
-              <div className="flex gap-1">
-                <div>{club.name}</div>
-                <div className="flex items-center gap-1 text-black-60">
-                  <div>{club.avgRating ?? 0}</div>
-                  <div>{`(${club.reviewCnt})`}</div>
+            <div className="flex flex-col text-subtitle-16 gap-2">
+              <div className="flex gap-1 items-center">
+                <Subtitle className="text-[14px] xl:text-[16px] 2xl:text-[20px]">
+                  {club.name}
+                </Subtitle>
+                <div className="flex items-center gap-0.5 text-black">
+                  <Image
+                    src="/images/club-rating.svg"
+                    alt="star"
+                    width={20}
+                    height={20}
+                  />
+                  <div className="flex gap-1">
+                    <Description className="text-[12px] xl:text-[14px] 2xl:text-[16px]">
+                      {club.avgRating ?? 0}
+                    </Description>
+                    <Description className="text-[12px] xl:text-[14px] 2xl:text-[16px]">{`(${club.reviewCnt})`}</Description>
+                  </div>
                 </div>
               </div>
-              <div className="text-description-14 text-black-60">
+              <Description className="text-[12px] xl:text-[14px] 2xl:text-[16px] text-black/50">
                 {club.address}
-              </div>
+              </Description>
             </div>
           </div>
         </Link>
@@ -106,9 +118,9 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
           }}
         />
       </div>
-      <div className="flex gap-[1px]">
-        {mainImageUrl ? (
-          <div className="relative h-25 w-20 bg-[#D9D9D9] overflow-hidden">
+      <div className="flex gap-[1px] pt-1">
+        {mainImageUrl && (
+          <div className="relative h-[180px] w-[144px] bg-[#D9D9D9] overflow-hidden rounded-[4px]">
             <Image
               src={mainImageUrl}
               alt={club.name}
@@ -117,28 +129,23 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
               sizes="20px"
             />
           </div>
-        ) : (
-          Array.from({ length: 5 }).map((_, idx) => (
-            <div key={idx} className="h-25 w-20 bg-[#D9D9D9]" />
-          ))
         )}
       </div>
       <div className="flex gap-1 items-center text-subtitle-12 text-black-60">
-        <span
-          className="flex items-center gap-1 border border-[#2020201A] px-2.5 py-2 rounded-[2px] cursor-pointer"
+        <div
+          className="flex items-center gap-1 border border-black/20 px-2.5 py-2 rounded-[4px] cursor-pointer"
           onClick={() => onMapClick(club)}
         >
           <Map className="w-4 h-4" />
-          지도
-        </span>
+          <Subtitle className="2xl:text-[14px]">위치</Subtitle>
+        </div>
         <Link href={`/club/${club.id}`}>
-          <span className="flex items-center gap-1 border border-[#2020201A] px-2.5 py-2 rounded-[2px] cursor-pointer">
+          <div className="flex items-center gap-1 border border-black/20 px-2.5 py-2 rounded-[4px] cursor-pointer">
             <Info className="w-4 h-4" />
-            상세
-          </span>
+            <Subtitle className="2xl:text-[14px]">상세</Subtitle>
+          </div>
         </Link>
       </div>
-      <Separator className="hidden lg:block" />
     </div>
   );
 };

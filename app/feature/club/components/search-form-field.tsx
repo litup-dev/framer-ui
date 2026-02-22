@@ -13,6 +13,7 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { FormControl, FormField } from "@/components/ui/form";
+import Image from "next/image";
 
 interface SearchFormFieldProps {
   onFocus?: () => void;
@@ -37,18 +38,23 @@ const SearchFormField = ({ onFocus }: SearchFormFieldProps) => {
       control={control}
       name="search"
       render={({ field }) => (
-        <div className="space-y-2">
-          <InputGroup className="border-b-2 border-main h-12">
+        <div className="space-y-2 pt-3">
+          <InputGroup className="border-b-3 border-main h-12 xl:min-h-[64px]">
             <InputGroupAddon
               align="inline-start"
               onClick={handleSubmit(onSubmit)}
             >
-              <SearchIcon className="size-5 text-[#FF491A]" strokeWidth={3} />
+              <Image
+                src="/images/search-icon.svg"
+                alt="search"
+                width={32}
+                height={32}
+              />
             </InputGroupAddon>
             <FormControl>
               <InputGroupInput
                 placeholder="검색어를 입력하세요."
-                className="placeholder:text-[#2020204D]"
+                className="placeholder:text-[#2020204D] placeholder:2xl:text-[18px] 2xl:text-[18px]"
                 onFocus={onFocus}
                 value={inputValue}
                 onChange={(e) => {

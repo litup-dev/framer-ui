@@ -1,3 +1,4 @@
+import { AuthProvider } from "@/providers/auth-provider";
 import { useUserStore } from "@/store/user-store";
 
 export class ApiError extends Error {
@@ -9,7 +10,7 @@ export class ApiError extends Error {
     message: string,
     status: number,
     code: string | number,
-    data: any
+    data: any,
   ) {
     super(message);
     this.name = "ApiError";
@@ -53,7 +54,7 @@ class ApiClient {
 
   private async createHeaders(
     customHeaders: Record<string, string> = {},
-    isFormData: boolean = false
+    isFormData: boolean = false,
   ): Promise<Record<string, string>> {
     const token = await this.getAuthToken();
 
@@ -76,7 +77,7 @@ class ApiClient {
 
   async request<T = any>(
     endpoint: string,
-    options: ApiRequestOptions = {}
+    options: ApiRequestOptions = {},
   ): Promise<T> {
     const { method = "GET", headers: customHeaders = {}, body } = options;
 
@@ -138,7 +139,7 @@ class ApiClient {
 
   async get<T = any>(
     endpoint: string,
-    headers?: Record<string, string>
+    headers?: Record<string, string>,
   ): Promise<T> {
     return this.request<T>(endpoint, { method: "GET", headers });
   }
@@ -146,7 +147,7 @@ class ApiClient {
   async post<T = any>(
     endpoint: string,
     body?: any,
-    headers?: Record<string, string>
+    headers?: Record<string, string>,
   ): Promise<T> {
     return this.request<T>(endpoint, { method: "POST", body, headers });
   }
@@ -154,7 +155,7 @@ class ApiClient {
   async put<T = any>(
     endpoint: string,
     body?: any,
-    headers?: Record<string, string>
+    headers?: Record<string, string>,
   ): Promise<T> {
     return this.request<T>(endpoint, { method: "PUT", body, headers });
   }
@@ -162,7 +163,7 @@ class ApiClient {
   async delete<T = any>(
     endpoint: string,
     body?: any,
-    headers?: Record<string, string>
+    headers?: Record<string, string>,
   ): Promise<T> {
     return this.request<T>(endpoint, { method: "DELETE", body, headers });
   }
@@ -170,7 +171,7 @@ class ApiClient {
   async patch<T = any>(
     endpoint: string,
     body?: any,
-    headers?: Record<string, string>
+    headers?: Record<string, string>,
   ): Promise<T> {
     return this.request<T>(endpoint, { method: "PATCH", body, headers });
   }
@@ -178,13 +179,13 @@ class ApiClient {
 
 // 클라이언트용 인스턴스
 export const apiClient = new ApiClient(
-  process.env.NEXT_PUBLIC_API_BASE_URL || ""
+  process.env.NEXT_PUBLIC_API_BASE_URL || "",
 );
 
 // 서버사이드용 인스턴스
 export const serverApiClient = new ApiClient(
   process.env.API_BASE_URL || "",
-  true
+  true,
 );
 
 // 사용 예시:

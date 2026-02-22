@@ -9,6 +9,7 @@ import { ClubSearchFormSchema } from "@/app/feature/club/schema";
 import { ReviewCategory } from "@/app/feature/club/types";
 
 import { Subtitle, Description } from "@/components/shared/typography";
+import Image from "next/image";
 
 interface KeywordListProps {
   categories: ReviewCategory[] | undefined;
@@ -39,7 +40,7 @@ const KeywordList = ({ categories }: KeywordListProps) => {
     if (isSelected) {
       setValue(
         "keywords",
-        currentKeywords.filter((id) => id !== keywordId)
+        currentKeywords.filter((id) => id !== keywordId),
       );
     } else {
       setValue("keywords", [...currentKeywords, keywordId]);
@@ -59,7 +60,7 @@ const KeywordList = ({ categories }: KeywordListProps) => {
                 "w-fit h-fit rounded-[4px] p-2.5 cursor-pointer transition-colors text-center whitespace-nowrap",
                 isSelected
                   ? "bg-main text-white hover:bg-main/90"
-                  : "bg-[#2020200A] hover:bg-[#2020201A]"
+                  : "bg-[#2020200A] hover:bg-[#2020201A]",
               )}
             >
               {isSelected ? (
@@ -80,16 +81,22 @@ const KeywordList = ({ categories }: KeywordListProps) => {
             className="bg-[#2020200A] cursor-pointer transition-colors text-center hover:bg-[#2020201A] rounded-[4px] p-2.5"
           >
             <Subtitle className="text-[14px] xl:text-[16px]">
-              <Ellipsis className="size-4" />
+              <Ellipsis className="size-4 text-black/50" />
             </Subtitle>
           </button>
         )}
         {showAllKeywords && allKeywords.length > 6 && (
           <button
             onClick={() => setShowAllKeywords(false)}
-            className="bg-[#2020200A] cursor-pointer transition-colors text-center hover:bg-[#2020201A] rounded-[4px] p-2.5"
+            className="bg-[#2020200A] cursor-pointer transition-colors text-center hover:bg-[#2020201A] rounded-[4px] w-[40px] items-center justify-center flex"
           >
-            <Subtitle className="text-[14px] xl:text-[16px]">접기</Subtitle>
+            <Image
+              src="/images/arrow-up.svg"
+              alt="chevron-down"
+              width={24}
+              height={24}
+              className="text-black/50"
+            />
           </button>
         )}
       </div>

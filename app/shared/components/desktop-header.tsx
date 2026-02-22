@@ -13,6 +13,7 @@ import Image from "next/image";
 const DesktopHeader = () => {
   const { user } = useUserStore();
   const pathname = usePathname();
+  const isClubPage = pathname === "/club";
   const isClubDetailPage =
     pathname?.startsWith("/club/") && pathname !== "/club";
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -51,7 +52,8 @@ const DesktopHeader = () => {
   return (
     <div
       className={cn(
-        "md:h-[80px] 2xl:h-[100px] px-5 sm:px-10 md:px-15 lg:px-20 hidden md:flex sm:justify-between",
+        "md:h-[80px] 2xl:h-[100px] px-5 sm:px-10 md:px-10 xl:px-20 hidden md:flex sm:justify-between",
+        isClubPage && "border-b border-black/20",
         isClubDetailPage
           ? scrollProgress > 0
             ? "fixed top-0 left-0 right-0"
@@ -60,8 +62,8 @@ const DesktopHeader = () => {
         isReviewModalOpen
           ? "z-[40]"
           : isClubDetailPage
-          ? "z-[99999]"
-          : "z-[999999]"
+            ? "z-[99999]"
+            : "z-[999999]",
       )}
       style={
         isClubDetailPage
@@ -77,19 +79,28 @@ const DesktopHeader = () => {
               pointerEvents: isImageGalleryOpen ? "none" : "auto",
             }
           : isImageGalleryOpen
-          ? {
-              opacity: 0,
-              pointerEvents: "none",
-            }
-          : undefined
+            ? {
+                opacity: 0,
+                pointerEvents: "none",
+              }
+            : undefined
       }
     >
       <div className="flex items-center gap-1">
         <Link href="/home">
-          <Image src="/images/logo.svg" alt="logo" width={120} height={38} />
+          <Image
+            src="/images/logo.svg"
+            alt="logo"
+            width={120}
+            height={38}
+            className={cn(
+              "w-[84px] h-[26px] lg:w-[100px] lg:h-[32px] xl:w-[110px] xl:h-[34px] 2xl:w-[120px] 2xl:h-[38px]",
+              isClubDetailPage && scrollProgress === 0 && "brightness-0 invert",
+            )}
+          />
         </Link>
       </div>
-      <HeaderMenus />
+      <HeaderMenus isWhiteIcons={isClubDetailPage && scrollProgress === 0} />
     </div>
   );
 };

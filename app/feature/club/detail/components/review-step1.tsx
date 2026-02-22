@@ -12,7 +12,7 @@ import { useClubDetailStore } from "@/app/feature/club/detail/store";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
 
 import { StarRating } from "@/app/feature/club/detail/components/review-star-rating";
-import { Subtitle } from "@/components/shared/typography";
+import { Description, Subtitle } from "@/components/shared/typography";
 
 interface KeywordButtonProps {
   keyword: { id: number; keyword: string };
@@ -29,13 +29,18 @@ const KeywordButton = ({
     <div
       onClick={onClick}
       className={cn(
-        "flex items-center justify-center px-2 py-2 border cursor-pointer transition-colors w-fit lg:min-w-[96px] lg:h-[34px] rounded-[3px]",
-        isSelected ? "bg-main text-white border-main" : "hover:bg-gray-100"
+        "flex items-center justify-center px-[11px] py-[10px] border cursor-pointer transition-colors w-fit  rounded-[3px]",
+        isSelected ? "bg-main text-white border-main" : "hover:bg-gray-100",
       )}
     >
-      <Subtitle className="text-[14px] whitespace-nowrap">
+      <Description
+        className={cn(
+          "text-[14px] whitespace-nowrap text-black/80",
+          isSelected ? "text-white" : "",
+        )}
+      >
         {keyword.keyword}
-      </Subtitle>
+      </Description>
     </div>
   );
 };
@@ -56,8 +61,10 @@ const CategorySection = ({
   if (!category) return null;
 
   return (
-    <div className="flex flex-col gap-5">
-      <div className="text-subtitle-12">{category.name || categoryName}</div>
+    <div className="flex flex-col gap-5 lg:gap-6">
+      <Description className="2xl:text-[16px]">
+        {category.name || categoryName}
+      </Description>
       <div className="grid grid-cols-3 lg:flex lg:flex-col gap-3 lg:gap-4">
         {category.keywords.map((keyword) => (
           <KeywordButton
@@ -99,8 +106,8 @@ export const ReviewStep1 = ({ clubName, clubImage }: ReviewStep1Props) => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-col text-subtitle-18 p-6 space-y-14 bg-[#F2F1EE]">
-        <div className="flex flex-col items-center justify-center gap-5">
+      <div className="flex flex-col p-6 2xl:pb-12.5 space-y-10 bg-[#F2F1EE]">
+        <div className="flex flex-col items-center justify-center gap-6">
           <div className="w-22.5 h-22.5 bg-gray-300 rounded-full flex-shrink-0 relative overflow-hidden">
             {imageUrl ? (
               <Image
@@ -111,16 +118,18 @@ export const ReviewStep1 = ({ clubName, clubImage }: ReviewStep1Props) => {
               />
             ) : null}
           </div>
-          <div>{clubName || "클럽"}에서의 시간이 어떠셨나요?</div>
+          <Subtitle className="text-[18px]">
+            {clubName || "클럽"}에서의 시간이 어떠셨나요?
+          </Subtitle>
         </div>
-        <div className="flex flex-col items-center justify-center gap-4">
-          <div className="bg-white border p-2 rounded-full text-description-12 text-main">
+        <div className="flex flex-col items-center justify-center gap-2">
+          <Description className="bg-white p-2 text-[12px] lg:px-[11px] lg:py-[10px] rounded-full text-main 2xl:text-[12px]">
             별점을 드래그하세요.
-          </div>
+          </Description>
           <StarRating />
         </div>
       </div>
-      <div className="bg-white pt-10 px-5 lg:px-19 space-y-10 lg:space-y-0 lg:grid lg:grid-cols-4 lg:gap-13">
+      <div className="bg-white pt-10 lg:pt-12 px-5 lg:px-12 space-y-10 lg:space-y-0 lg:grid lg:grid-cols-4 lg:gap-13">
         <CategorySection
           category={locationCategory}
           categoryName="위치"
@@ -147,7 +156,7 @@ export const ReviewStep1 = ({ clubName, clubImage }: ReviewStep1Props) => {
         />
       </div>
       {reviewCategories.length === 0 && (
-        <p className="text-description-12 text-red-500 pt-4 px-5 lg:px-19">
+        <p className="text-description-12 text-red-500 pt-4 px-5 lg:px-12">
           키워드를 1개 이상 선택해주세요.
         </p>
       )}

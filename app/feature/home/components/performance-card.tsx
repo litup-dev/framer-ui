@@ -73,7 +73,7 @@ const ArtistsDisplay = ({ artists }: { artists?: Array<{ name: string }> }) => {
       {artists.map((artist, index) => (
         <Subtitle
           key={index}
-          className="text-[16px] text-black truncate px-3 py-2 bg-gray"
+          className="text-[16px] text-black truncate px-3 py-2 bg-black/5"
         >
           {artist.name}
         </Subtitle>
@@ -97,7 +97,7 @@ export const PerformanceCard = ({ performance }: PerformanceCardProps) => {
       >
         <div className="aspect-[3/4] relative">
           <PerformanceImage imageUrl={imageUrl} alt={alt} />
-          <div className="absolute text-[#FFFFFF] rounded-[3px] bg-black/40 top-2.5 right-2.5 px-2 py-1.5 xl:top-3 xl:right-3 2xl:top-4 2xl:right-4 xl:px-2.5 xl:py-2 2xl:px-3 2xl:py-2">
+          <div className="absolute text-[#FFFFFF] rounded-[3px] bg-[#000000]/50 top-2.5 right-2.5 px-2 py-1.5 xl:top-3 xl:right-3 2xl:top-4 2xl:right-4 xl:px-2.5 xl:py-2 2xl:px-3 2xl:py-2  backdrop-blur-xs">
             <Subtitle className="text-[12px] xl:text-[14px] 2xl:text-[16px]">
               {formatMonthDay(performance.performDate)}
             </Subtitle>
@@ -107,7 +107,7 @@ export const PerformanceCard = ({ performance }: PerformanceCardProps) => {
           <Description className="text-gray-400 text-[16px] truncate">
             {performance.club.name}
           </Description>
-          <Subtitle className="text-[20px] text-black] truncate">
+          <Subtitle className="text-[20px] text-black truncate leading-[120%]">
             {performance.title}
           </Subtitle>
           <div className="flex gap-2 truncate">

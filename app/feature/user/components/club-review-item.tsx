@@ -37,7 +37,7 @@ export default function ClubReviewItem({
   onToggle,
 }: ClubReviewItemProps) {
   const [expandedReviews, setExpandedReviews] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
 
   // reviews의 ID 배열이 변경되면 expandedReviews 초기화
@@ -118,7 +118,7 @@ export default function ClubReviewItem({
                     <div className="flex items-center gap-1">
                       <Star className="w-4 h-4 md:w-4.5 2xl:h-4.5 fill-main text-main" />
                       <Description className="text-[14px] md:text-[16px]">
-                        {review.rating.toFixed(1)}
+                        {Number(review.rating).toLocaleString("ko-KR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
                       </Description>
                     </div>
                   </div>

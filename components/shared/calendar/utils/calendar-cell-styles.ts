@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 export const getCellContainerStyles = (
   isXl: boolean,
   isHovered: boolean,
-  expandedHeight: number | null
+  expandedHeight: number | null,
 ) => {
   return {
     zIndex: isHovered && isXl ? 10 : 1,
@@ -32,7 +32,8 @@ export const getCellContainerStyles = (
 export const getButtonStyles = (
   isXl: boolean,
   isHovered: boolean,
-  expandedHeight: number | null
+  expandedHeight: number | null,
+  dayEvents: unknown[],
 ) => {
   return {
     width: "100%",
@@ -54,7 +55,7 @@ export const getButtonClassName = (
   isXl: boolean,
   isHovered: boolean,
   dayEvents: unknown[],
-  isCurrentMonth: boolean
+  isCurrentMonth: boolean,
 ) => {
   return cn(
     "flex flex-col text-left",
@@ -63,9 +64,9 @@ export const getButtonClassName = (
     isHovered && isXl
       ? "bg-main text-white pb-6"
       : dayEvents.length === 0
-      ? "bg-gray text-black"
-      : "bg-white text-black",
-    !isCurrentMonth && "opacity-50"
+        ? "bg-[#F7F6F5] text-black"
+        : "bg-white text-black",
+    !isCurrentMonth && "opacity-50",
   );
 };
 
@@ -73,26 +74,26 @@ export const getEventsContainerClassName = (
   isXl: boolean,
   isHovered: boolean,
   isCurrentMonth: boolean,
-  isOverflowing: boolean
+  isOverflowing: boolean,
 ) => {
   return cn(
     "flex flex-col relative",
     isHovered && isXl
       ? cn(
-          "gap-8 scrollbar scrollbar-w-[5px] scrollbar-track-transparent scrollbar-thumb-black/20 hover:scrollbar-thumb-black/30 scrollbar-thumb-rounded-none scrollbar-track-rounded-none scrollbar-thumb-min-100 z-10",
-          isOverflowing && "max-h-[560px] overflow-y-auto"
+          "gap-10 scrollbar scrollbar-w-[5px] scrollbar-track-transparent scrollbar-thumb-black/20 hover:scrollbar-thumb-black/30 scrollbar-thumb-rounded-none scrollbar-track-rounded-none scrollbar-thumb-min-100 z-10",
+          isOverflowing && "max-h-[560px] overflow-y-auto",
         )
       : isXl
-      ? "h-[315px] overflow-hidden gap-8 z-10"
-      : "hidden",
-    !isCurrentMonth && "opacity-50"
+        ? "h-[315px] overflow-hidden gap-10 z-10"
+        : "hidden",
+    !isCurrentMonth && "opacity-50",
   );
 };
 
 export const getEventsContainerStyles = (
   isXl: boolean,
   isHovered: boolean,
-  isOverflowing: boolean
+  isOverflowing: boolean,
 ) => {
   return {
     width: isXl ? "calc(100% + 48px)" : "100%",
@@ -107,17 +108,18 @@ export const getEventsContainerStyles = (
         : undefined,
     paddingTop:
       isHovered && isXl ? "calc(24px + 28px + 40px + 32px + 8px)" : undefined,
+    paddingBottom: isHovered && isXl ? "16px" : undefined,
     maskImage:
       isHovered && isXl
         ? "linear-gradient(to bottom, transparent 0%, transparent 10%, black 20%, black 100%)"
         : !isHovered && isXl && isOverflowing
-        ? "linear-gradient(to bottom, black 0%, black 75%, transparent 100%)"
-        : "none",
+          ? "linear-gradient(to bottom, black 0%, black 75%, transparent 100%)"
+          : "none",
     WebkitMaskImage:
       isHovered && isXl
-        ? "linear-gradient(to bottom, transparent 0%, transparent 10%, black 20%, black 100%)"
+        ? "linear-gradient(to bottom, transparent 0%, transparent 10%, black 30%, black 100%)"
         : !isHovered && isXl && isOverflowing
-        ? "linear-gradient(to bottom, black 0%, black 75%, transparent 100%)"
-        : "none",
+          ? "linear-gradient(to bottom, black 0%, black 65%, transparent 100%)"
+          : "none",
   };
 };

@@ -266,6 +266,10 @@
     letter-spacing: 0;
   }
 
+  .font-pretendard {
+    font-family: var(--font-pretendard), var(--font-suit), sans-serif;
+  }
+
   .text-black-80 {
     color: #202020cc;
   }

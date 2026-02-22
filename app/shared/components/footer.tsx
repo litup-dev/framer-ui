@@ -13,10 +13,10 @@ import { Separator } from "@/components/ui/separator";
 
 const Footer = () => {
   return (
-    <footer className="w-full px-10 pt-12 2xl:p-20 bg-[#ffffff]2xl:pt-40">
+    <footer className="w-full pt-25 pb-25 px-10 xl:pt-25 xl:pb-10 2xl:p-20 bg-[#ffffff] 2xl:pt-40">
       <div className="flex flex-col sm:flex-row sm:justify-between gap-8">
         <div className="flex flex-col gap-8">
-          <div className="flex gap-3">
+          <div className="flex gap-3 xl:gap-5">
             {FooterMenus.map((menu) => (
               <Link key={menu.id} href={menu.href}>
                 <Subtitle className="text-[12px] xl:text-[14px] 2xl:text-[16px] hover:underline cursor-pointer">
@@ -27,14 +27,14 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-8">
-          <div className="flex flex-col gap-2 xl:gapp-3">
+        <div className="flex flex-col gap-6 xl:gap-8 2xl:gap-10">
+          <div className="flex flex-col gap-2 md:gap-3 xl:gap-4">
             {litupEmails.map((email) => (
-              <div className="flex gap-1" key={email.id}>
+              <div className="flex gap-1 xl:gap-3 2xl:gap-4" key={email.id}>
                 <Subtitle className="text-[12px] xl:text-[14px] 2xl:text-[16px]">
                   {email.label}
                 </Subtitle>
-                <Description className="text-[12px] xl:text-[14px] 2xl:text-[16px]">
+                <Description className="text-[12px] xl:text-[14px] 2xl:text-[16px] font-pretendard font-normal">
                   {email.email}
                 </Description>
               </div>
@@ -48,7 +48,7 @@ const Footer = () => {
                   className={cn(
                     "text-[12px] xl:text-[14px] 2xl:text-[16px] bg-[#F5F5F5] items-center justify-center flex rounded-full",
                     !social.icon &&
-                      "h-[40px] w-[85px] text-center xl:h-[48px] xl:w-[98px]"
+                      "h-[40px] w-[85px] text-center xl:h-[48px] xl:w-[98px]",
                   )}
                 >
                   {social.icon ? (

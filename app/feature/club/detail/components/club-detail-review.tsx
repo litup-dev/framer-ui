@@ -17,7 +17,7 @@ import ClubDetailReviewModal from "@/app/feature/club/detail/components/club-det
 import ClubDetailImageGallery from "@/app/feature/club/detail/components/club-detail-image-gallery";
 import { ReviewPagination } from "@/app/feature/club/detail/components/review-pagination";
 import { useReviewPagination } from "@/app/feature/club/detail/hooks/use-review-pagination";
-import { Description } from "@/components/shared/typography";
+import { Description, Subtitle } from "@/components/shared/typography";
 
 interface ClubDetailReviewProps {
   data: ClubDetailData;
@@ -126,15 +126,18 @@ const ClubDetailReview = ({
 
   return (
     <div>
-      <div className="flex items-center justify-between border-b-2 border-main pb-2">
+      <div className="flex items-center justify-between border-b-2 border-main pb-2 2xl:pb-3">
         <div className="flex gap-1 items-center">
           <Image
-            src="/images/review.svg"
+            src="/images/review-icon.svg"
             alt="공연 일정"
-            width={24}
-            height={24}
+            width={32}
+            height={32}
+            className="w-6 h-6 2xl:w-8 2xl:h-8"
           />
-          <div className="text-subtitle-18">리뷰</div>
+          <Subtitle className="text-[18px] sm:text-[20px] xl:text-[24px]">
+            {`리뷰 (${reviews.length ?? 0})`}
+          </Subtitle>
           <Image
             src="/images/rating.svg"
             alt="공연 일정"
@@ -185,7 +188,7 @@ const ClubDetailReview = ({
             className={cn(
               "h-4 w-4 transition-transform duration-200",
               sort === "-createdAt" ? "rotate-180" : "",
-              "cursor-pointer"
+              "cursor-pointer",
             )}
           />
         </div>

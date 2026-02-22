@@ -61,7 +61,7 @@ const CustomCalendar = ({
     onDateSelect?.(date);
     if (!isXl) {
       const dayIndex = days.findIndex(
-        (d) => format(d, "yyyy-MM-dd") === format(date, "yyyy-MM-dd")
+        (d) => format(d, "yyyy-MM-dd") === format(date, "yyyy-MM-dd"),
       );
       if (dayIndex !== -1) {
         const rowIndex = Math.floor(dayIndex / 7);
@@ -90,7 +90,7 @@ const CustomCalendar = ({
   }, [selectedDate, events]);
 
   return (
-    <div className="w-screen relative md:pt-20">
+    <div className="w-screen relative md:pt-24">
       {calendarView === "calendar" && (
         <div className="bg-gray">
           <CalendarHeader
