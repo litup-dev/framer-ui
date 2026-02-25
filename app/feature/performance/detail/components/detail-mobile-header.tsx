@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronLeft, Share2, Plus, Check } from "lucide-react";
+import { Share2, Plus, Check } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { isAfter, parseISO } from "date-fns";
 import { useToggleAttendance } from "../query-options";
 import { useCommonModalStore } from "@/store/common-modal-store";
@@ -57,22 +58,32 @@ const DetailMobileHeader = ({ performanceId, performDate, isAttend, performanceT
 
   return (
     <div className="flex justify-between items-center h-16 py-3.5 px-5">
-      <ChevronLeft className="w-5 h-5 cursor-pointer" onClick={handleBack} />
+      <div
+        className="w-9 h-9 flex items-center justify-center cursor-pointer"
+        onClick={handleBack}
+      >
+        <Image
+          src="/images/performance-detail/arrow-left-line.svg"
+          alt="back"
+          width={24}
+          height={24}
+        />
+      </div>
       <div className="flex gap-2">
         <div
-          className={`flex items-center text-subtitle-14 px-4 py-2.5 rounded-[4px] cursor-pointer ${
+          className={`flex items-center text-subtitle-14 px-4 h-9 rounded-[4px] cursor-pointer ${
             isAttend
               ? "border border-main bg-white text-main"
               : "bg-main text-[#fff]"
           }`}
           onClick={handleAttend}
         >
-          {isFutureEvent ? (isAttend ? "기대돼요" : "보고 싶어요") : (isAttend ? "관람했어요" : "관람했어요")}
+          {isFutureEvent ? (isAttend ? "기대돼요" : "보고 싶어요") : (isAttend ? "관람 했어요" : "관람 했어요")}
           {isAttend ? <Check className="h-4 w-4 ml-1" /> : <Plus className="h-4 w-4 ml-1" />}
         </div>
 
         <div
-          className="px-4 py-2.5 bg-[#F2F1EE] rounded-[4px] flex items-center cursor-pointer"
+          className="w-9 h-9 bg-[#F2F1EE] rounded-[4px] flex items-center justify-center cursor-pointer"
           onClick={() => setIsShareModalOpen(true)}
         >
           <Share2 className="w-4 h-4" />

@@ -7,14 +7,14 @@ interface PriceSectionProps {
 
 const PriceSection = ({ bookingPrice, onsitePrice }: PriceSectionProps) => {
   return (
-    <div className="flex flex-col mt-6 lg:mt-10 xl:mt-12 2xl:mt-14">
+    <div className="flex flex-col mt-8 md:mt-6 lg:mt-10 xl:mt-12 2xl:mt-14">
       {/* price 타이틀 */}
       <Title className="hidden md:block text-[20px] xl:text-[24px]">
         price
       </Title>
 
       {/* Grid로 캡션과 value 정렬: LG 이하 30px, XL 이상 24px */}
-      <div className="grid grid-cols-[auto_1fr] gap-x-8 lg:gap-x-[30px] xl:gap-x-6 mt-5 lg:mt-6 xl:mt-5">
+      <div className="grid grid-cols-[auto_1fr] gap-x-8 lg:gap-x-[30px] xl:gap-x-6 md:mt-6">
         {/* 예매 */}
         <Description className="text-black-60 text-[14px] md:text-[16px] xl:text-[18px]">예매</Description>
         <Description className="text-[14px] md:text-[16px] xl:text-[18px]">{bookingPrice.toLocaleString()}원</Description>

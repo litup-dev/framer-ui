@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Share2 } from "lucide-react";
+import Image from "next/image";
 import { Subtitle, Description } from "@/components/shared/typography";
 import {
   Dialog,
@@ -75,7 +75,13 @@ const ShareModal = ({
         <DialogHeader className="px-6 pt-6 md:px-8 md:pt-8">
           <div className="flex items-center justify-between">
             <DialogTitle className="flex items-center gap-2 text-[18px] md:text-[20px]">
-              <Share2 className="w-5 h-5" />
+              <Image
+                src="/images/performance-detail/share_fill.svg"
+                alt="share"
+                width={20}
+                height={20}
+                className="w-5 h-5"
+              />
               공유하기
             </DialogTitle>
             <button
@@ -125,7 +131,7 @@ const ShareModal = ({
                   <path
                     fillRule="evenodd"
                     clipRule="evenodd"
-                    d="M10 3C5.58 3 2 5.91 2 9.5C2 11.67 3.37 13.56 5.44 14.69L4.5 17.5L7.69 15.72C8.42 15.89 9.19 16 10 16C14.42 16 18 13.09 18 9.5C18 5.91 14.42 3 10 3Z"
+                    d="M10 1C4.477 1 0 4.582 0 9C0 11.853 1.885 14.355 4.76 15.858L3.5 19.5L7.615 17.22C8.543 17.441 9.521 17.571 10.526 17.571C16.049 17.571 20.526 13.989 20.526 9.571C20.526 5.153 16.049 1.571 10.526 1.571C10.35 1.571 10.175 1.573 10 1.577V1Z"
                     fill="#3C1E1E"
                   />
                 </svg>
@@ -138,7 +144,7 @@ const ShareModal = ({
               className="cursor-pointer hover:opacity-80 transition-opacity"
             >
               <div className="w-14 h-14 rounded-full bg-[#F2F1EE] flex items-center justify-center">
-                <span className="text-[12px] font-semibold text-foreground">URL</span>
+                <span className="text-[10px] text-foreground" style={{ fontWeight: 900, letterSpacing: '-0.04em' }}>URL</span>
               </div>
             </button>
           </div>

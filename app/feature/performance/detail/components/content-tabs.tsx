@@ -55,28 +55,36 @@ const ContentTabs = ({
   const totalComments = commentsData?.data.total || 0;
 
   return (
-    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full gap-0">
       {/* Tab height: 2XL(80px), XL(64px), LG(60px), MD 이하(48px) */}
       <TabsList className="!w-full h-12 lg:h-15 xl:h-16 2xl:h-20 bg-white">
         <TabsTrigger
           value="notice"
-          className="cursor-pointer data-[state=active]:border-b-2 data-[state=active]:border-[#FF491A] data-[state=active]:text-[#202020]"
+          className="cursor-pointer data-[state=active]:border-b-[2px] lg:data-[state=active]:border-b-[3px] data-[state=active]:border-[#FF491A] data-[state=active]:text-[#202020]"
         >
           <Subtitle className={fontSize}>공연 안내</Subtitle>
         </TabsTrigger>
         <TabsTrigger
           value="comment"
-          className="cursor-pointer data-[state=active]:border-b-2 data-[state=active]:border-[#FF491A] data-[state=active]:text-[#202020]"
+          className="cursor-pointer data-[state=active]:border-b-[2px] lg:data-[state=active]:border-b-[3px] data-[state=active]:border-[#FF491A] data-[state=active]:text-[#202020]"
         >
-          <Subtitle className={fontSize}>코멘트({totalComments})</Subtitle>
+          <Subtitle className={fontSize}>코멘트 ({totalComments})</Subtitle>
         </TabsTrigger>
       </TabsList>
 
-      <TabsContent value="notice" className="mt-8 lg:mt-6">
+      <TabsContent
+        value="notice"
+        className={activeTab === "notice" ? "mt-8 lg:mt-6" : "hidden"}
+        forceMount
+      >
         {noticeContent}
       </TabsContent>
 
-      <TabsContent value="comment" className="mt-8 lg:mt-6">
+      <TabsContent
+        value="comment"
+        className={activeTab === "comment" ? "mt-4 md:mt-8 lg:mt-6" : "hidden"}
+        forceMount
+      >
         <CommentSection
           performanceId={performanceId}
           commentText={commentText}

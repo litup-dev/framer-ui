@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import FadeIn from "@/components/shared/fade-in";
 import { Title, Chip, Subtitle, Description } from "@/components/shared/typography";
-import { ChevronDown } from "lucide-react";
+import Image from "next/image";
 import { getPerformanceCommentsOptions } from "../query-options";
 import { useCommentHandlers } from "../hooks/use-comment-handlers";
 import CommentForm from "./comment-form";
@@ -12,6 +12,12 @@ import CommentItem from "./comment-item";
 import CommentPagination from "./comment-pagination";
 
 import React from "react";
+
+const ArrowDownIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 15.402L6 9.402L7.18325 8.21875L12 13.0353L16.8167 8.21875L18 9.402L12 15.402Z" fill="#202020" />
+  </svg>
+);
 
 interface CommentSectionProps {
   performanceId: number;
@@ -87,10 +93,10 @@ const CommentSection = ({
 
   return (
     <FadeIn>
-      <div className="space-y-4 pb-20 md:pb-0">
-        <div className="hidden md:flex items-center gap-2">
+      <div className="pb-20 md:pb-0">
+        <div className="hidden md:flex items-baseline gap-2 md:mb-4">
           <Title className="text-[20px] xl:text-[22px] 2xl:text-[24px]">comment</Title>
-          <Chip className="text-black-60 text-[16px] xl:text-[18px]">({total})</Chip>
+          <Chip className="text-black-60 text-[16px] xl:text-[18px]">{total}+</Chip>
         </div>
 
         <CommentForm
@@ -102,12 +108,14 @@ const CommentSection = ({
           onSubmit={handleCommentSubmit}
         />
 
-        <div className="flex items-center gap-6 md:gap-4">
-          <div className="flex items-center">
+        <div className="flex items-center gap-6 md:gap-4 mt-6 mb-6">
+          <div className="flex items-center gap-1">
             <Subtitle className="font-semibold text-[14px] xl:text-[16px]">
               최신순
             </Subtitle>
-            <ChevronDown className="w-5 h-5 xl:w-6 xl:h-6" />
+            <div className="w-5 h-5 xl:w-6 xl:h-6">
+              <ArrowDownIcon />
+            </div>
           </div>
         </div>
 
@@ -116,8 +124,10 @@ const CommentSection = ({
             <Description>로딩중...</Description>
           </div>
         ) : comments.length === 0 ? (
-          <div className="flex justify-center items-center py-10">
-            <Description>아직 댓글이 없습니다.</Description>
+          <div className="flex justify-center items-center py-10 pb-[310px] xl:pb-[233px] 2xl:pb-[222px]">
+            <Description className="text-black-40 font-medium text-[14px] md:text-[16px] tracking-[-0.04em]">
+              아직 댓글이 없습니다.
+            </Description>
           </div>
         ) : (
           <div className="flex flex-col gap-4 md:gap-6">

@@ -14,7 +14,7 @@ const DateSection = ({ performDate }: DateSectionProps) => {
       <Title className="hidden md:block text-[20px] xl:text-[24px]">date</Title>
 
       {/* Grid로 캡션과 value 정렬: LG 이하 30px, XL 이상 24px */}
-      <div className="grid grid-cols-[auto_1fr] gap-x-8 lg:gap-x-[30px] xl:gap-x-6 mt-5 lg:mt-6 xl:mt-5">
+      <div className="grid grid-cols-[auto_1fr] gap-x-8 lg:gap-x-[30px] xl:gap-x-6 md:mt-6">
         {/* 예매 오픈 */}
         <Description className="text-black-60 text-[14px] md:text-[16px] xl:text-[18px]">
           예매 오픈

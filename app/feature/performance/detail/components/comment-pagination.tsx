@@ -68,12 +68,12 @@ const CommentPagination = ({
     return pages;
   };
 
-  if (totalPages <= 1) {
+  if (totalPages === 0) {
     return null;
   }
 
   return (
-    <div className="mt-8">
+    <div className="mt-8 lg:mt-[60px] xl:mt-[80px] pb-[310px] xl:pb-[233px] 2xl:pb-[222px]">
       <Pagination>
         <PaginationContent>
           <PaginationItem>

@@ -12,7 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Ellipsis, Heart } from "lucide-react";
+import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
 import { useReportModalStore } from "@/store/report-modal-store";
@@ -69,10 +69,19 @@ const CommentItem = ({
   }, [comment.content]);
 
   const formatRelativeTime = (dateString: string, isEdited: boolean = false) => {
-    const timeStr = formatDistanceToNow(new Date(dateString), {
-      addSuffix: true,
-      locale: ko,
-    });
+    const now = new Date();
+    const date = new Date(dateString);
+    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+
+    let timeStr;
+    if (diffInMinutes < 1) {
+      timeStr = "방금 전";
+    } else {
+      timeStr = formatDistanceToNow(date, {
+        addSuffix: true,
+        locale: ko,
+      });
+    }
     return isEdited ? `${timeStr} (수정됨)` : timeStr;
   };
 
@@ -161,21 +170,21 @@ const CommentItem = ({
           </div>
 
           <Textarea
-            placeholder="댓글을 입력해주세요"
-            className="h-[100px] resize-none border-none focus-visible:ring-0 focus-visible:ring-offset-0"
+            placeholder="댓글을 입력해주세요."
+            className="h-[70px] md:h-[100px] resize-none overflow-y-auto rounded-[6px] px-4 py-[13px] text-[14px] md:text-[16px] lg:text-[16px] xl:text-[16px] 2xl:text-[18px] font-medium tracking-[-0.08em] lg:tracking-[-0.04em] leading-[160%] border-none focus-visible:ring-0 focus-visible:ring-offset-0"
             value={editingText}
             onChange={onEditTextChange}
             maxLength={maxLength}
           />
 
-          <div className="flex justify-between items-center">
-            <Chip className="text-black-40 text-[14px] lg:text-[16px]">
+          <div className="flex justify-between items-start mt-6 md:mt-10">
+            <Chip className="text-black-40 text-[12px] md:text-[14px] lg:text-[16px] font-medium tracking-[-0.08em] md:tracking-[-0.04em]">
               {editingText.length}/{maxLength}
             </Chip>
             <Button
               onClick={onEditSubmit}
               disabled={!editingText.trim() || isUpdating}
-              className="bg-white text-[#202020] hover:bg-gray-100 border border-[#202020]/10 w-[56px] h-[34px] px-4 py-2.5 md:w-[64px] md:h-[40px] md:px-[18px] md:py-3"
+              className="bg-white text-[#202020] hover:bg-white/80 border border-[#202020]/10 w-[56px] h-[34px] px-4 py-2.5 xl:w-16 xl:h-10 xl:px-[18px] xl:py-3"
             >
               {isUpdating ? "등록중..." : "등록"}
             </Button>
@@ -187,7 +196,7 @@ const CommentItem = ({
   }
 
   return (
-    <div className="space-y-3 md:space-y-4">
+    <div>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Avatar className="w-6 h-6 md:w-8 md:h-8 2xl:w-10 2xl:h-10">
@@ -204,7 +213,9 @@ const CommentItem = ({
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Ellipsis className="w-5 h-5 md:w-6 md:h-6 cursor-pointer" />
+            <button className="cursor-pointer">
+              <Image src="/images/ellipsis.svg" alt="menu" width={20} height={20} className="w-5 h-5 md:w-6 md:h-6" />
+            </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             {isMyComment ? (
@@ -228,16 +239,16 @@ const CommentItem = ({
         </DropdownMenu>
       </div>
 
-      <div>
-        <Chip
-          className={`font-normal text-black-80 text-[14px] md:text-[16px] 2xl:text-[18px] whitespace-pre-wrap ${
+      <div className="mt-3 md:mt-4">
+        <p
+          className={`tracking-[0] font-normal text-black-80 text-[14px] md:text-[16px] 2xl:text-[18px] whitespace-pre-wrap leading-[160%] ${
             !isExpanded && showMoreButton ? "line-clamp-3" : ""
           }`}
         >
           {comment.content}
-        </Chip>
+        </p>
         {showMoreButton && (
-          <div className="mt-2">
+          <div className="mt-3 md:mt-4">
             <Button
               variant="ghost"
               size="sm"
@@ -250,14 +261,16 @@ const CommentItem = ({
         )}
       </div>
 
-      <div className="pt-6">
+      <div className="mt-6">
         <div
           className="flex gap-1 items-center cursor-pointer"
           onClick={onLikeClick}
         >
-          <Heart
-            fill={comment.isLiked ? "#FF491A" : "none"}
-            stroke={comment.isLiked ? "#FF491A" : "black"}
+          <Image
+            src={comment.isLiked ? "/images/performance-detail/comment-like_active.svg" : "/images/performance-detail/comment-like_inactive.svg"}
+            alt="like"
+            width={24}
+            height={24}
             className="w-6 h-6 flex-shrink-0"
           />
           <Description className="font-medium text-[12px] md:text-[14px] 2xl:text-[16px]">
@@ -266,7 +279,7 @@ const CommentItem = ({
         </div>
       </div>
 
-      <Separator />
+      <Separator className="mt-6" />
     </div>
   );
 };

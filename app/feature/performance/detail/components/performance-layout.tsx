@@ -68,15 +68,15 @@ const PerformanceLayout = ({ posterImages, title, performance }: PerformanceLayo
       </div>
 
       {/* SM & LG+ 컨테이너 */}
-      <div className="flex flex-col px-5 sm:px-10 md:px-15 lg:px-15 xl:px-15 2xl:px-10">
+      <div className="flex flex-col lg:px-[60px] 2xl:px-[80px]">
         <div className="w-full 2xl:max-w-[1760px] 2xl:mx-auto">
-          <div className="mt-3 lg:mt-20 xl:mt-20 2xl:mt-20">
+          <div className="lg:mt-[120px] 2xl:mt-[180px]">
             {/* SM: 모바일 레이아웃 */}
             <div className="flex md:hidden flex-col w-full pb-20">
-              <div className="w-screen -mx-5 sm:-mx-10">
+              <div className="w-screen">
                 <PosterCarousel images={posterImages} title={title} variant="sm" />
               </div>
-              <div>
+              <div className="px-5">
                 <DetailContent
                   title={title}
                   performance={performance}
@@ -97,7 +97,7 @@ const PerformanceLayout = ({ posterImages, title, performance }: PerformanceLayo
 
             {/* LG+: 데스크톱 레이아웃 */}
             <div className="hidden lg:block w-full">
-              <div className="flex flex-row gap-20 w-full">
+              <div className="flex flex-row gap-[60px] 2xl:gap-20 w-full">
                 <div className="w-[420px] xl:w-[490px] 2xl:w-[750px] flex-shrink-0">
                   <PosterCarousel images={posterImages} title={title} variant="lg" />
                 </div>
@@ -144,10 +144,12 @@ const PerformanceLayout = ({ posterImages, title, performance }: PerformanceLayo
             </div>
           </div>
 
-          {/* LG+: Footer */}
-          <div className="hidden lg:block mt-20 -mx-15 xl:-mx-15 2xl:-mx-10">
-            <Footer />
-          </div>
+          {/* LG+: Footer - 공연안내 탭에서만 표시 */}
+          {activeTab === "notice" && (
+            <div className="hidden lg:block mt-20">
+              <Footer className="!px-0" />
+            </div>
+          )}
         </div>
       </div>
     </>
