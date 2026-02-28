@@ -52,7 +52,7 @@ const DesktopHeader = () => {
   return (
     <div
       className={cn(
-        "md:h-[80px] 2xl:h-[100px] px-5 sm:px-10 md:px-10 xl:px-20 hidden md:flex sm:justify-between",
+        "sm:h-[80px] 2xl:h-[100px] px-5 sm:px-10 md:px-10 xl:px-20 hidden sm:flex sm:justify-between",
         isClubPage && "border-b border-black/20",
         isClubDetailPage
           ? scrollProgress > 0

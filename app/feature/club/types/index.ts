@@ -30,7 +30,7 @@ export interface Club {
   reviewCnt: number | null;
   createdAt: string;
   owner: ClubOwner;
-  mainImage?: ClubImage;
+  images?: ClubImage[];
   keywords: ClubKeyword[];
   latitude?: number;
   longitude?: number;
@@ -161,6 +161,7 @@ export interface Performance {
   isCanceled: boolean;
   description: string;
   isAttend: boolean;
+  artists?: Array<{ name: string }>;
 }
 
 export interface ClubDetailCalendarResponse {

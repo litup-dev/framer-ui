@@ -39,13 +39,15 @@ export const CalendarDayHeader = ({
         <Title
           className={cn(
             "text-[12px] md:text-[16px] xl:text-[16px] 2xl:text-[20px]",
-            !isXl && hasImage
-              ? "text-white"
-              : !isXl && (isSelected || isTodayDate)
+            isTodayDate
+              ? "text-black"
+              : !isXl && hasImage
                 ? "text-white"
-                : isHovered && isXl
-                  ? "text-white xl:text-white"
-                  : !isXl && !hasImage && "text-gray xl:text-black",
+                : !isXl && isSelected
+                  ? "text-white"
+                  : isHovered && isXl
+                    ? "text-white xl:text-white"
+                    : !isXl && !hasImage && "text-gray xl:text-black",
           )}
         >
           {dayNumber}

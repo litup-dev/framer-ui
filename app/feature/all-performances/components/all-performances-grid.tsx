@@ -27,8 +27,8 @@ export const AllPerformancesGrid = ({
 
   return (
     <div
-      className="grid grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 xl:gap-x-10 xl:gap-y-14
-    gap-x-2.5 gap-y-6 lg:gap-x-5 lg:gap-y-12 2xl:gap-y-16"
+      className="grid grid-cols-3 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 xl:gap-x-10 xl:gap-y-14
+    gap-x-2.5 gap-y-6 md:gap-x-5 md:gap-y-12 2xl:gap-y-16"
     >
       {performances.map((performance) => (
         <PerformanceCard key={performance.id} performance={performance} />

@@ -23,7 +23,7 @@ const getImageUrl = (filePath: string | null | undefined): string | null => {
 };
 
 const ClubImage = ({ club, size = "md", className = "" }: ClubImageProps) => {
-  const imageUrl = getImageUrl(club.mainImage?.filePath);
+  const imageUrl = getImageUrl(club.images?.[0]?.filePath);
 
   return (
     <div

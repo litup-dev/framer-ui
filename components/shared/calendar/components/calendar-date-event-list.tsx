@@ -5,6 +5,7 @@ import { CalendarEvent } from "@/components/shared/calendar/types";
 import { Description, Subtitle } from "@/components/shared/typography";
 import Image from "next/image";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
+import Link from "next/link";
 
 const DEFAULT_IMAGE = "/images/poster1.png";
 
@@ -31,7 +32,7 @@ const CalendarDateEventList = ({
 
   const totalPerformances = events.reduce(
     (sum, event) => sum + (event.performances?.length || 0),
-    0
+    0,
   );
 
   return (
@@ -70,31 +71,39 @@ const CalendarDateEventList = ({
               <div key={`${event.id}-${performance.id}-${performanceIndex}`}>
                 <div className="space-y-2.5">
                   <div className="relative w-full aspect-[94/117] overflow-hidden">
-                    <Image
-                      src={imageUrl}
-                      alt={performance.title || "Performance image"}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 33vw, 25vw"
-                    />
+                    <Link href={`/performance/${performance.id}`}>
+                      <Image
+                        src={imageUrl}
+                        alt={performance.title || "Performance image"}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 33vw, 25vw"
+                      />
+                    </Link>
                   </div>
-                  <div className="space-y-1.5">
-                    <Description className="text-[12px] md:text-[14px] text-black/50 truncate">
-                      {event.clubName}
-                    </Description>
-                    <Subtitle className="text-[14px] md:text-[16px] lg:text-[18px] truncate">
-                      {performance.title}
-                    </Subtitle>
-                    {artistNames && (
-                      <Description className="text-black text-[12px] md:text-[14px] truncate">
-                        {artistNames}
+                  <div className="flex flex-col gap-1.5">
+                    <Link href={`/club/${event.id}`}>
+                      <Description className="text-[12px] md:text-[14px] text-black/50 truncate">
+                        {event.clubName}
                       </Description>
-                    )}
+                    </Link>
+                    <Link href={`/performance/${performance.id}`}>
+                      <div className="flex flex-col gap-1.5">
+                        <Subtitle className="text-[14px] md:text-[16px] lg:text-[18px] truncate">
+                          {performance.title}
+                        </Subtitle>
+                        {artistNames && (
+                          <Description className="text-black text-[12px] md:text-[14px] truncate">
+                            {artistNames}
+                          </Description>
+                        )}
+                      </div>
+                    </Link>
                   </div>
                 </div>
               </div>
             );
-          })
+          }),
         )}
       </div>
     </div>

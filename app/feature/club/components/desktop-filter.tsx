@@ -95,11 +95,11 @@ const DesktopFilter = ({
   };
 
   return (
-    <div className="flex h-full gap-[40px]">
-      <div className="w-3/8 bg-white border-gray-200 flex flex-col h-full">
-        <div className="flex-1 overflow-y-auto  min-h-0">
+    <div className="flex h-full gap-10">
+      <div className="w-3/8 xl:w-3/7 2xl:w-3/8 bg-white border-gray-200 flex flex-col h-full">
+        <div className="flex-1 overflow-y-auto min-h-0">
           <div className="space-y-6">
-            <SearchFormField />
+            <SearchFormField variant="desktop" />
             <div className="space-y-4">
               <KeywordList categories={categories?.data} />
               <div>
@@ -117,7 +117,7 @@ const DesktopFilter = ({
                       <div className="flex items-center gap-0.5">
                         <SelectValue
                           placeholder="권역"
-                          className="text-[14px] xl:text-[16px]"
+                          className="text-[14px] 2xl:text-[16px]"
                         />
                         <Image
                           src="/images/location.svg"
@@ -132,7 +132,7 @@ const DesktopFilter = ({
                         .filter((item) => item.label !== "내 주변")
                         .map((item) => (
                           <SelectItem key={item.id} value={item.value}>
-                            <Subtitle className="text-[14px] xl:text-[16px]">
+                            <Subtitle className="text-[14px] 2xl:text-[16px]">
                               {item.label}
                             </Subtitle>
                           </SelectItem>
@@ -149,11 +149,11 @@ const DesktopFilter = ({
                     )}
                   >
                     {selectedRegion === "nearby" ? (
-                      <Subtitle className="text-[14px] xl:text-[16px] text-main">
+                      <Subtitle className="text-[14px] 2xl:text-[16px] text-main ">
                         내 주변
                       </Subtitle>
                     ) : (
-                      <Description className="text-[14px] xl:text-[16px] text-black/60">
+                      <Description className="text-[14px] 2xl:text-[16px] text-black/60">
                         내 주변
                       </Description>
                     )}
@@ -167,7 +167,7 @@ const DesktopFilter = ({
                           handleFilterClick(filter.id, currentOptionIndex)
                         }
                         className={cn(
-                          "rounded-[4px] cursor-pointer transition-colors p-2.5 border box-border",
+                          "rounded-[4px] cursor-pointer transition-colors p-2.5 border box-border h-[31px] sm:h-[34px] 2xl:h-[36px] flex items-center",
                           isActive(filter.id)
                             ? "border-main text-main border-2"
                             : "bg-transparent text-gray-700 hover:bg-gray-100 border-gray-300",
@@ -175,11 +175,11 @@ const DesktopFilter = ({
                       >
                         <div className="flex items-center gap-1">
                           {isActive(filter.id) ? (
-                            <Subtitle className="text-[14px] xl:text-[16px] text-main">
+                            <Subtitle className="text-[14px] 2xl:text-[16px] text-main">
                               {getFilterLabel(filter)}
                             </Subtitle>
                           ) : (
-                            <Description className="text-[14px] xl:text-[16px] text-black/60">
+                            <Description className="text-[14px] 2xl:text-[16px] text-black/60">
                               {getFilterLabel(filter)}
                             </Description>
                           )}
@@ -245,7 +245,7 @@ const DesktopFilter = ({
         )}
       </div>
 
-      <div className="hidden xl:block w-3/5 relative flex-1 min-h-0">
+      <div className="hidden lg:block w-3/5 relative flex-1 min-h-0">
         <div className="absolute inset-0 -right-5 md:-right-10 lg:-right-15 xl:-right-20">
           <KakaoMap club={selectedClub} clubs={clubs} />
         </div>

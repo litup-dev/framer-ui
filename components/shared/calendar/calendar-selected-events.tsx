@@ -9,6 +9,7 @@ import { CalendarEvent } from "@/components/shared/calendar/types";
 import { Description, Subtitle, Title } from "@/components/shared/typography";
 import FadeIn from "@/components/shared/fade-in";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
+import Link from "next/link";
 
 const DEFAULT_IMAGE = "/images/poster1.png";
 
@@ -68,9 +69,11 @@ export const CalendarSelectedEvents = ({
                             </Subtitle>
 
                             <div className="flex flex-col gap-1.5 sm:gap-2">
-                              <Subtitle className="text-black text-[15px] sm:text-[16px] md:text-[20px]">
-                                {performance.title}
-                              </Subtitle>
+                              <Link href={`/performance/${performance.id}`}>
+                                <Subtitle className="text-black text-[15px] sm:text-[16px] md:text-[20px]">
+                                  {performance.title}
+                                </Subtitle>
+                              </Link>
 
                               {performance.artists &&
                                 performance.artists.length > 0 && (
@@ -91,23 +94,27 @@ export const CalendarSelectedEvents = ({
                                 )}
                             </div>
                           </div>
-                          <div className="flex items-center">
-                            <MapPin className="w-4 h-4 text-black-60" />
-                            <Title className="text-black-60 text-[12px] sm:text-[14px] md:text-[16px]">
-                              {event.clubName}
-                            </Title>
-                          </div>
+                          <Link href={`/club/${event.id}`}>
+                            <div className="flex items-center">
+                              <MapPin className="w-4 h-4 text-black-60" />
+                              <Title className="text-black-60 text-[12px] sm:text-[14px] md:text-[16px]">
+                                {event.clubName}
+                              </Title>
+                            </div>
+                          </Link>
                         </div>
                       </div>
 
                       <div className="flex-shrink-0 w-[90px] h-[113px] sm:w-[133px] sm:h-[166px] md:w-[160px] md:h-[200px] relative bg-gray overflow-hidden transition-all duration-300 ease-in-out">
-                        <Image
-                          src={imageUrl}
-                          alt={performance.title || "Performance image"}
-                          fill
-                          sizes="(max-width: 640px) 90px, (max-width: 768px) 133px, 160px"
-                          className="object-cover"
-                        />
+                        <Link href={`/performance/${performance.id}`}>
+                          <Image
+                            src={imageUrl}
+                            alt={performance.title || "Performance image"}
+                            fill
+                            sizes="(max-width: 640px) 90px, (max-width: 768px) 133px, 160px"
+                            className="object-cover"
+                          />
+                        </Link>
                       </div>
                     </div>
                   );

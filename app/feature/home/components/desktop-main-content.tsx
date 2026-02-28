@@ -52,7 +52,7 @@ const DesktopMainContent = ({
 
     const targetOffset = (currentPage - 1) * limit;
     const pageIndex = performances.pages.findIndex(
-      (page) => page.offset === targetOffset
+      (page) => page.offset === targetOffset,
     );
 
     if (pageIndex !== -1) {
@@ -83,7 +83,7 @@ const DesktopMainContent = ({
       const targetOffset = (page - 1) * limit;
       let currentMaxOffset = Math.max(
         ...(performances?.pages.map((p) => p.offset) || [0]),
-        0
+        0,
       );
 
       while (targetOffset > currentMaxOffset && hasNextPage && fetchNextPage) {
@@ -91,7 +91,7 @@ const DesktopMainContent = ({
         await new Promise((resolve) => setTimeout(resolve, 50));
         currentMaxOffset = Math.max(
           ...(performances?.pages.map((p) => p.offset) || [0]),
-          0
+          0,
         );
         if (currentMaxOffset >= targetOffset) {
           break;
@@ -101,7 +101,7 @@ const DesktopMainContent = ({
       setCurrentPage(page);
       window.scrollTo({ top: 0, behavior: "smooth" });
     },
-    [performances?.pages, hasNextPage, fetchNextPage, total, limit]
+    [performances?.pages, hasNextPage, fetchNextPage, total, limit],
   );
 
   if (showAllItems) {

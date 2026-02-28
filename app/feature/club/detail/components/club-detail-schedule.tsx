@@ -4,19 +4,20 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { format, getDate } from "date-fns";
 import { ko } from "date-fns/locale";
-import { Check, Plus } from "lucide-react";
+import { Check, ChevronRightIcon, Plus } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useUserStore } from "@/store/user-store";
 
 import { cn } from "@/lib/utils";
+import { useUserStore } from "@/store/user-store";
 import { useCommonModalStore } from "@/store/common-modal-store";
-
 import { Description, Subtitle } from "@/components/shared/typography";
 import { Button } from "@/components/ui/button";
 import { performaceAttendByIdOptions } from "@/app/feature/club/query-options";
+import Link from "next/link";
 
 interface ScheduleEvent {
   id: number;
+  artists: { name: string }[] | null;
   date: Date;
   time: string;
   entry: string;
@@ -31,18 +32,177 @@ interface ClubDetailScheduleProps {
   month: string;
 }
 
-const ClubDetailSchedule = ({
+function groupEventsByDate(events: ScheduleEvent[]) {
+  return events.reduce(
+    (acc, event) => {
+      const dateKey = format(event.date, "yyyy-MM-dd");
+      if (!acc[dateKey]) acc[dateKey] = [];
+      acc[dateKey].push(event);
+      return acc;
+    },
+    {} as Record<string, ScheduleEvent[]>,
+  );
+}
+
+function EventDateCell({
+  dayOfWeek,
+  day,
+  isVisible,
+}: {
+  dayOfWeek: string;
+  day: number;
+  isVisible: boolean;
+}) {
+  return (
+    <div className="flex w-10 shrink-0 items-center justify-center lg:w-16">
+      {isVisible ? (
+        <div className="flex flex-col items-center sm:gap-0.5">
+          <Subtitle className="text-[11px] sm:text-[12px] text-black/80">
+            {dayOfWeek}
+          </Subtitle>
+          <Subtitle className="text-[28px] sm:text-[32px] leading-none">
+            {day}
+          </Subtitle>
+        </div>
+      ) : (
+        <div className="min-h-0" aria-hidden />
+      )}
+    </div>
+  );
+}
+
+function EventTimeEntry({
+  time,
+  entry,
+  isFirstInDay,
+}: {
+  time: string;
+  entry: string;
+  isFirstInDay: boolean;
+}) {
+  const hasMultipleParts = entry.includes(" / ");
+  const entryParts = hasMultipleParts
+    ? entry.split(" / ").filter(Boolean)
+    : [entry];
+
+  return (
+    <div
+      className={cn(
+        "grid grid-cols-[auto_1fr] gap-x-1.5 gap-y-1.5 items-start pl-4 sm:pl-6 lg:min-w-[240px] lg:shrink-0 lg:place-content-center text-black/80",
+        isFirstInDay
+          ? "border-l border-gray-200"
+          : "sm:border-l sm:border-gray-200",
+      )}
+    >
+      <Image
+        src="/images/watch.svg"
+        alt=""
+        width={20}
+        height={20}
+        className="w-3.5 h-3.5 sm:w-5 sm:h-5 shrink-0"
+      />
+      <Description className="text-[13px] sm:text-[16px]">{time}</Description>
+      <Image
+        src="/images/wallet.svg"
+        alt=""
+        width={20}
+        height={20}
+        className="w-3.5 h-3.5 sm:w-5 sm:h-5 shrink-0"
+      />
+      <div className="flex flex-col gap-0.5 min-w-0">
+        {entryParts.map((part) => (
+          <Description
+            key={part}
+            className="text-[13px] sm:text-[16px] text-left leading-tight"
+          >
+            {part}
+          </Description>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function EventTitleArtists({
+  title,
+  artists,
+  id,
+}: {
+  title: string;
+  artists: ScheduleEvent["artists"];
+  id: number;
+}) {
+  const artistNames = artists?.map((a) => a.name).join(", ") ?? "";
+
+  return (
+    <Link href={`/performance/${id}`}>
+      <div className="flex min-w-0 flex-1 flex-col gap-1.5 justify-center pl-4 sm:pl-6 min-h-0 lg:min-w-0 lg:border-l lg:border-gray-200 lg:pl-6">
+        <Subtitle className="text-[15px] sm:text-[18px]">{title}</Subtitle>
+        <div className="flex items-center gap-0.5">
+          <Description className="text-[14px] sm:text-[16px] text-black/60">
+            {artistNames}
+          </Description>
+          <ChevronRightIcon className="w-4 h-4 sm:w-5 sm:h-5 text-black/60 shrink-0" />
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+function AttendButton({
+  isAttend,
+  onClick,
+}: {
+  isAttend: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <div
+      onClick={onClick}
+      className="flex shrink-0 flex-col items-center justify-start"
+    >
+      {isAttend ? (
+        <>
+          <Button className="lg:hidden w-9 h-9 shrink-0 border-2 border-main bg-main rounded flex items-center justify-center hover:bg-main/90 transition-colors">
+            <Check className="w-5 h-5 text-white" />
+          </Button>
+          <Button className="hidden lg:flex border-2 border-main bg-white text-main hover:bg-main hover:text-white">
+            <Subtitle className="text-[14px] xl:text-[16px] group-hover:text-white transition-colors">
+              기대돼요
+            </Subtitle>
+            <Check className="w-5 h-5 text-main group-hover:text-white transition-colors" />
+          </Button>
+        </>
+      ) : (
+        <>
+          <Button className="group lg:hidden w-9 h-9 shrink-0 bg-gray rounded flex items-center justify-center hover:bg-main transition-colors hover:text-white">
+            <Plus className="w-5 h-5 text-black group-hover:text-white transition-colors" />
+          </Button>
+          <Button className="hidden lg:flex bg-gray hover:bg-main hover:text-white">
+            <Subtitle className="text-[14px] xl:text-[16px] group-hover:text-white transition-colors text-black">
+              보고 싶어요
+            </Subtitle>
+            <Plus className="w-5 h-5 text-black group-hover:text-white transition-colors" />
+          </Button>
+        </>
+      )}
+    </div>
+  );
+}
+
+export default function ClubDetailSchedule({
   events,
   clubId,
   month,
-}: ClubDetailScheduleProps) => {
+}: ClubDetailScheduleProps) {
   const queryClient = useQueryClient();
   const { isAuthenticated } = useUserStore();
+  const { openModal } = useCommonModalStore();
+  const router = useRouter();
   const { mutate } = useMutation(
     performaceAttendByIdOptions(clubId, month, queryClient),
   );
-  const { openModal } = useCommonModalStore();
-  const router = useRouter();
+
   const handleAttend = (id: number) => {
     if (!isAuthenticated) {
       openModal({
@@ -57,17 +217,7 @@ const ClubDetailSchedule = ({
     mutate(id);
   };
 
-  const groupedEvents = events.reduce(
-    (acc, event) => {
-      const dateKey = format(event.date, "yyyy-MM-dd");
-      if (!acc[dateKey]) {
-        acc[dateKey] = [];
-      }
-      acc[dateKey].push(event);
-      return acc;
-    },
-    {} as Record<string, ScheduleEvent[]>,
-  );
+  const groupedEvents = groupEventsByDate(events);
 
   if (events.length === 0 || Object.keys(groupedEvents).length === 0) {
     return (
@@ -81,97 +231,43 @@ const ClubDetailSchedule = ({
 
   return (
     <div className="space-y-4">
-      {Object.entries(groupedEvents).map(([dateKey, events]) => {
-        const firstEvent = events[0];
+      {Object.entries(groupedEvents).map(([dateKey, dayEvents]) => {
+        const firstEvent = dayEvents[0];
         const dayOfWeek = format(firstEvent.date, "EEEE", { locale: ko });
         const day = getDate(firstEvent.date);
 
         return (
           <div
             key={dateKey}
-            className="border rounded-lg py-5 px-4 space-y-4 lg:space-y-8 relative"
+            className="border rounded-lg py-5 px-4 space-y-4 lg:space-y-8"
           >
-            {events.map((event, eventIndex) => (
-              <div key={eventIndex} className="flex gap-4 items-center">
-                <div className="w-10 lg:w-16 flex-shrink-0 flex items-center justify-center flex-col gap-0.5">
-                  {eventIndex === 0 && (
-                    <>
-                      <Subtitle className="text-black text-[11px] sm:text-[12px] leading-tight text-left">
-                        {dayOfWeek}
-                      </Subtitle>
-                      <Subtitle className="text-[28px] sm:text-[32px]">
-                        {day}
-                      </Subtitle>
-                    </>
-                  )}
+            {dayEvents.map((event, eventIndex) => (
+              <div
+                key={event.id}
+                className="relative flex gap-4 items-start pr-12 lg:items-center lg:pr-0"
+              >
+                <EventDateCell
+                  dayOfWeek={dayOfWeek}
+                  day={day}
+                  isVisible={eventIndex === 0}
+                />
+                <div className="flex flex-1 flex-col gap-3 min-w-0 lg:flex-row lg:gap-6 lg:items-center">
+                  <EventTimeEntry
+                    time={event.time}
+                    entry={event.entry}
+                    isFirstInDay={eventIndex === 0}
+                  />
+                  <EventTitleArtists
+                    title={event.title}
+                    artists={event.artists}
+                    id={event.id}
+                  />
                 </div>
-                <div className="flex-1 flex flex-col lg:flex-row gap-3 lg:gap-6">
-                  <div className="flex flex-col justify-center border-l-2 border-gray pl-4 space-y-1.5 lg:min-w-[240px] lg:flex-shrink-0">
-                    <div className="flex items-center gap-1.5 text-sm text-black-80">
-                      <Image
-                        src="/images/watch.svg"
-                        alt="clock"
-                        width={14}
-                        height={14}
-                      />
-                      <Description className="text-[13px] sm:text-[16px]">
-                        {event.time}
-                      </Description>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-sm text-black-80">
-                      <Image
-                        src="/images/wallet.svg"
-                        alt="clock"
-                        width={14}
-                        height={14}
-                      />
-                      <Description className="text-[13px] sm:text-[16px] break-words">
-                        {event.entry}
-                      </Description>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col justify-center pl-4 space-y-1.5 lg:border-l-2 lg:border-gray lg:pl-6 lg:flex-1 gap-2">
-                    <Subtitle className="text-black text-[15px] sm:text-[18px]">
-                      {event.title}
-                    </Subtitle>
-                    {/* <Description className="text-[13px] sm:text-[16px] text-black-60">
-                      {event.description}
-                    </Description> */}
-                  </div>
-                </div>
-                <div className="absolute top-5 right-5 lg:static lg:top-auto lg:right-auto flex-shrink-0 flex flex-col items-center justify-start">
-                  {event.isAttend ? (
-                    <div onClick={() => handleAttend(event.id)}>
-                      <Button className="lg:hidden w-9 h-9 border-2 border-orange-500 bg-orange-500 rounded flex items-center justify-center hover:bg-orange-600 transition-colors">
-                        <Check className="w-5 h-5 text-white" />
-                      </Button>
-                      <Button
-                        className={cn(
-                          "hidden lg:flex border-2 border-orange-500 bg-white text-main",
-                          "hover:bg-orange-500 hover:text-white",
-                        )}
-                      >
-                        <Subtitle className="text-[14px] xl:text-[16px]">
-                          기대돼요
-                        </Subtitle>
-                        <Check />
-                      </Button>
-                    </div>
-                  ) : (
-                    <div onClick={() => handleAttend(event.id)}>
-                      <Button className="group lg:hidden bg-gray w-9 h-9 rounded flex items-center justify-center hover:bg-main transition-colors hover:text-white">
-                        <Plus className="text-black w-10 group-hover:text-white transition-colors" />
-                      </Button>
-                      <Button
-                        className={cn("hidden lg:flex bg-gray-100 text-black")}
-                      >
-                        <Subtitle className="text-[14px] xl:text-[16px] hover:text-white">
-                          보고 싶어요 +
-                        </Subtitle>
-                      </Button>
-                    </div>
-                  )}
+                <div className="absolute top-0 right-0 flex justify-end lg:static lg:top-auto lg:right-auto lg:shrink-0">
+                  <AttendButton
+                    isAttend={event.isAttend}
+                    onClick={() => handleAttend(event.id)}
+                  />
                 </div>
               </div>
             ))}
@@ -180,6 +276,4 @@ const ClubDetailSchedule = ({
       })}
     </div>
   );
-};
-
-export default ClubDetailSchedule;
+}
