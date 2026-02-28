@@ -46,7 +46,7 @@ interface ReviewItem {
   };
   rating: number;
   keywordIds: number[];
-  publicId: number;
+  publicId: string;
 }
 
 const ClubDetailReview = ({
@@ -117,7 +117,7 @@ const ClubDetailReview = ({
           },
           rating: review.rating || 0,
           keywordIds: review.keywords.map((k) => k.id),
-          publicId: review.publicId,
+          publicId: String(review.publicId),
         };
       });
   };

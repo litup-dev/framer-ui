@@ -24,6 +24,7 @@ import { Club } from "@/app/feature/club/types";
 import ClubCard from "@/app/feature/club/components/club-card";
 import KeywordList from "@/app/feature/club/components/keyword-list";
 import { ClubsPagination } from "@/app/feature/club/components/clubs-pagination";
+import Image from "next/image";
 
 type FilterItem = (typeof filterItems)[number];
 
@@ -60,7 +61,6 @@ const MobileFilter = ({
 
   const {
     activeFilterId,
-    selectedOptions,
     selectedRegion,
     handleFilterClick: handleFilterClickHook,
     getCurrentOptionIndex,
@@ -113,9 +113,9 @@ const MobileFilter = ({
   }, [viewType]);
 
   return (
-    <div className="space-y-6 ">
-      <div className="relative">
-        <SearchFormField onFocus={() => setViewType("list")} />
+    <div className="">
+      <div className="relative space-y-7 md:space-y-8">
+        <SearchFormField variant="mobile" onFocus={() => setViewType("list")} />
 
         <div
           onClick={() => {
@@ -123,15 +123,20 @@ const MobileFilter = ({
             setViewType(viewType === "list" ? "map" : "list");
           }}
           className={cn(
-            "w-10 h-10 rounded-[2px] absolute top-18 right-0 flex items-center justify-center transition-colors z-50",
-
+            "w-10 h-10 rounded-[2px] absolute  md:top-[80px] right-[20px] flex items-center justify-center transition-colors z-50",
             viewType === "list"
               ? "opacity-70 bg-[#0000004D]"
               : "opacity-100 bg-main",
           )}
         >
           {viewType === "list" ? (
-            <Map className="size-5 text-white" />
+            <Image
+              src="/images/club-map-icon.svg"
+              alt="map"
+              width={20}
+              height={20}
+              className="size-6"
+            />
           ) : (
             <List className="size-5 text-white" />
           )}
@@ -140,16 +145,16 @@ const MobileFilter = ({
 
       {viewType === "list" ? (
         <>
-          <div className="space-y-4">
+          <div className="space-y-3 px-5 sm:pl-[40px]">
             <KeywordList categories={categories?.data} />
-            <div>
+            <div className="pb-1">
               <div className="flex gap-2 items-center">
                 {regionOptions.map((item) => (
                   <div
                     key={item.id}
                     onClick={() => handleRegionClick(item.value)}
                     className={cn(
-                      "border px-2.5 py-2 rounded-[3px] cursor-pointer transition-colors",
+                      "border px-2.5 py-[11px] rounded-[3px] cursor-pointer transition-colors max-h-[31px] flex items-center justify-center",
                       selectedRegion === item.value
                         ? "border-2 border-main text-main"
                         : "bg-transparent text-gray-700",
@@ -168,13 +173,13 @@ const MobileFilter = ({
                 ))}
               </div>
             </div>
+            <Separator className="px-5" />
           </div>
-          <Separator />
 
-          <div className="space-y-5">
+          <div className="space-y-6 px-5 sm:pl-[40px] pt-4">
             <div
               className={cn(
-                "flex transition-all duration-200",
+                "flex transition-all duration-200 pb-1",
                 activeFilterId === null ? "gap-0" : "gap-4",
               )}
             >
@@ -228,7 +233,6 @@ const MobileFilter = ({
                     setViewType("map");
                   }}
                 />
-                <Separator className="block lg:hidden mt-6" />
               </div>
             ))}
           </div>

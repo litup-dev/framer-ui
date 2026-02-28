@@ -11,6 +11,7 @@ import { deleteReviewOptions } from "@/app/feature/club/query-options";
 import { formatDate } from "@/lib/date-utils";
 import { Textarea } from "@/components/ui/textarea";
 import { Description, Subtitle } from "@/components/shared/typography";
+import Link from "next/link";
 
 interface ReviewItem {
   id: number;
@@ -26,7 +27,7 @@ interface ReviewItem {
   };
   rating: number;
   keywordIds: number[];
-  publicId: number;
+  publicId: string;
 }
 
 interface ClubDetailReviewItemProps {
@@ -131,11 +132,15 @@ const ClubDetailReviewItem = ({
     setIsExpanded(!isExpanded);
   };
 
+  console.log(review, "<<<");
+
   return (
     <div className="space-y-3 py-4 lg:py-6.5 xl:space-y-6.5 border-b">
       <div className="flex items-center gap-2">
         <div className="w-8 h-8 bg-gray-300 rounded-full flex-shrink-0" />
-        <div className="flex-1 text-subtitle-14">{review.user.name}</div>
+        <Link href={`/user/${review.publicId}`}>
+          <div className="flex-1 text-subtitle-14">{review.user.name}</div>
+        </Link>
         <div className="flex items-center text-description-14 gap-0.5">
           <Image
             src="/images/review_rate.svg"

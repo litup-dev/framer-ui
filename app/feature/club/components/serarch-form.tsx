@@ -101,10 +101,10 @@ const ClubSearchForm = () => {
         page: currentPage,
         limit,
         keywords: keywords && keywords.length > 0 ? keywords : undefined,
-        latitude: region === "nearby" ? latitude ?? undefined : undefined,
-        longitude: region === "nearby" ? longitude ?? undefined : undefined,
+        latitude: region === "nearby" ? (latitude ?? undefined) : undefined,
+        longitude: region === "nearby" ? (longitude ?? undefined) : undefined,
       }),
-    [search, region, sort, currentPage, limit, keywords, latitude, longitude]
+    [search, region, sort, currentPage, limit, keywords, latitude, longitude],
   );
 
   const { data } = useQuery({ ...clubsQueryOptions });
@@ -124,8 +124,8 @@ const ClubSearchForm = () => {
 
   return (
     <FormProvider {...form}>
-      <div className="h-full">
-        <div className="lg:hidden h-full">
+      <div className="relative h-full min-h-0 flex-1">
+        <div className="absolute inset-0 h-full w-full lg:hidden">
           <MobileFilter
             clubs={clubs}
             setViewType={setViewType}
@@ -136,7 +136,7 @@ const ClubSearchForm = () => {
             currentPage={currentPage}
           />
         </div>
-        <div className="hidden lg:block h-full">
+        <div className="absolute inset-0 hidden h-full w-full lg:block">
           <DesktopFilter
             clubs={clubs}
             selectedClub={selectedClub}

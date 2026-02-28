@@ -72,7 +72,7 @@ export const CalendarDayEvents = ({
                     isHovered && isXl ? "text-white" : "text-black",
                   )}
                 >
-                  {event.clubName}
+                  <Link href={`/club/${event.id}`}>{event.clubName}</Link>
                 </Title>
               </div>
 

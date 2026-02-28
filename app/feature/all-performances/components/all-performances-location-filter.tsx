@@ -29,7 +29,7 @@ export const AllPerformancesLocationFilter = () => {
   };
 
   return (
-    <div className="sm:pt-22 flex gap-4 sm:gap-6">
+    <div className="sm:pt-19 xl:pt-22 flex gap-4 sm:gap-6">
       {locations.map((location) => (
         <Button
           key={location.id}

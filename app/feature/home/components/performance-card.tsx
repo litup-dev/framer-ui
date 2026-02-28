@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Description, Subtitle } from "@/components/shared/typography";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
@@ -9,6 +10,7 @@ interface Performance {
   id: number;
   title: string;
   club: {
+    id: number;
     name: string;
   };
   images: Array<{
@@ -83,6 +85,7 @@ const ArtistsDisplay = ({ artists }: { artists?: Array<{ name: string }> }) => {
 };
 
 export const PerformanceCard = ({ performance }: PerformanceCardProps) => {
+  const router = useRouter();
   const mainImage =
     performance.images.find((img) => img.isMain) || performance.images[0];
   const imageUrl = getImageUrl(mainImage?.filePath);
@@ -104,9 +107,19 @@ export const PerformanceCard = ({ performance }: PerformanceCardProps) => {
           </div>
         </div>
         <CardContent className="flex flex-col justify-start space-y-2.5">
-          <Description className="text-gray-400 text-[16px] truncate">
-            {performance.club.name}
-          </Description>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              router.push(`/club/${performance.club.id}`);
+            }}
+            className="text-left w-full"
+          >
+            <Description className="text-gray-400 text-[16px] truncate hover:text-gray-600 cursor-pointer">
+              {performance.club.name}
+            </Description>
+          </button>
           <Subtitle className="text-[20px] text-black truncate leading-[120%]">
             {performance.title}
           </Subtitle>

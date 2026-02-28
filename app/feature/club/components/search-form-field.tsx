@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { SearchIcon } from "lucide-react";
 
 import { ClubSearchFormSchema } from "@/app/feature/club/schema";
 import { useDebounce } from "@/hooks/use-debounce";
 
+import { cn } from "@/lib/utils";
 import {
   InputGroup,
   InputGroupAddon,
@@ -16,10 +16,15 @@ import { FormControl, FormField } from "@/components/ui/form";
 import Image from "next/image";
 
 interface SearchFormFieldProps {
+  variant?: "mobile" | "desktop";
   onFocus?: () => void;
 }
 
-const SearchFormField = ({ onFocus }: SearchFormFieldProps) => {
+const SearchFormField = ({
+  variant = "desktop",
+  onFocus,
+}: SearchFormFieldProps) => {
+  const isMobile = variant === "mobile";
   const { control, handleSubmit, setValue } =
     useFormContext<ClubSearchFormSchema>();
   const [inputValue, setInputValue] = useState<string>("");
@@ -38,31 +43,62 @@ const SearchFormField = ({ onFocus }: SearchFormFieldProps) => {
       control={control}
       name="search"
       render={({ field }) => (
-        <div className="space-y-2 pt-3">
-          <InputGroup className="border-b-3 border-main h-12 xl:min-h-[64px]">
+        <div
+          className={cn("space-y-2 pt-0", isMobile && "pt-0 sm:pt-20 md:pt-0")}
+        >
+          <InputGroup className="h-12 xl:min-h-[64px] lg:border-b-3 lg:border-main">
             <InputGroupAddon
               align="inline-start"
+              className={cn(
+                isMobile &&
+                  "!pl-5 !pr-4 sm:!pl-10 md:!pl-[38px] sm:!pr-4 lg:!pl-[38px] md:!pr-4",
+                !isMobile && "lg:!pr-2",
+              )}
               onClick={handleSubmit(onSubmit)}
             >
               <Image
                 src="/images/search-icon.svg"
                 alt="search"
-                width={32}
-                height={32}
+                width={28}
+                height={28}
+                className="hidden lg:block"
+              />
+              <Image
+                className="block lg:hidden"
+                src="/images/search-icon-mobile.svg"
+                alt="search"
+                width={24}
+                height={24}
               />
             </InputGroupAddon>
-            <FormControl>
-              <InputGroupInput
-                placeholder="검색어를 입력하세요."
-                className="placeholder:text-[#2020204D] placeholder:2xl:text-[18px] 2xl:text-[18px]"
-                onFocus={onFocus}
-                value={inputValue}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setInputValue(value);
-                }}
-              />
-            </FormControl>
+            <div className="flex min-w-0 flex-1 items-center border-b-2 border-main sm:border-b-3 lg:border-0">
+              <FormControl>
+                <InputGroupInput
+                  placeholder="검색어를 입력하세요."
+                  className="!pl-0 placeholder:text-[#2020204D] text-[16px] lg:text-[18px] placeholder:lg:text-[18px] 2xl:text-[18px] h-[48px]"
+                  onFocus={onFocus}
+                  value={inputValue}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setInputValue(value);
+                  }}
+                />
+              </FormControl>
+              {inputValue.trim() && (
+                <InputGroupAddon
+                  align="inline-end"
+                  onClick={() => setInputValue("")}
+                  className="cursor-pointer !pr-[15px]"
+                >
+                  <Image
+                    src="/images/x.svg"
+                    alt="clear"
+                    width={24}
+                    height={24}
+                  />
+                </InputGroupAddon>
+              )}
+            </div>
           </InputGroup>
         </div>
       )}

@@ -78,6 +78,11 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
       title: string;
       description: string;
       isAttend: boolean;
+      artists:
+        | {
+            name: string;
+          }[]
+        | null;
     }> = [];
 
     Object.entries(calendarData).forEach(([dateKey, performances]) => {
@@ -101,6 +106,7 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
           title: performance.title,
           description: performance.description,
           isAttend: performance.isAttend,
+          artists: performance.artists ?? null,
         });
       });
     });
@@ -111,6 +117,8 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
   const reviews: Review[] = reviewsData?.items || [];
 
   if (!data?.data) return null;
+
+  console.log(reviews, "<<<<<< reviews");
 
   return (
     <div className="w-screen">

@@ -48,7 +48,7 @@ const MobileHeader = () => {
 
   return (
     <>
-      <div className="pl-5 pr-2 py-2 justify-between flex items-center md:hidden">
+      <div className="pl-5 pr-2 justify-between flex items-center sm:hidden h-12">
         <div className="flex items-center gap-1">
           <Link href="/home">
             <Image src="/images/logo.svg" alt="logo" width={80} height={26} />
@@ -99,7 +99,9 @@ const MobileHeader = () => {
                       onClick={toggleUserDropdown}
                     >
                       <Avatar className="w-8 h-8">
-                        <AvatarImage src={getImageUrl(user?.profilePath) || ""} />
+                        <AvatarImage
+                          src={getImageUrl(user?.profilePath) || ""}
+                        />
                         <AvatarFallback>
                           {user?.nickname?.charAt(0) || ""}
                         </AvatarFallback>
