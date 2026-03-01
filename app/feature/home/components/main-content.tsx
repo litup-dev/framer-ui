@@ -37,7 +37,7 @@ export default function MainContent({
   } = useHomeStore();
 
   return (
-    <div className="flex flex-col md:flex-row gap-5 z-10">
+    <div className="flex flex-col md:flex-row gap-5 z-10 relative">
       <div className="w-full md:w-2/10">
         <SelectShow
           onCategoryChange={(value: "week" | "today" | "free" | "area") =>
@@ -59,6 +59,10 @@ export default function MainContent({
           hasNextPage={hasNextPage}
           fetchNextPage={fetchNextPage}
           isFetchingNextPage={isFetchingNextPage}
+        />
+        <div
+          className="absolute top-0 w-full h-[613px] bg-gradient-to-b from-transparent via-white/30 to-white/60 pointer-events-none -z-10"
+          aria-hidden
         />
       </div>
     </div>

@@ -36,8 +36,7 @@ const ShareModal = ({
 }: ShareModalProps) => {
   const [showCopyToast, setShowCopyToast] = useState(false);
 
-  const shareUrl =
-    typeof window !== "undefined" ? window.location.href : "";
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
 
   useEffect(() => {
     if (showCopyToast) {
@@ -71,7 +70,10 @@ const ShareModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-[355px] h-[260px] md:w-[495px] md:h-[305px] p-0 rounded-[8px]" showCloseButton={false}>
+      <DialogContent
+        className="w-[355px] h-[260px] md:w-[495px] md:h-[305px] p-0 rounded-[8px]"
+        showCloseButton={false}
+      >
         <DialogHeader className="px-6 pt-6 md:px-8 md:pt-8">
           <div className="flex items-center justify-between">
             <DialogTitle className="flex items-center gap-2 text-[18px] md:text-[20px]">
@@ -88,8 +90,20 @@ const ShareModal = ({
               onClick={onClose}
               className="w-8 h-8 flex items-center justify-center transition-colors text-black-60 hover:text-black"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18 6L6 18M6 6L18 18"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </button>
           </div>
@@ -120,7 +134,7 @@ const ShareModal = ({
               onClick={handleKakaoShare}
               className="cursor-pointer hover:opacity-80 transition-opacity"
             >
-              <div className="w-14 h-14 rounded-full bg-[#F2F1EE] flex items-center justify-center">
+              <div className="w-14 h-14 rounded-full bg-[#F7F6F5] flex items-center justify-center">
                 <svg
                   width="20"
                   height="20"
@@ -144,7 +158,12 @@ const ShareModal = ({
               className="cursor-pointer hover:opacity-80 transition-opacity"
             >
               <div className="w-14 h-14 rounded-full bg-[#F2F1EE] flex items-center justify-center">
-                <span className="text-[10px] text-foreground" style={{ fontWeight: 900, letterSpacing: '-0.04em' }}>URL</span>
+                <span
+                  className="text-[10px] text-foreground"
+                  style={{ fontWeight: 900, letterSpacing: "-0.04em" }}
+                >
+                  URL
+                </span>
               </div>
             </button>
           </div>

@@ -21,7 +21,16 @@ interface DetailMobileHeaderProps {
   images?: Array<{ filePath: string; isMain: boolean }>;
 }
 
-const DetailMobileHeader = ({ performanceId, performDate, isAttend, performanceTitle, clubName, description, artists, images }: DetailMobileHeaderProps) => {
+const DetailMobileHeader = ({
+  performanceId,
+  performDate,
+  isAttend,
+  performanceTitle,
+  clubName,
+  description,
+  artists,
+  images,
+}: DetailMobileHeaderProps) => {
   const router = useRouter();
   const { isAuthenticated } = useUserStore();
   const toggleAttendMutation = useToggleAttendance();
@@ -32,7 +41,8 @@ const DetailMobileHeader = ({ performanceId, performDate, isAttend, performanceT
 
   const showLoginModal = () => {
     openModal({
-      description: "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?",
+      description:
+        "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?",
       confirmButton: {
         label: "확인",
         onClick: () => router.push("/login"),
@@ -78,8 +88,18 @@ const DetailMobileHeader = ({ performanceId, performDate, isAttend, performanceT
           }`}
           onClick={handleAttend}
         >
-          {isFutureEvent ? (isAttend ? "기대돼요" : "보고 싶어요") : (isAttend ? "관람 했어요" : "관람 했어요")}
-          {isAttend ? <Check className="h-4 w-4 ml-1" /> : <Plus className="h-4 w-4 ml-1" />}
+          {isFutureEvent
+            ? isAttend
+              ? "기대돼요"
+              : "보고 싶어요"
+            : isAttend
+              ? "관람 했어요"
+              : "관람 했어요"}
+          {isAttend ? (
+            <Check className="h-4 w-4 ml-1" />
+          ) : (
+            <Plus className="h-4 w-4 ml-1" />
+          )}
         </div>
 
         <div

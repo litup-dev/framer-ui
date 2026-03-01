@@ -10,7 +10,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-black: #202020;
+  --color-black: #171717;
   --color-black-80: #202020cc;
   --color-main: #ff491a;
   --leading-percent: 100%;
@@ -142,6 +142,11 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
   body {
     @apply bg-background text-foreground font-sans;
   }

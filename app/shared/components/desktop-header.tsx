@@ -7,22 +7,26 @@ import { cn } from "@/lib/utils";
 import HeaderMenus from "@/app/shared/components/menus";
 import Link from "next/link";
 import { useClubDetailStore } from "@/app/feature/club/detail/store";
+import { useResponsive } from "@/components/shared/calendar/hooks/use-responsive";
 import { useUserStore } from "@/store/user-store";
 import Image from "next/image";
 
 const DesktopHeader = () => {
   const { user } = useUserStore();
   const pathname = usePathname();
+  const isHomePage = pathname === "/home";
   const isClubPage = pathname === "/club";
   const isClubDetailPage =
     pathname?.startsWith("/club/") && pathname !== "/club";
   const [scrollProgress, setScrollProgress] = useState(0);
+  const isXl = useResponsive(1280);
   const { isImageGalleryOpen, isReviewModalOpen } = useClubDetailStore();
 
   useEffect(() => {
-    if (!isClubDetailPage) return;
+    if (!isClubDetailPage && !isHomePage) return;
 
     let rafId: number | null = null;
+    const scrollHeight = isClubDetailPage ? 490 : 200;
 
     const handleScroll = () => {
       if (rafId) {
@@ -31,8 +35,7 @@ const DesktopHeader = () => {
 
       rafId = requestAnimationFrame(() => {
         const scrollY = window.scrollY || window.pageYOffset || 0;
-        const imageHeight = 490;
-        const progress = Math.min(Math.max(scrollY / imageHeight, 0), 1);
+        const progress = Math.min(Math.max(scrollY / scrollHeight, 0), 1);
         setScrollProgress(progress);
       });
     };
@@ -47,7 +50,7 @@ const DesktopHeader = () => {
         cancelAnimationFrame(rafId);
       }
     };
-  }, [isClubDetailPage]);
+  }, [isClubDetailPage, isHomePage]);
 
   return (
     <div
@@ -58,7 +61,9 @@ const DesktopHeader = () => {
           ? scrollProgress > 0
             ? "fixed top-0 left-0 right-0"
             : "absolute top-0 left-0 right-0 text-white"
-          : "fixed top-0 left-0 right-0 bg-white",
+          : isHomePage
+            ? "fixed top-0 left-0 right-0 bg-white xl:bg-transparent"
+            : "fixed top-0 left-0 right-0 bg-white",
         isReviewModalOpen
           ? "z-[40]"
           : isClubDetailPage
@@ -78,12 +83,16 @@ const DesktopHeader = () => {
               opacity: isImageGalleryOpen ? 0 : 1,
               pointerEvents: isImageGalleryOpen ? "none" : "auto",
             }
-          : isImageGalleryOpen
+          : isHomePage && isXl
             ? {
-                opacity: 0,
-                pointerEvents: "none",
+                backgroundColor: `rgba(255, 255, 255, ${scrollProgress})`,
               }
-            : undefined
+            : isImageGalleryOpen
+              ? {
+                  opacity: 0,
+                  pointerEvents: "none",
+                }
+              : undefined
       }
     >
       <div className="flex items-center gap-1">

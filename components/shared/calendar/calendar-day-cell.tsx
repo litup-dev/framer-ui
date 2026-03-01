@@ -114,8 +114,10 @@ export const CalendarDayCell = ({
         key={`button-${dayKey}`}
         ref={buttonRef}
         onClick={() => onDateClick(day)}
-        onMouseEnter={isXl ? () => onMouseEnter(day) : undefined}
-        onMouseLeave={isXl ? onMouseLeave : undefined}
+        onMouseEnter={
+          isXl && dayEvents.length > 0 ? () => onMouseEnter(day) : undefined
+        }
+        onMouseLeave={isXl && dayEvents.length > 0 ? onMouseLeave : undefined}
         className={getButtonClassName(
           isXl,
           isHovered,

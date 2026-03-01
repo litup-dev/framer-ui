@@ -9,9 +9,19 @@ import { cn } from "@/lib/utils";
 import { heroSectionImages } from "@/app/feature/home/mock";
 import { useHomeStore } from "@/app/feature/home/store/home-store";
 
+const AREA_IMAGE_INDEX: Record<string, number> = {
+  seoul: 3,
+  hongdae: 4,
+  busan: 5,
+};
+
 const HeroSection = () => {
-  const { selectedCategory, setIsAnimating, selectedMobileBottomNavigation } =
-    useHomeStore();
+  const {
+    selectedCategory,
+    selectedArea,
+    setIsAnimating,
+    selectedMobileBottomNavigation,
+  } = useHomeStore();
   const [previousIndex, setPreviousIndex] = useState(0);
 
   const getImageIndex = () => {
@@ -23,7 +33,7 @@ const HeroSection = () => {
       case "free":
         return 2;
       case "area":
-        return 3;
+        return AREA_IMAGE_INDEX[selectedArea] ?? AREA_IMAGE_INDEX.seoul;
       default:
         return 0;
     }

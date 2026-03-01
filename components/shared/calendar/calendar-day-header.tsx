@@ -32,7 +32,7 @@ export const CalendarDayHeader = ({
           !isXl &&
             "rounded-full w-6 h-6 md:w-8.5 md:h-8.5 flex items-center justify-center min-w-6",
           !isXl && isSelected && "bg-main",
-          !isXl && isTodayDate && !isSelected && "bg-[#AECACD]",
+          !isXl && isTodayDate && "bg-main",
           !isXl && !isSelected && !isTodayDate && hasImage && "bg-black-60",
         )}
       >
@@ -40,7 +40,7 @@ export const CalendarDayHeader = ({
           className={cn(
             "text-[12px] md:text-[16px] xl:text-[16px] 2xl:text-[20px]",
             isTodayDate
-              ? "text-black"
+              ? "text-white"
               : !isXl && hasImage
                 ? "text-white"
                 : !isXl && isSelected
@@ -57,13 +57,13 @@ export const CalendarDayHeader = ({
         <div
           className={cn(
             "leading-4",
-            isHovered && isXl ? "bg-transparent" : "bg-[#AECACD]",
+            isHovered && isXl ? "bg-transparent" : "bg-main",
           )}
         >
           <Title
             className={cn(
-              "text-black  xl:text-[16px] 2xl:text-[20px]",
-              isHovered && isXl ? "text-white" : "text-black",
+              "text-white  xl:text-[16px] 2xl:text-[20px]",
+              isHovered && isXl ? "text-white" : "text-white",
             )}
           >
             today

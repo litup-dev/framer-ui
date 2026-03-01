@@ -86,12 +86,12 @@ const DetailActions = ({
                 ? "px-[22px] py-3 xl:px-[24px] xl:py-3" // 기대돼요: 좌22 우18(아이콘포함) 상하12
                 : "pl-4 pr-[10px] py-[11px] xl:pl-4 xl:pr-3 xl:py-3", // 관람했어요: 좌16 우10 상하11, xl: 좌16 우12 상하12
               // gap
-              "gap-1"
+              "gap-1",
             )}
           >
             <Subtitle
               className="xl:text-[16px] text-[14px] font-bold"
-              style={{ letterSpacing: '-0.04em' }}
+              style={{ letterSpacing: "-0.04em" }}
             >
               {isFutureEvent ? "기대돼요" : "관람 했어요"}
             </Subtitle>
@@ -115,12 +115,12 @@ const DetailActions = ({
               // padding: 좌16 우10 상하11, xl: 좌16 우12 상하12
               "pl-4 pr-[10px] py-[11px] xl:pl-4 xl:pr-3 xl:py-3",
               // gap
-              "gap-1"
+              "gap-1",
             )}
           >
             <Subtitle
               className="xl:text-[16px] text-[14px] font-bold"
-              style={{ letterSpacing: '-0.04em' }}
+              style={{ letterSpacing: "-0.04em" }}
             >
               {isFutureEvent ? "보고 싶어요" : "관람 했어요"}
             </Subtitle>
@@ -145,14 +145,14 @@ const DetailActions = ({
           // 1600-1920: 텍스트 + 아이콘
           "xl:w-auto xl:h-[40px] xl:pl-4 xl:pr-[13px] xl:py-3",
           // gap
-          "xl:gap-1"
+          "xl:gap-1",
         )}
         onClick={() => setIsShareModalOpen(true)}
       >
         <span className="hidden xl:inline text-[#202020]">
           <Subtitle
             className="text-[16px] font-bold"
-            style={{ letterSpacing: '-0.04em' }}
+            style={{ letterSpacing: "-0.04em" }}
           >
             공유하기
           </Subtitle>
