@@ -55,15 +55,12 @@ export const CalendarDayHeader = ({
       </div>
       {isTodayDate && isXl && (
         <div
-          className={cn(
-            "leading-4",
-            isHovered && isXl ? "bg-transparent" : "bg-main",
-          )}
+          className={cn("leading-4", isHovered && isXl ? "bg-transparent" : "")}
         >
           <Title
             className={cn(
               "text-white  xl:text-[16px] 2xl:text-[20px]",
-              isHovered && isXl ? "text-white" : "text-white",
+              isHovered && isXl ? "text-main bg-white" : "text-main",
             )}
           >
             today
