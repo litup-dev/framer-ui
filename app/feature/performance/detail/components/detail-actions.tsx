@@ -89,10 +89,7 @@ const DetailActions = ({
               "gap-1",
             )}
           >
-            <Subtitle
-              className="xl:text-[16px] text-[14px] font-bold"
-              style={{ letterSpacing: "-0.04em" }}
-            >
+            <Subtitle className="xl:text-[16px] text-[14px] font-bold">
               {isFutureEvent ? "기대돼요" : "관람 했어요"}
             </Subtitle>
             <Image
@@ -118,10 +115,7 @@ const DetailActions = ({
               "gap-1",
             )}
           >
-            <Subtitle
-              className="xl:text-[16px] text-[14px] font-bold"
-              style={{ letterSpacing: "-0.04em" }}
-            >
+            <Subtitle className="xl:text-[16px] text-[14px] font-bold">
               {isFutureEvent ? "보고 싶어요" : "관람 했어요"}
             </Subtitle>
             <Image
@@ -150,12 +144,7 @@ const DetailActions = ({
         onClick={() => setIsShareModalOpen(true)}
       >
         <span className="hidden xl:inline text-[#202020]">
-          <Subtitle
-            className="text-[16px] font-bold"
-            style={{ letterSpacing: "-0.04em" }}
-          >
-            공유하기
-          </Subtitle>
+          <Subtitle className="text-[16px] font-bold">공유하기</Subtitle>
         </span>
         <Image
           src="/images/performance-detail/share.svg"
