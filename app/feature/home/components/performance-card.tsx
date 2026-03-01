@@ -75,7 +75,7 @@ const ArtistsDisplay = ({ artists }: { artists?: Array<{ name: string }> }) => {
       {artists.map((artist, index) => (
         <Subtitle
           key={index}
-          className="text-[16px] text-black truncate px-3 py-2 bg-black/5"
+          className="text-[16px] text-black truncate px-3 py-2 bg-[#F4F4F4]"
         >
           {artist.name}
         </Subtitle>
@@ -95,7 +95,7 @@ export const PerformanceCard = ({ performance }: PerformanceCardProps) => {
   return (
     <Link href={`/performance/${performance.id}`}>
       <Card
-        className="overflow-hidden gap-5 pb-2"
+        className="overflow-hidden gap-5 pb-2 bg-transparent"
         data-hero-key={performance.id}
       >
         <div className="aspect-[3/4] relative">
@@ -116,7 +116,7 @@ export const PerformanceCard = ({ performance }: PerformanceCardProps) => {
             }}
             className="text-left w-full"
           >
-            <Description className="text-gray-400 text-[16px] truncate hover:text-gray-600 cursor-pointer">
+            <Description className="text-black/text-[16px] truncate hover:text-gray-600 cursor-pointer">
               {performance.club.name}
             </Description>
           </button>

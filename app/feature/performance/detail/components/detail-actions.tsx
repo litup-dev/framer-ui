@@ -90,7 +90,7 @@ const DetailActions = ({
       {/* 공유하기 버튼 */}
       <Button
         variant="outline"
-        className="flex items-center gap-1 h-[36px] xl:h-[40px] w-[99px] 2xl:w-[108px] bg-[#F2F1EE]"
+        className="flex items-center gap-1 h-[36px] xl:h-[40px] w-[99px] 2xl:w-[108px] bg-[#F7F6F5]"
         onClick={() => setIsShareModalOpen(true)}
       >
         공유하기

@@ -179,12 +179,10 @@ const ClubDetailReviewModal = ({
           <div
             className={cn(
               "sticky top-0 z-10 flex justify-start w-full items-center gap-1 lg:gap-2 p-6 pb-0 lg:pt-12 lg:px-12 lg:pb-8",
-              currentStep === 1 ? "bg-[#F2F1EE]" : "bg-white",
+              currentStep === 1 ? "bg-[#F7F6F5]" : "bg-white",
             )}
           >
-            <DialogTitle
-              className="flex justify-start w-full items-center gap-1 lg:gap-2 flex-1 min-w-0"
-            >
+            <DialogTitle className="flex justify-start w-full items-center gap-1 lg:gap-2 flex-1 min-w-0">
               <Image
                 src="/images/review-modal-icon.svg"
                 alt="review-modal"

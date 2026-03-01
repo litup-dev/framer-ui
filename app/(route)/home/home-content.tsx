@@ -69,7 +69,7 @@ export default function HomeContent() {
   return (
     <>
       {shouldShowMainContent && (
-        <PageWrapper>
+        <PageWrapper className="relative z-10">
           <HeroSection />
           <CharacterSection performances={performances} />
           <MainContent

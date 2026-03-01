@@ -1,15 +1,13 @@
 "use client";
 
-import Image from "next/image";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { characterSvg } from "@/public/images";
 import { ChevronDown } from "lucide-react";
 import { InfiniteData } from "@tanstack/react-query";
 import { PerformanceItem } from "@/app/feature/home/types";
 import { cn } from "@/lib/utils";
 import { useHomeStore } from "@/app/feature/home/store/home-store";
-import { Description, Subtitle, Title } from "@/components/shared/typography";
+import { Subtitle, Title } from "@/components/shared/typography";
 
 interface CharacterSectionProps {
   performances?: InfiniteData<{
@@ -22,18 +20,47 @@ interface CharacterSectionProps {
 
 const CATEGORY_BG_COLORS: Record<string, string> = {
   week: "#FF491A",
-  today: "#AECACD",
-  free: "#FFFFFF",
-  area: "#F2F1EE",
+  today: "#171717",
+  free: "#F3703C",
+  seoul: "#C4B59C",
+  hongdae: "#C4B59C",
+  busan: "#C4B59C",
 };
 
-const CATEGORY_ORDER = ["week", "today", "free", "area"] as const;
+const INDEX_TO_COLOR_KEY = [
+  "week",
+  "today",
+  "free",
+  "seoul",
+  "hongdae",
+  "busan",
+] as const;
 
-const getCategoryIndex = (category: string) => {
-  const idx = CATEGORY_ORDER.indexOf(
-    category as (typeof CATEGORY_ORDER)[number],
-  );
-  return idx >= 0 ? idx : 0;
+const getCategoryIndex = (category: string, selectedArea: string) => {
+  switch (category) {
+    case "week":
+      return 0;
+    case "today":
+      return 1;
+    case "free":
+      return 2;
+    case "area": {
+      const areaKey = selectedArea || "seoul";
+      const idx = INDEX_TO_COLOR_KEY.indexOf(
+        areaKey as (typeof INDEX_TO_COLOR_KEY)[number],
+      );
+      return idx >= 0 ? idx : 3;
+    }
+    default:
+      return 0;
+  }
+};
+
+const getColorKey = (category: string, selectedArea: string) => {
+  if (category === "area") {
+    return selectedArea || "seoul";
+  }
+  return category;
 };
 
 const ANIMATION_TRANSITION = {
@@ -45,16 +72,23 @@ const ANIMATION_TRANSITION = {
 export default function CharacterSection({
   performances,
 }: CharacterSectionProps) {
-  const { showAllItems, handleShowAllClick, selectedCategory, setIsAnimating } =
-    useHomeStore();
+  const {
+    showAllItems,
+    handleShowAllClick,
+    selectedCategory,
+    selectedArea,
+    setIsAnimating,
+  } = useHomeStore();
   const [previousIndex, setPreviousIndex] = useState(0);
 
   const total = (performances?.pages?.[0] as { total?: number })?.total || 0;
-  const currentIndex = getCategoryIndex(selectedCategory);
+  const currentIndex = getCategoryIndex(selectedCategory, selectedArea);
+  const colorKey = getColorKey(selectedCategory, selectedArea);
   const previousBgColor =
-    CATEGORY_BG_COLORS[CATEGORY_ORDER[previousIndex] ?? "week"];
+    CATEGORY_BG_COLORS[INDEX_TO_COLOR_KEY[previousIndex] ?? "week"] ??
+    CATEGORY_BG_COLORS.week;
   const currentBgColor =
-    CATEGORY_BG_COLORS[selectedCategory] ?? CATEGORY_BG_COLORS.week;
+    CATEGORY_BG_COLORS[colorKey] ?? CATEGORY_BG_COLORS.week;
 
   useEffect(() => {
     if (currentIndex !== previousIndex) {
@@ -69,19 +103,8 @@ export default function CharacterSection({
 
   return (
     <div className="hidden md:block absolute top-[180px] lg:top-[210px] xl:top-[280px] 2xl:top-[250px] right-4 md:right-6 lg:right-8 xl:right-[80px] z-5">
-      <div className="max-w-[280px] md:max-w-[400px] lg:max-w-[400px] xl:max-w-[460px] 2xl:max-w-[500px] text-[#22222299]">
-        <Description className="text-[12px] xl:text-[16px] leading-[140%] text-black/60">
-          인디 씬을 사랑하는 사람들이 모이는 공간.
-          <br />
-          <span className="inline-block pl-4 md:pl-6 lg:pl-8">
-            공연 일정, 클럽 정보, 그리고 커뮤니티까지 한 번에.
-          </span>
-        </Description>
-      </div>
-
       <div className="relative w-full md:w-[550px] lg:w-[600px] xl:w-[700px] 2xl:w-[860px]">
-        <Image src={characterSvg} alt="character" />
-        <div className="absolute top-[75px] lg:top-[80px] xl:top-[60px] 2xl:top-[90px] right-5 xl:right-0 flex flex-col items-center gap-2">
+        <div className="absolute top-[115px] lg:top-[120px] xl:top-[168px] 2xl:top-[196px] right-5 xl:right-0 flex flex-col items-center gap-2">
           <div
             className="relative overflow-hidden flex justify-end w-full"
             style={{
@@ -99,7 +122,17 @@ export default function CharacterSection({
                   currentIndex === previousIndex ? currentBgColor : undefined,
               }}
             >
-              <Title className="text-[44px] lg:text-[64px] xl:text-[76px] pr-1.5 leading-[0.8] text-black">
+              <Title
+                className={cn(
+                  "text-[44px] lg:text-[64px] xl:text-[76px] pr-1.5 leading-[0.8]",
+                  colorKey === "today" && "text-white",
+                  colorKey !== "today" &&
+                    colorKey !== "busan" &&
+                    colorKey !== "hongdae" &&
+                    colorKey !== "free" &&
+                    "text-black",
+                )}
+              >
                 {total}
               </Title>
             </div>
@@ -122,7 +155,16 @@ export default function CharacterSection({
                     style={{ backgroundColor: previousBgColor }}
                     className="inline-block"
                   >
-                    <Title className="text-[44px] lg:text-[64px] xl:text-[76px] pr-1.5 leading-[0.8] text-black">
+                    <Title
+                      className={cn(
+                        "text-[44px] lg:text-[64px] xl:text-[76px] pr-1.5 leading-[0.8]",
+                        INDEX_TO_COLOR_KEY[previousIndex] === "today" &&
+                          "text-white",
+
+                        INDEX_TO_COLOR_KEY[previousIndex] !== "today" &&
+                          "text-black",
+                      )}
+                    >
                       {total}
                     </Title>
                   </div>
@@ -144,7 +186,12 @@ export default function CharacterSection({
                       style={{ backgroundColor: currentBgColor }}
                       className="inline-block"
                     >
-                      <Title className="text-[44px] lg:text-[64px] xl:text-[76px] pr-1.5 leading-[0.8] text-black">
+                      <Title
+                        className={cn(
+                          "text-[44px] lg:text-[64px] xl:text-[76px] pr-1.5 leading-[0.8]",
+                          colorKey === "today" && "text-white",
+                        )}
+                      >
                         {total}
                       </Title>
                     </div>

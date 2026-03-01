@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { InfiniteData } from "@tanstack/react-query";
 
+import { cn } from "@/lib/utils";
 import { PerformanceItem } from "@/app/feature/home/types";
 import { usePagination } from "@/app/feature/home/hooks/use-pagination";
 import { useHomeStore } from "@/app/feature/home/store/home-store";
@@ -127,7 +128,12 @@ const DesktopMainContent = ({
   }
 
   return (
-    <div className="relative w-full hidden md:block">
+    <div
+      className={cn(
+        "relative w-full hidden md:block",
+        performanceItems.length === 0 && "min-h-[613px]",
+      )}
+    >
       <Carousel
         className="w-full relative z-10"
         opts={{

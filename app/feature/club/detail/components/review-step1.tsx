@@ -106,7 +106,7 @@ export const ReviewStep1 = ({ clubName, clubImage }: ReviewStep1Props) => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-col p-6 2xl:pb-12.5 space-y-10 bg-[#F2F1EE]">
+      <div className="flex flex-col p-6 2xl:pb-12.5 space-y-10 bg-[#F7F6F5]">
         <div className="flex flex-col items-center justify-center gap-6">
           <div className="w-22.5 h-22.5 bg-gray-300 rounded-full flex-shrink-0 relative overflow-hidden">
             {imageUrl ? (
