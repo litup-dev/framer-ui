@@ -48,14 +48,14 @@ const MobileHeader = () => {
 
   return (
     <>
-      <div className="px-5 py-2 justify-between flex items-center md:hidden">
+      <div className="pl-5 pr-2 justify-between flex items-center sm:hidden h-12">
         <div className="flex items-center gap-1">
           <Link href="/home">
             <Image src="/images/logo.svg" alt="logo" width={80} height={26} />
           </Link>
         </div>
-        <button onClick={openMenu} className="p-2">
-          <MenuIcon className="w-6 h-6" />
+        <button onClick={openMenu}>
+          <Image src="/images/menu.svg" alt="menu" width={48} height={48} />
         </button>
       </div>
 
@@ -99,7 +99,9 @@ const MobileHeader = () => {
                       onClick={toggleUserDropdown}
                     >
                       <Avatar className="w-8 h-8">
-                        <AvatarImage src={getImageUrl(user?.profilePath) || ""} />
+                        <AvatarImage
+                          src={getImageUrl(user?.profilePath) || ""}
+                        />
                         <AvatarFallback>
                           {user?.nickname?.charAt(0) || ""}
                         </AvatarFallback>
@@ -111,7 +113,7 @@ const MobileHeader = () => {
                         <ChevronRight
                           className={cn(
                             "w-5 h-5 transition-transform",
-                            isUserDropdownOpen && "rotate-90"
+                            isUserDropdownOpen && "rotate-90",
                           )}
                         />
                       </div>

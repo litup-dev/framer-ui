@@ -31,7 +31,7 @@ export default function HomeContent() {
 
   const calendarEventsQueryOptions = useMemo(
     () => getCalendarEventsOptions(currentMonthKey),
-    [currentMonthKey]
+    [currentMonthKey],
   );
 
   const { data: calendarEvents } = useQuery(calendarEventsQueryOptions);
@@ -49,7 +49,7 @@ export default function HomeContent() {
     fetchNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery(
-    getPerformancesOptions(startDate, endDate, area, isFree)
+    getPerformancesOptions(startDate, endDate, area, isFree),
   );
 
   const events = useMemo(() => {
@@ -69,7 +69,7 @@ export default function HomeContent() {
   return (
     <>
       {shouldShowMainContent && (
-        <PageWrapper>
+        <PageWrapper className="relative z-10">
           <HeroSection />
           <CharacterSection performances={performances} />
           <MainContent
@@ -94,9 +94,8 @@ export default function HomeContent() {
           onMonthChange={setCurrentMonth}
         />
       </div>
-      <div className="xl:pt-35">
-        <Footer />
-      </div>
+      <div className="hidden xl:block h-[200px] bg-gradient-to-b from-[#F7F6F5] to-[#F7F6F5]/0" />
+      <Footer />
 
       <MobileBottomNavigation />
     </>

@@ -14,6 +14,7 @@ import {
   AllPerformancesFormSchema,
   defaultValues,
 } from "@/app/feature/all-performances/schema";
+import Footer from "@/app/shared/components/footer";
 
 const AllPerformancesPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -75,6 +76,7 @@ const AllPerformancesPage = () => {
           }}
         />
       </div>
+      <Footer />
     </FormProvider>
   );
 };

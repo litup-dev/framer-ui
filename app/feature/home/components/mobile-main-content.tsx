@@ -19,10 +19,12 @@ import {
 import { addWeeks, format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
+import { PerformanceItem } from "@/app/feature/home/types";
 import { getPerformancesOptions } from "@/app/feature/home/query-options";
 import { Card, CardContent } from "@/components/ui/card";
 
 import { Description, Subtitle } from "@/components/shared/typography";
+import { useRouter } from "next/navigation";
 
 interface MobileMainContentProps {
   selectedMobileBottomNavigation: "home" | "calendar";
@@ -33,6 +35,7 @@ const MobileMainContent = ({
 }: MobileMainContentProps) => {
   const { selectedCategory, selectedArea } = useHomeStore();
   const today = getTodayDate();
+  const router = useRouter();
 
   let startDate: string;
   let endDate: string;
@@ -61,10 +64,10 @@ const MobileMainContent = ({
     fetchNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery(
-    getPerformancesOptions(startDate, endDate, area, isFree)
+    getPerformancesOptions(startDate, endDate, area, isFree),
   );
 
-  const performanceItems =
+  const performanceItems: PerformanceItem[] =
     performances?.pages.flatMap((page) => page.data) || [];
 
   const { ref, inView } = useInView({
@@ -125,16 +128,26 @@ const MobileMainContent = ({
                     )}
                   </div>
                   <CardContent className="flex flex-col gap-1.5 justify-start">
-                    <Description className="truncate text-[12px] text-black/60">
-                      {performance.club.name}
-                    </Description>
+                    <div
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        router.push(`/club/${performance.club.id}`);
+                      }}
+                      className="cursor-pointer"
+                    >
+                      <Description className="truncate text-[12px] text-black/60">
+                        {performance.club.name}
+                      </Description>
+                    </div>
+
                     <Subtitle className="truncate text-[14px]">
                       {performance.title}
                     </Subtitle>
-                    <div className="flex flex-col gap-1">
+                    <div className="flex gap-1 items-center overflow-x-scroll">
                       {performance.artists && performance.artists.length > 0 ? (
                         performance.artists.length >= 3 ? (
-                          <Subtitle className="truncate text-[12px] text-black/60">
+                          <Subtitle className="truncate text-[12px] bg-gray h-[24px] text-black flex items-center justify-center px-2">
                             {performance.artists[0].name} 외{" "}
                             {performance.artists.length - 1}팀
                           </Subtitle>
@@ -142,7 +155,7 @@ const MobileMainContent = ({
                           performance.artists.map((artist, index) => (
                             <Subtitle
                               key={index}
-                              className="truncate text-[12px] text-black/60"
+                              className="truncate text-[12px] bg-gray h-[24px] text-black flex items-center justify-center px-2"
                             >
                               {artist.name}
                             </Subtitle>

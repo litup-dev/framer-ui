@@ -7,6 +7,7 @@ import {
 
 import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/button";
+import Image from "next/image";
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
   return (
@@ -58,7 +59,7 @@ function PaginationLink({
           size,
           className: "outline-none bg-transparent text-black bg-none",
         }),
-        className
+        className,
       )}
       {...props}
     />
@@ -76,7 +77,14 @@ function PaginationPrevious({
       className={cn("gap-1 px-2.5 sm:pl-2.5", className)}
       {...props}
     >
-      <ChevronLeftIcon />
+      <Image
+        src={"/images/arrow-up.svg"}
+        className="rotate-270"
+        alt="previous"
+        width={20}
+        height={20}
+      />
+
       <span className="hidden sm:block" />
     </PaginationLink>
   );
@@ -94,7 +102,13 @@ function PaginationNext({
       {...props}
     >
       <span className="hidden sm:block" />
-      <ChevronRightIcon />
+      <Image
+        src={"/images/arrow-up.svg"}
+        className="rotate-90"
+        alt="next"
+        width={20}
+        height={20}
+      />
     </PaginationLink>
   );
 }

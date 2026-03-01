@@ -16,6 +16,13 @@ const suit = localFont({
   variable: "--font-suit",
 });
 
+const pretendard = localFont({
+  src: "./fonts/PretendardVariable.woff2",
+  display: "swap",
+  weight: "45 920",
+  variable: "--font-pretendard",
+});
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -37,7 +44,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className={suit.variable}>
+    <html lang="ko" className={`${suit.variable} ${pretendard.variable}`}>
       <head>
         <script
           src="https://developers.kakao.com/sdk/js/kakao.js"

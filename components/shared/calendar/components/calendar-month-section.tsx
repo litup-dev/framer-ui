@@ -43,10 +43,7 @@ const CalendarMonthSection = ({
   const sortedDates = Object.keys(events).sort();
 
   return (
-    <div
-      ref={ref}
-      className="min-h-[200px] px-5 sm:px-10 md:px-15 flex flex-col gap-6"
-    >
+    <div ref={ref} className="min-h-[200px] px-5  md:px-10 flex flex-col gap-6">
       <Title className="text-[38px] leading-0 pb-6">
         {formattedMonth.toLowerCase()}
       </Title>

@@ -34,9 +34,7 @@ const ClubDetailInfo = ({
   images,
 }: ClubDetailInfoProps) => {
   const firstImageUrl =
-    images && images.length > 0
-      ? getImageUrl(images[0].filePath) || "/images/default-club.png"
-      : "/images/default-club.png";
+    images && images.length > 0 ? getImageUrl(images[0].filePath) : null;
   const { openModal } = useCommonModalStore();
   const queryClient = useQueryClient();
   const { isAuthenticated } = useUserStore();
@@ -64,16 +62,18 @@ const ClubDetailInfo = ({
 
   return (
     <div className="space-y-6 sm:space-y-8 lg:space-y-10">
-      <div className="flex gap-4.5 items-center px-5 sm:px-10 lg:px-15">
-        <div className="w-15 h-15 bg-gray-300 rounded-full relative">
-          <Image
-            src={firstImageUrl}
-            alt="club profile"
-            fill
-            className="object-cover rounded-full"
-          />
+      <div className="flex gap-3 sm:gap-4 items-center px-5 sm:px-10 lg:px-15">
+        <div className="w-15 h-15 2xl:w-20 2xl:h-20 bg-gray-300 rounded-full relative">
+          {firstImageUrl ? (
+            <Image
+              src={firstImageUrl}
+              alt="club profile"
+              fill
+              className="object-cover rounded-full"
+            />
+          ) : null}
         </div>
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col gap-2 2xl:gap-2.5">
           <Subtitle className="text-black text-[16px] sm:text-[20px] md:text-[24px]">
             {subtitle || name}
           </Subtitle>
@@ -82,32 +82,36 @@ const ClubDetailInfo = ({
           </Description>
         </div>
         <div
-          className="flex flex-col items-center gap-1"
+          className="flex flex-col items-center gap-1 2xl:gap-2"
           onClick={handleFavorite}
         >
           {isFavorite ? (
             <Image
               src="/images/favorite_active.svg"
               alt="club profile"
-              width={28}
-              height={28}
+              width={40}
+              height={40}
+              className="w-7 h-7 2xl:w-10 2xl:h-10"
             />
           ) : (
             <Image
               src="/images/favorite_inactive.svg"
               alt="club profile"
-              width={28}
-              height={28}
+              width={40}
+              height={40}
+              className="w-7 h-7 2xl:w-10 2xl:h-10"
             />
           )}
 
-          <div className="text-chip-12 text-main">{favoriteCount}</div>
+          <Description className="text-[12px] xl:text-[14px] text-main">
+            {favoriteCount}
+          </Description>
         </div>
       </div>
 
       <div className="px-5 sm:px-10 lg:px-15 flex flex-col space-y-6 pb-14 sm:pb-16 lg:pb-26">
         <Separator className="px-5" />
-        <div className="flex-[9] space-y-2">
+        <div className="flex-[9] space-y-2 2xl:pt-3">
           <Description className="text-[16px] lg:text-[18px]">
             {description}
           </Description>

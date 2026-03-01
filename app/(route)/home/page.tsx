@@ -14,13 +14,13 @@ import HomeContent from "./home-content";
 
 async function prefetchCalendarMonth(
   queryClient: ReturnType<typeof getQueryClient>,
-  monthKey: string
+  monthKey: string,
 ) {
   await queryClient.prefetchQuery({
     queryKey: ["calendarEvents", monthKey],
     queryFn: async () => {
       const response = await serverApiClient.get<CalendarEventsResponse>(
-        `/api/v1/performances/calendar?month=${monthKey}`
+        `/api/v1/performances/calendar?month=${monthKey}`,
       );
       return response.data;
     },
@@ -61,7 +61,7 @@ export default async function HomePage() {
       if (isFree !== undefined) params.push(`isFree=${isFree}`);
       if (area) params.push(`area=${area}`);
       const response = await serverApiClient.get<PerformancesResponse>(
-        `/api/v1/performances?${params.join("&")}`
+        `/api/v1/performances?${params.join("&")}`,
       );
       const items = response.data.items;
       const total = response.data.total;

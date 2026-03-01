@@ -172,12 +172,10 @@ const DetailContent = ({
             noticeContent={
               <>
                 <InfoSections variant="sm" performance={performance} />
-                <div className="mt-4">
-                  <NoticeSection
-                    description={performance.description}
-                    instagramUrl={performance.snsLinks?.[0]?.instagram}
-                  />
-                </div>
+                <NoticeSection
+                  description={performance.description}
+                  instagramUrl={performance.snsLinks?.[0]?.instagram}
+                />
               </>
             }
           />

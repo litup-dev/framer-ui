@@ -115,8 +115,8 @@ const PosterCarousel = ({ images, title, variant }: PosterCarouselProps) => {
       </Carousel>
 
       {/* 커스텀 인디케이터: 우측 하단 */}
-      <div className="absolute bottom-4 right-4 bg-black/60 text-white px-3 py-1.5 rounded text-[14px] font-medium">
-        {current + 1}/{images.length.toString().padStart(2, "0")}
+      <div className="absolute bottom-4 right-4 bg-black/60 text-white px-3 py-1.5 rounded-[999px] text-[14px] font-medium">
+        {current + 1}/{images.length}
       </div>
     </div>
   );

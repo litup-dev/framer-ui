@@ -53,13 +53,13 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
 
   const currentMonth = useMemo(
     () => format(selectedMonth, "yyyy-MM"),
-    [selectedMonth]
+    [selectedMonth],
   );
   const { data: calendarData } = useQuery({
     ...getClubDetailCalendarByIdOptions(Number(id), currentMonth),
   });
   const { data: reviewsData } = useQuery<ReviewPaginatedResponse>(
-    getReviewByIdOptions(id, reviewOffset, reviewLimit, isMine, sort)
+    getReviewByIdOptions(id, reviewOffset, reviewLimit, isMine, sort),
   );
 
   const images = data?.data?.images || [];
@@ -78,6 +78,11 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
       title: string;
       description: string;
       isAttend: boolean;
+      artists:
+        | {
+            name: string;
+          }[]
+        | null;
     }> = [];
 
     Object.entries(calendarData).forEach(([dateKey, performances]) => {
@@ -90,7 +95,7 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
         const timeStr = extractTimeFromISO(performance.performDate);
         const entryStr = formatEntryPrice(
           performance.bookingPrice,
-          performance.onsitePrice
+          performance.onsitePrice,
         );
 
         scheduleEvents.push({
@@ -101,6 +106,7 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
           title: performance.title,
           description: performance.description,
           isAttend: performance.isAttend,
+          artists: performance.artists ?? null,
         });
       });
     });
@@ -112,12 +118,14 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
 
   if (!data?.data) return null;
 
+  console.log(reviews, "<<<<<< reviews");
+
   return (
     <div className="w-screen">
       <ClubDetailHeader images={imageUrls} clubName={data.data.name} />
 
       <div>
-        <div className="flex flex-col xl:flex-row xl:items-stretch">
+        <div className="flex flex-col xl:flex-row xl:items-stretch 2xl:pl-5">
           <div className="flex flex-col flex-1 xl:flex-[5]">
             <div id="info" className="flex flex-col py-6 sm:py-8 lg:py-10">
               <ClubDetailInfo

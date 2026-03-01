@@ -24,7 +24,7 @@ export const getUserStatsOptions = (publicId: string) =>
     queryKey: ["userStats", publicId],
     queryFn: async () => {
       const response = await apiClient.get<UserStatsResponse>(
-        `/api/v1/users/stats/${publicId}`
+        `/api/v1/users/stats/${publicId}`,
       );
       return response.data;
     },
@@ -39,7 +39,7 @@ export const getPerformHistoryOptions = (publicId: string, limit: number = 4) =>
     queryFn: async ({ pageParam }: { pageParam: number }) => {
       const offset = pageParam;
       const response = await apiClient.get<PerformHistoryResponse>(
-        `/api/v1/users/perform-history/${publicId}?offset=${offset}&limit=${limit}`
+        `/api/v1/users/perform-history/${publicId}?offset=${offset}&limit=${limit}`,
       );
       const items = response.data.items;
       const total = response.data.total;
@@ -69,7 +69,7 @@ export const getFavoriteClubsOptions = (publicId: string, limit: number = 4) =>
     queryFn: async ({ pageParam }: { pageParam: number }) => {
       const offset = pageParam;
       const response = await apiClient.get<FavoriteClubsResponse>(
-        `/api/v1/users/favorite-clubs/${publicId}?offset=${offset}&limit=${limit}`
+        `/api/v1/users/favorite-clubs/${publicId}?offset=${offset}&limit=${limit}`,
       );
       const items = response.data.items;
       const total = response.data.total;
@@ -94,41 +94,43 @@ export const getFavoriteClubsOptions = (publicId: string, limit: number = 4) =>
 
 // 관심 클럽 삭제 Mutation
 export const deleteFavoriteClubs = async (
-  entityIds: number[]
+  entityIds: number[],
 ): Promise<DeleteFavoriteClubsResponse> => {
   const response = await apiClient.delete<DeleteFavoriteClubsResponse>(
     "/api/v1/users/favorite-clubs",
-    { entityIds } as DeleteFavoriteClubsRequest
+    { entityIds } as DeleteFavoriteClubsRequest,
   );
   return response;
 };
 
 // 관람 기록 삭제 Mutation
 export const deletePerformHistory = async (
-  entityIds: number[]
+  entityIds: number[],
 ): Promise<DeletePerformHistoryResponse> => {
   const response = await apiClient.delete<DeletePerformHistoryResponse>(
     "/api/v1/users/perform-history",
-    { entityIds } as DeletePerformHistoryRequest
+    { entityIds } as DeletePerformHistoryRequest,
   );
   return response;
 };
 
 // 유저 정보 조회 API
-export const getUserInfo = async (publicId: string): Promise<UserInfoResponse> => {
+export const getUserInfo = async (
+  publicId: string,
+): Promise<UserInfoResponse> => {
   const response = await apiClient.get<UserInfoResponse>(
-    `/api/v1/users/${publicId}`
+    `/api/v1/users/${publicId}`,
   );
   return response;
 };
 
 // 유저 프로필 수정 Mutation
 export const updateUserInfo = async (
-  data: UpdateUserInfoRequest
+  data: UpdateUserInfoRequest,
 ): Promise<UpdateUserInfoResponse> => {
   const response = await apiClient.patch<UpdateUserInfoResponse>(
     "/api/v1/users/info",
-    data
+    data,
   );
   return response;
 };
@@ -139,7 +141,7 @@ export const getPrivacySettingsOptions = () =>
     queryKey: ["privacySettings"],
     queryFn: async () => {
       const response = await apiClient.get<PrivacySettingsResponse>(
-        "/api/v1/users/settings/privacy"
+        "/api/v1/users/settings/privacy",
       );
       return response.data;
     },
@@ -149,11 +151,11 @@ export const getPrivacySettingsOptions = () =>
 
 // 유저 공개범위 설정 수정 Mutation
 export const updatePrivacySettings = async (
-  data: UpdatePrivacySettingsRequest
+  data: UpdatePrivacySettingsRequest,
 ): Promise<UpdatePrivacySettingsResponse> => {
   const response = await apiClient.patch<UpdatePrivacySettingsResponse>(
     "/api/v1/users/settings/privacy",
-    data
+    data,
   );
   return response;
 };
@@ -165,7 +167,7 @@ export const getUserClubReviewsOptions = (sort: string = "-createdAt") =>
     queryFn: async () => {
       const encodedSort = encodeURIComponent(sort);
       const response = await apiClient.get<UserClubReviewsResponse>(
-        `/api/v1/users/me/club-reviews?sort=${encodedSort}`
+        `/api/v1/users/me/club-reviews?sort=${encodedSort}`,
       );
       return response.data;
     },
@@ -177,14 +179,14 @@ export const getUserClubReviewsOptions = (sort: string = "-createdAt") =>
 export const getMyPerformanceCommentsOptions = (
   sort: string = "-createdAt",
   offset: number = 0,
-  limit: number = 10
+  limit: number = 10,
 ) =>
   queryOptions({
     queryKey: ["myPerformanceComments", sort, offset, limit],
     queryFn: async () => {
       const encodedSort = encodeURIComponent(sort);
       const response = await apiClient.get<PerformanceCommentResponse>(
-        `/api/v1/users/me/perform-review?sort=${encodedSort}&offset=${offset}&limit=${limit}`
+        `/api/v1/users/me/perform-review?sort=${encodedSort}&offset=${offset}&limit=${limit}`,
       );
       return response.data;
     },
@@ -196,14 +198,14 @@ export const getMyPerformanceCommentsOptions = (
 export const getMyLikedPerformanceCommentsOptions = (
   sort: string = "-createdAt",
   offset: number = 0,
-  limit: number = 10
+  limit: number = 10,
 ) =>
   queryOptions({
     queryKey: ["myLikedPerformanceComments", sort, offset, limit],
     queryFn: async () => {
       const encodedSort = encodeURIComponent(sort);
       const response = await apiClient.get<PerformanceCommentResponse>(
-        `/api/v1/users/me/liked-review?sort=${encodedSort}&offset=${offset}&limit=${limit}`
+        `/api/v1/users/me/liked-review?sort=${encodedSort}&offset=${offset}&limit=${limit}`,
       );
       return response.data;
     },

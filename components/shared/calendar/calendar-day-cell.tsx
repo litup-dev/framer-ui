@@ -16,6 +16,7 @@ import {
 import { CalendarDayHeader } from "@/components/shared/calendar/calendar-day-header";
 import { CalendarDayEvents } from "@/components/shared/calendar/calendar-day-events";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
+import { cn } from "@/lib/utils";
 
 const DEFAULT_IMAGE = "/images/poster1.png";
 
@@ -113,13 +114,15 @@ export const CalendarDayCell = ({
         key={`button-${dayKey}`}
         ref={buttonRef}
         onClick={() => onDateClick(day)}
-        onMouseEnter={isXl ? () => onMouseEnter(day) : undefined}
-        onMouseLeave={isXl ? onMouseLeave : undefined}
+        onMouseEnter={
+          isXl && dayEvents.length > 0 ? () => onMouseEnter(day) : undefined
+        }
+        onMouseLeave={isXl && dayEvents.length > 0 ? onMouseLeave : undefined}
         className={getButtonClassName(
           isXl,
           isHovered,
           dayEvents,
-          isCurrentMonth
+          isCurrentMonth,
         )}
         initial={false}
         animate={{
@@ -131,7 +134,7 @@ export const CalendarDayCell = ({
             ease: [0.25, 0.1, 0.25, 1],
           },
         }}
-        style={getButtonStyles(isXl, isHovered, expandedHeight)}
+        style={getButtonStyles(isXl, isHovered, expandedHeight, dayEvents)}
       >
         {!isXl && firstEvent && (
           <div className="absolute inset-0 w-full h-full overflow-hidden">

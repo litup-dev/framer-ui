@@ -60,6 +60,7 @@ export const useCommentHandlers = (
         label: "확인",
         onClick: () => {},
       },
+      cancelButton: undefined,
     });
   };
 

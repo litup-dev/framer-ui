@@ -27,17 +27,13 @@ const InfoSections = ({ variant = "lg", performance }: InfoSectionsProps) => {
         <PriceSection bookingPrice={performance.bookingPrice} onsitePrice={performance.onsitePrice} />
 
         {/* 장소 캡션: 현매 32px 아래 */}
-        <div className="mt-8">
-          <Description className="text-[14px] text-black-60 font-medium">장소</Description>
-        </div>
+        <Description className="text-[14px] text-black-60 font-medium mt-8 mb-4">장소</Description>
 
         {/* 클럽 정보 카드: 장소 16px 아래 */}
-        <div className="mt-4">
-          <ClubSection club={performance.club} />
-        </div>
+        <ClubSection club={performance.club} />
 
-        {/* 라인업: 클럽정보 카드 32px 아래 */}
-        <div className="mt-8">
+        {/* 라인업: 클럽정보 카드 32px 아래, 공연안내 32px 위 */}
+        <div className="mt-8 mb-8">
           <LineupSection variant="inline" artists={performance.artists} />
         </div>
       </div>
@@ -64,8 +60,8 @@ const InfoSections = ({ variant = "lg", performance }: InfoSectionsProps) => {
           <LineupSection artists={performance.artists} />
         </div>
 
-        {/* Separator: 가수들 48px 아래 */}
-        <Separator className="mt-12" />
+        {/* Separator: 가수들 32px 아래 */}
+        <Separator className="mt-8" />
       </div>
     );
   }

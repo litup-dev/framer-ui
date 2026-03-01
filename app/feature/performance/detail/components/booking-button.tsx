@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Link as LinkIcon } from "lucide-react";
+import Image from "next/image";
 import { Subtitle, Description } from "@/components/shared/typography";
 
 interface BookingButtonProps {
@@ -62,7 +62,7 @@ const BookingButton = ({
           ) : (
             <>
               <Subtitle className="text-[14px] md:text-[16px]">예매하기</Subtitle>
-              <LinkIcon className="w-3 h-3 md:w-4 md:h-4" />
+              <Image src="/images/performance-detail/link.svg" alt="link" width={16} height={16} className="w-4 h-4" />
             </>
           )}
         </Button>
@@ -88,7 +88,7 @@ const BookingButton = ({
       ) : (
         <>
           <Subtitle className="2xl:text-[20px] xl:text-[18px] lg:text-[16px]">예매하기</Subtitle>
-          <LinkIcon className="2xl:w-6 2xl:h-6 xl:w-5 xl:h-5 lg:w-4 lg:h-4"/>
+          <Image src="/images/performance-detail/link.svg" alt="link" width={20} height={20} className="2xl:w-5 2xl:h-5 xl:w-5 xl:h-5 lg:w-[18px] lg:h-[18px]"/>
         </>
       )}
     </Button>

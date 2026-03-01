@@ -28,7 +28,9 @@ export const CommonModal = () => {
   };
 
   const handleCancel = () => {
-    cancelButton.onClick();
+    if (cancelButton) {
+      cancelButton.onClick();
+    }
     closeModal();
   };
 
@@ -36,17 +38,19 @@ export const CommonModal = () => {
     <Dialog open={isOpen} onOpenChange={closeModal}>
       <DialogContent showCloseButton={false} className="p-10">
         <DialogTitle className="sr-only">알림</DialogTitle>
-        <DialogDescription className={cn("whitespace-pre-line text-[18px] text-black font-bold", textAlign)}>
+        <DialogDescription className={cn("whitespace-pre-line text-[18px] text-black font-bold text-center", textAlign)}>
           {description}
         </DialogDescription>
         <DialogFooter className="flex-row gap-2 pt-12">
-          <Button
-            variant="outline"
-            onClick={handleCancel}
-            className="bg-[#F5F5F5] text-black hover:bg-gray-100 flex-1 h-[63px]"
-          >
-            <Subtitle className="text-[16px]">{cancelButton.label}</Subtitle>
-          </Button>
+          {cancelButton && (
+            <Button
+              variant="outline"
+              onClick={handleCancel}
+              className="bg-[#F5F5F5] text-black hover:bg-gray-100 flex-1 h-[63px] border-0"
+            >
+              <Subtitle className="text-[16px]">{cancelButton.label}</Subtitle>
+            </Button>
+          )}
           <Button
             onClick={handleConfirm}
             className="bg-black text-white hover:bg-gray-800 flex-1 h-[63px]"

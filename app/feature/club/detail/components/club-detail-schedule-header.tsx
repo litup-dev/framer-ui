@@ -24,13 +24,14 @@ const ClubDetailScheduleHeader = ({
   };
 
   return (
-    <div className="flex items-center justify-between sm:justify-start sm:gap-4 border-b-2 border-main pb-2">
+    <div className="flex items-center justify-between sm:justify-start sm:gap-4 border-b-2 border-main pb-3">
       <div className="flex gap-1 items-center">
         <Image
           src="/images/review_calendar.svg"
           alt="calendar"
-          width={24}
-          height={24}
+          width={32}
+          height={32}
+          className="w-6 h-6 2xl:w-8 2xl:h-8"
         />
         <Subtitle className="text-[18px] sm:text-[20px] xl:text-[24px]">
           공연 일정

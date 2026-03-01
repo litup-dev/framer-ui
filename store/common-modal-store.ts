@@ -12,7 +12,7 @@ interface CommonModalState {
   description: string;
   textAlign: TextAlign;
   confirmButton: ButtonAction;
-  cancelButton: ButtonAction;
+  cancelButton?: ButtonAction;
   openModal: (params: {
     description: string;
     textAlign?: TextAlign;
@@ -27,14 +27,14 @@ export const useCommonModalStore = create<CommonModalState>((set) => ({
   description: "",
   textAlign: "text-center",
   confirmButton: { label: "확인", onClick: () => {} },
-  cancelButton: { label: "취소", onClick: () => {} },
+  cancelButton: undefined,
   openModal: (params) =>
     set({
       isOpen: true,
       description: params.description,
       textAlign: params.textAlign || "text-center",
       confirmButton: params.confirmButton,
-      cancelButton: params.cancelButton || { label: "취소", onClick: () => {} },
+      cancelButton: params.cancelButton,
     }),
   closeModal: () =>
     set({
@@ -42,6 +42,6 @@ export const useCommonModalStore = create<CommonModalState>((set) => ({
       description: "",
       textAlign: "text-center",
       confirmButton: { label: "확인", onClick: () => {} },
-      cancelButton: { label: "취소", onClick: () => {} },
+      cancelButton: undefined,
     }),
 }));
