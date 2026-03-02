@@ -4,7 +4,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
+import Image from "next/image";
 
 interface SortOption<T extends string> {
   value: T;
@@ -30,7 +30,13 @@ export default function SortDropdown<T extends string>({
         <DropdownMenuTrigger asChild>
           <button className="flex items-center gap-1 font-semibold text-[14px] lg:text-[16px] text-muted-foreground hover:text-black transition-colors">
             <span>{options.find((opt) => opt.value === value)?.label}</span>
-            <ChevronDown className="w-4 h-4 lg:w-5 lg:h-5" />
+            <Image
+              src="/images/user/arrow-down-line_gray.svg"
+              alt="화살표"
+              width={20}
+              height={20}
+              className="w-4 h-4 lg:w-5 lg:h-5"
+            />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">

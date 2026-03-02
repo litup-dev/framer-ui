@@ -32,7 +32,7 @@ export default function ViewingHistoryItem({
             <Checkbox
               checked={isSelected}
               onCheckedChange={() => onSelect(item.id)}
-              className="w-[15px] h-[15px] lg:w-[18px] lg:h-[18px] 2xl:w-[18px] 2xl:h-[18px] border-[#222222]/20 rounded-[3px] data-[state=checked]:bg-transparent data-[state=checked]:border-[#222222]/20 data-[state=checked]:text-[#202020]/80 shadow-none"
+              className="w-[15px] h-[15px] lg:w-[18px] lg:h-[18px] 2xl:w-[18px] 2xl:h-[18px] bg-white border-[#222222]/20 rounded-[3px] data-[state=checked]:bg-white data-[state=checked]:border-[#222222]/20 data-[state=checked]:text-[#202020]/80 shadow-none"
             />
           </div>
         )}
@@ -44,29 +44,31 @@ export default function ViewingHistoryItem({
             className="object-cover rounded-[3px]"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">
+          <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground tracking-[-0.04em]">
             이미지
           </div>
         )}
       </div>
 
-      {/* 우측: 정보 - 상하 padding 8px */}
-      <div className="flex-1 flex flex-col py-2">
-        {/* 클럽 위치 */}
+      {/* 우측: 정보 - 날짜 하단 8px만 여백 유지 */}
+      <div className="flex-1 flex flex-col justify-between py-2">
+        <div className="flex flex-col">
+          {/* 클럽 위치 */}
+          <Description className="text-[12px] md:text-[14px] lg:text-[16px] text-muted-foreground">
+            {item.club?.name ?? ""}
+          </Description>
+          {/* 공연 타이틀 - bold letter-spacing -4% line-height 120%(2xl,xl,lg) 100%(md,sm) */}
+          <Title className="text-[15px] md:text-[16px] lg:text-[20px] xl:text-[20px] 2xl:text-[20px] font-bold tracking-[-0.04em] leading-[100%] lg:leading-[120%] xl:leading-[120%] 2xl:leading-[120%] line-clamp-1 mt-2 lg:mt-[10px]">
+            {item.title}
+          </Title>
+          {/* 아티스트 - 간격: 2xl/xl/lg 10px, md/sm 8px */}
+          <Description className="text-[12px] md:text-[14px] lg:text-[16px] mt-2 lg:mt-[10px]">
+            {artistNames.join(", ")}
+          </Description>
+        </div>
+        {/* 공연 날짜 */}
         <Description className="text-[12px] md:text-[14px] lg:text-[16px] text-muted-foreground">
-          {item.club?.name ?? ""}
-        </Description>
-        {/* 공연 타이틀 - 간격: 2xl/xl/lg 10px, md/sm 8px */}
-        <Title className="text-[15px] md:text[16px] lg:text-[24px] line-clamp-1 mt-2 lg:mt-[10px]">
-          {item.title}
-        </Title>
-        {/* 아티스트 - 간격: 2xl/xl/lg 10px, md/sm 8px */}
-        <Description className="text-[12px] md:text-[14px] lg:text-[16px] mt-2 lg:mt-[10px]">
-          {artistNames.join(", ")}
-        </Description>
-        {/* 공연 날짜 - 간격: 2xl/xl/lg 67px, md/sm 42px */}
-        <Description className="text-[12px] md:text-[14px] lg:text-[16px] text-muted-foreground mt-[42px] lg:mt-[67px]">
-          {formatDate(new Date(item.performDate), "yyyy.MM.dd HH:mm")}
+          {formatDate(new Date(item.performDate), "yyyy.MM.dd a h시 mm분")}
         </Description>
       </div>
     </div>

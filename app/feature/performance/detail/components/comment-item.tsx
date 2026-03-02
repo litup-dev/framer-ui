@@ -152,7 +152,10 @@ const CommentItem = ({
                 <AvatarImage src={getImageUrl(comment.user.profile_path) || undefined} alt={comment.user.nickname} />
                 <AvatarFallback>{comment.user.nickname[0]}</AvatarFallback>
               </Avatar>
-              <Subtitle className="text-[14px] md:text-[16px] 2xl:text-[18px]">
+              <Subtitle
+                className="text-[14px] md:text-[16px] 2xl:text-[18px] cursor-pointer hover:opacity-70 transition-opacity"
+                onClick={() => router.push(`/user/${comment.user.publicId}`)}
+              >
                 {comment.user.nickname}
               </Subtitle>
               <Description className="text-black-40 text-[12px] md:text-[14px] 2xl:text-[16px]">
@@ -203,7 +206,10 @@ const CommentItem = ({
             <AvatarImage src={getImageUrl(comment.user.profile_path) || undefined} alt={comment.user.nickname} />
             <AvatarFallback>{comment.user.nickname[0]}</AvatarFallback>
           </Avatar>
-          <Subtitle className="text-[14px] md:text-[16px] 2xl:text-[18px]">
+          <Subtitle
+            className="text-[14px] md:text-[16px] 2xl:text-[18px] cursor-pointer hover:opacity-70 transition-opacity"
+            onClick={() => router.push(`/user/${comment.user.publicId}`)}
+          >
             {comment.user.nickname}
           </Subtitle>
           <Description className="text-black-40 text-[12px] md:text-[14px] 2xl:text-[16px]">

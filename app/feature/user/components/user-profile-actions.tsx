@@ -1,11 +1,10 @@
-import { useState } from "react";
+import Image from "next/image";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Ellipsis } from "lucide-react";
 
 interface UserProfileActionsProps {
   isOwner: boolean;
@@ -22,16 +21,14 @@ export default function UserProfileActions({
   onEdit,
   editButtonClass,
 }: UserProfileActionsProps) {
-  const [showEditButton, setShowEditButton] = useState(false);
-
   if (isEditing) {
     return (
       <div className="relative">
         <button
           onClick={onSave}
-          className="text-sm font-medium text-black hover:text-black/70"
+          className="text-[14px] md:text-[16px] 2xl:text-[20px] font-bold text-black hover:text-black/70 tracking-[-0.04em]"
         >
-          확인
+          완료
         </button>
       </div>
     );
@@ -41,33 +38,33 @@ export default function UserProfileActions({
     return (
       <div className="relative">
         <button
-          onClick={() => setShowEditButton(!showEditButton)}
-          className="p-1 hover:bg-accent rounded-full"
+          onClick={onEdit}
+          className="flex items-center justify-center hover:opacity-70 transition-opacity"
         >
-          <Ellipsis className="w-5 h-5" />
+          <Image
+            src="/images/user/profile-edit.svg"
+            alt="프로필 수정"
+            width={32}
+            height={32}
+            className="w-5 h-5 md:w-6 md:h-6 lg:w-6 lg:h-6 xl:w-7 xl:h-7 2xl:w-[30px] 2xl:h-[30px]"
+          />
         </button>
-
-        {showEditButton && (
-          <button
-            onClick={() => {
-              onEdit();
-              setShowEditButton(false);
-            }}
-            className={editButtonClass}
-          >
-            수정하기
-          </button>
-        )}
       </div>
     );
   }
 
   return (
-    <div className="relative">
+    <div className="relative hidden xl:block">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="p-1 hover:bg-accent rounded-full">
-            <Ellipsis className="w-5 h-5" />
+          <button className="flex items-center justify-center hover:opacity-70 transition-opacity">
+            <Image
+              src="/images/user/ellipsis_gray.svg"
+              alt="메뉴"
+              width={32}
+              height={32}
+              className="w-8 h-8"
+            />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
