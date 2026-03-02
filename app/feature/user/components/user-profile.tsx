@@ -172,7 +172,7 @@ export default function UserProfile({
         existingImageUrl={profileImageUrl}
       />
 
-      {/* xl 이상: 아바타 + ... 버튼 */}
+      {/* xl 이상: 아바타 + 버튼 (우측 상단) */}
       <div className="hidden xl:flex items-start justify-between">
         <UserProfileAvatar
           profilePath={previewImageUrl || profileImageUrl}
@@ -182,17 +182,19 @@ export default function UserProfile({
           textSizeClass="text-3xl"
           onEditClick={() => setIsImageModalOpen(true)}
         />
-        <UserProfileActions
-          isOwner={isOwner}
-          isEditing={isEditing}
-          onSave={handleSave}
-          onEdit={() => setIsEditing(true)}
-          editButtonClass="absolute right-full mr-2 top-0 md:top-full md:right-0 md:left-auto md:mt-2 md:mr-0 w-24 h-14 flex items-center justify-center border border-[#202020]/10 rounded bg-white hover:bg-accent/50 transition-colors text-sm font-medium shadow-sm z-10"
-        />
+        {(isOwner && isEditing) || !isOwner ? (
+          <UserProfileActions
+            isOwner={isOwner}
+            isEditing={isEditing}
+            onSave={handleSave}
+            onEdit={() => setIsEditing(true)}
+            editButtonClass=""
+          />
+        ) : null}
       </div>
 
-      {/* xl 이상: 닉네임 + 자기소개 (아바타 하단, 확인 버튼 영역까지 전체 너비) */}
-      <div className="hidden xl:flex flex-col mt-8">
+      {/* xl 이상: 닉네임 + profile-edit 버튼 + 자기소개 */}
+      <div className={`hidden xl:block ${isEditing ? 'xl:mt-[23px] 2xl:mt-[23px]' : 'xl:mt-8 2xl:mt-8'}`}>
         <UserProfileInfo
           nickname={nickname}
           bio={bio}
@@ -200,15 +202,26 @@ export default function UserProfile({
           onNicknameChange={setNickname}
           onBioChange={setBio}
           nicknameClass="text-[24px]"
-          bioClass="text-[16px] text-muted-foreground mt-6"
+          bioClass="text-[16px] text-muted-foreground xl:mt-6 2xl:mt-[19px]"
           inputHeight="h-12"
           textareaHeight="h-[100px]"
           isExpanded={isBioExpanded}
           onToggleExpand={() => setIsBioExpanded(!isBioExpanded)}
+          actionButton={
+            isOwner && !isEditing ? (
+              <UserProfileActions
+                isOwner={isOwner}
+                isEditing={isEditing}
+                onSave={handleSave}
+                onEdit={() => setIsEditing(true)}
+                editButtonClass=""
+              />
+            ) : null
+          }
         />
       </div>
 
-      {/* md, lg: 아바타 + 닉네임/자기소개 + 확인 버튼 */}
+      {/* md, lg: 아바타 + 닉네임/자기소개 + 버튼 (우측 상단) */}
       <div className="hidden md:flex xl:hidden items-start justify-between">
         <div className="flex gap-4 lg:gap-6 flex-1">
           <UserProfileAvatar
@@ -220,7 +233,7 @@ export default function UserProfile({
             onEditClick={() => setIsImageModalOpen(true)}
           />
 
-          {/* 닉네임 + 자기소개 (아바타 옆) */}
+          {/* 닉네임 + profile-edit 버튼 + 자기소개 (아바타 옆) */}
           <div className="flex flex-col justify-center flex-1">
             <UserProfileInfo
               nickname={nickname}
@@ -229,38 +242,53 @@ export default function UserProfile({
               onNicknameChange={setNickname}
               onBioChange={setBio}
               nicknameClass="text-[18px] lg:text-[20px]"
-              bioClass="text-[14px] lg:text-[16px] text-muted-foreground mt-[10px] lg:mt-4"
+              bioClass="text-[14px] lg:text-[16px] text-muted-foreground mt-[10px] lg:mt-[14px]"
               inputHeight="h-12"
               textareaHeight="h-[100px]"
               isExpanded={isBioExpanded}
               onToggleExpand={() => setIsBioExpanded(!isBioExpanded)}
+              actionButton={
+                isOwner && !isEditing ? (
+                  <UserProfileActions
+                    isOwner={isOwner}
+                    isEditing={isEditing}
+                    onSave={handleSave}
+                    onEdit={() => setIsEditing(true)}
+                    editButtonClass=""
+                  />
+                ) : null
+              }
             />
           </div>
         </div>
 
-        <UserProfileActions
-          isOwner={isOwner}
-          isEditing={isEditing}
-          onSave={handleSave}
-          onEdit={() => setIsEditing(true)}
-          editButtonClass="absolute top-full right-0 mt-2 w-[81px] h-[46px] flex items-center justify-center border border-[#202020]/10 rounded bg-white hover:bg-accent/50 transition-colors text-sm font-medium shadow-sm z-10"
-        />
-      </div>
-
-      {/* sm (모바일): 확인 버튼이 닉네임보다 상단 */}
-      <div className="md:hidden">
-        <div className="flex justify-end mb-2">
+        {(isOwner && isEditing) || !isOwner ? (
           <UserProfileActions
             isOwner={isOwner}
             isEditing={isEditing}
             onSave={handleSave}
             onEdit={() => setIsEditing(true)}
-            editButtonClass="absolute right-full mr-2 top-0 w-[81px] h-[46px] flex items-center justify-center border border-[#202020]/10 rounded bg-white hover:bg-accent/50 transition-colors text-sm font-medium shadow-sm z-10"
+            editButtonClass=""
           />
+        ) : null}
+      </div>
+
+      {/* sm (모바일): 버튼 (상단 우측) */}
+      <div className="md:hidden">
+        <div className="flex justify-end h-[14px] mb-[26px]">
+          {(isOwner && isEditing) || !isOwner ? (
+            <UserProfileActions
+              isOwner={isOwner}
+              isEditing={isEditing}
+              onSave={handleSave}
+              onEdit={() => setIsEditing(true)}
+              editButtonClass=""
+            />
+          ) : null}
         </div>
 
         {/* 아바타 + 닉네임/자기소개 */}
-        <div className="flex gap-4">
+        <div className="flex gap-3.5">
           <UserProfileAvatar
             profilePath={previewImageUrl || profileImageUrl}
             nickname={nickname}
@@ -270,8 +298,8 @@ export default function UserProfile({
             onEditClick={() => setIsImageModalOpen(true)}
           />
 
-          {/* 닉네임 + 자기소개 (아바타 옆) */}
-          <div className="flex flex-col justify-center flex-1">
+          {/* 닉네임 + profile-edit 버튼 + 자기소개 (아바타 옆) */}
+          <div className="flex flex-col flex-1 pt-[5px] md:pt-[7px] pb-[7px]">
             <UserProfileInfo
               nickname={nickname}
               bio={bio}
@@ -279,11 +307,22 @@ export default function UserProfile({
               onNicknameChange={setNickname}
               onBioChange={setBio}
               nicknameClass="text-[16px]"
-              bioClass="text-[12px] text-muted-foreground mt-4"
+              bioClass="text-[12px] text-muted-foreground mt-3"
               inputHeight="h-7"
               textareaHeight="h-16"
               isExpanded={isBioExpanded}
               onToggleExpand={() => setIsBioExpanded(!isBioExpanded)}
+              actionButton={
+                isOwner && !isEditing ? (
+                  <UserProfileActions
+                    isOwner={isOwner}
+                    isEditing={isEditing}
+                    onSave={handleSave}
+                    onEdit={() => setIsEditing(true)}
+                    editButtonClass=""
+                  />
+                ) : null
+              }
             />
           </div>
         </div>

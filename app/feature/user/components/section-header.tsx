@@ -4,7 +4,8 @@ import { Separator } from "@/components/ui/separator";
 import { LucideIcon } from "lucide-react";
 
 interface SectionHeaderProps {
-  icon: LucideIcon;
+  icon?: LucideIcon;
+  customIcon?: ReactNode;
   title: string;
   iconClassName?: string;
   titleClassName?: string;
@@ -13,6 +14,7 @@ interface SectionHeaderProps {
 
 export default function SectionHeader({
   icon: Icon,
+  customIcon,
   title,
   iconClassName = "w-7 h-7 lg:w-8 lg:h-8",
   titleClassName = "text-[18px] md:text-[20px] lg:text-[24px]",
@@ -21,13 +23,13 @@ export default function SectionHeader({
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Icon className={iconClassName} />
+        <div className="flex items-center gap-1.5 md:gap-3">
+          {customIcon ? customIcon : Icon && <Icon className={iconClassName} />}
           <Title className={titleClassName}>{title}</Title>
         </div>
         {action}
       </div>
-      <Separator className="!h-[2px] md:!h-[3px] bg-main mt-3" />
+      <Separator className="!h-[2px] md:!h-[3px] bg-main mt-3 lg:mt-[14px]" />
     </div>
   );
 }

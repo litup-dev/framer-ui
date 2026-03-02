@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import NextImage from "next/image";
 import AvatarEditor from "react-avatar-editor";
 import {
   Dialog,
@@ -10,7 +11,6 @@ import {
   DialogHeader,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Crop, Upload, ZoomIn, ZoomOut } from "lucide-react";
 import { Subtitle, Description } from "@/components/shared/typography";
 
 interface ProfileImageCropModalProps {
@@ -191,10 +191,16 @@ export default function ProfileImageCropModal({
         className="!w-[353px] md:!w-[664px] h-[470px] md:h-[716px] p-0 rounded-[8px] overflow-hidden !max-w-none flex flex-col"
         showCloseButton={false}
       >
-        <DialogHeader className="pt-5 md:pt-6 px-6 md:px-11 flex-shrink-0">
+        <DialogHeader className="pt-6 md:pt-12 px-6 md:px-11 flex-shrink-0">
           <div className="flex items-center justify-between">
             <DialogTitle className="flex items-center gap-2 text-[18px] md:text-[20px] font-bold">
-              <Crop className="w-4 h-4 md:w-5 md:h-5" />
+              <NextImage
+                src="/images/user/crop.svg"
+                alt="프로필 편집"
+                width={20}
+                height={20}
+                className="w-4 h-4 md:w-5 md:h-5"
+              />
               프로필 이미지 편집
             </DialogTitle>
             <button
@@ -335,7 +341,13 @@ export default function ProfileImageCropModal({
                         }),
                   }}
                 >
-                  <Upload className={isMobile ? "w-[22px] h-[22px]" : "w-[28px] h-[28px]"} />
+                  <NextImage
+                    src="/images/user/file-upload.svg"
+                    alt="파일 업로드"
+                    width={28}
+                    height={28}
+                    className={isMobile ? "w-[22px] h-[22px]" : "w-[28px] h-[28px]"}
+                  />
                 </button>
               </div>
 
@@ -346,7 +358,13 @@ export default function ProfileImageCropModal({
                     onClick={() => setScale((prev) => Math.max(prev - 0.1, 1))}
                     className="transition-colors hover:opacity-70 flex-shrink-0"
                   >
-                    <ZoomOut className="w-5 h-5 md:w-6 md:h-6" />
+                    <NextImage
+                      src="/images/user/zoom-out.svg"
+                      alt="축소"
+                      width={32}
+                      height={32}
+                      className="w-6 h-6 md:w-8 md:h-8"
+                    />
                   </button>
 
                   <div className="relative flex items-center w-[210px] md:w-[344px]">
@@ -361,9 +379,9 @@ export default function ProfileImageCropModal({
                       style={{
                         background: `linear-gradient(to right, #FF491A 0%, #FF491A ${
                           ((scale - 1) / 2) * 100
-                        }%, rgba(0, 0, 0, 0.6) ${
+                        }%, rgba(32, 32, 32, 0.1) ${
                           ((scale - 1) / 2) * 100
-                        }%, rgba(0, 0, 0, 0.6) 100%)`,
+                        }%, rgba(32, 32, 32, 0.1) 100%)`,
                         height: "3px",
                         borderRadius: "9999px",
                       }}
@@ -374,42 +392,48 @@ export default function ProfileImageCropModal({
                     onClick={() => setScale((prev) => Math.min(prev + 0.1, 3))}
                     className="transition-colors hover:opacity-70 flex-shrink-0"
                   >
-                    <ZoomIn className="w-5 h-5 md:w-6 md:h-6" />
+                    <NextImage
+                      src="/images/user/zoom-in.svg"
+                      alt="확대"
+                      width={32}
+                      height={32}
+                      className="w-6 h-6 md:w-8 md:h-8"
+                    />
                   </button>
                 </div>
               </div>
 
-              {/* 완료 버튼 - 줌 슬라이더와 40px 간격 */}
+              {/* 등록 버튼 - 줌 슬라이더와 40px 간격 */}
               <div className="flex-shrink-0 pt-10 pb-12 flex justify-end">
                 <Button
                   onClick={handleSave}
                   disabled={!imgSrc}
                   className={`rounded-[4px] px-6 ${
-                    isMobile ? "h-7 text-[14px]" : "h-10"
+                    isMobile ? "w-[60px] h-[38px] text-[14px]" : "w-[64px] h-[44px]"
                   } ${
                     imgSrc
                       ? "bg-black text-white hover:bg-black/80"
                       : "bg-[#BBBBBB] text-white cursor-not-allowed"
                   }`}
                 >
-                  완료
+                  등록
                 </Button>
               </div>
             </>
           )}
         </div>
 
-        {/* 파일 업로드 상태일 때의 완료 버튼 */}
+        {/* 파일 업로드 상태일 때의 등록 버튼 */}
         {!imgSrc && (
           <div className="px-6 md:px-11 pb-6 md:pb-12 flex justify-end flex-shrink-0">
             <Button
               onClick={handleSave}
               disabled={!imgSrc}
               className={`rounded-[4px] px-6 bg-[#BBBBBB] text-white cursor-not-allowed ${
-                isMobile ? "h-7 text-[14px]" : "h-10"
+                isMobile ? "w-[60px] h-[38px] text-[14px]" : "w-[64px] h-[44px]"
               }`}
             >
-              완료
+              등록
             </Button>
           </div>
         )}

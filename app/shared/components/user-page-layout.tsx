@@ -47,7 +47,7 @@ export default function UserPageLayout({
         {/* 좌측: 프로필 섹션 + 메뉴 */}
         <div className="w-full xl:w-[330px] 2xl:w-[365px] flex flex-col">
           <div className="mb-6">
-            <Title className="xl:text-[32px] 2xl:text-[40px] invisible">
+            <Title className="xl:text-[32px] 2xl:text-[40px] tracking-[-0.04em] invisible">
               {title}
             </Title>
           </div>
@@ -67,7 +67,7 @@ export default function UserPageLayout({
         {/* 우측: 페이지 헤더 + 컨텐츠 */}
         <div className="w-full xl:w-3/4 2xl:w-[1315px] flex flex-col">
           <div className="flex flex-col">
-            <Title className="xl:text-[32px] 2xl:text-[40px]">{title}</Title>
+            <Title className="xl:text-[32px] 2xl:text-[40px] tracking-[-0.04em]">{title}</Title>
             <Separator className="!h-[2px] md:!h-[3px] bg-main mt-4 md:mt-7 lg:mt-10" />
           </div>
           <div
@@ -87,7 +87,7 @@ export default function UserPageLayout({
       {/* 1279px 이하 (xl-): 1열 레이아웃 - 프로필 영역 숨김 */}
       <div className="flex xl:hidden flex-col">
         <div className="flex flex-col">
-          <Title className="text-[20px] md:text-[24px] lg:text-[32px]">
+          <Title className="text-[20px] md:text-[24px] lg:text-[32px] tracking-[-0.04em]">
             {title}
           </Title>
           <Separator className="!h-[2px] md:!h-[3px] bg-main mt-4 md:mt-7 lg:mt-10" />

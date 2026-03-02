@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useUserStore } from "@/store/user-store";
 import UserPageLayout from "@/app/shared/components/user-page-layout";
 import PrivacySettingGroup from "@/app/feature/user/components/privacy-setting-group";
 import { Separator } from "@/components/ui/separator";
-import { HandMetal, Ticket, Star } from "lucide-react";
-import { LucideIcon } from "lucide-react";
+import Image from "next/image";
 import { PrivacyLevel } from "@/app/feature/user/types";
 import {
   getPrivacySettingsOptions,
@@ -23,11 +22,47 @@ interface PrivacySettings {
 const settingLabels: {
   key: keyof PrivacySettings;
   label: string;
-  icon: LucideIcon;
+  icon: ReactNode;
 }[] = [
-  { key: "attendance", label: "보고 싶은 공연", icon: HandMetal },
-  { key: "performHistory", label: "관람 기록", icon: Ticket },
-  { key: "favoriteClubs", label: "관심 클럽", icon: Star },
+  {
+    key: "attendance",
+    label: "보고 싶은 공연",
+    icon: (
+      <Image
+        src="/images/user/wishlist.svg"
+        alt="보고 싶은 공연"
+        width={32}
+        height={32}
+        className="w-6 h-6 lg:w-8 lg:h-8"
+      />
+    ),
+  },
+  {
+    key: "performHistory",
+    label: "관람 기록",
+    icon: (
+      <Image
+        src="/images/user/ticket.svg"
+        alt="관람 기록"
+        width={32}
+        height={32}
+        className="w-6 h-6 lg:w-8 lg:h-8"
+      />
+    ),
+  },
+  {
+    key: "favoriteClubs",
+    label: "관심 클럽",
+    icon: (
+      <Image
+        src="/images/user/star.svg"
+        alt="관심 클럽"
+        width={32}
+        height={32}
+        className="w-6 h-6 lg:w-8 lg:h-8"
+      />
+    ),
+  },
 ];
 
 export default function PrivacyPage() {

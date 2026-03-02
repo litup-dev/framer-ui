@@ -28,7 +28,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
-import { ChevronRight } from "lucide-react";
+import Image from "next/image";
 import { getImageUrl } from "@/lib/utils";
 
 type TabType = "written" | "liked";
@@ -187,12 +187,12 @@ export default function CommentsPage() {
               <AvatarImage src={getImageUrl(comment.user.profile_path) || undefined} alt={comment.user.nickname} />
               <AvatarFallback>{comment.user.nickname[0]}</AvatarFallback>
             </Avatar>
-            <Subtitle className="text-[14px]">{comment.user.nickname}</Subtitle>
-            <Description className="text-black-40 text-[12px]">
+            <Subtitle className="text-[14px] tracking-[-0.04em]">{comment.user.nickname}</Subtitle>
+            <Description className="text-black-40 text-[12px] tracking-[-0.04em]">
               {formatRelativeTime(comment.createdAt)}
             </Description>
           </div>
-          <Chip className="font-normal text-black-80 text-[14px]">
+          <Chip className="font-normal text-black-80 text-[14px] tracking-[-0.04em]">
             {comment.content}
           </Chip>
         </div>
@@ -272,10 +272,16 @@ export default function CommentsPage() {
                     router.push(`/performance/${performance.performanceId}`)
                   }
                 >
-                  <Title className="text-[14px] md:text-[18px]">
+                  <Title className="text-[14px] md:text-[18px] tracking-[-0.04em]">
                     {performance.performanceName}
                   </Title>
-                  <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+                  <Image
+                    src="/images/user/arrow-right-line.svg"
+                    alt="화살표"
+                    width={24}
+                    height={24}
+                    className="w-5 h-5 md:w-6 md:h-6"
+                  />
                 </button>
 
                 {/* 해당 공연의 코멘트들 */}
@@ -300,6 +306,11 @@ export default function CommentsPage() {
                           activeTab === "written"
                             ? user?.profilePath || undefined
                             : comment.user.profile_path
+                        }
+                        userPublicId={
+                          activeTab === "written"
+                            ? user?.publicId
+                            : comment.user.public_id
                         }
                         tabType={
                           activeTab === "written"

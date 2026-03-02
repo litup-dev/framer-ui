@@ -7,7 +7,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Ticket, ChevronDown } from "lucide-react";
+import Image from "next/image";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -102,13 +102,22 @@ export default function ViewingHistory({
     }
   };
 
+  const ticketIcon = (
+    <Image
+      src="/images/user/ticket_fill.svg"
+      alt="관람 기록"
+      width={28}
+      height={28}
+      className="w-6 h-6 md:w-7 md:h-7 lg:w-7 lg:h-7 xl:w-7 xl:h-7 2xl:w-7 2xl:h-7"
+    />
+  );
+
   if (isLoading) {
     return (
       <div className={`flex flex-col ${className || ""}`}>
         <SectionHeader
-          icon={Ticket}
+          customIcon={ticketIcon}
           title="관람 기록"
-          iconClassName="w-8 h-8 lg:w-9 lg:h-9 fill-black text-white stroke-1"
         />
         <div className="text-center py-8 text-muted-foreground">로딩 중...</div>
       </div>
@@ -119,9 +128,8 @@ export default function ViewingHistory({
     return (
       <div className={`flex flex-col ${className || ""}`}>
         <SectionHeader
-          icon={Ticket}
+          customIcon={ticketIcon}
           title="관람 기록"
-          iconClassName="w-8 h-8 lg:w-9 lg:h-9 fill-black text-white stroke-1"
         />
         <div className="col-span-full text-center py-8 text-muted-foreground">
           {errorMessage}
@@ -133,9 +141,8 @@ export default function ViewingHistory({
   return (
     <div className={`flex flex-col ${className || ""}`}>
       <SectionHeader
-        icon={Ticket}
+        customIcon={ticketIcon}
         title={`관람 기록 (${totalCount})`}
-        iconClassName="w-8 h-8 lg:w-9 lg:h-9 fill-black text-white stroke-1"
         action={
           isOwner && totalCount > 0 ? (
             <Button
@@ -144,7 +151,7 @@ export default function ViewingHistory({
                 setSelectedItems([]);
               }}
               variant="outline"
-              className="border-none shadow-none font-bold text-muted-foreground text-[14px] md:text-[16px] lg:text-[20px]"
+              className="border-none shadow-none font-bold text-muted-foreground text-[14px] md:text-[16px] lg:text-[20px] p-0 h-auto"
             >
               {isEditing ? "확인" : "편집"}
             </Button>
@@ -152,8 +159,8 @@ export default function ViewingHistory({
         }
       />
 
-      {/* 서브 헤더 - 타이틀 하단과 간격: 2xl/xl/lg 16px, md/sm 12px */}
-      <div className="flex items-center justify-between mt-3 lg:mt-4">
+      {/* Border to Sort: lg: 16px, md: 12px, sm: 13px */}
+      <div className="flex items-center justify-between mt-[13px] md:mt-3 lg:mt-4">
         {isEditing ? (
           <ViewingHistoryEditControls
             selectedCount={selectedItems.length}
@@ -175,7 +182,13 @@ export default function ViewingHistory({
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-1 font-semibold text-[14px] xl:text-[16px] hover:text-black transition-colors">
                 <span>{sortOrder === "latest" ? "최신순" : "오래된순"}</span>
-                <ChevronDown className="w-4 h-4 xl:w-5 xl:h-5" />
+                <Image
+                  src="/images/arrow-down.svg"
+                  alt="화살표"
+                  width={20}
+                  height={20}
+                  className="w-4 h-4 xl:w-5 xl:h-5"
+                />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
@@ -190,26 +203,27 @@ export default function ViewingHistory({
         )}
       </div>
 
-      {/* 관람 기록 목록 - 2xl/md: 2개씩 가로, xl/lg/sm: 1개씩 세로 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2 gap-4 mt-4">
-        {allHistoryItems.length > 0 ? (
-          allHistoryItems.map((item: PerformHistoryItem) => (
-            <ViewingHistoryItem
-              key={item.id}
-              item={item}
-              isEditing={isEditing}
-              isSelected={selectedItems.includes(item.id)}
-              onSelect={handleCheckboxChange}
-            />
-          ))
-        ) : (
-          <div className="col-span-full text-center py-8 text-muted-foreground">
-            관람 기록이 없습니다.
+      {/* Sort to Cards: lg/md: 24px, sm: 11px */}
+      {allHistoryItems.length > 0 ? (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2 gap-4 md:gap-x-3 md:gap-y-6 lg:gap-6 xl:gap-6 2xl:gap-x-5 2xl:gap-y-8 mt-[11px] md:mt-6 lg:mt-6 xl:mt-6 2xl:mt-8">
+            {allHistoryItems.map((item: PerformHistoryItem) => (
+              <ViewingHistoryItem
+                key={item.id}
+                item={item}
+                isEditing={isEditing}
+                isSelected={selectedItems.includes(item.id)}
+                onSelect={handleCheckboxChange}
+              />
+            ))}
           </div>
-        )}
-      </div>
-
-      {hasNextPage && <LoadMoreButton onClick={handleLoadMore} />}
+          {hasNextPage && <LoadMoreButton onClick={handleLoadMore} />}
+        </>
+      ) : (
+        <div className="text-center mt-20 text-muted-foreground mb-[106px] md:mb-[144px] lg:mb-[184px]">
+          관람 기록이 없습니다.
+        </div>
+      )}
     </div>
   );
 }

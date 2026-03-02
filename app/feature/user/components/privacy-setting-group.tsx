@@ -1,7 +1,7 @@
 "use client";
 
+import { ReactNode } from "react";
 import { Description, Title } from "@/components/shared/typography";
-import { LucideIcon } from "lucide-react";
 
 type PrivacyLevel = "public" | "friends" | "private";
 
@@ -16,7 +16,7 @@ interface PrivacySettingGroupProps {
   onChange: (value: PrivacyLevel) => void;
   name: string;
   layout: "2xl" | "xl" | "lg" | "md" | "sm";
-  icon?: LucideIcon;
+  icon?: ReactNode;
 }
 
 const privacyOptions: PrivacyOption[] = [
@@ -31,7 +31,7 @@ export default function PrivacySettingGroup({
   onChange,
   name,
   layout,
-  icon: Icon,
+  icon,
 }: PrivacySettingGroupProps) {
   // sm 레이아웃: 라디오 버튼이 텍스트 앞에 위치
   const isSmallLayout = layout === "sm";
@@ -76,8 +76,8 @@ export default function PrivacySettingGroup({
   return (
     <div className={`flex flex-col ${containerGap}`}>
       <div className="flex items-center gap-3 md:gap-2 lg:gap-3">
-        {Icon && <Icon className="w-6 h-6 lg:w-8 lg:h-8" />}
-        <Title className="font-semibold text-[14px] md:text-[20px] lg:text-[24px]">
+        {icon}
+        <Title className="font-semibold text-[14px] md:text-[20px] lg:text-[24px] tracking-[-0.04em]">
           {title}
         </Title>
       </div>
@@ -85,7 +85,7 @@ export default function PrivacySettingGroup({
         {privacyOptions.map((option) => (
           <label key={option.value} className={getLabelClass()}>
             {isSmallLayout && radioButton(option.value)}
-            <Description className="text-[14px] md:text-[16px] lg:text-[18px]">
+            <Description className="text-[14px] md:text-[16px] lg:text-[18px] tracking-[-0.04em]">
               {option.label}
             </Description>
             {!isSmallLayout && radioButton(option.value)}
