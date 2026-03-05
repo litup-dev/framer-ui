@@ -1,5 +1,5 @@
 export const getImageUrl = (
-  filePath: string | null | undefined
+  filePath: string | null | undefined,
 ): string | null => {
   if (!filePath) return null;
   if (
