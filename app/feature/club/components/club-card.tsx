@@ -42,6 +42,16 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
     clubFavoriteByIdOptions(club.id, queryClient),
   );
 
+  const clubWithImages: Club = useMemo(
+    () => ({
+      ...club,
+      images: club.images?.length
+        ? club.images
+        : (clubDetailData?.data?.images ?? club.images),
+    }),
+    [club, clubDetailData?.data?.images],
+  );
+
   useEffect(() => {
     setIsFavorite(cacheFavorite);
   }, [club.id, cacheFavorite]);
@@ -66,7 +76,7 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
       <div className="flex justify-between">
         <Link href={`/club/${club.id}`}>
           <div className="flex items-center gap-2.5">
-            <ClubImage club={club} size="md" />
+            <ClubImage club={clubWithImages} size="md" />
             <div className="flex flex-col gap-1.5 md:gap-2">
               <div className="flex gap-1 items-center">
                 <Subtitle className="text-[14px] xl:text-[16px] 2xl:text-[20px]">
@@ -116,23 +126,28 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
         />
       </div>
       <div className="flex gap-[1px]">
-        {club.images?.map((image: ClubImageType, index: number) => (
-          <div
-            key={image.id}
-            className={cn(
-              "relative w-[88px] h-[110px] sm:h-[180px] sm:w-[144px] bg-[#D9D9D9] overflow-hidden",
-              index === 0 && "rounded-l-[4px]",
-              index === (club.images?.length ?? 1) - 1 && "rounded-r-[4px]",
-            )}
-          >
-            <Image
-              src={image.filePath ? getImageUrl(image.filePath)! : ""}
-              alt={image.filePath}
-              fill
-              className="object-cover"
-            />
-          </div>
-        ))}
+        {clubWithImages.images?.map((image: ClubImageType, index: number) => {
+          const imageUrl = image.filePath ? getImageUrl(image.filePath) : null;
+          if (!imageUrl) return null;
+          return (
+            <div
+              key={image.id}
+              className={cn(
+                "relative w-[88px] h-[110px] sm:h-[180px] sm:w-[144px] bg-[#D9D9D9] overflow-hidden",
+                index === 0 && "rounded-l-[4px]",
+                index === (clubWithImages.images?.length ?? 1) - 1 &&
+                  "rounded-r-[4px]",
+              )}
+            >
+              <Image
+                src={imageUrl}
+                alt={image.filePath ?? "club image"}
+                fill
+                className="object-cover"
+              />
+            </div>
+          );
+        })}
       </div>
       <div className="flex gap-1 items-center text-subtitle-12 text-black-60">
         <div

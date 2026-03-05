@@ -9,7 +9,11 @@ export const getImageUrl = (
   ) {
     return filePath;
   }
-  const apiBaseUrl = process.env.NEXT_PUBLIC_IMAGE_PREFIX_URL || "";
+  const imagePrefix =
+    process.env.NEXT_PUBLIC_IMAGE_PREFIX_URL ||
+    process.env.NEXT_PUBLIC_API_BASE_URL ||
+    "";
+  if (!imagePrefix) return null;
   const path = filePath.startsWith("/") ? filePath : `/${filePath}`;
-  return `${apiBaseUrl}${path}`;
+  return `${imagePrefix}${path}`;
 };
