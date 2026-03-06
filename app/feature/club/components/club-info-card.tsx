@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Image from "next/image";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import { Club, ClubDetail } from "@/app/feature/club/types";
+import { Club } from "@/app/feature/club/types";
 import {
   clubFavoriteByIdOptions,
   getClubByIdOptions,
@@ -28,6 +28,16 @@ const ClubInfoCard = ({ club, isOverlay = false }: ClubInfoCardProps) => {
   const [isFavorite, setIsFavorite] = useState(cacheFavorite);
   const { mutate: mutateFavorite } = useMutation(
     clubFavoriteByIdOptions(club.id, queryClient),
+  );
+
+  const clubWithImages: Club = useMemo(
+    () => ({
+      ...club,
+      images: club.images?.length
+        ? club.images
+        : clubDetailData?.data?.images ?? club.images,
+    }),
+    [club, clubDetailData?.data?.images],
   );
 
   useEffect(() => {
@@ -55,7 +65,7 @@ const ClubInfoCard = ({ club, isOverlay = false }: ClubInfoCardProps) => {
         )}
       >
         <div className="flex items-center gap-4">
-          <ClubImage club={club} size="md" />
+          <ClubImage club={clubWithImages} size="md" />
           <div className="flex flex-col gap-1">
             <div className="flex gap-1 items-center">
               <Subtitle className="text-[14px] xl:text-[16px] 2xl:text-[20px]">
