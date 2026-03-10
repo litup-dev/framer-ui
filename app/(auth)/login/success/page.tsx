@@ -1,18 +1,36 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useUserStore } from "@/store/user-store";
+import { apiClient } from "@/lib/api-client";
 import { getReturnUrl, clearReturnUrl } from "@/lib/login-utils";
-import { getCurrentUserOptions } from "@/app/feature/user/query-options";
-import { getQueryClient } from "@/providers/get-query-client";
 
 const LoginSuccessPage = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { setUser } = useUserStore();
 
   useEffect(() => {
-    // 로그인 시 isLogin 체크 후 유저 정보 조회
-    const queryClient = getQueryClient();
-    queryClient.prefetchQuery(getCurrentUserOptions());
+    const token = searchParams.get("token");
+    const publicId = searchParams.get("publicId");
+    const nickname = searchParams.get("nickname");
+    const profilePath = searchParams.get("profilePath");
+    const socialCode = searchParams.get("socialCode");
+    const socialName = searchParams.get("socialName");
+
+    if (!token || !publicId) return;
+
+    setUser({
+      publicId,
+      nickname: nickname!,
+      profilePath: profilePath || null,
+      socialCode: socialCode || undefined,
+      socialName: socialName || undefined,
+      token,
+    });
+
+    apiClient.setAccessToken?.(token);
 
     const returnUrl = getReturnUrl();
     if (returnUrl && returnUrl !== "/login" && returnUrl !== "/login/success") {
@@ -21,7 +39,7 @@ const LoginSuccessPage = () => {
     } else {
       router.replace("/home");
     }
-  }, [router]);
+  }, [router, searchParams, setUser]);
 
   return null;
 };
