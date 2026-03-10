@@ -18,6 +18,19 @@ import {
 } from "@/app/feature/user/types";
 import { PerformanceCommentResponse } from "@/app/feature/performance/detail/types";
 
+// 내 정보 조회 API
+export const getCurrentUserOptions = () =>
+  queryOptions({
+    queryKey: ["currentUser"],
+    queryFn: async () => {
+      const response =
+        await apiClient.get<UserInfoResponse>("/api/v1/users/me");
+      return response.data;
+    },
+    staleTime: 30 * 60 * 1000, // 30분
+    gcTime: 60 * 60 * 1000, // 60분
+  });
+
 // 유저 통계 API
 export const getUserStatsOptions = (publicId: string) =>
   queryOptions({
