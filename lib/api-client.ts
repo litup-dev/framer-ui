@@ -88,6 +88,7 @@ class ApiClient {
     const config: RequestInit = {
       method,
       headers,
+      credentials: "include",
     };
 
     if (body && method !== "GET") {
@@ -124,6 +125,17 @@ class ApiClient {
           errorMessage = errorData.message;
         }
 
+        if (errorCode === 10401) {
+          const refreshed = await this.accessTokenRefresh();
+          if (refreshed) {
+            return this.request<T>(endpoint, options);
+          } else {
+            if (typeof window !== "undefined") {
+              window.location.href = "/login";
+            }
+          }
+        }
+
         throw new ApiError(errorMessage, response.status, errorCode, errorData);
       }
 
@@ -134,6 +146,18 @@ class ApiClient {
       return await response.json();
     } catch (error) {
       throw error;
+    }
+  }
+
+  private async accessTokenRefresh(): Promise<boolean> {
+    try {
+      const response = await fetch(`${this.baseURL}/api/v1/auth/refresh`, {
+        method: "POST",
+        credentials: "include",
+      });
+      return response.ok;
+    } catch {
+      return false;
     }
   }
 

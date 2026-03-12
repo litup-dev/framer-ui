@@ -7,5 +7,9 @@ export const useCurrentUser = () => {
     typeof window !== "undefined"
       ? document.cookie.includes("isLogin=true")
       : false;
-  return useQuery({ ...getCurrentUserOptions(), enabled: isLogin });
+  const { data, isLoading, error } = useQuery({
+    ...getCurrentUserOptions(),
+    enabled: isLogin,
+  });
+  return { user: data, isLoading, error };
 };
