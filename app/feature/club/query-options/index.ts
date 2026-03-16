@@ -19,6 +19,8 @@ import {
   ReviewCategory,
   ReviewCategoryResponse,
 } from "@/app/feature/club/types";
+import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface GetClubsParams {
   searchKey?: string;
@@ -41,7 +43,7 @@ const buildQueryString = (params: GetClubsParams): string => {
     if (key === "keywords" && Array.isArray(value) && value.length > 0) {
       value.forEach((keywordId) => {
         pairs.push(
-          `${encodeURIComponent(key)}=${encodeURIComponent(String(keywordId))}`
+          `${encodeURIComponent(key)}=${encodeURIComponent(String(keywordId))}`,
         );
       });
     } else if (typeof value === "number" || typeof value === "string") {
@@ -88,7 +90,7 @@ const getClubsOptions = (params: GetClubsParams = {}) => {
 
     queryFn: async () => {
       return apiClient.get(
-        `/api/v1/clubs${buildQueryString(normalizedParams)}`
+        `/api/v1/clubs${buildQueryString(normalizedParams)}`,
       );
     },
   });
@@ -102,7 +104,7 @@ const getReviewCategoryOptions = () =>
 
     queryFn: async () => {
       const response = await apiClient.get<ReviewCategoryResponse>(
-        "/api/v1/common/review-category"
+        "/api/v1/common/review-category",
       );
       if ("data" in response && Array.isArray(response.data)) {
         return response;
@@ -141,7 +143,7 @@ const getReviewByIdOptions = (
   offset: number = 0,
   limit: number = 5,
   isMine: boolean = false,
-  sort: "-createdAt" | "+createdAt" = "-createdAt"
+  sort: "-createdAt" | "+createdAt" = "-createdAt",
 ) =>
   queryOptions<ReviewPaginatedResponse>({
     queryKey: ["reviews", id, offset, limit, isMine, sort],
@@ -207,11 +209,11 @@ const clubFavoriteByIdOptions = (id: number, queryClient?: QueryClient) =>
               items: old.data.items.map((club) =>
                 club.id === id
                   ? { ...club, isFavorite: !club.isFavorite }
-                  : club
+                  : club,
               ),
             },
           };
-        }
+        },
       );
 
       queryClient.setQueryData<ClubDetail>(["club", String(id)], (old) => {
@@ -251,7 +253,7 @@ const getClubDetailCalendarByIdOptions = (id: number, month: string) =>
     queryKey: ["club-detail-calendar", id, month],
     queryFn: async (): Promise<Record<string, Performance[]>> => {
       const response = await apiClient.get<ClubDetailCalendarResponse>(
-        `/api/v1/performances/club/${id}/calendar?month=${month}`
+        `/api/v1/performances/club/${id}/calendar?month=${month}`,
       );
       return response.data;
     },
@@ -260,7 +262,7 @@ const getClubDetailCalendarByIdOptions = (id: number, month: string) =>
 const performaceAttendByIdOptions = (
   clubId: number,
   month: string,
-  queryClient?: QueryClient
+  queryClient?: QueryClient,
 ) =>
   mutationOptions<
     unknown,
@@ -274,7 +276,7 @@ const performaceAttendByIdOptions = (
         `/api/v1/performances/${id}/attend`,
         {
           entityId: id,
-        }
+        },
       );
       return response;
     },
@@ -299,15 +301,23 @@ const performaceAttendByIdOptions = (
             updated[dateKey] = performances.map((performance) =>
               performance.id === id
                 ? { ...performance, isAttend: !performance.isAttend }
-                : performance
+                : performance,
             );
           });
 
           return updated;
-        }
+        },
       );
 
       return { previousCalendar };
+    },
+    onSuccess: () => {
+      const queryClient = useQueryClient();
+      const { user } = useCurrentUser();
+
+      queryClient.invalidateQueries({
+        queryKey: ["performHistory", user?.publicId],
+      });
     },
     onError: (err, id, context) => {
       if (!queryClient || !context) return;
@@ -315,7 +325,7 @@ const performaceAttendByIdOptions = (
       if (context?.previousCalendar) {
         queryClient.setQueryData(
           ["club-detail-calendar", clubId, month],
-          context.previousCalendar
+          context.previousCalendar,
         );
       }
     },
@@ -342,7 +352,7 @@ const createReviewOptions = (entityId: number) =>
     }): Promise<{ data: CreateReviewResponse }> => {
       const response = await apiClient.post<{ data: CreateReviewResponse }>(
         `/api/v1/clubs/${entityId}/reviews`,
-        params
+        params,
       );
       return response;
     },
@@ -354,7 +364,7 @@ const uploadClubReviewImageOptions = (reviewId: number) =>
     mutationFn: async (params: FormData) => {
       const response = await apiClient.post(
         `/api/v1/reviews/${reviewId}/images`,
-        params
+        params,
       );
       return response;
     },
@@ -374,7 +384,7 @@ const updateReviewOptions = (reviewId: number) =>
     }): Promise<{ data: CreateReviewResponse }> => {
       const response = await apiClient.patch<{ data: CreateReviewResponse }>(
         `/api/v1/reviews/${reviewId}`,
-        params
+        params,
       );
       return response;
     },
@@ -386,7 +396,7 @@ const deleteReviewOptions = () =>
     mutationFn: async (reviewId: number) => {
       const response = await apiClient.delete(
         `/api/v1/reviews/${reviewId}`,
-        {}
+        {},
       );
       return response;
     },

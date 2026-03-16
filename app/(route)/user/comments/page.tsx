@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useUserStore } from "@/store/user-store";
 import { useReportModalStore } from "@/store/report-modal-store";
 import { useCommonModalStore } from "@/store/common-modal-store";
+import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 import UserPageLayout from "@/app/shared/components/user-page-layout";
 import PerformanceCommentItem from "@/app/feature/user/components/performance-comment-item";
 import SortDropdown from "@/app/shared/components/sort-dropdown";
@@ -42,7 +42,7 @@ const sortOptions = [
 export default function CommentsPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { user, isAuthenticated } = useUserStore();
+  const { user, isAuthenticated } = useCurrentUser();
   const { openModal: openReportModal } = useReportModalStore();
   const { openModal: openCommonModal } = useCommonModalStore();
 
@@ -51,7 +51,9 @@ export default function CommentsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editingText, setEditingText] = useState("");
-  const [expandedComments, setExpandedComments] = useState<Map<number, boolean>>(new Map());
+  const [expandedComments, setExpandedComments] = useState<
+    Map<number, boolean>
+  >(new Map());
 
   const itemsPerPage = 10;
 
@@ -72,7 +74,7 @@ export default function CommentsPage() {
     setEditingText,
     sortBy,
     (currentPage - 1) * itemsPerPage,
-    itemsPerPage
+    itemsPerPage,
   );
 
   const reportMutation = useReportContent();
@@ -103,12 +105,12 @@ export default function CommentsPage() {
       ? getMyPerformanceCommentsOptions(
           sortBy,
           (currentPage - 1) * itemsPerPage,
-          itemsPerPage
+          itemsPerPage,
         )
       : getMyLikedPerformanceCommentsOptions(
           sortBy,
           (currentPage - 1) * itemsPerPage,
-          itemsPerPage
+          itemsPerPage,
         );
 
   const { data: commentsData, isLoading } = useQuery({
@@ -159,7 +161,8 @@ export default function CommentsPage() {
   const handleReport = (comment: PerformanceComment) => {
     if (!isAuthenticated) {
       openCommonModal({
-        description: "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?",
+        description:
+          "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?",
         confirmButton: {
           label: "확인",
           onClick: () => router.push("/login"),
@@ -184,10 +187,15 @@ export default function CommentsPage() {
         <div className="p-4 bg-gray-50 rounded-lg">
           <div className="flex items-center gap-2 mb-2">
             <Avatar className="w-6 h-6">
-              <AvatarImage src={getImageUrl(comment.user.profile_path) || undefined} alt={comment.user.nickname} />
+              <AvatarImage
+                src={getImageUrl(comment.user.profile_path) || undefined}
+                alt={comment.user.nickname}
+              />
               <AvatarFallback>{comment.user.nickname[0]}</AvatarFallback>
             </Avatar>
-            <Subtitle className="text-[14px] tracking-[-0.04em]">{comment.user.nickname}</Subtitle>
+            <Subtitle className="text-[14px] tracking-[-0.04em]">
+              {comment.user.nickname}
+            </Subtitle>
             <Description className="text-black-40 text-[12px] tracking-[-0.04em]">
               {formatRelativeTime(comment.createdAt)}
             </Description>
@@ -201,7 +209,7 @@ export default function CommentsPage() {
       entityId: comment.id,
       onSubmit: (categoryId: string, content: string) => {
         const categoryIndex = REPORT_CATEGORIES.findIndex(
-          (cat) => cat.id === categoryId
+          (cat) => cat.id === categoryId,
         );
 
         reportMutation.mutate(
@@ -218,7 +226,7 @@ export default function CommentsPage() {
             onError: () => {
               alert("신고 접수에 실패했습니다.");
             },
-          }
+          },
         );
       },
     });
@@ -335,7 +343,7 @@ export default function CommentsPage() {
                   })}
                 </div>
               </div>
-            )
+            ),
           )
         )}
       </div>

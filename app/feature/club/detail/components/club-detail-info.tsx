@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useUserStore } from "@/store/user-store";
+import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 import { useRouter } from "next/navigation";
 
 import { useCommonModalStore } from "@/store/common-modal-store";
@@ -37,7 +37,7 @@ const ClubDetailInfo = ({
     images && images.length > 0 ? getImageUrl(images[0].filePath) : null;
   const { openModal } = useCommonModalStore();
   const queryClient = useQueryClient();
-  const { isAuthenticated } = useUserStore();
+  const { isAuthenticated } = useCurrentUser();
   const { mutate: mutateFavorite } = useMutation(mutateFavoriteClub(id));
   const router = useRouter();
   const handleFavorite = () => {

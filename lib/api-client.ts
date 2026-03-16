@@ -1,6 +1,3 @@
-import { AuthProvider } from "@/providers/auth-provider";
-import { useUserStore } from "@/store/user-store";
-
 export class ApiError extends Error {
   status: number;
   code: string | number;
@@ -24,39 +21,39 @@ interface ApiRequestOptions {
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   headers?: Record<string, string>;
   body?: any;
-  isServer?: boolean;
+  // isServer?: boolean;
 }
 
 class ApiClient {
   private baseURL: string;
-  private isServer: boolean;
-  private accessToken: string | null | undefined = undefined;
+  // private isServer: boolean;
+  // private accessToken: string | null | undefined = undefined;
 
   constructor(baseURL: string, isServer: boolean = false) {
     this.baseURL = baseURL;
-    this.isServer = isServer;
+    // this.isServer = isServer;
   }
 
-  setAccessToken(token: string | null) {
-    this.accessToken = token;
-  }
+  // setAccessToken(token: string | null) {
+  //   this.accessToken = token;
+  // }
 
-  getAccessToken(): string | null | undefined {
-    return this.accessToken;
-  }
+  // getAccessToken(): string | null | undefined {
+  //   return this.accessToken;
+  // }
 
-  private async getAuthToken(): Promise<string | null> {
-    if (this.accessToken !== undefined) return this.accessToken ?? null;
-    if (this.isServer) return null;
-    const { user } = useUserStore.getState();
-    return user?.token || null;
-  }
+  // private async getAuthToken(): Promise<string | null> {
+  //   if (this.accessToken !== undefined) return this.accessToken ?? null;
+  //   if (this.isServer) return null;
+  //   const { user } = useUserStore.getState();
+  //   return user?.token || null;
+  // }
 
   private async createHeaders(
     customHeaders: Record<string, string> = {},
     isFormData: boolean = false,
   ): Promise<Record<string, string>> {
-    const token = await this.getAuthToken();
+    // const token = await this.getAuthToken();
 
     const headers: Record<string, string> = {
       ...customHeaders,
@@ -68,9 +65,9 @@ class ApiClient {
       headers["Content-Type"] = "application/json";
     }
 
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
+    // if (token) {
+    //   headers.Authorization = `Bearer ${token}`;
+    // }
 
     return headers;
   }
@@ -125,6 +122,8 @@ class ApiClient {
           errorMessage = errorData.message;
         }
 
+        // 인증관련 에러일때 토큰 재발급 시도
+        // 실패 시 로그인 페이지로 리다이렉트
         if (errorCode === 10401) {
           const refreshed = await this.accessTokenRefresh();
           if (refreshed) {

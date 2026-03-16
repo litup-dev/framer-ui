@@ -14,7 +14,7 @@ import {
   clubFavoriteByIdOptions,
   getClubByIdOptions,
 } from "@/app/feature/club/query-options";
-import { useUserStore } from "@/store/user-store";
+import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 import { useCommonModalStore } from "@/store/common-modal-store";
 import { ClubImage as ClubImageType } from "@/app/feature/club/types";
 
@@ -29,7 +29,7 @@ interface ClubCardProps {
 const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { isAuthenticated } = useUserStore();
+  const { isAuthenticated } = useCurrentUser();
   const { openModal } = useCommonModalStore();
   const { data: clubDetailData } = useQuery(
     getClubByIdOptions(String(club.id)),

@@ -1,7 +1,7 @@
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCommonModalStore } from "@/store/common-modal-store";
-import { useUserStore } from "@/store/user-store";
+import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 import {
   useToggleCommentLike,
   useDeleteComment,
@@ -26,11 +26,11 @@ export const useUserCommentHandlers = (
   setEditingText: (text: string) => void,
   sortBy: string = "-createdAt",
   offset: number = 0,
-  limit: number = 10
+  limit: number = 10,
 ) => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { isAuthenticated } = useUserStore();
+  const { isAuthenticated } = useCurrentUser();
   const { openModal } = useCommonModalStore();
 
   // 좋아요한 코멘트 탭일 때는 invalidation 스킵
@@ -42,7 +42,8 @@ export const useUserCommentHandlers = (
 
   const showLoginModal = (): void => {
     openModal({
-      description: "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?",
+      description:
+        "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?",
       confirmButton: {
         label: "확인",
         onClick: () => router.push("/login"),
@@ -75,7 +76,7 @@ export const useUserCommentHandlers = (
   };
 
   const handleEditTextChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLTextAreaElement>,
   ): void => {
     const value = e.target.value;
     if (value.length <= COMMENT_MAX_LENGTH) {
@@ -100,7 +101,7 @@ export const useUserCommentHandlers = (
             queryKey: ["myPerformanceComments"],
           });
         },
-      }
+      },
     );
   };
 
@@ -132,9 +133,10 @@ export const useUserCommentHandlers = (
       return;
     }
 
-    const queryKey = activeTab === "written"
-      ? ["myPerformanceComments", sortBy, offset, limit]
-      : ["myLikedPerformanceComments", sortBy, offset, limit];
+    const queryKey =
+      activeTab === "written"
+        ? ["myPerformanceComments", sortBy, offset, limit]
+        : ["myLikedPerformanceComments", sortBy, offset, limit];
 
     // 이전 데이터 백업
     const previousData = queryClient.getQueryData(queryKey);
@@ -150,7 +152,9 @@ export const useUserCommentHandlers = (
             return {
               ...comment,
               isLiked: !comment.isLiked,
-              likeCount: comment.isLiked ? comment.likeCount - 1 : comment.likeCount + 1,
+              likeCount: comment.isLiked
+                ? comment.likeCount - 1
+                : comment.likeCount + 1,
             };
           }
           return comment;

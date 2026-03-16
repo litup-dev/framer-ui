@@ -8,7 +8,7 @@ import { isAfter, parseISO } from "date-fns";
 import { useToggleAttendance } from "../query-options";
 import { useCommonModalStore } from "@/store/common-modal-store";
 import ShareModal from "./share-modal";
-import { useUserStore } from "@/store/user-store";
+import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 
 interface DetailMobileHeaderProps {
   performanceId: number;
@@ -32,7 +32,7 @@ const DetailMobileHeader = ({
   images,
 }: DetailMobileHeaderProps) => {
   const router = useRouter();
-  const { isAuthenticated } = useUserStore();
+  const { isAuthenticated } = useCurrentUser();
   const toggleAttendMutation = useToggleAttendance();
   const { openModal } = useCommonModalStore();
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);

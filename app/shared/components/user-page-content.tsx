@@ -31,6 +31,8 @@ interface UserPageContentProps {
     nickname: string;
     bio: string;
     profilePath: string | null;
+    socialCode: string;
+    socialName: string;
   };
 }
 
@@ -46,14 +48,7 @@ export default function UserPageContent({
   const [isBioExpanded, setIsBioExpanded] = useState(false);
 
   // 항상 viewingUserInfo 사용 (API에서 가져온 최신 데이터)
-  const displayUser = viewingUserInfo
-    ? {
-        publicId: viewingUserInfo.publicId,
-        nickname: viewingUserInfo.nickname,
-        bio: viewingUserInfo.bio || "",
-        profilePath: viewingUserInfo.profilePath || undefined,
-      }
-    : null;
+  const displayUser = viewingUserInfo ?? null;
 
   const publicId = viewingUserId;
   const pageTitle = isOwner
@@ -89,6 +84,7 @@ export default function UserPageContent({
   const renderProfileSection = () => (
     <>
       <UserProfile
+        key={displayUser?.publicId}
         user={displayUser}
         isOwner={isOwner}
         isEditing={isProfileEditing}
@@ -115,7 +111,9 @@ export default function UserPageContent({
           </div>
 
           <div className="w-full xl:w-3/4 2xl:w-[1315px] flex flex-col gap-6">
-            <Title className="xl:text-[32px] 2xl:text-[40px]">{pageTitle}</Title>
+            <Title className="xl:text-[32px] 2xl:text-[40px]">
+              {pageTitle}
+            </Title>
             {renderContent()}
           </div>
         </div>
@@ -153,6 +151,7 @@ export default function UserPageContent({
           {/* Title to Profile: lg: 48px, md: 41px, sm: 38px */}
           <div className="md:mt-[41px] lg:mt-12">
             <UserProfile
+              key={displayUser?.publicId}
               user={displayUser}
               isOwner={isOwner}
               isEditing={isProfileEditing}
@@ -162,7 +161,13 @@ export default function UserPageContent({
             />
           </div>
           {/* Profile to Stats: lg: 64px(normal)/50px(editing), md: 40px/30px, sm: 32px/17px */}
-          <div className={isProfileEditing ? "mt-[17px] md:mt-[30px] lg:mt-[50px]" : "mt-8 md:mt-10 lg:mt-16"}>
+          <div
+            className={
+              isProfileEditing
+                ? "mt-[17px] md:mt-[30px] lg:mt-[50px]"
+                : "mt-8 md:mt-10 lg:mt-16"
+            }
+          >
             {renderContent()}
           </div>
           {isOwner && <UserSidebarMenu className="mt-12 md:mt-16 lg:mt-20" />}

@@ -8,7 +8,7 @@ import { Check, ChevronRightIcon, Plus } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { cn } from "@/lib/utils";
-import { useUserStore } from "@/store/user-store";
+import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 import { useCommonModalStore } from "@/store/common-modal-store";
 import { Description, Subtitle } from "@/components/shared/typography";
 import { Button } from "@/components/ui/button";
@@ -196,7 +196,7 @@ export default function ClubDetailSchedule({
   month,
 }: ClubDetailScheduleProps) {
   const queryClient = useQueryClient();
-  const { isAuthenticated } = useUserStore();
+  const { isAuthenticated } = useCurrentUser();
   const { openModal } = useCommonModalStore();
   const router = useRouter();
   const { mutate } = useMutation(

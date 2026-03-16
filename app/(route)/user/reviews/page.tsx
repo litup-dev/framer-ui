@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useUserStore } from "@/store/user-store";
+import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 import { useClubDetailStore } from "@/app/feature/club/detail/store";
 import { useCommonModalStore } from "@/store/common-modal-store";
 import UserPageLayout from "@/app/shared/components/user-page-layout";
@@ -25,7 +25,7 @@ const sortOptions = [
 
 export default function ReviewsPage() {
   const queryClient = useQueryClient();
-  const { isAuthenticated } = useUserStore();
+  const { isAuthenticated } = useCurrentUser();
   const { openReviewModal } = useClubDetailStore();
   const { openModal } = useCommonModalStore();
 

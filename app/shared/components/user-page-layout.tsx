@@ -7,7 +7,7 @@ import UserSidebarMenu from "@/app/feature/user/components/user-sidebar-menu";
 import { Title } from "@/components/shared/typography";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { useRequireAuth } from "@/app/feature/user/hooks/use-require-auth";
+import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 
 interface UserPageLayoutProps {
   title: string;
@@ -32,7 +32,7 @@ export default function UserPageLayout({
     "2xl": "2xl:mt-20",
   },
 }: UserPageLayoutProps) {
-  const { user, isLoading } = useRequireAuth();
+  const { user, isLoading } = useCurrentUser();
   const [isProfileEditing, setIsProfileEditing] = useState(false);
   const [isBioExpanded, setIsBioExpanded] = useState(false);
 
@@ -67,7 +67,9 @@ export default function UserPageLayout({
         {/* 우측: 페이지 헤더 + 컨텐츠 */}
         <div className="w-full xl:w-3/4 2xl:w-[1315px] flex flex-col">
           <div className="flex flex-col">
-            <Title className="xl:text-[32px] 2xl:text-[40px] tracking-[-0.04em]">{title}</Title>
+            <Title className="xl:text-[32px] 2xl:text-[40px] tracking-[-0.04em]">
+              {title}
+            </Title>
             <Separator className="!h-[2px] md:!h-[3px] bg-main mt-4 md:mt-7 lg:mt-10" />
           </div>
           <div
@@ -76,7 +78,7 @@ export default function UserPageLayout({
               contentTopMargin?.md,
               contentTopMargin?.lg,
               contentTopMargin?.xl,
-              contentTopMargin?.["2xl"]
+              contentTopMargin?.["2xl"],
             )}
           >
             {children}
@@ -98,7 +100,7 @@ export default function UserPageLayout({
             contentTopMargin?.md,
             contentTopMargin?.lg,
             contentTopMargin?.xl,
-            contentTopMargin?.["2xl"]
+            contentTopMargin?.["2xl"],
           )}
         >
           {children}

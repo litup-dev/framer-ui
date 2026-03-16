@@ -1,19 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import UserProfileAvatar from "./user-profile-avatar";
 import UserProfileInfo from "./user-profile-info";
 import UserProfileActions from "./user-profile-actions";
 import ProfileImageCropModal from "./profile-image-crop-modal";
 import { updateUserInfo, getUserInfo } from "@/app/feature/user/query-options";
 import { apiClient } from "@/lib/api-client";
-import { UserInfo, useUserStore } from "@/store/user-store";
+import { UserInfoResponse } from "@/app/feature/user/types";
+
 import { userProfileSchema } from "@/app/feature/user/validation/user-profile";
 import { useCommonModalStore } from "@/store/common-modal-store";
 
 interface UserProfileProps {
-  user: UserInfo | null;
+  user: UserInfoResponse["data"] | null | undefined;
   isOwner: boolean;
   isEditing?: boolean;
   setIsEditing?: (value: boolean) => void;
@@ -29,7 +30,7 @@ export default function UserProfile({
   isBioExpanded: externalIsBioExpanded,
   setIsBioExpanded: externalSetIsBioExpanded,
 }: UserProfileProps) {
-  const { setUser } = useUserStore();
+  const queryClient = useQueryClient();
   const { openModal } = useCommonModalStore();
   const [internalIsEditing, setInternalIsEditing] = useState(false);
   const [bio, setBio] = useState(user?.bio || "");
@@ -37,7 +38,7 @@ export default function UserProfile({
   const [isFollowing, setIsFollowing] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [profileImageUrl, setProfileImageUrl] = useState(
-    user?.profilePath || null
+    user?.profilePath || null,
   );
   const [tempProfileImage, setTempProfileImage] = useState<Blob | null>(null);
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
@@ -54,7 +55,9 @@ export default function UserProfile({
 
   // props로 받은 isBioExpanded를 사용하거나, 내부 state 사용
   const isBioExpanded =
-    externalIsBioExpanded !== undefined ? externalIsBioExpanded : internalIsBioExpanded;
+    externalIsBioExpanded !== undefined
+      ? externalIsBioExpanded
+      : internalIsBioExpanded;
   const setIsBioExpanded = externalSetIsBioExpanded || setInternalIsBioExpanded;
 
   // 유저 프로필 수정 mutation (닉네임/bio만)
@@ -63,13 +66,8 @@ export default function UserProfile({
       return updateUserInfo(params);
     },
     onSuccess: async (response: any) => {
-      // API 응답에서 최신 유저 정보 받기 (id, nickname, profilePath, bio)
-      const updatedUserInfo = response.data;
+      await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
 
-      // user store 업데이트
-      setUser(updatedUserInfo);
-
-      setProfileImageUrl(updatedUserInfo.profilePath);
       setTempProfileImage(null);
       setPreviewImageUrl(null);
       setIsEditing(false);
@@ -132,11 +130,7 @@ export default function UserProfile({
         });
       } else if (isProfileImageChanged) {
         // 프로필 이미지만 변경된 경우 - 최신 유저 정보 조회
-        if (user?.publicId) {
-          const userInfoResponse = await getUserInfo(user.publicId);
-          setUser(userInfoResponse.data);
-          setProfileImageUrl(userInfoResponse.data.profilePath);
-        }
+        await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
         setIsEditing(false);
       }
     } catch (error) {
@@ -194,7 +188,9 @@ export default function UserProfile({
       </div>
 
       {/* xl 이상: 닉네임 + profile-edit 버튼 + 자기소개 */}
-      <div className={`hidden xl:block ${isEditing ? 'xl:mt-[23px] 2xl:mt-[23px]' : 'xl:mt-8 2xl:mt-8'}`}>
+      <div
+        className={`hidden xl:block ${isEditing ? "xl:mt-[23px] 2xl:mt-[23px]" : "xl:mt-8 2xl:mt-8"}`}
+      >
         <UserProfileInfo
           nickname={nickname}
           bio={bio}

@@ -47,7 +47,10 @@ export default function ViewingHistory({
 
   // API 호출: 관람 기록
   const { data, fetchNextPage, hasNextPage, isLoading, isError, error } =
-    useInfiniteQuery(getPerformHistoryOptions(publicId));
+    useInfiniteQuery({
+      ...getPerformHistoryOptions(publicId),
+      enabled: !!publicId,
+    });
 
   const errorMessage = useApiErrorMessage(error);
 
@@ -78,7 +81,7 @@ export default function ViewingHistory({
   // API 데이터를 평탄화
   const allHistoryItems =
     data?.pages.flatMap(
-      (page: { items: PerformHistoryItem[] }) => page.items
+      (page: { items: PerformHistoryItem[] }) => page.items,
     ) ?? [];
   const totalCount = data?.pages[0]?.total ?? 0;
 
@@ -86,7 +89,7 @@ export default function ViewingHistory({
     setSelectedItems((prev) =>
       prev.includes(itemId)
         ? prev.filter((id) => id !== itemId)
-        : [...prev, itemId]
+        : [...prev, itemId],
     );
   };
 
@@ -115,10 +118,7 @@ export default function ViewingHistory({
   if (isLoading) {
     return (
       <div className={`flex flex-col ${className || ""}`}>
-        <SectionHeader
-          customIcon={ticketIcon}
-          title="관람 기록"
-        />
+        <SectionHeader customIcon={ticketIcon} title="관람 기록" />
         <div className="text-center py-8 text-muted-foreground">로딩 중...</div>
       </div>
     );
@@ -127,10 +127,7 @@ export default function ViewingHistory({
   if (isError && errorMessage) {
     return (
       <div className={`flex flex-col ${className || ""}`}>
-        <SectionHeader
-          customIcon={ticketIcon}
-          title="관람 기록"
-        />
+        <SectionHeader customIcon={ticketIcon} title="관람 기록" />
         <div className="col-span-full text-center py-8 text-muted-foreground">
           {errorMessage}
         </div>
@@ -169,7 +166,7 @@ export default function ViewingHistory({
             onSelectAll={(checked) => {
               if (checked) {
                 setSelectedItems(
-                  allHistoryItems.map((item: PerformHistoryItem) => item.id)
+                  allHistoryItems.map((item: PerformHistoryItem) => item.id),
                 );
               } else {
                 setSelectedItems([]);
