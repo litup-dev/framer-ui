@@ -20,6 +20,7 @@ import { ClubImage as ClubImageType } from "@/app/feature/club/types";
 
 import ClubImage from "@/app/feature/club/components/club-image";
 import { Description, Subtitle } from "@/components/shared/typography";
+import { saveReturnUrl } from "@/lib/login-utils";
 
 interface ClubCardProps {
   club: Club;
@@ -30,7 +31,7 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { isAuthenticated } = useCurrentUser();
-  const { openModal } = useCommonModalStore();
+  const { openModal: openCommonModal } = useCommonModalStore();
   const { data: clubDetailData } = useQuery(
     getClubByIdOptions(String(club.id)),
   );
@@ -58,11 +59,18 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
 
   const mutate = () => {
     if (!isAuthenticated) {
-      openModal({
-        description: "로그인 후 이용해주세요",
+      openCommonModal({
+        description:
+          "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?",
         confirmButton: {
           label: "확인",
-          onClick: () => router.push("/login"),
+          onClick: () => {
+            router.push("/login");
+          },
+        },
+        cancelButton: {
+          label: "취소",
+          onClick: () => {},
         },
       });
       return;

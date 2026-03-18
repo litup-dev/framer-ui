@@ -17,9 +17,11 @@ export default function UserStats({ data }: UserStatsProps) {
         {/* 기대돼요 */}
         <div className="flex flex-col items-start justify-between text-white px-4 md:px-5 lg:px-10 xl:px-8 2xl:px-10 first:pl-0 last:pr-0 h-full">
           <div className="flex items-center gap-1 text-sm md:text-base">
-            <Title className="text-[12px] md:text-[14px] lg:text-[20px]">기대돼요</Title>
+            <Title className="text-[12px] md:text-[14px] lg:text-[20px]">
+              기대돼요
+            </Title>
             <Image
-              src="/images/user/arrow-right-line_white.svg"
+              src="/images/user/arrow-right-line_black.svg"
               alt="화살표"
               width={24}
               height={24}
@@ -28,7 +30,9 @@ export default function UserStats({ data }: UserStatsProps) {
           </div>
           <div className="text-[40px] md:text-4xl lg:text-[72px] font-bold tracking-[-0.04em] leading-none">
             {data?.attendCount ?? 0}
-            <span className="text-[14px] md:text-[16px] lg:text-[24px] tracking-[-0.04em]">개</span>
+            <span className="text-[14px] md:text-[16px] lg:text-[24px] tracking-[-0.04em]">
+              개
+            </span>
           </div>
         </div>
 

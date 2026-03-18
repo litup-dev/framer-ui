@@ -311,14 +311,6 @@ const performaceAttendByIdOptions = (
 
       return { previousCalendar };
     },
-    onSuccess: () => {
-      const queryClient = useQueryClient();
-      const { user } = useCurrentUser();
-
-      queryClient.invalidateQueries({
-        queryKey: ["performHistory", user?.publicId],
-      });
-    },
     onError: (err, id, context) => {
       if (!queryClient || !context) return;
 

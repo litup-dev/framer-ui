@@ -284,7 +284,7 @@ export default function CommentsPage() {
                     {performance.performanceName}
                   </Title>
                   <Image
-                    src="/images/user/arrow-right-line.svg"
+                    src="/images/user/arrow-right-line_black.svg"
                     alt="화살표"
                     width={24}
                     height={24}
