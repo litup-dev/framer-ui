@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ReactQueryProvider from "@/providers/react-query-provider";
 
-import { AuthProvider } from "@/providers/auth-provider";
 import { CommonModal } from "@/components/shared/common-modal";
 import { ReportModal } from "@/components/shared/report-modal";
 import localFont from "next/font/local";
@@ -57,11 +56,9 @@ export default function RootLayout({
       >
         <Suspense fallback={<div>Loading...</div>}>
           <ReactQueryProvider>
-            <AuthProvider>
-                {children}
-                <CommonModal />
-                <ReportModal />
-            </AuthProvider>
+            {children}
+            <CommonModal />
+            <ReportModal />
           </ReactQueryProvider>
         </Suspense>
       </body>
