@@ -8,6 +8,7 @@ import {
   PerformanceDetailResponse,
   PerformanceCommentResponse,
 } from "@/app/feature/performance/detail/types";
+import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 
 // 공연 상세 정보 API
 export const getPerformanceDetailOptions = (performanceId: number) =>
@@ -15,7 +16,7 @@ export const getPerformanceDetailOptions = (performanceId: number) =>
     queryKey: ["performanceDetail", performanceId],
     queryFn: async () => {
       const response = await apiClient.get<PerformanceDetailResponse>(
-        `/api/v1/performances/${performanceId}/details`
+        `/api/v1/performances/${performanceId}/details`,
       );
       return response;
     },
@@ -28,13 +29,13 @@ export const getPerformanceDetailOptions = (performanceId: number) =>
 export const getPerformanceCommentsOptions = (
   performanceId: number,
   offset: number = 0,
-  limit: number = 10
+  limit: number = 10,
 ) =>
   queryOptions({
     queryKey: ["performanceComments", performanceId, offset, limit],
     queryFn: async () => {
       const response = await apiClient.get<PerformanceCommentResponse>(
-        `/api/v1/performance/${performanceId}/reviews?offset=${offset}&limit=${limit}`
+        `/api/v1/performance/${performanceId}/reviews?offset=${offset}&limit=${limit}`,
       );
       return response;
     },
@@ -44,7 +45,10 @@ export const getPerformanceCommentsOptions = (
   });
 
 // 댓글 좋아요 토글 Mutation
-export const useToggleCommentLike = (performanceId: number, options?: { skipLikedCommentsInvalidation?: boolean }) => {
+export const useToggleCommentLike = (
+  performanceId: number,
+  options?: { skipLikedCommentsInvalidation?: boolean },
+) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -88,11 +92,11 @@ export const useToggleCommentLike = (performanceId: number, options?: { skipLike
                         ? comment.likeCount - 1
                         : comment.likeCount + 1,
                     }
-                  : comment
+                  : comment,
               ),
             },
           };
-        }
+        },
       );
 
       return { previousComments };
@@ -114,11 +118,11 @@ export const useToggleCommentLike = (performanceId: number, options?: { skipLike
                       ...comment,
                       likeCount: response.data.totalLikeCount,
                     }
-                  : comment
+                  : comment,
               ),
             },
           };
-        }
+        },
       );
 
       // 공연 상세 페이지에서만 myLikedPerformanceComments 무효화
@@ -148,7 +152,7 @@ export const useDeleteComment = (performanceId: number) => {
     mutationFn: async (reviewId: number) => {
       const response = await apiClient.delete(
         `/api/v1/performance/reviews/${reviewId}`,
-        {}
+        {},
       );
       return response;
     },
@@ -171,7 +175,7 @@ export const useCreateComment = (performanceId: number) => {
         `/api/v1/performance/${performanceId}/reviews`,
         {
           content: content,
-        }
+        },
       );
       return response;
     },
@@ -200,7 +204,7 @@ export const useUpdateComment = (performanceId: number) => {
         `/api/v1/performance/reviews/${reviewId}`,
         {
           content: content,
-        }
+        },
       );
       return response;
     },
@@ -216,12 +220,13 @@ export const useUpdateComment = (performanceId: number) => {
 // 공연 참석 토글 Mutation
 export const useToggleAttendance = () => {
   const queryClient = useQueryClient();
+  const { user } = useCurrentUser();
 
   return useMutation({
     mutationFn: async (performanceId: number) => {
       const response = await apiClient.post(
         `/api/v1/performances/${performanceId}/attend`,
-        {}
+        {},
       );
       return response;
     },
@@ -234,6 +239,10 @@ export const useToggleAttendance = () => {
       // userStats 무효화 - publicId는 모든 사용자의 stats를 무효화
       queryClient.invalidateQueries({
         queryKey: ["userStats"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["performHistory", user?.publicId],
       });
     },
   });

@@ -3,22 +3,22 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import UserPageContent from "@/app/shared/components/user-page-content";
-import { useUserStore } from "@/store/user-store";
 import { useUserPageData } from "@/app/feature/user/hooks/use-user-page-data";
+import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 import { saveReturnUrl } from "@/lib/login-utils";
 
 export default function MyPage() {
   const router = useRouter();
   const pathname = usePathname();
   const [isMounted, setIsMounted] = useState(false);
-  const { user, isAuthenticated } = useUserStore();
+  const { user, isAuthenticated, isLoading } = useCurrentUser();
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
   useEffect(() => {
-    if (!isAuthenticated && isMounted) {
+    if (!isLoading && !isAuthenticated && isMounted) {
       if (typeof window !== "undefined") {
         const currentUrl = pathname + window.location.search;
         saveReturnUrl(pathname);
@@ -27,10 +27,10 @@ export default function MyPage() {
         router.push("/login");
       }
     }
-  }, [isAuthenticated, router, pathname, isMounted]);
+  }, [isLoading, isAuthenticated, router, pathname, isMounted]);
 
   const publicId = user?.publicId || "";
-  const { userInfo, userStats, isLoading } = useUserPageData(publicId);
+  const { userInfo, userStats } = useUserPageData(publicId);
 
   if (isLoading) {
     return <div>Loading...</div>;

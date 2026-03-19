@@ -17,7 +17,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
 import { useReportModalStore } from "@/store/report-modal-store";
 import { useCommonModalStore } from "@/store/common-modal-store";
-import { useUserStore } from "@/store/user-store";
+import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 import { useRouter } from "next/navigation";
 import { useReportContent } from "../query-options";
 import { REPORT_CATEGORIES } from "@/app/shared/constants";
@@ -59,7 +59,7 @@ const CommentItem = ({
   const router = useRouter();
   const { openModal: openReportModal } = useReportModalStore();
   const { openModal: openCommonModal } = useCommonModalStore();
-  const { isAuthenticated } = useUserStore();
+  const { isAuthenticated } = useCurrentUser();
   const reportMutation = useReportContent();
   const [showMoreButton, setShowMoreButton] = useState(false);
 
@@ -68,10 +68,15 @@ const CommentItem = ({
     setShowMoreButton(lineCount >= 3);
   }, [comment.content]);
 
-  const formatRelativeTime = (dateString: string, isEdited: boolean = false) => {
+  const formatRelativeTime = (
+    dateString: string,
+    isEdited: boolean = false,
+  ) => {
     const now = new Date();
     const date = new Date(dateString);
-    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+    const diffInMinutes = Math.floor(
+      (now.getTime() - date.getTime()) / (1000 * 60),
+    );
 
     let timeStr;
     if (diffInMinutes < 1) {
@@ -88,7 +93,8 @@ const CommentItem = ({
   const handleReportClick = () => {
     if (!isAuthenticated) {
       openCommonModal({
-        description: "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?",
+        description:
+          "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?",
         confirmButton: {
           label: "확인",
           onClick: () => router.push("/login"),
@@ -106,12 +112,18 @@ const CommentItem = ({
         <div className="p-4 bg-gray-50 rounded-lg">
           <div className="flex items-center gap-2 mb-2">
             <Avatar className="w-6 h-6">
-              <AvatarImage src={getImageUrl(comment.user.profile_path) || undefined} alt={comment.user.nickname} />
+              <AvatarImage
+                src={getImageUrl(comment.user.profile_path) || undefined}
+                alt={comment.user.nickname}
+              />
               <AvatarFallback>{comment.user.nickname[0]}</AvatarFallback>
             </Avatar>
             <Subtitle className="text-[14px]">{comment.user.nickname}</Subtitle>
             <Description className="text-black-40 text-[12px]">
-              {formatRelativeTime(comment.updatedAt || comment.createdAt, !!comment.updatedAt)}
+              {formatRelativeTime(
+                comment.updatedAt || comment.createdAt,
+                !!comment.updatedAt,
+              )}
             </Description>
           </div>
           <Chip className="font-normal text-black-80 text-[14px]">
@@ -122,21 +134,26 @@ const CommentItem = ({
       typeId: 1, // 댓글 타입 ID
       entityId: comment.id,
       onSubmit: (categoryId: string, content: string) => {
-        const categoryIndex = REPORT_CATEGORIES.findIndex((cat) => cat.id === categoryId);
+        const categoryIndex = REPORT_CATEGORIES.findIndex(
+          (cat) => cat.id === categoryId,
+        );
 
-        reportMutation.mutate({
-          typeId: 1,
-          categoryId: categoryIndex + 1, // 1-based index
-          entityId: comment.id,
-          content,
-        }, {
-          onSuccess: () => {
-            alert("신고가 접수되었습니다.");
+        reportMutation.mutate(
+          {
+            typeId: 1,
+            categoryId: categoryIndex + 1, // 1-based index
+            entityId: comment.id,
+            content,
           },
-          onError: () => {
-            alert("신고 접수에 실패했습니다.");
+          {
+            onSuccess: () => {
+              alert("신고가 접수되었습니다.");
+            },
+            onError: () => {
+              alert("신고 접수에 실패했습니다.");
+            },
           },
-        });
+        );
       },
     });
   };
@@ -149,7 +166,10 @@ const CommentItem = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Avatar className="w-6 h-6 md:w-8 md:h-8 2xl:w-10 2xl:h-10">
-                <AvatarImage src={getImageUrl(comment.user.profile_path) || undefined} alt={comment.user.nickname} />
+                <AvatarImage
+                  src={getImageUrl(comment.user.profile_path) || undefined}
+                  alt={comment.user.nickname}
+                />
                 <AvatarFallback>{comment.user.nickname[0]}</AvatarFallback>
               </Avatar>
               <Subtitle
@@ -159,7 +179,10 @@ const CommentItem = ({
                 {comment.user.nickname}
               </Subtitle>
               <Description className="text-black-40 text-[12px] md:text-[14px] 2xl:text-[16px]">
-                {formatRelativeTime(comment.updatedAt || comment.createdAt, !!comment.updatedAt)}
+                {formatRelativeTime(
+                  comment.updatedAt || comment.createdAt,
+                  !!comment.updatedAt,
+                )}
               </Description>
             </div>
             <Button
@@ -203,7 +226,10 @@ const CommentItem = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Avatar className="w-6 h-6 md:w-8 md:h-8 2xl:w-10 2xl:h-10">
-            <AvatarImage src={getImageUrl(comment.user.profile_path) || undefined} alt={comment.user.nickname} />
+            <AvatarImage
+              src={getImageUrl(comment.user.profile_path) || undefined}
+              alt={comment.user.nickname}
+            />
             <AvatarFallback>{comment.user.nickname[0]}</AvatarFallback>
           </Avatar>
           <Subtitle
@@ -213,14 +239,23 @@ const CommentItem = ({
             {comment.user.nickname}
           </Subtitle>
           <Description className="text-black-40 text-[12px] md:text-[14px] 2xl:text-[16px]">
-            {formatRelativeTime(comment.updatedAt || comment.createdAt, !!comment.updatedAt)}
+            {formatRelativeTime(
+              comment.updatedAt || comment.createdAt,
+              !!comment.updatedAt,
+            )}
           </Description>
         </div>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="cursor-pointer">
-              <Image src="/images/ellipsis.svg" alt="menu" width={20} height={20} className="w-5 h-5 md:w-6 md:h-6" />
+              <Image
+                src="/images/ellipsis.svg"
+                alt="menu"
+                width={20}
+                height={20}
+                className="w-5 h-5 md:w-6 md:h-6"
+              />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -229,10 +264,7 @@ const CommentItem = ({
                 <DropdownMenuItem onClick={onEditClick}>
                   수정하기
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  variant="destructive"
-                  onClick={onDeleteClick}
-                >
+                <DropdownMenuItem variant="destructive" onClick={onDeleteClick}>
                   삭제하기
                 </DropdownMenuItem>
               </>
@@ -273,7 +305,11 @@ const CommentItem = ({
           onClick={onLikeClick}
         >
           <Image
-            src={comment.isLiked ? "/images/performance-detail/comment-like_active.svg" : "/images/performance-detail/comment-like_inactive.svg"}
+            src={
+              comment.isLiked
+                ? "/images/performance-detail/comment-like_active.svg"
+                : "/images/performance-detail/comment-like_inactive.svg"
+            }
             alt="like"
             width={24}
             height={24}

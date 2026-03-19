@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { useUserStore } from "@/store/user-store";
-import { logout } from "@/lib/auth-utils";
 import { apiClient } from "@/lib/api-client";
 import { getQueryClient } from "@/providers/get-query-client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -14,9 +12,10 @@ import { MenuItems } from "@/app/shared/constants";
 import Image from "next/image";
 import { saveReturnUrl } from "@/lib/login-utils";
 import { cn } from "@/lib/utils";
+import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 
 const HeaderMenus = ({ isWhiteIcons = false }: { isWhiteIcons?: boolean }) => {
-  const { user } = useUserStore();
+  const { user } = useCurrentUser();
   const router = useRouter();
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
@@ -27,11 +26,8 @@ const HeaderMenus = ({ isWhiteIcons = false }: { isWhiteIcons?: boolean }) => {
   };
 
   const handleLogout = async () => {
-    apiClient.setAccessToken(null);
-
-    queryClient.invalidateQueries();
-
-    await logout();
+    await apiClient.post("/api/v1/auth/logout", {});
+    queryClient.clear();
     router.push("/");
   };
 

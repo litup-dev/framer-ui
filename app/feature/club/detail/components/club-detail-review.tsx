@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { ChevronDown } from "lucide-react";
-import { useUserStore } from "@/store/user-store";
 import { useRouter } from "next/navigation";
+import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 
 import { ClubDetailData, Review } from "@/app/feature/club/types";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -63,7 +63,7 @@ const ClubDetailReview = ({
 }: ClubDetailReviewProps) => {
   const router = useRouter();
   const { openReviewModal } = useClubDetailStore();
-  const { isAuthenticated } = useUserStore();
+  const { isAuthenticated } = useCurrentUser();
   const { openModal } = useCommonModalStore();
   const {
     totalPages,

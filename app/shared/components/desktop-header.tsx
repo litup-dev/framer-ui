@@ -8,11 +8,11 @@ import HeaderMenus from "@/app/shared/components/menus";
 import Link from "next/link";
 import { useClubDetailStore } from "@/app/feature/club/detail/store";
 import { useResponsive } from "@/components/shared/calendar/hooks/use-responsive";
-import { useUserStore } from "@/store/user-store";
+import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 import Image from "next/image";
 
 const DesktopHeader = () => {
-  const { user } = useUserStore();
+  const { user } = useCurrentUser();
   const pathname = usePathname();
   const isHomePage = pathname === "/home";
   const isClubPage = pathname === "/club";

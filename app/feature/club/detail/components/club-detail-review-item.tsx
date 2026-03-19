@@ -2,9 +2,8 @@
 
 import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
-import { Bell } from "lucide-react";
 import { useClubDetailStore } from "@/app/feature/club/detail/store";
-import { useUserStore } from "@/store/user-store";
+import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 import { useCommonModalStore } from "@/store/common-modal-store";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteReviewOptions } from "@/app/feature/club/query-options";
@@ -40,7 +39,7 @@ const ClubDetailReviewItem = ({
   entityId,
 }: ClubDetailReviewItemProps) => {
   const { openImageGallery, openReviewModal } = useClubDetailStore();
-  const { user } = useUserStore();
+  const { user } = useCurrentUser();
   const { openModal } = useCommonModalStore();
   const queryClient = useQueryClient();
   const textareaRef = useRef<HTMLTextAreaElement>(null);

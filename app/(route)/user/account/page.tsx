@@ -1,15 +1,18 @@
 "use client";
 
-import { signOut } from "next-auth/react";
 import { useMutation } from "@tanstack/react-query";
 import UserPageLayout from "@/app/shared/components/user-page-layout";
 import { Subtitle, Description } from "@/components/shared/typography";
 import Image from "next/image";
 import { apiClient } from "@/lib/api-client";
-import { useUserStore } from "@/store/user-store";
+import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 
 export default function AccountPage() {
-  const { user } = useUserStore();
+  const { user } = useCurrentUser();
+  const queryClient = useQueryClient();
+  const router = useRouter();
 
   // 회원 탈퇴 mutation - 훅은 최상위에서 호출
   const withdrawMutation = useMutation({
@@ -17,7 +20,7 @@ export default function AccountPage() {
       return apiClient.delete("/api/v1/auth/withdraw", {});
     },
     onSuccess: () => {
-      signOut({ callbackUrl: "/" });
+      handleLogout();
     },
     onError: () => {
       alert("회원 탈퇴에 실패했습니다.");
@@ -25,7 +28,9 @@ export default function AccountPage() {
   });
 
   const handleLogout = async () => {
-    await signOut({ callbackUrl: "/" });
+    await apiClient.post("/api/v1/auth/logout", {});
+    queryClient.clear();
+    router.push("/");
   };
 
   const handleWithdraw = () => {
@@ -46,7 +51,9 @@ export default function AccountPage() {
       }}
     >
       {/* 로그인 정보 */}
-      <Subtitle className="text-[16px] md:text-[20px] tracking-[-0.04em]">로그인 정보</Subtitle>
+      <Subtitle className="text-[16px] md:text-[20px] tracking-[-0.04em]">
+        로그인 정보
+      </Subtitle>
       <div className="h-[88px] md:h-24 bg-[#F5F5F5] rounded-[3px] flex items-center justify-between px-5 py-5 md:px-6 md:py-6 md:pr-10 mt-4 sm:mt-4 md:mt-6 xl:mt-6 2xl:mt-6">
         <div className="flex items-center gap-3 md:gap-4">
           {/* 유저 아바타 아이콘 */}

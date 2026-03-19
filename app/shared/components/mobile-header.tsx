@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronRight, MenuIcon, X, User, LogOut } from "lucide-react";
+import { ChevronRight, X, User, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter, usePathname } from "next/navigation";
-import { useUserStore } from "@/store/user-store";
-import { logout } from "@/lib/auth-utils";
 import { saveReturnUrl } from "@/lib/login-utils";
+import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
@@ -14,6 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Subtitle } from "@/components/shared/typography";
 import { cn, getImageUrl } from "@/lib/utils";
 import Image from "next/image";
+import { apiClient } from "@/lib/api-client";
+import { useQueryClient } from "@tanstack/react-query";
 
 const MENU_ITEMS = [
   { label: "전체 공연", href: "/all-performances" },
@@ -22,7 +23,8 @@ const MENU_ITEMS = [
 ] as const;
 
 const MobileHeader = () => {
-  const { user, isAuthenticated } = useUserStore();
+  const queryClient = useQueryClient();
+  const { user, isAuthenticated } = useCurrentUser();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const router = useRouter();
@@ -37,8 +39,9 @@ const MobileHeader = () => {
   };
 
   const handleLogout = async () => {
-    await logout();
-    router.push("/home");
+    await apiClient.post("/api/v1/auth/logout", {});
+    queryClient.clear();
+    router.push("/");
     closeMenu();
   };
 

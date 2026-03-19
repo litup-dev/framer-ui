@@ -1,7 +1,6 @@
 import { useRouter } from "next/navigation";
-import { z } from "zod";
 import { useCommonModalStore } from "@/store/common-modal-store";
-import { useUserStore } from "@/store/user-store";
+import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 import {
   useToggleCommentLike,
   useDeleteComment,
@@ -28,11 +27,11 @@ export const useCommentHandlers = (
   editingCommentId: number | null,
   setEditingCommentId: (id: number | null) => void,
   editingText: string,
-  setEditingText: (text: string) => void
+  setEditingText: (text: string) => void,
 ) => {
   const router = useRouter();
   const { openModal } = useCommonModalStore();
-  const { user, isAuthenticated } = useUserStore();
+  const { user, isAuthenticated } = useCurrentUser();
 
   const toggleLikeMutation = useToggleCommentLike(performanceId);
   const deleteCommentMutation = useDeleteComment(performanceId);
@@ -41,7 +40,8 @@ export const useCommentHandlers = (
 
   const showLoginModal = (): void => {
     openModal({
-      description: "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?",
+      description:
+        "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?",
       confirmButton: {
         label: "확인",
         onClick: () => router.push("/login"),
@@ -94,7 +94,7 @@ export const useCommentHandlers = (
   };
 
   const handleTextChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLTextAreaElement>,
   ): void => {
     const value = e.target.value;
     if (value.length <= COMMENT_MAX_LENGTH) {
@@ -126,12 +126,12 @@ export const useCommentHandlers = (
           setEditingCommentId(null);
           setEditingText("");
         },
-      }
+      },
     );
   };
 
   const handleEditTextChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLTextAreaElement>,
   ): void => {
     const value = e.target.value;
     if (value.length <= COMMENT_MAX_LENGTH) {

@@ -8,7 +8,7 @@ import { Check, ChevronRightIcon, Plus } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { cn } from "@/lib/utils";
-import { useUserStore } from "@/store/user-store";
+import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 import { useCommonModalStore } from "@/store/common-modal-store";
 import { Description, Subtitle } from "@/components/shared/typography";
 import { Button } from "@/components/ui/button";
@@ -151,11 +151,18 @@ function EventTitleArtists({
 
 function AttendButton({
   isAttend,
+  isPast,
   onClick,
 }: {
   isAttend: boolean;
+  isPast: boolean;
   onClick: () => void;
 }) {
+  const attendLabel = isPast
+    ? "관람했어요"
+    : isAttend
+      ? "기대돼요"
+      : "보고 싶어요";
   return (
     <div
       onClick={onClick}
@@ -168,7 +175,7 @@ function AttendButton({
           </Button>
           <Button className="hidden lg:flex border-2 border-main bg-white text-main hover:bg-main hover:text-white">
             <Subtitle className="text-[14px] xl:text-[16px] group-hover:text-white transition-colors">
-              기대돼요
+              {attendLabel}
             </Subtitle>
             <Check className="w-5 h-5 text-main group-hover:text-white transition-colors" />
           </Button>
@@ -196,8 +203,8 @@ export default function ClubDetailSchedule({
   month,
 }: ClubDetailScheduleProps) {
   const queryClient = useQueryClient();
-  const { isAuthenticated } = useUserStore();
-  const { openModal } = useCommonModalStore();
+  const { user, isAuthenticated } = useCurrentUser();
+  const { openModal: openCommonModal } = useCommonModalStore();
   const router = useRouter();
   const { mutate } = useMutation(
     performaceAttendByIdOptions(clubId, month, queryClient),
@@ -205,19 +212,40 @@ export default function ClubDetailSchedule({
 
   const handleAttend = (id: number) => {
     if (!isAuthenticated) {
-      openModal({
-        description: "로그인 후 이용해주세요",
+      openCommonModal({
+        description:
+          "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?",
         confirmButton: {
           label: "확인",
-          onClick: () => router.push("/login"),
+          onClick: () => {
+            router.push("/login");
+          },
+        },
+        cancelButton: {
+          label: "취소",
+          onClick: () => {},
         },
       });
       return;
     }
-    mutate(id);
+    mutate(id, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["performHistory", user?.publicId],
+        });
+      },
+    });
   };
 
   const groupedEvents = groupEventsByDate(events);
+
+  function isPerformPast(date: Date, time: string) {
+    console.log("isPerformPast called with date:", date, "and time:", time);
+    const [hours, minutes] = time.split(":").map(Number);
+    const performDateTime = new Date(date);
+    performDateTime.setHours(hours, minutes, 0, 0);
+    return performDateTime < new Date();
+  }
 
   if (events.length === 0 || Object.keys(groupedEvents).length === 0) {
     return (
@@ -267,6 +295,7 @@ export default function ClubDetailSchedule({
                   <AttendButton
                     isAttend={event.isAttend}
                     onClick={() => handleAttend(event.id)}
+                    isPast={isPerformPast(event.date, event.time)}
                   />
                 </div>
               </div>

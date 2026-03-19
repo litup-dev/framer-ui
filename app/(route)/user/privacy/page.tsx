@@ -2,7 +2,7 @@
 
 import { useState, useEffect, ReactNode } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useUserStore } from "@/store/user-store";
+import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 import UserPageLayout from "@/app/shared/components/user-page-layout";
 import PrivacySettingGroup from "@/app/feature/user/components/privacy-setting-group";
 import { Separator } from "@/components/ui/separator";
@@ -67,7 +67,7 @@ const settingLabels: {
 
 export default function PrivacyPage() {
   const queryClient = useQueryClient();
-  const { isAuthenticated } = useUserStore();
+  const { isAuthenticated } = useCurrentUser();
   const [settings, setSettings] = useState<PrivacySettings>({
     attendance: "public",
     performHistory: "public",
@@ -109,7 +109,7 @@ export default function PrivacyPage() {
 
   const handleSettingChange = (
     key: keyof PrivacySettings,
-    value: PrivacyLevel
+    value: PrivacyLevel,
   ) => {
     setSettings((prev) => ({
       ...prev,
@@ -187,9 +187,7 @@ export default function PrivacyPage() {
         <PrivacySettingGroup
           title={settingLabels[2].label}
           selectedValue={settings[settingLabels[2].key]}
-          onChange={(value) =>
-            handleSettingChange(settingLabels[2].key, value)
-          }
+          onChange={(value) => handleSettingChange(settingLabels[2].key, value)}
           name={settingLabels[2].key}
           layout="lg"
           icon={settingLabels[2].icon}

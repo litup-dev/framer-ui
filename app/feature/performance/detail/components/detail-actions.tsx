@@ -10,7 +10,7 @@ import { useToggleAttendance } from "../query-options";
 import { useCommonModalStore } from "@/store/common-modal-store";
 import { isAfter, parseISO } from "date-fns";
 import ShareModal from "./share-modal";
-import { useUserStore } from "@/store/user-store";
+import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 
 interface DetailActionsProps {
   performanceId: number;
@@ -36,7 +36,7 @@ const DetailActions = ({
   artists,
   images,
 }: DetailActionsProps) => {
-  const { isAuthenticated } = useUserStore();
+  const { isAuthenticated } = useCurrentUser();
   const router = useRouter();
   const toggleAttendMutation = useToggleAttendance();
   const { openModal } = useCommonModalStore();

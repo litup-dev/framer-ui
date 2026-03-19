@@ -22,9 +22,7 @@ const ClubSection = ({ club }: ClubSectionProps) => {
   return (
     <div className="flex flex-col">
       {/* club 타이틀 */}
-      <Title className="hidden md:block text-[20px] xl:text-[24px]">
-        club
-      </Title>
+      <Title className="hidden md:block text-[20px] xl:text-[24px]">club</Title>
       <div className="flex flex-col gap-3 text-black rounded-[4px] md:mt-6">
         <div
           onClick={handleClubClick}
@@ -39,7 +37,13 @@ const ClubSection = ({ club }: ClubSectionProps) => {
                 {club.name}
               </Subtitle>
               {/* 화살표 아이콘: MD 이상에서는 클럽명 바로 옆 */}
-              <Image src="/images/performance-detail/arrow-right-line.svg" alt="arrow" width={16} height={16} className="hidden md:block w-4 h-4 lg:w-5 lg:h-5 xl:w-6 xl:h-6 flex-shrink-0" />
+              <Image
+                src="/images/performance-detail/arrow-right-line_black.svg"
+                alt="arrow"
+                width={16}
+                height={16}
+                className="hidden md:block w-4 h-4 lg:w-5 lg:h-5 xl:w-6 xl:h-6 flex-shrink-0"
+              />
             </div>
             {/* 주소 */}
             <Description className="text-black-80 xl:text-[16px] md:text-[14px] text-[12px]">
@@ -47,7 +51,13 @@ const ClubSection = ({ club }: ClubSectionProps) => {
             </Description>
           </div>
           {/* 화살표 아이콘: SM에서만 우측 끝 */}
-          <Image src="/images/performance-detail/arrow-right-line.svg" alt="arrow" width={16} height={16} className="md:hidden w-4 h-4 flex-shrink-0" />
+          <Image
+            src="/images/performance-detail/arrow-right-line_black.svg"
+            alt="arrow"
+            width={16}
+            height={16}
+            className="md:hidden w-4 h-4 flex-shrink-0"
+          />
         </div>
       </div>
     </div>
