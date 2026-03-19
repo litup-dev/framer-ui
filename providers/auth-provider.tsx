@@ -1,16 +1,8 @@
-"use client";
+// "use client";
+// interface AuthProviderProps {
+//   children: React.ReactNode;
+// }
 
-import { useEffect } from "react";
-import { checkAuthStatus } from "@/lib/auth-utils";
-
-interface AuthProviderProps {
-  children: React.ReactNode;
-}
-
-export const AuthProvider = ({ children }: AuthProviderProps) => {
-  // useEffect(() => {
-  //   checkAuthStatus();
-  // }, []);
-
-  return <>{children}</>;
-};
+// export const AuthProvider = ({ children }: AuthProviderProps) => {
+//   return <>{children}</>;
+// };
