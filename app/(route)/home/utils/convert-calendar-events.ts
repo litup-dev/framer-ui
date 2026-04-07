@@ -1,17 +1,24 @@
-import { CalendarEvent as ApiCalendarEvent } from "@/app/feature/home/types";
+import { CalendarPerformance } from "@/app/feature/home/types";
 import { CalendarEvent } from "@/components/shared/calendar/types";
 
 export function convertCalendarEvents(
-  apiEvents: Record<string, ApiCalendarEvent[]>
+  apiEvents: Record<string, Array<{ performances: CalendarPerformance[] }>>
 ): Record<string, CalendarEvent[]> {
   const convertedEvents: Record<string, CalendarEvent[]> = {};
 
   Object.keys(apiEvents).forEach((dateKey) => {
-    // API에서 받은 날짜 키를 그대로 사용 (yyyy-MM-dd 형식)
-    convertedEvents[dateKey] = apiEvents[dateKey].map((event) => ({
-      id: event.id,
-      clubName: event.clubName,
-      performances: event.performances,
+    const performances = apiEvents[dateKey].flatMap((item) => item.performances);
+    convertedEvents[dateKey] = performances.map((p) => ({
+      id: p.club.id,
+      clubName: p.club.name,
+      performances: [
+        {
+          id: p.id,
+          performDate: p.performDate,
+          artists: p.artists,
+          images: p.images,
+        },
+      ],
     }));
   });
 

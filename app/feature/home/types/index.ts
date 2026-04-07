@@ -4,9 +4,20 @@ export interface PostsItem {
   content: string;
 }
 
+export interface CalendarPerformance {
+  id: number;
+  performDate: string;
+  artists: Array<{ name: string }>;
+  club: { id: number; name: string };
+  images: Array<{
+    id: number;
+    filePath: string;
+    isMain: boolean;
+  }>;
+}
+
 export interface Performance {
   id: number;
-  title: string;
   performDate: string;
   artists: Array<{ name: string }>;
   images: Array<{
@@ -23,7 +34,7 @@ export interface CalendarEvent {
 }
 
 export interface CalendarEventsResponse {
-  data: Record<string, CalendarEvent[]>;
+  data: Record<string, Array<{ performances: CalendarPerformance[] }>>;
 }
 
 export interface Artist {

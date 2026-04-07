@@ -1,6 +1,5 @@
 export interface Performance {
   id: number;
-  title: string;
   performDate: string;
   artists: Array<{ name: string }>;
   images: Array<{
