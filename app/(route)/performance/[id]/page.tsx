@@ -10,7 +10,7 @@ interface PerformanceDetailPageProps {
   params: Promise<{ id: string }>;
 }
 
-const DEFAULT_IMAGE = "/images/poster1.png";
+const DEFAULT_IMAGE = "/images/poster_default.png";
 
 const PerformanceDetailPage = ({ params }: PerformanceDetailPageProps) => {
   const { id } = use(params);
