@@ -14,7 +14,13 @@ import { saveReturnUrl } from "@/lib/login-utils";
 import { cn } from "@/lib/utils";
 import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 
-const HeaderMenus = ({ isWhiteIcons = false }: { isWhiteIcons?: boolean }) => {
+const HeaderMenus = ({
+  isWhiteIcons = false,
+  isWhiteIconsOnXl = false,
+}: {
+  isWhiteIcons?: boolean;
+  isWhiteIconsOnXl?: boolean;
+}) => {
   const { user } = useCurrentUser();
   const router = useRouter();
   const pathname = usePathname();
@@ -73,6 +79,7 @@ const HeaderMenus = ({ isWhiteIcons = false }: { isWhiteIcons?: boolean }) => {
             className={cn(
               "cursor-pointer w-6 h-6 2xl:w-7 2xl:h-7",
               isWhiteIcons && "brightness-0 invert",
+              isWhiteIconsOnXl && "brightness-0 invert",
             )}
           />
         </div>

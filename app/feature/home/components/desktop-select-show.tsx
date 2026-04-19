@@ -45,7 +45,7 @@ const CategorySelectItem = ({
           : "text-[#20202066]",
       )}
     >
-      <Subtitle className="text-[16px] xl:text-[20px] 2xl:text-[24px]">
+      <Subtitle className="whitespace-nowrap text-[16px] xl:text-[20px] 2xl:text-[24px]">
         {item.label}
       </Subtitle>
     </div>

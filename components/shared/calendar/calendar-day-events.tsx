@@ -15,6 +15,7 @@ import {
 interface CalendarDayEventsProps {
   events: CalendarEvent[];
   isXl: boolean;
+  is2xl: boolean;
   isHovered: boolean;
   isCurrentMonth: boolean;
   eventsContainerRef: React.RefObject<HTMLDivElement | null>;
@@ -24,6 +25,7 @@ interface CalendarDayEventsProps {
 export const CalendarDayEvents = ({
   events,
   isXl,
+  is2xl,
   isHovered,
   isCurrentMonth,
   eventsContainerRef,
@@ -40,11 +42,12 @@ export const CalendarDayEvents = ({
         ref={eventsContainerRef}
         className={getEventsContainerClassName(
           isXl,
+          is2xl,
           isHovered,
           isCurrentMonth,
           isOverflowing,
         )}
-        style={getEventsContainerStyles(isXl, isHovered, isOverflowing)}
+        style={getEventsContainerStyles(isXl, is2xl, isHovered, isOverflowing)}
       >
         {events.map((event, eventIndex) => {
           const isHoveredEvent = hoveredEventIndex === eventIndex;
@@ -53,7 +56,8 @@ export const CalendarDayEvents = ({
             <div
               key={eventIndex}
               className={cn(
-                "relative flex flex-col gap-4",
+                "relative flex flex-col",
+                is2xl ? "gap-3" : "gap-2.5",
                 isHovered && isXl ? "text-white" : "text-black",
               )}
               onMouseEnter={() => setHoveredEventIndex(eventIndex)}
@@ -61,14 +65,18 @@ export const CalendarDayEvents = ({
             >
               {isHoveredEvent && isXl && (
                 <div
-                  className="absolute -top-6 -bottom-4 -left-6 -right-6 bg-[#E54217] -z-10"
+                  className={cn(
+                    "absolute -top-6 -bottom-4 bg-[#E54217] -z-10",
+                    is2xl ? "-left-6 -right-6" : "-left-4 -right-4",
+                  )}
                   aria-hidden
                 />
               )}
-              <div className="flex justify-between">
+              <div className="flex justify-between min-w-0">
                 <Title
                   className={cn(
-                    "text-black xl:text-[16px] 2xl:text-[20px]",
+                    "truncate text-black",
+                    is2xl ? "xl:text-[20px]" : "xl:text-[16px]",
                     isHovered && isXl ? "text-white" : "text-black",
                   )}
                 >
@@ -89,7 +97,8 @@ export const CalendarDayEvents = ({
                     >
                       <Subtitle
                         className={cn(
-                          "font-medium xl:text-[14px] 2xl:text-[18px] text-black-60 min-w-0",
+                          "truncate font-medium text-black-60 min-w-0",
+                          is2xl ? "xl:text-[17px]" : "xl:text-[14px]",
                           isHovered && isXl ? "text-white" : "text-black-60",
                         )}
                       >
@@ -119,7 +128,12 @@ export const CalendarDayEvents = ({
         })}
       </div>
       {!isHovered && isOverflowing && (
-        <div className="hidden xl:absolute xl:bottom-6 xl:right-6 xl:flex xl:items-center xl:justify-end">
+        <div
+          className={cn(
+            "hidden xl:absolute xl:flex xl:items-center xl:justify-end",
+            is2xl ? "bottom-6 right-6" : "bottom-4 right-4",
+          )}
+        >
           <Plus className="xl:w-5 xl:h-5 2xl:w-5 2xl:h-5 text-black" />
         </div>
       )}

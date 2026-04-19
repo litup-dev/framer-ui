@@ -1,7 +1,7 @@
 import { PropsWithChildren } from "react";
 import { getQueryClient } from "@/providers/get-query-client";
 import { serverApiClient } from "@/lib/api-client";
-import Image from "next/image";
+import HomeCharacterImage from "@/app/feature/home/components/home-character-image";
 
 export default async function HomeLayout({ children }: PropsWithChildren) {
   const queryClient = getQueryClient();
@@ -28,13 +28,7 @@ export default async function HomeLayout({ children }: PropsWithChildren) {
   });
   return (
     <div className="relative overflow-x-hidden">
-      {/* <Image
-        src="/images/main.svg"
-        alt="main-image"
-        width={1042}
-        height={1150}
-        className="absolute top-0 right-0 -z-10 hidden lg:block pointer-events-none select-none"
-      /> */}
+      <HomeCharacterImage />
       {children}
     </div>
   );
