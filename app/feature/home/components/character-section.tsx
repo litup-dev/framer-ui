@@ -102,7 +102,7 @@ export default function CharacterSection({
   };
 
   return (
-    <div className="hidden md:block absolute top-[180px] lg:top-[210px] xl:top-[280px] 2xl:top-[250px] right-4 md:right-6 lg:right-8 xl:right-[80px] z-5">
+    <div className="block absolute top-[36px] md:top-[180px] lg:top-[210px] xl:top-[280px] 2xl:top-[250px] right-4 md:right-6 lg:right-8 xl:right-[80px] z-5">
       <div className="relative w-full md:w-[550px] lg:w-[600px] xl:w-[700px] 2xl:w-[860px]">
         <div className="absolute top-[115px] lg:top-[120px] xl:top-[168px] 2xl:top-[196px] right-5 xl:right-0 flex flex-col items-center gap-2">
           <div
@@ -124,7 +124,7 @@ export default function CharacterSection({
             >
               <Title
                 className={cn(
-                  "text-[44px] lg:text-[64px] xl:text-[76px] pr-1.5 leading-[0.8]",
+                  "text-[30px] min-[744px]:text-[44px] lg:text-[64px] xl:text-[76px] pr-1.5 leading-[0.8]",
                   colorKey === "today" && "text-white",
                   colorKey !== "today" &&
                     colorKey !== "busan" &&
@@ -157,7 +157,7 @@ export default function CharacterSection({
                   >
                     <Title
                       className={cn(
-                        "text-[44px] lg:text-[64px] xl:text-[76px] pr-1.5 leading-[0.8]",
+                        "text-[30px] min-[744px]:text-[44px] lg:text-[64px] xl:text-[76px] pr-1.5 leading-[0.8]",
                         INDEX_TO_COLOR_KEY[previousIndex] === "today" &&
                           "text-white",
 
@@ -188,7 +188,7 @@ export default function CharacterSection({
                     >
                       <Title
                         className={cn(
-                          "text-[44px] lg:text-[64px] xl:text-[76px] pr-1.5 leading-[0.8]",
+                          "text-[30px] min-[744px]:text-[44px] lg:text-[64px] xl:text-[76px] pr-1.5 leading-[0.8]",
                           colorKey === "today" && "text-white",
                         )}
                       >

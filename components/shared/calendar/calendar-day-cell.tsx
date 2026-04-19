@@ -36,6 +36,7 @@ interface CalendarDayCellProps {
   isSelected: boolean;
   dayNumber: number;
   isXl: boolean;
+  is2xl: boolean;
 
   isRowExpanded: boolean;
   isCollapsedAndNotSelected: boolean;
@@ -53,6 +54,7 @@ export const CalendarDayCell = ({
   isSelected,
   dayNumber,
   isXl,
+  is2xl,
   isRowExpanded,
   isCollapsedAndNotSelected,
   onDateClick,
@@ -120,6 +122,7 @@ export const CalendarDayCell = ({
         onMouseLeave={isXl && dayEvents.length > 0 ? onMouseLeave : undefined}
         className={getButtonClassName(
           isXl,
+          is2xl,
           isHovered,
           dayEvents,
           isCurrentMonth,
@@ -151,6 +154,7 @@ export const CalendarDayCell = ({
         <CalendarDayHeader
           dayNumber={dayNumber}
           isXl={isXl}
+          is2xl={is2xl}
           isSelected={isSelected}
           isTodayDate={isTodayDate}
           isHovered={isHovered}
@@ -160,6 +164,7 @@ export const CalendarDayCell = ({
         <CalendarDayEvents
           events={dayEvents}
           isXl={isXl}
+          is2xl={is2xl}
           isHovered={isHovered}
           isCurrentMonth={isCurrentMonth}
           eventsContainerRef={eventsContainerRef}

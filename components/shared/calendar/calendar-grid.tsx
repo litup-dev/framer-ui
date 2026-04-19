@@ -14,6 +14,7 @@ interface CalendarGridProps {
   events: Record<string, CalendarEvent[]>;
   hoveredDate: Date | null;
   isXl: boolean;
+  is2xl: boolean;
   selectedRowIndex: number | null;
   selectedDate?: Date;
   onDateClick: (date: Date) => void;
@@ -28,6 +29,7 @@ export const CalendarGrid = ({
   events,
   hoveredDate,
   isXl,
+  is2xl,
   selectedRowIndex,
   selectedDate,
   onDateClick,
@@ -42,7 +44,12 @@ export const CalendarGrid = ({
   });
 
   return (
-    <div className="relative px-5 xl:px-20 xl:pb-[100px]">
+    <div
+      className={cn(
+        "relative px-5 xl:pb-[100px]",
+        is2xl ? "xl:px-20" : "xl:px-15",
+      )}
+    >
       {rows.map((row, rowIndex) => {
         const firstDayKey = row.days[0]
           ? format(row.days[0], "yyyy-MM-dd")
@@ -97,6 +104,7 @@ export const CalendarGrid = ({
                       isSelected={!!isSelected}
                       dayNumber={dayNumber}
                       isXl={isXl}
+                      is2xl={is2xl}
                       isRowExpanded={row.isRowExpanded}
                       isCollapsedAndNotSelected={row.isCollapsedAndNotSelected}
                       onDateClick={onDateClick}

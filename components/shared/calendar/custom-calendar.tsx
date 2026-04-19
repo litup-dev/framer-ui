@@ -39,6 +39,7 @@ const CustomCalendar = ({
   const setCurrentMonth = onMonthChange ?? setInternalCurrentMonth;
 
   const isXl = useResponsive();
+  const is2xl = useResponsive(1600);
   const days = useCalendarDays(currentMonth);
 
   const handlePrevMonth = () => {
@@ -90,21 +91,23 @@ const CustomCalendar = ({
   }, [selectedDate, events]);
 
   return (
-    <div className="w-screen relative pt-10 md:pt-24">
+    <div className="w-screen relative  md:pt-24">
       {calendarView === "calendar" && (
         <div className="bg-gray">
           <CalendarHeader
             currentMonth={currentMonth}
             onPrevMonth={handlePrevMonth}
             onNextMonth={handleNextMonth}
+            is2xl={is2xl}
           />
-          <CalendarWeekdays isXl={isXl} />
+          <CalendarWeekdays isXl={isXl} is2xl={is2xl} />
           <CalendarGrid
             days={days}
             currentMonth={currentMonth}
             events={events}
             hoveredDate={hoveredDate}
             isXl={isXl}
+            is2xl={is2xl}
             selectedRowIndex={selectedRowIndex}
             selectedDate={selectedDate}
             onDateClick={handleDateClick}

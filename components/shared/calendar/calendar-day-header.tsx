@@ -6,6 +6,7 @@ import { Title } from "@/components/shared/typography";
 interface CalendarDayHeaderProps {
   dayNumber: number;
   isXl: boolean;
+  is2xl: boolean;
   isSelected: boolean;
   isTodayDate: boolean;
   isHovered: boolean;
@@ -15,6 +16,7 @@ interface CalendarDayHeaderProps {
 export const CalendarDayHeader = ({
   dayNumber,
   isXl,
+  is2xl,
   isSelected,
   isTodayDate,
   isHovered,
@@ -24,7 +26,9 @@ export const CalendarDayHeader = ({
     <div
       className={cn(
         "xl:flex xl:items-center relative",
-        isXl ? "justify-between xl:mb-10 z-50" : "justify-center z-10",
+        isXl
+          ? cn("justify-between z-50", is2xl ? "xl:mb-10" : "xl:mb-8")
+          : "justify-center z-10",
       )}
     >
       <div
@@ -39,15 +43,17 @@ export const CalendarDayHeader = ({
         <Title
           className={cn(
             "text-[12px] md:text-[16px] xl:text-[16px] 2xl:text-[20px]",
-            isTodayDate
-              ? "text-white"
-              : !isXl && hasImage
+            isTodayDate && isXl && !isHovered
+              ? "text-black"
+              : isTodayDate
                 ? "text-white"
-                : !isXl && isSelected
+                : !isXl && hasImage
                   ? "text-white"
-                  : isHovered && isXl
-                    ? "text-white xl:text-white"
-                    : !isXl && !hasImage && "text-gray xl:text-black",
+                  : !isXl && isSelected
+                    ? "text-white"
+                    : isHovered && isXl
+                      ? "text-white xl:text-white"
+                      : !isXl && !hasImage && "text-gray xl:text-black",
           )}
         >
           {dayNumber}

@@ -78,7 +78,7 @@ const MobileSelectShow = ({
   return (
     <div
       className={cn(
-        "flex gap-3 md:hidden",
+        "flex gap-3 md:hidden mt-[72px]",
         selectedMobileBottomNavigation === "calendar" && "hidden"
       )}
     >

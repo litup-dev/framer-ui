@@ -5,13 +5,22 @@ import { Title } from "@/components/shared/typography";
 
 interface CalendarWeekdaysProps {
   isXl: boolean;
+  is2xl: boolean;
 }
 
-export const CalendarWeekdays = ({ isXl }: CalendarWeekdaysProps) => {
+export const CalendarWeekdays = ({
+  isXl,
+  is2xl,
+}: CalendarWeekdaysProps) => {
   const weekdays = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
   return (
-    <div className="flex gap-0 mb-2 px-5 xl:px-20">
+    <div
+      className={cn(
+        "flex gap-0 mb-2 px-5",
+        is2xl ? "xl:px-20" : "xl:px-15",
+      )}
+    >
       {weekdays.map((day) => (
         <div
           key={day}
