@@ -62,7 +62,12 @@ const DesktopHeader = () => {
             ? "fixed top-0 left-0 right-0"
             : "absolute top-0 left-0 right-0 text-white"
           : isHomePage
-            ? "fixed top-0 left-0 right-0 bg-transparent text-white"
+            ? cn(
+                "fixed top-0 left-0 right-0",
+                scrollProgress === 0
+                  ? "bg-transparent text-white"
+                  : "text-black",
+              )
             : "fixed top-0 left-0 right-0 bg-white",
         isReviewModalOpen
           ? "z-[40]"
@@ -86,7 +91,8 @@ const DesktopHeader = () => {
           : isHomePage
             ? {
                 backgroundColor: `rgba(255, 255, 255, ${scrollProgress})`,
-                mixBlendMode: "difference",
+                mixBlendMode:
+                  scrollProgress === 0 ? "difference" : "normal",
               }
             : isImageGalleryOpen
               ? {
@@ -105,15 +111,16 @@ const DesktopHeader = () => {
             height={38}
             className={cn(
               "w-[84px] h-[26px] lg:w-[100px] lg:h-[32px] xl:w-[110px] xl:h-[34px] 2xl:w-[120px] 2xl:h-[38px]",
-              isHomePage && "brightness-0 invert",
+              isHomePage && scrollProgress === 0 && "brightness-0 invert",
               isClubDetailPage && scrollProgress === 0 && "brightness-0 invert",
             )}
           />
         </Link>
       </div>
       <HeaderMenus
-        isWhiteIcons={isClubDetailPage && scrollProgress === 0}
-        isWhiteIconsOnXl={isHomePage}
+        isWhiteIcons={
+          (isClubDetailPage || isHomePage) && scrollProgress === 0
+        }
       />
     </div>
   );
