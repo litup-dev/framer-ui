@@ -15,6 +15,8 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 
 const MobileCarouselCards = () => {
+  if (eventPosters.length === 0) return null;
+
   return (
     <div className="grid grid-cols-2 gap-4 md:hidden">
       {eventPosters.map((poster) => (
@@ -48,6 +50,8 @@ const MobileCarouselCards = () => {
 };
 
 const DesktopCarouselCards = () => {
+  if (eventPosters.length === 0) return null;
+
   return (
     <Carousel
       className="w-full hidden md:block"

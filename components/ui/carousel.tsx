@@ -196,6 +196,7 @@ function CarouselPrevious({
           isClubDetailCarousel
             ? "border-none bg-transparent shadow-none hover:bg-transparent"
             : "rounded-full",
+          !canScrollPrev && "hidden",
         )}
         disabled={!canScrollPrev}
         onClick={scrollPrev}
@@ -209,7 +210,13 @@ function CarouselPrevious({
             height={48}
           />
         ) : (
-          <ArrowLeft />
+          <Image
+            src="/images/arrow-down.svg"
+            alt="previous"
+            width={32}
+            height={32}
+            className="rotate-90"
+          />
         )}
         <span className="sr-only">Previous slide</span>
       </Button>
@@ -239,6 +246,7 @@ function CarouselNext({
         isClubDetailCarousel
           ? "border-none bg-transparent shadow-none hover:bg-transparent"
           : "rounded-full",
+        !canScrollNext && "hidden",
         className,
       )}
       disabled={!canScrollNext}
@@ -254,7 +262,13 @@ function CarouselNext({
           className="rotate-180"
         />
       ) : (
-        <ArrowRight />
+        <Image
+          src="/images/arrow-down.svg"
+          alt="next"
+          width={32}
+          height={32}
+          className="rotate-270"
+        />
       )}
       <span className="sr-only">Next slide</span>
     </Button>

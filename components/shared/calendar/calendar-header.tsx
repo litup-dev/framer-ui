@@ -18,11 +18,11 @@ export const CalendarHeader = ({
   onNextMonth,
 }: CalendarHeaderProps) => {
   return (
-    <div className="relative flex items-center justify-between px-5 xl:px-20 pb-10 xl:pb-25">
+    <div className="relative flex items-center justify-between px-5 xl:px-20 pb-10 md:pb-18 xl:pb-25">
       <Title className="absolute mt-2.5 xl:mt-5 text-black text-[38px] md:text-[48px] xl:text-[96px]">
         calendar
       </Title>
-      <div className="flex items-center absolute right-1 md:left-[180px] top-[-5px] md:top-[-5px] xl:top-5 xl:left-120 gap-1 xl:gap-5">
+      <div className="flex items-center absolute right-1 md:left-[180px] top-[-5px] md:top-[0px] xl:top-5 xl:left-120 gap-1 xl:gap-5">
         <button
           onClick={onPrevMonth}
           className="p-1 hover:bg-gray-200 rounded transition-colors"

@@ -28,13 +28,13 @@ export default async function HomeLayout({ children }: PropsWithChildren) {
   });
   return (
     <div className="relative overflow-x-hidden">
-      <Image
+      {/* <Image
         src="/images/main.svg"
         alt="main-image"
         width={1042}
         height={1150}
         className="absolute top-0 right-0 -z-10 hidden lg:block pointer-events-none select-none"
-      />
+      /> */}
       {children}
     </div>
   );
