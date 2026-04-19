@@ -31,7 +31,7 @@ export const CalendarSelectedEvents = ({
 }: CalendarSelectedEventsProps) => {
   return (
     <FadeIn>
-      <div className="xl:hidden w-full bg-white pt-10">
+      <div className="xl:hidden w-full bg-white pt-10 md:pt-20">
         <div className="px-5">
           {!selectedDate || events.length === 0 ? (
             <Description className="text-black text-[14px] text-center text-black-40">

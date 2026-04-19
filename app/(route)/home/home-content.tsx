@@ -66,6 +66,7 @@ export default function HomeContent() {
   const shouldShowMainContent =
     isXl || selectedMobileBottomNavigation === "home";
 
+  console.log(performances, "<<<<< performances");
   return (
     <>
       {shouldShowMainContent && (

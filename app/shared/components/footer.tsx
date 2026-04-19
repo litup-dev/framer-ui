@@ -17,7 +17,12 @@ interface FooterProps {
 
 const Footer = ({ className }: FooterProps) => {
   return (
-    <footer className={cn("w-full pt-25 pb-25 px-10 xl:pt-25 xl:pb-10 2xl:p-20 bg-[#ffffff] 2xl:pt-40", className)}>
+    <footer
+      className={cn(
+        "w-full pt-46 md:pt-50 pb-25 px-10 xl:pt-25 xl:pb-10 2xl:p-20 bg-[#ffffff] 2xl:pt-40",
+        className,
+      )}
+    >
       <div className="flex flex-col sm:flex-row sm:justify-between gap-8">
         <div className="flex flex-col gap-8">
           <div className="flex gap-3 xl:gap-5">

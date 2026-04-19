@@ -57,7 +57,7 @@ const HeroSection = () => {
       className={cn(selectedMobileBottomNavigation === "calendar" && "hidden")}
     >
       <div
-        className="relative overflow-hidden w-[250px] md:w-[270px] lg:w-[400px] xl:w-[600px] aspect-[590/259]"
+        className="relative overflow-hidden w-[250px] md:w-[270px] lg:w-[400px] xl:w-[520px] aspect-[590/259]"
         style={{
           transform: "translateZ(0)",
           backfaceVisibility: "hidden",
@@ -115,7 +115,7 @@ const HeroSection = () => {
                   src={heroSectionImages[currentIndex].image}
                   alt={heroSectionImages[currentIndex].id.toString()}
                   fill
-                  sizes="(max-width: 768px) 250px, (max-width: 1024px) 270px, (max-width: 1280px) 400px, 600px"
+                  sizes="(max-width: 768px) 250px, (max-width: 1024px) 270px, (max-width: 1280px) 400px, 520px"
                   className="object-contain"
                 />
               )}
