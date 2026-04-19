@@ -12,8 +12,6 @@ import type {
 
 import HomeContent from "./home-content";
 
-export const dynamic = "force-dynamic";
-
 async function prefetchCalendarMonth(
   queryClient: ReturnType<typeof getQueryClient>,
   monthKey: string,
