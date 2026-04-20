@@ -3,17 +3,22 @@
 import { Title, Subtitle, Description } from "@/components/shared/typography";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { getImageUrl } from "@/lib/utils";
+
+const DEFAULT_IMAGE = "/images/poster_default.png";
 
 interface ClubSectionProps {
   club: {
     id: number;
     name: string;
     address: string;
+    image?: string | null;
   };
 }
 
 const ClubSection = ({ club }: ClubSectionProps) => {
   const router = useRouter();
+  const clubImageUrl = getImageUrl(club.image) ?? DEFAULT_IMAGE;
 
   const handleClubClick = () => {
     router.push(`/club/${club.id}`);
@@ -29,7 +34,9 @@ const ClubSection = ({ club }: ClubSectionProps) => {
           className="flex gap-3 items-center rounded-[4px] p-4 md:p-0 cursor-pointer hover:bg-gray-50 transition-colors border border-[#202020]/20 md:border-0"
         >
           {/* 클럽 아바타: 2XL/XL 72x72(w-18 h-18), LG 60x60(w-15 h-15) */}
-          <div className="w-15 h-15 xl:w-18 xl:h-18 rounded-full bg-black flex-shrink-0" />
+          <div className="relative w-15 h-15 xl:w-18 xl:h-18 rounded-full overflow-hidden flex-shrink-0">
+              <Image src={clubImageUrl} alt={club.name} fill sizes="72px" className="object-cover" />
+            </div>
           <div className="flex flex-col gap-2 md:gap-2 flex-1">
             {/* 클럽명 */}
             <div className="flex items-center gap-1">
