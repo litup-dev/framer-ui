@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import FadeIn from "@/components/shared/fade-in";
 import PerformanceLayout from "@/app/feature/performance/detail/components/performance-layout";
 import { getPerformanceDetailOptions } from "@/app/feature/performance/detail/query-options";
+import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
 
 interface PerformanceDetailPageProps {
   params: Promise<{ id: string }>;
@@ -41,7 +42,7 @@ const PerformanceDetailPage = ({ params }: PerformanceDetailPageProps) => {
   const performance = data.data;
   const posterImages = performance.images
     .sort((a, b) => (b.isMain ? 1 : 0) - (a.isMain ? 1 : 0))
-    .map((img) => img.filePath);
+    .map((img) => getImageUrl(img.filePath) || DEFAULT_IMAGE);
 
   if (posterImages.length === 0) {
     posterImages.push(DEFAULT_IMAGE);
