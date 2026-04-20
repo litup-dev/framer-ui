@@ -45,7 +45,7 @@ const ClubSection = ({ club }: ClubSectionProps) => {
               </Subtitle>
               {/* 화살표 아이콘: MD 이상에서는 클럽명 바로 옆 */}
               <Image
-                src="/images/performance-detail/arrow-right-line_black.svg"
+                src="/images/arrow-right-line_black.svg"
                 alt="arrow"
                 width={16}
                 height={16}
@@ -59,7 +59,7 @@ const ClubSection = ({ club }: ClubSectionProps) => {
           </div>
           {/* 화살표 아이콘: SM에서만 우측 끝 */}
           <Image
-            src="/images/performance-detail/arrow-right-line_black.svg"
+            src="/images/arrow-right-line_black.svg"
             alt="arrow"
             width={16}
             height={16}
