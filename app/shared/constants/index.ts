@@ -79,6 +79,7 @@ export const MyPageMenuItems = [
     subItems: [
       { label: "공연 코멘트", href: "/user/comments" },
       { label: "클럽 리뷰", href: "/user/reviews" },
+      { label: "보고 싶은 공연", href: "/user/wishlist" },
     ],
   },
   {
