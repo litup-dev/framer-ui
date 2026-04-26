@@ -57,8 +57,8 @@ const MobileHeader = () => {
             <Image src="/images/logo.svg" alt="logo" width={80} height={26} />
           </Link>
         </div>
-        <button onClick={openMenu}>
-          <Image src="/images/menu.svg" alt="menu" width={48} height={48} />
+        <button onClick={openMenu} className="w-12 h-12 flex items-center justify-center">
+          <Image src="/images/mobile-menu.png" alt="menu" width={28} height={28} />
         </button>
       </div>
 

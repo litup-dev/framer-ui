@@ -61,7 +61,7 @@ export default function MainContent({
           isFetchingNextPage={isFetchingNextPage}
         />
         <div
-          className="absolute top-0 w-full h-[613px] bg-gradient-to-b from-transparent via-white/30 to-white/60 pointer-events-none -z-10"
+          className="absolute top-0 hidden lg:block w-full h-[613px] bg-gradient-to-b from-transparent via-white/30 to-white/60 pointer-events-none -z-10"
           aria-hidden
         />
       </div>
