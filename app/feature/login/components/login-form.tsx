@@ -4,12 +4,20 @@ import { LoginIcons } from "@/app/feature/login/components/icons";
 import { Button } from "@/components/ui/button";
 
 const LoginForm = () => {
+  let redirectUri = "";
+  if (process.env.NEXT_PUBLIC_LOGIN_REDIRECT_URI) {
+    redirectUri = process.env.NEXT_PUBLIC_LOGIN_REDIRECT_URI;
+  } else {
+    redirectUri = "https://litup.kr/login/success";
+  }
+  console.log("Redirect URI:", redirectUri);
+
   const handleGoogleLogin = async () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/google`;
+    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/google?redirect_uri=${encodeURIComponent(redirectUri)}`;
   };
 
   const handleKakaoLogin = async () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/kakao`;
+    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/kakao?redirect_uri=${encodeURIComponent(redirectUri)}`;
   };
 
   return (
