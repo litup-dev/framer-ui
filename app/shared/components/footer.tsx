@@ -19,7 +19,7 @@ const Footer = ({ className }: FooterProps) => {
   return (
     <footer
       className={cn(
-        "w-full pt-46 md:pt-50 pb-25 px-10 xl:pt-25 xl:pb-10 2xl:p-20 bg-[#ffffff] 2xl:pt-40",
+        "w-full pt-46 md:pt-50 pb-25 px-5 sm:px-10 xl:pt-25 xl:pb-10 2xl:p-20 bg-[#ffffff] 2xl:pt-40",
         className,
       )}
     >
