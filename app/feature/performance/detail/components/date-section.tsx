@@ -16,12 +16,12 @@ const DateSection = ({ performDate }: DateSectionProps) => {
       {/* Grid로 캡션과 value 정렬: LG 이하 30px, XL 이상 24px */}
       <div className="grid grid-cols-[auto_1fr] gap-x-8 lg:gap-x-[30px] xl:gap-x-6 md:mt-6">
         {/* 예매 오픈 */}
-        <Description className="text-black-60 text-[14px] md:text-[16px] xl:text-[18px]">
+        {/* <Description className="text-black-60 text-[14px] md:text-[16px] xl:text-[18px]">
           예매 오픈
         </Description>
         <Description className="text-[14px] md:text-[16px] xl:text-[18px]">
           {formattedDate}
-        </Description>
+        </Description> */}
 
         {/* 공연 일시 - 예매 오픈 아래: 2XL 14px(mt-3.5), XL 14px(mt-3.5), LG 16px(mt-4) */}
         <Description className="text-black-60 text-[14px] md:text-[16px] xl:text-[18px] mt-2.5 lg:mt-4 xl:mt-3.5">
