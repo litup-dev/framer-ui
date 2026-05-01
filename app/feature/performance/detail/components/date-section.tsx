@@ -6,7 +6,7 @@ interface DateSectionProps {
 }
 
 const DateSection = ({ performDate }: DateSectionProps) => {
-  const formattedDate = formatDate(new Date(performDate), "yyyy.MM.dd HH:mm");
+  const formattedDate = formatDate(performDate, "yyyy.MM.dd HH:mm");
 
   return (
     <div className="flex flex-col">
@@ -24,10 +24,12 @@ const DateSection = ({ performDate }: DateSectionProps) => {
         </Description> */}
 
         {/* 공연 일시 - 예매 오픈 아래: 2XL 14px(mt-3.5), XL 14px(mt-3.5), LG 16px(mt-4) */}
-        <Description className="text-black-60 text-[14px] md:text-[16px] xl:text-[18px] mt-2.5 lg:mt-4 xl:mt-3.5">
+        <Description className="text-black-60 text-[14px] md:text-[16px] xl:text-[18px] ">
+          {/* mt-2.5 lg:mt-4 xl:mt-3.5 */}
           공연 일시
         </Description>
-        <Description className="text-[14px] md:text-[16px] xl:text-[18px] mt-2.5 lg:mt-4 xl:mt-3.5">
+        <Description className="text-[14px] md:text-[16px] xl:text-[18px]">
+          {/* mt-2.5 lg:mt-4 xl:mt-3.5 */}
           {formattedDate}
         </Description>
       </div>
