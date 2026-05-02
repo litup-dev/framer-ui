@@ -61,8 +61,7 @@ export const CalendarGrid = ({
           >
             <div
               className={cn(
-                "gap-0 gap-x-0 gap-y-0 relative",
-                isXl ? "flex" : "grid grid-cols-7",
+                "gap-0 gap-x-0 gap-y-0 relative grid grid-cols-7",
               )}
             >
               {row.days.map((day, dayIndexInRow) => {
@@ -80,19 +79,12 @@ export const CalendarGrid = ({
                   <div
                     key={`${format(day, "yyyy-MM-dd")}-${index}`}
                     className={cn(
-                      "flex-1 relative",
-                      isXl && "w-[250px] flex-shrink-0",
+                      "relative",
+                      isXl && "flex flex-col",
+                      "xl:!h-[209px] xl:!max-h-[209px] 2xl:!h-[314px] 2xl:!max-h-[314px]",
                     )}
                     style={{
-                      ...(isXl && isHovered
-                        ? {
-                            zIndex: 10,
-                          }
-                        : {}),
-                      ...(isXl && {
-                        height: "315px",
-                        minHeight: "315px",
-                      }),
+                      ...(isXl && isHovered ? { zIndex: 10 } : {}),
                     }}
                   >
                     <CalendarDayCell

@@ -40,14 +40,8 @@ export const CalendarDayEvents = ({
     <>
       <div
         ref={eventsContainerRef}
-        className={getEventsContainerClassName(
-          isXl,
-          is2xl,
-          isHovered,
-          isCurrentMonth,
-          isOverflowing,
-        )}
-        style={getEventsContainerStyles(isXl, is2xl, isHovered, isOverflowing)}
+        className={getEventsContainerClassName(isXl, is2xl, isCurrentMonth)}
+        style={getEventsContainerStyles(isXl, isHovered, isOverflowing)}
       >
         {events.map((event, eventIndex) => {
           const isHoveredEvent = hoveredEventIndex === eventIndex;
@@ -66,8 +60,10 @@ export const CalendarDayEvents = ({
               {isHoveredEvent && isXl && (
                 <div
                   className={cn(
-                    "absolute -top-6 -bottom-4 bg-[#E54217] -z-10",
-                    is2xl ? "-left-6 -right-6" : "-left-4 -right-4",
+                    "absolute -z-10",
+                    is2xl
+                      ? "-left-6 -right-6 -top-6 -bottom-4 bg-[#E54217]"
+                      : "-left-4 -right-4 -top-4 -bottom-4 bg-black/10",
                   )}
                   aria-hidden
                 />
@@ -75,7 +71,7 @@ export const CalendarDayEvents = ({
               <div className="flex justify-between min-w-0">
                 <Title
                   className={cn(
-                    "truncate text-black",
+                    "truncate",
                     is2xl ? "xl:text-[20px]" : "xl:text-[16px]",
                     isHovered && isXl ? "text-white" : "text-black",
                   )}
@@ -97,9 +93,11 @@ export const CalendarDayEvents = ({
                     >
                       <Subtitle
                         className={cn(
-                          "truncate font-medium text-black-60 min-w-0",
+                          "truncate min-w-0",
                           is2xl ? "xl:text-[17px]" : "xl:text-[14px]",
-                          isHovered && isXl ? "text-white" : "text-black-60",
+                          isHovered && isXl
+                            ? "text-white/80 font-semibold"
+                            : "text-black-60 font-medium",
                         )}
                       >
                         {performance.artists?.map((a) => a.name).join(", ")}
@@ -107,15 +105,16 @@ export const CalendarDayEvents = ({
                       {isLastPerformance && (
                         <div
                           className={cn(
-                            "flex-shrink-0 w-6 h-6",
+                            "flex-shrink-0",
+                            is2xl ? "w-6 h-6" : "w-5 h-5",
                             !isHoveredEvent && "invisible",
                           )}
                         >
                           <Image
                             src={"/images/calendar-arrow-right.svg"}
                             alt={event.clubName}
-                            width={24}
-                            height={24}
+                            width={is2xl ? 24 : 20}
+                            height={is2xl ? 24 : 20}
                           />
                         </div>
                       )}
@@ -127,14 +126,19 @@ export const CalendarDayEvents = ({
           );
         })}
       </div>
-      {!isHovered && isOverflowing && (
+      {!isHovered && isOverflowing && isXl && (
         <div
           className={cn(
-            "hidden xl:absolute xl:flex xl:items-center xl:justify-end",
-            is2xl ? "bottom-6 right-6" : "bottom-4 right-4",
+            "absolute flex items-center justify-end pointer-events-none",
+            is2xl ? "bottom-6 right-6 w-5 h-5" : "bottom-4 right-4 w-5 h-5",
           )}
         >
-          <Plus className="xl:w-5 xl:h-5 2xl:w-5 2xl:h-5 text-black" />
+          <Plus
+            className={cn(
+              "text-black",
+              is2xl ? "w-5 h-5" : "w-5 h-5",
+            )}
+          />
         </div>
       )}
     </>

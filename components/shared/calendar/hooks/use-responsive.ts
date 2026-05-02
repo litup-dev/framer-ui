@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { CALENDAR_BREAKPOINT } from "@/components/shared/calendar/constants";
 
-export const useResponsive = (breakpoint: number = 1280) => {
+export const useResponsive = (breakpoint: number = CALENDAR_BREAKPOINT.xl) => {
   const [isXl, setIsXl] = useState(false);
 
   useEffect(() => {

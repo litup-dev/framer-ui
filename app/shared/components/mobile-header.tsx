@@ -51,7 +51,7 @@ const MobileHeader = () => {
 
   return (
     <>
-      <div className="pl-5 pr-2 justify-between flex items-center sm:hidden h-12">
+      <div className="pl-5 pr-2 justify-between flex items-center xl:hidden h-12">
         <div className="flex items-center gap-1">
           <Link href="/home">
             <Image src="/images/logo.svg" alt="logo" width={80} height={26} />
@@ -69,7 +69,7 @@ const MobileHeader = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-black/80 bg-opacity-50 z-[60] md:hidden"
+            className="fixed inset-0 bg-black/80 bg-opacity-50 z-[60] xl:hidden"
             onClick={closeMenu}
           />
         )}
@@ -87,7 +87,7 @@ const MobileHeader = () => {
               stiffness: 200,
               duration: 0.4,
             }}
-            className="fixed top-0 right-0 h-full w-[80%] bg-white shadow-lg z-[70] md:hidden"
+            className="fixed top-0 right-0 h-full w-[80%] bg-white shadow-lg z-[70] xl:hidden"
           >
             <div className="flex items-center justify-end p-4">
               <X className="w-6 h-6 cursor-pointer" onClick={closeMenu} />
