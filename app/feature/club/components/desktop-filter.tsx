@@ -97,7 +97,7 @@ const DesktopFilter = ({
   return (
     <div className="flex h-full">
       <div className="w-3/8 xl:w-3/7 2xl:w-3/8 bg-white border-gray-200 flex flex-col h-full">
-        <div className="flex-shrink-0 space-y-6 pb-6 pr-10">
+        <div className="flex-shrink-0 space-y-6 pr-10">
           <SearchFormField variant="desktop" />
           <div className="space-y-4">
             <KeywordList categories={categories?.data} />
@@ -206,7 +206,6 @@ const DesktopFilter = ({
           </div>
           <Separator />
         </div>
-
         <div
           className={cn(
             "flex-1 overflow-y-auto min-h-0",
@@ -216,15 +215,17 @@ const DesktopFilter = ({
             "[&::-webkit-scrollbar-thumb]:rounded-none",
           )}
         >
-          <div className="space-y-5 pb-5 pr-10 flex flex-col">
+          <div className="space-y-5 pt-6 pb-5 flex flex-col">
             {clubs?.map((club: Club, index: number) => (
               <div key={club.id}>
-                <ClubCard
-                  club={club}
-                  onMapClick={(selectedClub: Club) => {
-                    setSelectedClub(selectedClub);
-                  }}
-                />
+                <div className="pr-10">
+                  <ClubCard
+                    club={club}
+                    onMapClick={(selectedClub: Club) => {
+                      setSelectedClub(selectedClub);
+                    }}
+                  />
+                </div>
                 {index !== clubs.length - 1 && (
                   <Separator className="hidden lg:block lg:mt-6" />
                 )}
