@@ -40,14 +40,8 @@ export const CalendarDayEvents = ({
     <>
       <div
         ref={eventsContainerRef}
-        className={getEventsContainerClassName(
-          isXl,
-          is2xl,
-          isHovered,
-          isCurrentMonth,
-          isOverflowing,
-        )}
-        style={getEventsContainerStyles(isXl, is2xl, isHovered, isOverflowing)}
+        className={getEventsContainerClassName(isXl, is2xl, isCurrentMonth)}
+        style={getEventsContainerStyles(isXl, isHovered, isOverflowing)}
       >
         {events.map((event, eventIndex) => {
           const isHoveredEvent = hoveredEventIndex === eventIndex;

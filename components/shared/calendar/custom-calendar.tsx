@@ -13,6 +13,7 @@ import { CalendarSelectedEvents } from "@/components/shared/calendar/calendar-se
 import { CalendarEvent } from "@/components/shared/calendar/types";
 import { useResponsive } from "@/components/shared/calendar/hooks/use-responsive";
 import { useCalendarDays } from "@/components/shared/calendar/hooks/use-calendar-days";
+import { CALENDAR_BREAKPOINT } from "@/components/shared/calendar/constants";
 import CalendarListView from "@/components/shared/calendar/calendar-list-view";
 
 interface CustomCalendarProps {
@@ -39,7 +40,7 @@ const CustomCalendar = ({
   const setCurrentMonth = onMonthChange ?? setInternalCurrentMonth;
 
   const isXl = useResponsive();
-  const is2xl = useResponsive(1600);
+  const is2xl = useResponsive(CALENDAR_BREAKPOINT["2xl"]);
   const days = useCalendarDays(currentMonth);
 
   const handlePrevMonth = () => {
@@ -100,7 +101,7 @@ const CustomCalendar = ({
             onNextMonth={handleNextMonth}
             is2xl={is2xl}
           />
-          <CalendarWeekdays isXl={isXl} is2xl={is2xl} />
+          <CalendarWeekdays is2xl={is2xl} />
           <CalendarGrid
             days={days}
             currentMonth={currentMonth}

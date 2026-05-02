@@ -4,14 +4,10 @@ import { cn } from "@/lib/utils";
 import { Title } from "@/components/shared/typography";
 
 interface CalendarWeekdaysProps {
-  isXl: boolean;
   is2xl: boolean;
 }
 
-export const CalendarWeekdays = ({
-  isXl,
-  is2xl,
-}: CalendarWeekdaysProps) => {
+export const CalendarWeekdays = ({ is2xl }: CalendarWeekdaysProps) => {
   const weekdays = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
   return (

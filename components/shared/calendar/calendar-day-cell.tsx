@@ -17,15 +17,10 @@ import { CalendarDayHeader } from "@/components/shared/calendar/calendar-day-hea
 import { CalendarDayEvents } from "@/components/shared/calendar/calendar-day-events";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
 import { cn } from "@/lib/utils";
+import { isValidImageUrl } from "@/components/shared/calendar/utils/is-valid-image-url";
+import { CALENDAR_FADE_HEIGHT } from "@/components/shared/calendar/constants";
 
 const DEFAULT_IMAGE = "/images/poster1.png";
-
-const isValidImageUrl = (url: string | undefined | null): boolean => {
-  if (!url) return false;
-  if (url.startsWith("/")) return true;
-  if (url.startsWith("http://") || url.startsWith("https://")) return true;
-  return false;
-};
 
 interface CalendarDayCellProps {
   day: Date;
@@ -70,7 +65,6 @@ export const CalendarDayCell = ({
     is2xl,
     dayEvents,
     buttonRef,
-    divRef,
   });
 
   const eventsContainerRef = useCalendarCellScroll({
@@ -95,7 +89,9 @@ export const CalendarDayCell = ({
     : DEFAULT_IMAGE;
 
   const dayKey = format(day, "yyyy-MM-dd");
-  const fadeHeight = is2xl ? 84 : 56;
+  const fadeHeight = is2xl
+    ? CALENDAR_FADE_HEIGHT["2xl"]
+    : CALENDAR_FADE_HEIGHT.xl;
 
   return (
     <motion.div
@@ -119,7 +115,7 @@ export const CalendarDayCell = ({
       style={
         isXl
           ? { zIndex: isHovered ? 10 : 1, position: "relative" }
-          : getCellContainerStyles(isXl, is2xl, isHovered, expandedHeight)
+          : getCellContainerStyles(isXl, isHovered)
       }
     >
       <motion.button
@@ -131,7 +127,7 @@ export const CalendarDayCell = ({
         }
         onMouseLeave={isXl && dayEvents.length > 0 ? onMouseLeave : undefined}
         className={cn(
-          getButtonClassName(isXl, is2xl, isHovered, dayEvents, isCurrentMonth),
+          getButtonClassName(isXl, isHovered, dayEvents, isCurrentMonth),
           isXl && "flex-1 w-full",
         )}
         initial={false}
@@ -154,7 +150,7 @@ export const CalendarDayCell = ({
                   ? { height: `${expandedHeight}px` }
                   : {}),
               }
-            : getButtonStyles(isXl, is2xl, isHovered, expandedHeight)
+            : getButtonStyles(isXl, isHovered)
         }
       >
         {!isXl && firstEvent && (
