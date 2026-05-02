@@ -40,7 +40,7 @@ export const CalendarDayEvents = ({
     <>
       <div
         ref={eventsContainerRef}
-        className={getEventsContainerClassName(isXl, is2xl, isCurrentMonth)}
+        className={getEventsContainerClassName(isXl, is2xl, isHovered, isCurrentMonth)}
         style={getEventsContainerStyles(isXl, isHovered, isOverflowing)}
       >
         {events.map((event, eventIndex) => {
@@ -60,10 +60,10 @@ export const CalendarDayEvents = ({
               {isHoveredEvent && isXl && (
                 <div
                   className={cn(
-                    "absolute -z-10",
+                    "absolute -z-10 bg-[#E54217]",
                     is2xl
-                      ? "-left-6 -right-6 -top-6 -bottom-4 bg-[#E54217]"
-                      : "-left-4 -right-4 -top-4 -bottom-4 bg-black/10",
+                      ? "-left-6 -right-6 -top-6 -bottom-4"
+                      : "-left-4 -right-4 -top-4 -bottom-4",
                   )}
                   aria-hidden
                 />

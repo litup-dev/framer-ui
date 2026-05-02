@@ -359,7 +359,7 @@
 }
 .calendar-cell-scroll::-webkit-scrollbar-thumb {
   background-color: #e54217;
-  border-radius: 0;
+  border-radius: 9999px;
 }
 .calendar-cell-scroll {
   scrollbar-width: thin;
