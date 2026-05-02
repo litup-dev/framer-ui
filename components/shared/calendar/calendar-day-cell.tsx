@@ -67,6 +67,7 @@ export const CalendarDayCell = ({
   const expandedHeight = useCalendarCellHeight({
     isHovered,
     isXl,
+    is2xl,
     dayEvents,
     buttonRef,
     divRef,
@@ -94,12 +95,17 @@ export const CalendarDayCell = ({
     : DEFAULT_IMAGE;
 
   const dayKey = format(day, "yyyy-MM-dd");
+  const fadeHeight = is2xl ? 84 : 56;
 
   return (
     <motion.div
       key={`cell-${dayKey}`}
       ref={divRef}
-      className={isXl ? "overflow-visible" : "overflow-hidden relative"}
+      className={
+        isXl
+          ? "overflow-visible flex-1 flex flex-col w-full relative"
+          : "overflow-hidden relative"
+      }
       initial={false}
       animate={{
         height: !isXl ? (isRowExpanded ? "auto" : "0px") : undefined,
@@ -110,7 +116,11 @@ export const CalendarDayCell = ({
           ease: [0.25, 0.1, 0.25, 1],
         },
       }}
-      style={getCellContainerStyles(isXl, isHovered, expandedHeight)}
+      style={
+        isXl
+          ? { zIndex: isHovered ? 10 : 1, position: "relative" }
+          : getCellContainerStyles(isXl, is2xl, isHovered, expandedHeight)
+      }
     >
       <motion.button
         key={`button-${dayKey}`}
@@ -120,12 +130,9 @@ export const CalendarDayCell = ({
           isXl && dayEvents.length > 0 ? () => onMouseEnter(day) : undefined
         }
         onMouseLeave={isXl && dayEvents.length > 0 ? onMouseLeave : undefined}
-        className={getButtonClassName(
-          isXl,
-          is2xl,
-          isHovered,
-          dayEvents,
-          isCurrentMonth,
+        className={cn(
+          getButtonClassName(isXl, is2xl, isHovered, dayEvents, isCurrentMonth),
+          isXl && "flex-1 w-full",
         )}
         initial={false}
         animate={{
@@ -137,7 +144,18 @@ export const CalendarDayCell = ({
             ease: [0.25, 0.1, 0.25, 1],
           },
         }}
-        style={getButtonStyles(isXl, isHovered, expandedHeight, dayEvents)}
+        style={
+          isXl
+            ? {
+                position: "relative",
+                zIndex: isHovered ? 10 : 1,
+                overflow: isHovered ? "auto" : "hidden",
+                ...(isHovered && expandedHeight
+                  ? { height: `${expandedHeight}px` }
+                  : {}),
+              }
+            : getButtonStyles(isXl, is2xl, isHovered, expandedHeight)
+        }
       >
         {!isXl && firstEvent && (
           <div className="absolute inset-0 w-full h-full overflow-hidden">
@@ -149,6 +167,18 @@ export const CalendarDayCell = ({
               sizes="50px"
             />
           </div>
+        )}
+
+        {isXl && isHovered && (
+          <div
+            aria-hidden
+            className="absolute top-0 left-0 right-0 pointer-events-none z-30"
+            style={{
+              height: fadeHeight,
+              background:
+                "linear-gradient(to bottom, #FF491A 0%, rgba(255,73,26,0) 100%)",
+            }}
+          />
         )}
 
         <CalendarDayHeader

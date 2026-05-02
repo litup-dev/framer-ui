@@ -350,3 +350,18 @@
     min-height: 100px;
   }
 }
+
+.calendar-cell-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.calendar-cell-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.calendar-cell-scroll::-webkit-scrollbar-thumb {
+  background-color: #e54217;
+  border-radius: 0;
+}
+.calendar-cell-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #e54217 transparent;
+}

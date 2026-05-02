@@ -17,19 +17,16 @@ export const CalendarWeekdays = ({
   return (
     <div
       className={cn(
-        "flex gap-0 mb-2 px-5",
+        "grid grid-cols-7 gap-0 mb-2 px-5",
         is2xl ? "xl:px-20" : "xl:px-15",
       )}
     >
       {weekdays.map((day) => (
-        <div
-          key={day}
-          className={cn("flex-1", isXl && "w-[250px] flex-shrink-0")}
-        >
+        <div key={day} className="relative">
           <Title
             className={cn(
               "text-center xl:text-start text-black text-[12px] md:text-[16px] xl:text-[20px] 2xl:text-[24px]",
-              isXl ? "pl-6" : "pl-1",
+              "pl-1 xl:pl-4 2xl:pl-6",
             )}
           >
             {day}

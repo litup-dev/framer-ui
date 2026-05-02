@@ -1,31 +1,41 @@
 import { cn } from "@/lib/utils";
 
+const MAX_HOVER_HEIGHT_2XL = 560;
+const MAX_HOVER_HEIGHT_XL = 340;
+
+export const getCellHeights = (is2xl: boolean) => ({
+  maxHover: is2xl ? MAX_HOVER_HEIGHT_2XL : MAX_HOVER_HEIGHT_XL,
+});
+
 export const getCellContainerStyles = (
   isXl: boolean,
+  is2xl: boolean,
   isHovered: boolean,
   expandedHeight: number | null,
 ) => {
+  void is2xl;
   void expandedHeight;
   return {
     zIndex: isHovered && isXl ? 10 : 1,
     position: "relative" as const,
-    ...(isXl && { height: "315px" }),
+    height: "100%",
   };
 };
 
 export const getButtonStyles = (
   isXl: boolean,
+  is2xl: boolean,
   isHovered: boolean,
   expandedHeight: number | null,
-  dayEvents: unknown[],
 ) => {
+  void is2xl;
   void expandedHeight;
-  void dayEvents;
   return {
     width: "100%",
-    height: isXl ? "315px" : "auto",
+    height: "100%",
     position: "relative" as const,
     zIndex: isHovered && isXl ? 10 : 1,
+    overflow: "hidden" as const,
   };
 };
 
@@ -36,14 +46,21 @@ export const getButtonClassName = (
   dayEvents: unknown[],
   isCurrentMonth: boolean,
 ) => {
+  void is2xl;
   return cn(
     "flex flex-col text-left",
-    is2xl ? "px-6 py-6" : isXl ? "px-4 py-6" : "p-1",
-    "h-auto min-h-[62px] sm:min-h-[117px] md:min-h-[159px] xl:min-h-[315px]",
+    "p-1 xl:px-4 xl:pt-4 xl:pb-4 2xl:px-6 2xl:pt-6 2xl:pb-6",
+    "min-h-[62px] sm:min-h-[117px] md:min-h-[159px]",
+    "xl:transition-[max-height,height] xl:duration-300 xl:ease-out",
+    !isHovered &&
+      "xl:!h-[209px] xl:!max-h-[209px] 2xl:!h-[314px] 2xl:!max-h-[314px]",
+    isHovered &&
+      isXl &&
+      "xl:!absolute xl:!top-0 xl:!left-0 xl:!right-0 xl:!min-h-[209px] 2xl:!min-h-[314px] xl:!max-h-[340px] 2xl:!max-h-[560px] xl:!overflow-y-auto calendar-cell-scroll",
     isHovered && isXl
       ? "bg-main text-white"
       : dayEvents.length === 0
-        ? "bg-[#F7F6F5] text-black"
+        ? "bg-transparent text-black"
         : "bg-white text-black",
     !isCurrentMonth && "opacity-50",
   );
@@ -56,8 +73,8 @@ export const getEventsContainerClassName = (
   isCurrentMonth: boolean,
   isOverflowing: boolean,
 ) => {
-  void isHovered;
   void isOverflowing;
+  void isHovered;
   return cn(
     "flex flex-col relative z-10",
     is2xl ? "gap-10" : "gap-8",

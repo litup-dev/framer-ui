@@ -95,133 +95,142 @@ const DesktopFilter = ({
   };
 
   return (
-    <div className="flex h-full gap-10">
+    <div className="flex h-full">
       <div className="w-3/8 xl:w-3/7 2xl:w-3/8 bg-white border-gray-200 flex flex-col h-full">
-        <div className="flex-1 overflow-y-auto min-h-0">
-          <div className="space-y-6">
-            <SearchFormField variant="desktop" />
-            <div className="space-y-4">
-              <KeywordList categories={categories?.data} />
-              <div>
-                <div className="flex gap-2 items-center">
-                  <Select
-                    value={
-                      selectedRegion === "nearby" ? "" : selectedRegion || ""
-                    }
-                    onValueChange={handleRegionClick}
+        <div className="flex-shrink-0 space-y-6 pr-10">
+          <SearchFormField variant="desktop" />
+          <div className="space-y-4">
+            <KeywordList categories={categories?.data} />
+            <div>
+              <div className="flex gap-2 items-center">
+                <Select
+                  value={
+                    selectedRegion === "nearby" ? "" : selectedRegion || ""
+                  }
+                  onValueChange={handleRegionClick}
+                >
+                  <SelectTrigger
+                    className="rounded-[3px] p-2.5 border-gray-300 h-auto"
+                    visibleIcon={false}
                   >
-                    <SelectTrigger
-                      className="rounded-[3px] p-2.5 border-gray-300 h-auto"
-                      visibleIcon={false}
+                    <div className="flex items-center gap-0.5">
+                      <SelectValue
+                        placeholder="권역"
+                        className="text-[14px] 2xl:text-[16px]"
+                      />
+                      <Image
+                        src="/images/location.svg"
+                        alt="arrow-down"
+                        width={20}
+                        height={20}
+                      />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent className="p-4">
+                    {regionOptions
+                      .filter((item) => item.label !== "내 주변")
+                      .map((item) => (
+                        <SelectItem key={item.id} value={item.value}>
+                          <Subtitle className="text-[14px] 2xl:text-[16px]">
+                            {item.label}
+                          </Subtitle>
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+                <div
+                  onClick={() => handleRegionClick("nearby")}
+                  className={cn(
+                    "rounded-[4px] cursor-pointer transition-colors p-2.5 border box-border",
+                    selectedRegion === "nearby"
+                      ? "border-main text-main border-2"
+                      : "bg-transparent text-gray-700 hover:bg-gray-100 border-gray-300",
+                  )}
+                >
+                  {selectedRegion === "nearby" ? (
+                    <Subtitle className="text-[14px] 2xl:text-[16px] text-main ">
+                      내 주변
+                    </Subtitle>
+                  ) : (
+                    <Description className="text-[14px] 2xl:text-[16px] text-black/60">
+                      내 주변
+                    </Description>
+                  )}
+                </div>
+                {filterItems.map((filter) => {
+                  const currentOptionIndex = getCurrentOptionIndex(filter.id);
+                  return (
+                    <div
+                      key={filter.id}
+                      onClick={() =>
+                        handleFilterClick(filter.id, currentOptionIndex)
+                      }
+                      className={cn(
+                        "rounded-[4px] cursor-pointer transition-colors p-2.5 border box-border h-[31px] sm:h-[34px] 2xl:h-[36px] flex items-center",
+                        isActive(filter.id)
+                          ? "border-main text-main border-2"
+                          : "bg-transparent text-gray-700 hover:bg-gray-100 border-gray-300",
+                      )}
                     >
-                      <div className="flex items-center gap-0.5">
-                        <SelectValue
-                          placeholder="권역"
-                          className="text-[14px] 2xl:text-[16px]"
-                        />
-                        <Image
-                          src="/images/location.svg"
-                          alt="arrow-down"
-                          width={20}
-                          height={20}
-                        />
-                      </div>
-                    </SelectTrigger>
-                    <SelectContent className="p-4">
-                      {regionOptions
-                        .filter((item) => item.label !== "내 주변")
-                        .map((item) => (
-                          <SelectItem key={item.id} value={item.value}>
-                            <Subtitle className="text-[14px] 2xl:text-[16px]">
-                              {item.label}
-                            </Subtitle>
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                  <div
-                    onClick={() => handleRegionClick("nearby")}
-                    className={cn(
-                      "rounded-[4px] cursor-pointer transition-colors p-2.5 border box-border",
-                      selectedRegion === "nearby"
-                        ? "border-main text-main border-2"
-                        : "bg-transparent text-gray-700 hover:bg-gray-100 border-gray-300",
-                    )}
-                  >
-                    {selectedRegion === "nearby" ? (
-                      <Subtitle className="text-[14px] 2xl:text-[16px] text-main ">
-                        내 주변
-                      </Subtitle>
-                    ) : (
-                      <Description className="text-[14px] 2xl:text-[16px] text-black/60">
-                        내 주변
-                      </Description>
-                    )}
-                  </div>
-                  {filterItems.map((filter) => {
-                    const currentOptionIndex = getCurrentOptionIndex(filter.id);
-                    return (
-                      <div
-                        key={filter.id}
-                        onClick={() =>
-                          handleFilterClick(filter.id, currentOptionIndex)
-                        }
-                        className={cn(
-                          "rounded-[4px] cursor-pointer transition-colors p-2.5 border box-border h-[31px] sm:h-[34px] 2xl:h-[36px] flex items-center",
-                          isActive(filter.id)
-                            ? "border-main text-main border-2"
-                            : "bg-transparent text-gray-700 hover:bg-gray-100 border-gray-300",
+                      <div className="flex items-center gap-1">
+                        {isActive(filter.id) ? (
+                          <Subtitle className="text-[14px] 2xl:text-[16px] text-main">
+                            {getFilterLabel(filter)}
+                          </Subtitle>
+                        ) : (
+                          <Description className="text-[14px] 2xl:text-[16px] text-black/60">
+                            {getFilterLabel(filter)}
+                          </Description>
                         )}
-                      >
-                        <div className="flex items-center gap-1">
-                          {isActive(filter.id) ? (
-                            <Subtitle className="text-[14px] 2xl:text-[16px] text-main">
-                              {getFilterLabel(filter)}
-                            </Subtitle>
-                          ) : (
-                            <Description className="text-[14px] 2xl:text-[16px] text-black/60">
-                              {getFilterLabel(filter)}
-                            </Description>
+                        <div
+                          className={cn(
+                            "flex items-center justify-center flex-shrink-0",
+                            isActive(filter.id) ? "w-4 h-4 " : "w-0 h-0",
                           )}
-                          <div
-                            className={cn(
-                              "flex items-center justify-center flex-shrink-0",
-                              isActive(filter.id) ? "w-4 h-4 " : "w-0 h-0",
-                            )}
-                          >
-                            {isActive(filter.id) && (
-                              <ChevronDown
-                                className={cn(
-                                  "size-6 transition-transform",
-                                  getChevronRotation(filter),
-                                )}
-                              />
-                            )}
-                          </div>
+                        >
+                          {isActive(filter.id) && (
+                            <ChevronDown
+                              className={cn(
+                                "size-6 transition-transform",
+                                getChevronRotation(filter),
+                              )}
+                            />
+                          )}
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
-            <Separator />
-
-            <div className="space-y-5 pb-5 flex flex-col">
-              {clubs?.map((club: Club, index: number) => (
-                <div key={club.id}>
+          </div>
+          <Separator />
+        </div>
+        <div
+          className={cn(
+            "flex-1 overflow-y-auto min-h-0",
+            "[&::-webkit-scrollbar]:w-[5px]",
+            "[&::-webkit-scrollbar-track]:bg-transparent",
+            "[&::-webkit-scrollbar-thumb]:bg-black/20",
+            "[&::-webkit-scrollbar-thumb]:rounded-none",
+          )}
+        >
+          <div className="space-y-5 pt-6 pb-5 flex flex-col">
+            {clubs?.map((club: Club, index: number) => (
+              <div key={club.id}>
+                <div className="pr-10">
                   <ClubCard
                     club={club}
                     onMapClick={(selectedClub: Club) => {
                       setSelectedClub(selectedClub);
                     }}
                   />
-                  {index !== clubs.length - 1 && (
-                    <Separator className="hidden lg:block lg:mt-6" />
-                  )}
                 </div>
-              ))}
-            </div>
+                {index !== clubs.length - 1 && (
+                  <Separator className="hidden lg:block lg:mt-6" />
+                )}
+              </div>
+            ))}
           </div>
         </div>
 
