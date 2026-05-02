@@ -83,7 +83,10 @@ export default function HomeContent() {
       )}
 
       <div
-        className={cn("w-full xl:pt-30", !shouldShowCalendar && "hidden")}
+        className={cn(
+          "w-full xl:pt-[80px] 2xl:pt-[100px]",
+          !shouldShowCalendar && "hidden",
+        )}
         aria-hidden={!shouldShowCalendar}
       >
         <SelectCalendarViewHeader />
