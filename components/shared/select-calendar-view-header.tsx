@@ -22,8 +22,8 @@ const SelectCalendarViewHeader = () => {
   const { calendarView, setCalendarView } = useHomeStore();
 
   return (
-    <div className="pl-5 pr-2 sm:hidden flex items-center justify-end">
-      <div className="h-[48px] flex items-centerjustify-end mb-[7px]">
+    <div className="pl-5 pr-2 xl:hidden flex items-center justify-end">
+      <div className="h-[48px] flex items-center justify-end mb-[7px]">
         {CALENDAR_VIEW_OPTIONS.map((option) => {
           const isActive = calendarView === option.value;
           return (

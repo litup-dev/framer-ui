@@ -51,7 +51,7 @@ const MobileHeader = () => {
 
   return (
     <>
-      <div className="pl-5 pr-2 justify-between flex items-center xl:hidden h-12">
+      <div className="pl-5 pr-2 justify-between flex items-center md:hidden h-[60px]">
         <div className="flex items-center gap-1">
           <Link href="/home">
             <Image src="/images/logo.svg" alt="logo" width={80} height={26} />

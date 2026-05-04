@@ -102,9 +102,9 @@ export default function CharacterSection({
   };
 
   return (
-    <div className="block absolute top-[36px] md:top-[180px] lg:top-[210px] xl:top-[280px] 2xl:top-[250px] right-4 md:right-6 lg:right-8 xl:right-[80px] z-5">
+    <div className="block absolute top-[43px] md:top-[167px] lg:top-[201px] xl:top-[280px] 2xl:top-[250px] right-[20px] md:right-[40px] lg:right-[60px] xl:right-[60px] 2xl:right-[80px] z-20">
       <div className="relative w-full md:w-[550px] lg:w-[600px] xl:w-[700px] 2xl:w-[860px]">
-        <div className="absolute top-[115px] lg:top-[120px] xl:top-[168px] 2xl:top-[196px] right-0 flex flex-col items-center gap-2">
+        <div className="absolute top-[115px] lg:top-[120px] xl:top-[14px] 2xl:top-[164px] right-0 flex flex-col items-end xl:gap-2 2xl:gap-3">
           <div
             className="relative overflow-hidden flex justify-end w-full"
             style={{
@@ -124,7 +124,7 @@ export default function CharacterSection({
             >
               <Title
                 className={cn(
-                  "text-[30px] min-[744px]:text-[44px] lg:text-[64px] xl:text-[76px] pr-0.5 lg:pr-1.5 leading-[0.8]",
+                  "text-[22px] min-[744px]:text-[30px] lg:text-[38px] xl:text-[56px] 2xl:text-[84px] pr-0.5 lg:pr-1.5 leading-[22px] min-[744px]:leading-[30px] lg:leading-[38px] xl:leading-[40px] 2xl:leading-[61px] xl:tracking-[-4.48px] 2xl:tracking-[-6.72px]",
                   colorKey === "today" && "text-white",
                   colorKey !== "today" &&
                     colorKey !== "busan" &&
@@ -157,7 +157,7 @@ export default function CharacterSection({
                   >
                     <Title
                       className={cn(
-                        "text-[30px] min-[744px]:text-[44px] lg:text-[64px] xl:text-[76px] pr-1.5 leading-[0.8]",
+                        "text-[22px] min-[744px]:text-[30px] lg:text-[38px] xl:text-[56px] 2xl:text-[84px] pr-1.5 leading-[22px] min-[744px]:leading-[30px] lg:leading-[38px] xl:leading-[40px] 2xl:leading-[61px] xl:tracking-[-4.48px] 2xl:tracking-[-6.72px]",
                         INDEX_TO_COLOR_KEY[previousIndex] === "today" &&
                           "text-white",
 
@@ -188,7 +188,7 @@ export default function CharacterSection({
                     >
                       <Title
                         className={cn(
-                          "text-[30px] min-[744px]:text-[44px] lg:text-[64px] xl:text-[76px] pr-1.5 leading-[0.8]",
+                          "text-[22px] min-[744px]:text-[30px] lg:text-[38px] xl:text-[56px] 2xl:text-[84px] pr-1.5 leading-[22px] min-[744px]:leading-[30px] lg:leading-[38px] xl:leading-[40px] 2xl:leading-[61px] xl:tracking-[-4.48px] 2xl:tracking-[-6.72px]",
                           colorKey === "today" && "text-white",
                         )}
                       >
@@ -201,14 +201,14 @@ export default function CharacterSection({
             )}
           </div>
           <span
-            className="hidden xl:flex xl:gap-[3px] border rounded-full bg-white border-gray-400 pl-[13px] pr-[10px] py-[7px] items-center font-bold cursor-pointer hover:bg-gray-50"
+            className="hidden xl:flex border-2 rounded-full bg-white border-[rgba(23,23,23,0.2)] xl:pl-3 xl:pr-[7px] xl:py-[6px] 2xl:pl-[13px] 2xl:pr-[7px] 2xl:py-[7px] items-center justify-center font-bold cursor-pointer hover:bg-gray-50"
             onClick={handleShowAllClick}
           >
-            <Subtitle className="text-[16px]">
+            <Subtitle className="text-[14px] xl:tracking-[-0.56px] 2xl:text-[16px] 2xl:tracking-[-0.64px] text-[#171717]">
               {showAllItems ? "기본보기" : "전체보기"}
             </Subtitle>
             <ChevronDown
-              className={`w-5 h-5 md:w-4 md:h-4 lg:w-5 lg:h-5 transition-transform ${
+              className={`xl:w-5 xl:h-5 2xl:w-6 2xl:h-6 transition-transform ${
                 showAllItems ? "rotate-180" : ""
               }`}
             />

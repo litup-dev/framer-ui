@@ -64,7 +64,7 @@ const ArtistsDisplay = ({ artists }: { artists?: Array<{ name: string }> }) => {
 
   if (artists.length >= 3) {
     return (
-      <Subtitle className="text-[16px] text-black truncate px-3 py-2 bg-gray">
+      <Subtitle className="text-[16px] xl:text-[14px] 2xl:text-[16px] text-black inline-flex items-center justify-center truncate px-3 xl:px-[11px] 2xl:px-3 py-2 2xl:py-[9px] rounded-[3px] bg-[#F4F4F4]">
         {artists[0].name} 외 {artists.length - 1}팀
       </Subtitle>
     );
@@ -75,7 +75,7 @@ const ArtistsDisplay = ({ artists }: { artists?: Array<{ name: string }> }) => {
       {artists.map((artist, index) => (
         <Subtitle
           key={index}
-          className="text-[16px] text-black truncate px-3 py-2 bg-[#F4F4F4]"
+          className="text-[16px] xl:text-[14px] 2xl:text-[16px] text-black inline-flex items-center justify-center truncate px-3 xl:px-[11px] 2xl:px-3 py-2 2xl:py-[9px] rounded-[3px] bg-[#F4F4F4]"
         >
           {artist.name}
         </Subtitle>
@@ -95,13 +95,13 @@ export const PerformanceCard = ({ performance }: PerformanceCardProps) => {
   return (
     <Link href={`/performance/${performance.id}`}>
       <Card
-        className="overflow-hidden gap-5 pb-2 bg-transparent"
+        className="overflow-hidden gap-5 bg-transparent"
         data-hero-key={performance.id}
       >
-        <div className="aspect-[3/4] relative">
+        <div className="aspect-[3/4] xl:aspect-[107/134] 2xl:aspect-[4/5] relative">
           <PerformanceImage imageUrl={imageUrl} alt={alt} />
-          <div className="absolute text-[#FFFFFF] rounded-[3px] bg-[#000000]/50 top-2.5 right-2.5 px-2 py-1.5 xl:top-3 xl:right-3 2xl:top-4 2xl:right-4 xl:px-2.5 xl:py-2 2xl:px-3 2xl:py-2  backdrop-blur-xs">
-            <Subtitle className="text-[12px] xl:text-[14px] 2xl:text-[16px]">
+          <div className="absolute text-[#FFFFFF] rounded-[3px] bg-[#000000]/50 xl:bg-black/40 top-2.5 right-2.5 px-2 py-1.5 xl:top-3 xl:right-3 2xl:top-4 2xl:right-4 xl:px-2.5 xl:py-[7px] 2xl:px-3 2xl:py-[9px] backdrop-blur-xs xl:backdrop-blur-[2px]">
+            <Subtitle className="text-[12px] xl:text-[14px] 2xl:text-[16px] xl:tracking-[-0.56px] 2xl:tracking-[-0.64px]">
               {formatMonthDay(performance.performDate)}
             </Subtitle>
           </div>
@@ -116,11 +116,11 @@ export const PerformanceCard = ({ performance }: PerformanceCardProps) => {
             }}
             className="text-left w-full"
           >
-            <Description className="text-black/text-[16px] truncate hover:text-gray-600 cursor-pointer">
+            <Description className="text-black text-[16px] xl:text-[14px] 2xl:text-[16px] truncate hover:text-gray-600 cursor-pointer">
               {performance.club.name}
             </Description>
           </button>
-          <Subtitle className="text-[20px] text-black truncate leading-[120%]">
+          <Subtitle className="text-[20px] xl:text-[18px] 2xl:text-[20px] text-black truncate leading-[120%]">
             {performance.title}
           </Subtitle>
           <div className="flex gap-2 truncate">

@@ -17,7 +17,6 @@ import { CalendarDayHeader } from "@/components/shared/calendar/calendar-day-hea
 import { CalendarDayEvents } from "@/components/shared/calendar/calendar-day-events";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
 import { cn } from "@/lib/utils";
-import { isValidImageUrl } from "@/components/shared/calendar/utils/is-valid-image-url";
 import { CALENDAR_FADE_HEIGHT } from "@/components/shared/calendar/constants";
 
 const DEFAULT_IMAGE = "/images/poster1.png";
@@ -84,9 +83,7 @@ export const CalendarDayCell = ({
   const mainImage = firstPerformance?.images?.find((img) => img.isMain);
   const eventImage =
     mainImage?.filePath || firstPerformance?.images?.[0]?.filePath;
-  const imageUrl = isValidImageUrl(eventImage)
-    ? getImageUrl(eventImage) || DEFAULT_IMAGE
-    : DEFAULT_IMAGE;
+  const imageUrl = getImageUrl(eventImage) || DEFAULT_IMAGE;
 
   const dayKey = format(day, "yyyy-MM-dd");
   const fadeHeight = is2xl
