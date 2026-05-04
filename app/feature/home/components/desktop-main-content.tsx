@@ -134,17 +134,22 @@ const DesktopMainContent = ({
         performanceItems.length === 0 && "min-h-[613px]",
       )}
     >
+      <div className="hidden md:grid xl:hidden grid-cols-3 gap-x-3 lg:gap-x-4 gap-y-8 lg:gap-y-10">
+        {performanceItems.slice(0, 9).map((performance) => (
+          <PerformanceCard key={performance.id} performance={performance} />
+        ))}
+      </div>
       <Carousel
-        className="w-full relative z-10"
+        className="hidden xl:block w-full relative z-10"
         opts={{
           align: "start",
         }}
       >
-        <CarouselContent className="-ml-2 md:-ml-4">
+        <CarouselContent className="-ml-2 md:-ml-4 2xl:-ml-5">
           {performanceItems.map((performance) => (
             <CarouselItem
               key={performance.id}
-              className="pl-2 sm:pl-4 md:basis-1/3 lg:basis-1/4 xl:basis-1/5"
+              className="pl-2 sm:pl-4 2xl:pl-5 md:basis-1/3 lg:basis-1/4 2xl:basis-1/5"
             >
               <PerformanceCard performance={performance} />
             </CarouselItem>

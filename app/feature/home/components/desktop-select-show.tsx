@@ -62,7 +62,7 @@ const DesktopSelectShow = ({
   const isAreaSelected = selectedCategory === "area";
 
   return (
-    <div className={cn("hidden md:flex md:flex-col gap-4 xl:gap-4")}>
+    <div className={cn("hidden md:flex md:flex-col gap-4 xl:gap-[18px] 2xl:gap-5")}>
       <div className={cn("flex gap-4")}>
         {SELECT_ITEMS.slice(0, 2).map((item) => (
           <CategorySelectItem

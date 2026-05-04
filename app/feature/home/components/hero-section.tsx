@@ -57,7 +57,7 @@ const HeroSection = () => {
       className={cn(selectedMobileBottomNavigation === "calendar" && "hidden")}
     >
       <div
-        className="relative overflow-hidden w-[190px] sm:w-[250px] md:w-[270px] lg:w-[400px] xl:w-[520px] aspect-[590/259]"
+        className="relative overflow-hidden w-[190px] sm:w-[250px] md:w-[260px] lg:w-[320px] xl:w-[350px] 2xl:w-[520px] aspect-[190/80] md:aspect-[260/109] lg:aspect-[320/135] xl:aspect-[350/147] 2xl:aspect-[520/219]"
         style={{
           transform: "translateZ(0)",
           backfaceVisibility: "hidden",

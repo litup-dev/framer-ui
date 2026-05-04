@@ -9,13 +9,6 @@ import Link from "next/link";
 
 const DEFAULT_IMAGE = "/images/poster1.png";
 
-const isValidImageUrl = (url: string | undefined | null): boolean => {
-  if (!url) return false;
-  if (url.startsWith("/")) return true;
-  if (url.startsWith("http://") || url.startsWith("https://")) return true;
-  return false;
-};
-
 interface CalendarDateEventListProps {
   dateKey: string;
   events: CalendarEvent[];
@@ -57,11 +50,8 @@ const CalendarDateEventList = ({
         {events.map((event) =>
           event.performances?.map((performance, performanceIndex) => {
             const mainImage = performance.images?.find((img) => img.isMain);
-            const imageUrl = mainImage?.filePath
-              ? isValidImageUrl(mainImage.filePath)
-                ? getImageUrl(mainImage.filePath) || DEFAULT_IMAGE
-                : DEFAULT_IMAGE
-              : DEFAULT_IMAGE;
+            const imageUrl =
+              getImageUrl(mainImage?.filePath) || DEFAULT_IMAGE;
 
             const artistNames =
               performance.artists?.map((artist) => artist.name).join(", ") ||

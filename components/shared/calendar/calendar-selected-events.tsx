@@ -11,8 +11,6 @@ import FadeIn from "@/components/shared/fade-in";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
 import Link from "next/link";
 
-import { isValidImageUrl } from "@/components/shared/calendar/utils/is-valid-image-url";
-
 const DEFAULT_IMAGE = "/images/poster1.png";
 
 interface CalendarSelectedEventsProps {
@@ -44,11 +42,8 @@ export const CalendarSelectedEvents = ({
                   const mainImage = performance.images?.find(
                     (img) => img.isMain,
                   );
-                  const imageUrl = mainImage?.filePath
-                    ? isValidImageUrl(mainImage.filePath)
-                      ? getImageUrl(mainImage.filePath) || DEFAULT_IMAGE
-                      : DEFAULT_IMAGE
-                    : DEFAULT_IMAGE;
+                  const imageUrl =
+                    getImageUrl(mainImage?.filePath) || DEFAULT_IMAGE;
 
                   return (
                     <div
