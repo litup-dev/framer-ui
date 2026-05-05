@@ -140,11 +140,11 @@ const ClubDetailHeader = ({ images, clubName }: ClubDetailHeaderProps) => {
             setApi={setApi}
           >
             <CarouselPrevious
-              className="hidden 2xl:flex left-20 -translate-y-1/2 z-50"
+              className="hidden 2xl:flex 2xl:left-[111px] -translate-y-1/2 z-50"
               isClubDetailCarousel
             />
             <CarouselNext
-              className="hidden 2xl:flex right-20 left-auto -translate-y-1/2 z-50"
+              className="hidden 2xl:flex 2xl:right-[63px] left-auto -translate-y-1/2 z-50"
               isClubDetailCarousel
             />
             <CarouselContent className="h-[220px] sm:h-[490px] xl:h-[490px] 2xl:h-[600px] -ml-0">
@@ -176,6 +176,11 @@ const ClubDetailHeader = ({ images, clubName }: ClubDetailHeaderProps) => {
               ))}
             </CarouselContent>
           </Carousel>
+        </div>
+        <div className="hidden 2xl:flex absolute right-[80px] bottom-[40px] z-50 items-center px-2 py-1 rounded-[4px] bg-black/50">
+          <Subtitle className="text-white text-[14px]">
+            {currentIndex + 1} / {carouselImages.length}
+          </Subtitle>
         </div>
       </div>
       {mounted &&

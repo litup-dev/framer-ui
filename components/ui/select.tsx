@@ -73,7 +73,7 @@ function SelectTrigger({
       {children}
       {visibleIcon && (
         <SelectPrimitive.Icon asChild>
-          <span className="inline-flex size-4 md:size-6 shrink-0 xl:size-8">
+          <span className="inline-flex size-4 md:size-6 shrink-0 xl:size-[18px] 2xl:size-8">
             <ArrowDownIcon className="size-full text-gray" />
           </span>
         </SelectPrimitive.Icon>

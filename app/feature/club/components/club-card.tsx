@@ -80,7 +80,7 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
   };
 
   return (
-    <div className="space-y-4 block cursor-pointer">
+    <div className="block cursor-pointer">
       <div className="flex justify-between">
         <Link href={`/club/${club.id}`}>
           <div className="flex items-center gap-2.5">
@@ -121,7 +121,7 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
           alt="favorite"
           width={16}
           height={16}
-          className={`w-8 h-8 sm:mr-4 cursor-pointer ${
+          className={`w-7 h-7 xl:w-7 xl:h-7 2xl:w-10 2xl:h-10 mt-1 cursor-pointer ${
             isFavorite
               ? "text-main hover:text-main"
               : "text-black-60 hover:text-main"
@@ -133,7 +133,7 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
           }}
         />
       </div>
-      <div className="flex gap-[1px]">
+      <div className="flex gap-[1px] mt-4 md:mt-5 lg:mt-5 xl:mt-5">
         {clubWithImages.images?.map((image: ClubImageType, index: number) => {
           const imageUrl = image.filePath ? getImageUrl(image.filePath) : null;
           if (!imageUrl) return null;
@@ -141,7 +141,7 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
             <div
               key={image.id}
               className={cn(
-                "relative w-[88px] h-[110px] sm:h-[180px] sm:w-[144px] bg-[#D9D9D9] overflow-hidden",
+                "relative w-[88px] h-[110px] sm:w-[120px] sm:h-[150px] md:w-[120px] md:h-[150px] lg:w-[128px] lg:h-[160px] 2xl:w-[144px] 2xl:h-[180px] bg-[#D9D9D9] overflow-hidden",
                 index === 0 && "rounded-l-[4px]",
                 index === (clubWithImages.images?.length ?? 1) - 1 &&
                   "rounded-r-[4px]",
@@ -157,7 +157,7 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
           );
         })}
       </div>
-      <div className="flex gap-1 items-center text-subtitle-12 text-black-60">
+      <div className="flex gap-1 items-center text-subtitle-12 text-black-60 mt-4 md:mt-3 lg:mt-3 xl:mt-3 2xl:mt-4">
         <div
           className="flex items-center gap-1 border border-black/20 px-2.5 py-2 rounded-[4px] cursor-pointer max-h-[31px]"
           onClick={() => onMapClick(club)}

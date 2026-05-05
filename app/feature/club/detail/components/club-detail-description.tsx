@@ -16,9 +16,10 @@ interface ClubDetailDescriptionProps {
 const DEFAULT_TIME_MESSAGE = "운영시간을 등록해주세요.";
 
 const LABEL_CLASS =
-  "text-[14px] md:text-[16px] w-[80px] md:w-[88px] flex-shrink-0";
-const VALUE_CLASS = "text-[14px] md:text-[16px] flex-1 min-w-0";
-const VALUE_COL_CLASS = "flex flex-col flex-1 min-w-0 gap-1";
+  "text-[14px] md:text-[16px] w-[80px] md:w-[88px] lg:w-[95px] xl:w-[95px] 2xl:w-[95px] flex-shrink-0 leading-[1.6]";
+const VALUE_CLASS =
+  "text-[14px] md:text-[16px] flex-1 min-w-0 leading-[1.6]";
+const VALUE_COL_CLASS = "flex flex-col flex-1 min-w-0 gap-0";
 
 interface InfoRowProps {
   label: string;
@@ -28,7 +29,7 @@ interface InfoRowProps {
 
 const InfoRow = ({ label, children, align = "center" }: InfoRowProps) => (
   <div
-    className={`flex bg-gray p-5 md:p-6 rounded-[3px] ${
+    className={`flex bg-gray p-5 md:p-6 xl:bg-transparent xl:p-0 2xl:bg-transparent 2xl:p-0 rounded-[3px] ${
       align === "start" ? "items-start" : "items-center"
     }`}
   >
@@ -57,23 +58,25 @@ const ClubDetailDescription = ({ data }: ClubDetailDescriptionProps) => {
   };
 
   return (
-    <div className="px-5 sm:px-10 lg:px-15 lg:py-10 xl:mr-0 xl:w-full">
-      <div className="flex flex-col lg:flex-row xl:flex-col lg:items-stretch gap-3 lg:gap-10">
-        <div className="flex flex-col flex-1 space-y-3 lg:space-y-4 xl:space-y-10 lg:justify-start">
+    <div className="px-5 sm:px-10 lg:px-15 lg:py-10 xl:pt-[55px] 2xl:px-20 2xl:pt-[62px] xl:mr-0 xl:w-full">
+      <div className="flex flex-col lg:flex-row xl:flex-col lg:items-stretch gap-3 md:gap-4 lg:gap-10 xl:gap-14 2xl:gap-20">
+        <div className="flex flex-col flex-1 space-y-3 md:space-y-4 lg:space-y-4 xl:space-y-14 2xl:space-y-20 lg:justify-start">
           <InfoRow label="수용인원">
-            <Chip className={`${VALUE_CLASS} bg-gray`}>{data.capacity}명</Chip>
+            <Chip className={`${VALUE_CLASS} bg-gray xl:bg-transparent 2xl:bg-transparent`}>
+              {data.capacity}명
+            </Chip>
           </InfoRow>
 
           <InfoRow label="운영시간" align="start">
-            <div className={`${VALUE_COL_CLASS} bg-gray`}>
-              <Chip>{formatTime(data.openTime)}</Chip>
-              <Chip>{formatTime(data.closeTime)}</Chip>
+            <div className={`${VALUE_COL_CLASS} bg-gray xl:bg-transparent 2xl:bg-transparent`}>
+              <Chip className={VALUE_CLASS}>{formatTime(data.openTime)}</Chip>
+              <Chip className={VALUE_CLASS}>{formatTime(data.closeTime)}</Chip>
             </div>
           </InfoRow>
 
           {data.snsLinks && data.snsLinks.length > 0 && (
             <InfoRow label="SNS">
-              <div className="flex-1 min-w-0 bg-gray flex gap-5">
+              <div className="flex-1 min-w-0 bg-gray xl:bg-transparent 2xl:bg-transparent flex gap-1.5">
                 {data.snsLinks.map((sns, index) => (
                   <span
                     key={index}
@@ -81,7 +84,7 @@ const ClubDetailDescription = ({ data }: ClubDetailDescriptionProps) => {
                   >
                     <Description
                       key={index}
-                      className="text-black"
+                      className={`text-black ${VALUE_CLASS}`}
                     >{`${sns.platform} ↗`}</Description>
                   </span>
                 ))}
@@ -91,15 +94,17 @@ const ClubDetailDescription = ({ data }: ClubDetailDescriptionProps) => {
         </div>
 
         <div className="flex flex-col  flex-1 space-y-10 lg:space-y-20 xl:space-y-0 lg:justify-between pb-14">
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 md:gap-4 xl:gap-6 2xl:gap-6">
             <InfoRow label="위치" align="start">
-              <div className={`${VALUE_COL_CLASS} bg-gray`}>
-                <Chip className="text-black">{data.address}</Chip>
+              <div className={`${VALUE_COL_CLASS} bg-gray xl:bg-transparent 2xl:bg-transparent`}>
+                <Chip className={`text-black ${VALUE_CLASS}`}>
+                  {data.address}
+                </Chip>
               </div>
             </InfoRow>
 
-            <div className="flex bg-gray p-5 md:p-6 rounded-[3px]">
-              <div className="flex-1 min-w-0 h-[300px] md:h-[376px] lg:h-[210px] xl:h-[249px] rounded-[3px] overflow-hidden">
+            <div className="flex bg-gray p-5 md:bg-transparent md:p-0 rounded-[3px] lg:bg-transparent lg:p-0 xl:bg-transparent xl:p-0 2xl:bg-transparent 2xl:p-0">
+              <div className="flex-1 min-w-0 h-[200px] md:h-[376px] lg:h-[245px] xl:h-[210px] 2xl:h-[328px] rounded-[3px] overflow-hidden">
                 <Map
                   center={{ lat: data.latitude, lng: data.longitude }}
                   className="w-full h-full"

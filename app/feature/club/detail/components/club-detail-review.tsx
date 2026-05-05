@@ -126,8 +126,8 @@ const ClubDetailReview = ({
 
   return (
     <div>
-      <div className="flex items-center justify-between border-b-2 border-main pb-2 2xl:pb-3">
-        <div className="flex gap-1 items-center">
+      <div className="flex items-center justify-between border-b-2 2xl:border-b-3 border-main pb-2 2xl:pb-3">
+        <div className="flex gap-1 2xl:gap-1.5 items-center">
           <Image
             src="/images/review-icon.svg"
             alt="공연 일정"
@@ -141,10 +141,11 @@ const ClubDetailReview = ({
           <Image
             src="/images/rating.svg"
             alt="공연 일정"
-            width={20}
-            height={20}
+            width={24}
+            height={24}
+            className="w-5 h-5 2xl:w-6 2xl:h-6 ml-1.5"
           />
-          <div className="text-subtitle-16 text-black-80">
+          <div className="text-subtitle-16 2xl:text-[20px] text-black-80">
             {data.avgRating ?? 0}
           </div>
         </div>
@@ -160,25 +161,29 @@ const ClubDetailReview = ({
                 },
               });
           }}
-          className="text-subtitle-12 flex items-center gap-1 border px-2.5 py-1.5 cursor-pointer hover:opacity-80 transition-opacity"
+          className="text-subtitle-12 2xl:text-[14px] flex items-center gap-1 border px-2.5 py-1.5 2xl:w-[88px] 2xl:h-[34px] 2xl:px-3 cursor-pointer hover:opacity-80 transition-opacity"
         >
           작성하기
           <Image
             src="/images/review_write.svg"
             alt="arrow-right"
-            width={14}
-            height={14}
-            className="mb-1"
+            width={16}
+            height={16}
+            className="mb-1 w-3.5 h-3.5 2xl:w-4 2xl:h-4"
           />
         </button>
       </div>
-      <div className="pt-4 flex justify-between text-description-14">
-        <div className="flex items-center gap-1 text-black-80 font-semibold text-[14px]">
+      <div className="pt-4 2xl:pt-9 flex justify-between text-description-14">
+        <div className="flex items-center gap-1 2xl:gap-2 text-black-80 font-semibold text-[14px] 2xl:text-[16px]">
           내가 쓴 리뷰 보기
-          <Checkbox checked={isMine} onCheckedChange={setIsMine} />
+          <Checkbox
+            checked={isMine}
+            onCheckedChange={setIsMine}
+            className="2xl:w-6 2xl:h-6"
+          />
         </div>
         <div
-          className="flex items-center gap-1 text-black-60 font-semibold text-[14px] cursor-pointer"
+          className="flex items-center gap-1 2xl:gap-2 text-black-60 font-semibold text-[14px] 2xl:text-[16px] cursor-pointer"
           onClick={() =>
             setSort(sort === "-createdAt" ? "+createdAt" : "-createdAt")
           }
@@ -186,7 +191,7 @@ const ClubDetailReview = ({
           {sort === "-createdAt" ? "최신순" : "오래된순"}
           <ChevronDown
             className={cn(
-              "h-4 w-4 transition-transform duration-200",
+              "h-4 w-4 2xl:h-6 2xl:w-6 transition-transform duration-200",
               sort === "-createdAt" ? "rotate-180" : "",
               "cursor-pointer",
             )}

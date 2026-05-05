@@ -49,9 +49,16 @@ const MobileHeader = () => {
     setIsUserDropdownOpen(!isUserDropdownOpen);
   };
 
+  const isClubPage = pathname === "/club";
+
   return (
     <>
-      <div className="pl-5 pr-2 justify-between flex items-center md:hidden h-[60px]">
+      <div
+        className={cn(
+          "pl-5 pr-2 justify-between flex items-center md:hidden",
+          isClubPage ? "h-12" : "h-[60px]",
+        )}
+      >
         <div className="flex items-center gap-1">
           <Link href="/home">
             <Image src="/images/logo.svg" alt="logo" width={80} height={26} />

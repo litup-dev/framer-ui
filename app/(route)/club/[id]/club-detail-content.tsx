@@ -125,8 +125,8 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
       <ClubDetailHeader images={imageUrls} clubName={data.data.name} />
 
       <div>
-        <div className="flex flex-col xl:flex-row xl:items-stretch 2xl:pl-5">
-          <div className="flex flex-col flex-1 xl:flex-[5]">
+        <div className="flex flex-col xl:flex-row xl:items-stretch">
+          <div className="flex flex-col flex-1 xl:flex-[790] xl:basis-0 2xl:flex-none 2xl:w-[1178px]">
             <div id="info" className="flex flex-col py-6 sm:py-8 lg:py-10">
               <ClubDetailInfo
                 id={id}
@@ -136,6 +136,7 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
                 isFavorite={data.data.isFavorite}
                 favoriteCount={data.data.favoriteCount}
                 images={data.data.images}
+                keywords={data.data.keywords}
               />
               <div className="xl:hidden">
                 <ClubDetailDescription data={data.data} />
@@ -145,7 +146,7 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
             <div className="space-y-16 sm:space-y-20 xl:space-y-25">
               <div
                 id="schedule"
-                className="py-5 space-y-5 px-5 sm:px-10 lg:px-15"
+                className="py-5 space-y-5 px-5 sm:px-10 lg:px-15 2xl:px-20"
               >
                 <ClubDetailScheduleHeader
                   currentMonth={selectedMonth}
@@ -158,7 +159,7 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
                 />
               </div>
 
-              <div id="review" className="space-y-5 px-5 sm:px-10 lg:px-15">
+              <div id="review" className="space-y-5 px-5 sm:px-10 lg:px-15 2xl:px-20">
                 <ClubDetailReview
                   data={data.data}
                   reviews={reviews}
@@ -175,7 +176,7 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
             </div>
           </div>
 
-          <div className="hidden xl:flex xl:flex-[3] bg-gray xl:sticky xl:top-0 xl:self-start xl:h-screen xl:overflow-y-auto">
+          <div className="hidden xl:flex xl:flex-[490] xl:basis-0 2xl:flex-none 2xl:w-[742px] bg-gray xl:sticky xl:top-0 xl:self-start xl:h-screen xl:overflow-y-auto">
             <ClubDetailDescription data={data.data} />
           </div>
         </div>

@@ -24,16 +24,16 @@ const ClubDetailScheduleHeader = ({
   };
 
   return (
-    <div className="flex items-center justify-between sm:justify-start sm:gap-4 border-b-2 border-main pb-3">
-      <div className="flex gap-1 items-center">
+    <div className="flex items-center justify-between sm:justify-start sm:gap-4 2xl:gap-1.5 border-b-2 2xl:border-b-3 border-main pb-3 2xl:pb-4">
+      <div className="flex gap-1 2xl:gap-2 items-center">
         <Image
           src="/images/review_calendar.svg"
           alt="calendar"
           width={32}
           height={32}
-          className="w-6 h-6 2xl:w-8 2xl:h-8"
+          className="w-6 h-6 lg:w-6 lg:h-6 xl:w-7 xl:h-7 2xl:w-8 2xl:h-8"
         />
-        <Subtitle className="text-[18px] sm:text-[20px] xl:text-[24px]">
+        <Subtitle className="text-[18px] sm:text-[20px] lg:text-[20px] xl:text-[24px]">
           공연 일정
         </Subtitle>
       </div>
@@ -43,7 +43,7 @@ const ClubDetailScheduleHeader = ({
           className="hover:bg-gray-100 rounded transition-colors"
           aria-label="이전 달"
         >
-          <ChevronLeft className="w-5 h-5" />
+          <ChevronLeft className="w-5 h-5 2xl:w-6 2xl:h-6" />
         </button>
         <Subtitle className="text-[16px] xl:text-[20px] text-black-60 min-w-[100px] xl:min-w-[120px] text-center">
           {format(currentMonth, "yyyy년 M월", { locale: ko })}
@@ -53,7 +53,7 @@ const ClubDetailScheduleHeader = ({
           className="hover:bg-gray-100 rounded transition-colors"
           aria-label="다음 달"
         >
-          <ChevronRight className="w-5 h-5" />
+          <ChevronRight className="w-5 h-5 2xl:w-6 2xl:h-6" />
         </button>
       </div>
     </div>

@@ -17,7 +17,7 @@ const ClubImage = ({ club, size = "md", className = "" }: ClubImageProps) => {
   return (
     <div
       className={cn(
-        "relative size-11 sm:size-13 md:size-14 2xl:size-16 rounded-full",
+        "relative size-11 sm:size-13 md:size-13 lg:size-14 2xl:size-16 rounded-full",
         className,
       )}
     >
