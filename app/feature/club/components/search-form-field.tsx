@@ -44,9 +44,12 @@ const SearchFormField = ({
       name="search"
       render={({ field }) => (
         <div
-          className={cn("space-y-2 pt-0", isMobile && "pt-0 sm:pt-20 md:pt-0")}
+          className={cn(
+            "space-y-2 pt-0 xl:pt-2 2xl:pt-3",
+            isMobile && "pt-0 md:pt-2",
+          )}
         >
-          <InputGroup className="h-12 xl:min-h-[64px] lg:border-b-3 lg:border-main">
+          <InputGroup className="h-14 lg:min-h-[56px] xl:min-h-[56px] 2xl:min-h-[64px] lg:border-b-3 lg:border-main">
             <InputGroupAddon
               align="inline-start"
               className={cn(

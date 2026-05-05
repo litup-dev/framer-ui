@@ -20,7 +20,7 @@ const ClubPage = async () => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div className="w-full h-screen  pt-0 lg:pl-[30px] xl:px-10 md:pt-20 xl:pt-25 flex flex-col">
+      <div className="w-full h-screen pt-0 lg:px-0 xl:px-0 md:pt-20 xl:pt-20 flex flex-col">
         <ClubSearchForm />
       </div>
     </HydrationBoundary>

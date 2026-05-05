@@ -48,7 +48,7 @@ const KeywordList = ({ categories }: KeywordListProps) => {
   };
 
   return (
-    <div className="space-y-3 w-[90%]">
+    <div className="space-y-3 w-full">
       <div className="flex flex-wrap gap-2 text-center">
         {displayedKeywords.map((keyword) => {
           const isSelected = selectedKeywords.includes(keyword.id);
@@ -57,18 +57,18 @@ const KeywordList = ({ categories }: KeywordListProps) => {
               key={keyword.id}
               onClick={() => handleKeywordClick(keyword.id)}
               className={cn(
-                "w-fit h-[31px] sm:h-[34px] 2xl:h-[36px] rounded-[3px] px-2.5 py-[9px] cursor-pointer transition-colors text-center whitespace-nowrap",
+                "w-fit h-[31px] sm:h-[34px] 2xl:h-[36px] rounded-[4px] px-[11px] 2xl:px-3 py-2.5 cursor-pointer transition-colors text-center whitespace-nowrap",
                 isSelected
                   ? "bg-main text-white hover:bg-main/90"
-                  : "bg-[#2020200A] hover:bg-[#2020201A]",
+                  : "bg-[rgba(23,23,23,0.04)] hover:bg-[rgba(23,23,23,0.08)]",
               )}
             >
               {isSelected ? (
-                <Subtitle className="text-[13px] lg:text-[16px] text-white">
+                <Subtitle className="text-[13px] md:text-[14px] 2xl:text-[16px] text-white">
                   {keyword.keyword}
                 </Subtitle>
               ) : (
-                <Description className="text-[13px] lg:text-[16px] text-black/50">
+                <Description className="text-[13px] md:text-[14px] 2xl:text-[16px] text-black/50">
                   {keyword.keyword}
                 </Description>
               )}
@@ -78,17 +78,15 @@ const KeywordList = ({ categories }: KeywordListProps) => {
         {!showAllKeywords && allKeywords.length > 6 && (
           <button
             onClick={() => setShowAllKeywords(true)}
-            className="bg-[#2020200A] cursor-pointer transition-colors text-center hover:bg-[#2020201A] rounded-[3px] p-2.5 h-[31px] sm:h-[34px] 2xl:h-[36px]"
+            className="bg-[rgba(23,23,23,0.04)] cursor-pointer transition-colors text-center hover:bg-[rgba(23,23,23,0.08)] rounded-[4px] p-2 h-[31px] sm:h-[34px] 2xl:h-[36px] flex items-center justify-center"
           >
-            <Subtitle className="text-[14px] xl:text-[16px] flex items-center">
-              <Ellipsis className="size-3 text-black/50 " />
-            </Subtitle>
+            <Ellipsis className="size-5 2xl:size-6 text-black/50" />
           </button>
         )}
         {showAllKeywords && allKeywords.length > 6 && (
           <button
             onClick={() => setShowAllKeywords(false)}
-            className="bg-[#2020200A] cursor-pointer transition-colors text-center hover:bg-[#2020201A] rounded-[4px] w-[40px] items-center justify-center flex"
+            className="bg-[rgba(23,23,23,0.04)] cursor-pointer transition-colors text-center hover:bg-[rgba(23,23,23,0.08)] rounded-[4px] w-[40px] items-center justify-center flex"
           >
             <Image
               src="/images/arrow-up.svg"

@@ -96,10 +96,10 @@ const DesktopFilter = ({
 
   return (
     <div className="flex h-full">
-      <div className="w-3/8 xl:w-3/7 2xl:w-3/8 bg-white border-gray-200 flex flex-col h-full">
-        <div className="flex-shrink-0 space-y-6 pr-10">
+      <div className="w-3/8 lg:w-[527px] xl:w-[555px] 2xl:w-[680px] bg-white border-gray-200 flex flex-col h-full">
+        <div className="flex-shrink-0 space-y-6 lg:space-y-5 xl:space-y-5 2xl:space-y-6 pr-10 lg:px-[30px] xl:px-[30px] 2xl:px-10">
           <SearchFormField variant="desktop" />
-          <div className="space-y-4">
+          <div className="space-y-4 xl:space-y-3 2xl:space-y-4">
             <KeywordList categories={categories?.data} />
             <div>
               <div className="flex gap-2 items-center">
@@ -110,7 +110,7 @@ const DesktopFilter = ({
                   onValueChange={handleRegionClick}
                 >
                   <SelectTrigger
-                    className="rounded-[3px] p-2.5 border-gray-300 h-auto"
+                    className="rounded-[4px] pl-[11px] pr-2 py-2 2xl:pl-3 2xl:pr-2.5 border border-[rgba(23,23,23,0.2)] bg-transparent h-[31px] sm:h-[34px] 2xl:h-[36px]"
                     visibleIcon={false}
                   >
                     <div className="flex items-center gap-0.5">
@@ -141,10 +141,10 @@ const DesktopFilter = ({
                 <div
                   onClick={() => handleRegionClick("nearby")}
                   className={cn(
-                    "rounded-[4px] cursor-pointer transition-colors p-2.5 border box-border",
+                    "rounded-[4px] cursor-pointer transition-colors px-[11px] 2xl:px-3 py-2.5 box-border h-[31px] sm:h-[34px] 2xl:h-[36px] flex items-center",
                     selectedRegion === "nearby"
-                      ? "border-main text-main border-2"
-                      : "bg-transparent text-gray-700 hover:bg-gray-100 border-gray-300",
+                      ? "border-2 border-main text-main"
+                      : "border border-[rgba(23,23,23,0.2)] text-[rgba(23,23,23,0.6)]",
                   )}
                 >
                   {selectedRegion === "nearby" ? (
@@ -166,10 +166,10 @@ const DesktopFilter = ({
                         handleFilterClick(filter.id, currentOptionIndex)
                       }
                       className={cn(
-                        "rounded-[4px] cursor-pointer transition-colors p-2.5 border box-border h-[31px] sm:h-[34px] 2xl:h-[36px] flex items-center",
+                        "rounded-[4px] cursor-pointer transition-colors px-[11px] 2xl:px-3 py-2.5 box-border h-[31px] sm:h-[34px] 2xl:h-[36px] flex items-center",
                         isActive(filter.id)
-                          ? "border-main text-main border-2"
-                          : "bg-transparent text-gray-700 hover:bg-gray-100 border-gray-300",
+                          ? "border-2 border-main text-main"
+                          : "border border-[rgba(23,23,23,0.2)] text-[rgba(23,23,23,0.6)]",
                       )}
                     >
                       <div className="flex items-center gap-1">
@@ -215,10 +215,10 @@ const DesktopFilter = ({
             "[&::-webkit-scrollbar-thumb]:rounded-none",
           )}
         >
-          <div className="space-y-5 pt-6 pb-5 flex flex-col">
+          <div className="pt-6 lg:pt-5 xl:pt-5 2xl:pt-6 pb-5 flex flex-col space-y-6 lg:space-y-5 xl:space-y-5 2xl:space-y-6">
             {clubs?.map((club: Club, index: number) => (
-              <div key={club.id}>
-                <div className="pr-10">
+              <div key={club.id} className="space-y-6 lg:space-y-3 xl:space-y-3 2xl:space-y-5">
+                <div className="pr-10 lg:px-[30px] xl:px-[30px] 2xl:px-10">
                   <ClubCard
                     club={club}
                     onMapClick={(selectedClub: Club) => {
@@ -227,7 +227,7 @@ const DesktopFilter = ({
                   />
                 </div>
                 {index !== clubs.length - 1 && (
-                  <Separator className="hidden lg:block lg:mt-6" />
+                  <Separator className="hidden lg:block" />
                 )}
               </div>
             ))}
