@@ -7,7 +7,7 @@ import Image from "next/image";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
 import Link from "next/link";
 
-const DEFAULT_IMAGE = "/images/poster1.png";
+const DEFAULT_IMAGE = "/images/poster_default.png";
 
 interface CalendarDateEventListProps {
   dateKey: string;
@@ -50,8 +50,7 @@ const CalendarDateEventList = ({
         {events.map((event) =>
           event.performances?.map((performance, performanceIndex) => {
             const mainImage = performance.images?.find((img) => img.isMain);
-            const imageUrl =
-              getImageUrl(mainImage?.filePath) || DEFAULT_IMAGE;
+            const imageUrl = getImageUrl(mainImage?.filePath) || DEFAULT_IMAGE;
 
             const artistNames =
               performance.artists?.map((artist) => artist.name).join(", ") ||

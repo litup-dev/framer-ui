@@ -11,7 +11,7 @@ import FadeIn from "@/components/shared/fade-in";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
 import Link from "next/link";
 
-const DEFAULT_IMAGE = "/images/poster1.png";
+const DEFAULT_IMAGE = "/images/poster_default.png";
 
 interface CalendarSelectedEventsProps {
   selectedDate: Date | null;
@@ -61,7 +61,9 @@ export const CalendarSelectedEvents = ({
                             <div className="flex flex-col gap-1.5 sm:gap-2">
                               <Link href={`/performance/${performance.id}`}>
                                 <Subtitle className="text-black text-[15px] sm:text-[16px] md:text-[20px]">
-                                  {performance.artists?.map((a) => a.name).join(", ")}
+                                  {performance.artists
+                                    ?.map((a) => a.name)
+                                    .join(", ")}
                                 </Subtitle>
                               </Link>
 

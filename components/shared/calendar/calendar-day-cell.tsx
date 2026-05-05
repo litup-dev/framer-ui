@@ -19,7 +19,7 @@ import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
 import { cn } from "@/lib/utils";
 import { CALENDAR_FADE_HEIGHT } from "@/components/shared/calendar/constants";
 
-const DEFAULT_IMAGE = "/images/poster1.png";
+const DEFAULT_IMAGE = "/images/poster_default.png";
 
 interface CalendarDayCellProps {
   day: Date;
