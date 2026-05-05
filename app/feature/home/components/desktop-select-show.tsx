@@ -45,7 +45,7 @@ const CategorySelectItem = ({
           : "text-[#20202066]",
       )}
     >
-      <Subtitle className="whitespace-nowrap text-[16px] xl:text-[20px] 2xl:text-[24px]">
+      <Subtitle className="whitespace-nowrap text-[16px] lg:text-[20px] 2xl:text-[24px]">
         {item.label}
       </Subtitle>
     </div>
@@ -62,8 +62,8 @@ const DesktopSelectShow = ({
   const isAreaSelected = selectedCategory === "area";
 
   return (
-    <div className={cn("hidden md:flex md:flex-col gap-4 xl:gap-[18px] 2xl:gap-5")}>
-      <div className={cn("flex gap-4")}>
+    <div className={cn("hidden md:flex md:flex-col gap-4 md:gap-3 lg:gap-4 xl:gap-[18px] 2xl:gap-5")}>
+      <div className={cn("flex gap-4 md:gap-3 lg:gap-4")}>
         {SELECT_ITEMS.slice(0, 2).map((item) => (
           <CategorySelectItem
             key={item.id}
@@ -77,7 +77,7 @@ const DesktopSelectShow = ({
       </div>
       <div
         className={cn(
-          "flex gap-4 md:pl-8.5 lg:pl-11.5 xl:pl-[64px] items-center",
+          "flex gap-4 md:gap-3 lg:gap-4 md:pl-[30px] lg:pl-[40px] xl:pl-[48px] 2xl:pl-[64px] items-center",
         )}
       >
         {SELECT_ITEMS.slice(2, 4).map((item) => {
@@ -103,7 +103,7 @@ const DesktopSelectShow = ({
                     "items-center justify-start",
                     "data-[size=default]:h-auto",
                     !isAnimating && "cursor-pointer",
-                    "[&_span]:text-[16px] [&_span]:xl:text-[20px] [&_span]:2xl:text-[24px]",
+                    "[&_span]:text-[16px] [&_span]:lg:text-[20px] [&_span]:2xl:text-[24px]",
                     "[&_span]:gap-0",
                     "[&_span]:leading-percent",
                     "[&_span]:font-bold",

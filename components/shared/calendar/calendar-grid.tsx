@@ -46,8 +46,8 @@ export const CalendarGrid = ({
   return (
     <div
       className={cn(
-        "relative px-5 xl:pb-[100px]",
-        is2xl ? "xl:px-20" : "xl:px-15",
+        "relative px-5 md:px-10 xl:pb-[100px]",
+        is2xl ? "lg:px-15 2xl:px-20" : "lg:px-15",
       )}
     >
       {rows.map((row, rowIndex) => {

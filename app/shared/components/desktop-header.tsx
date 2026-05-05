@@ -110,7 +110,7 @@ const DesktopHeader = () => {
             width={120}
             height={38}
             className={cn(
-              "w-[84px] h-[26px] lg:w-[100px] lg:h-[32px] xl:w-[110px] xl:h-[34px] 2xl:w-[120px] 2xl:h-[38px]",
+              "w-[84px] h-[26px] lg:w-[100px] lg:h-[32px] xl:w-[76px] xl:h-[29px] 2xl:w-[120px] 2xl:h-[38px]",
               isHomePage && scrollProgress === 0 && "brightness-0 invert",
               isClubDetailPage && scrollProgress === 0 && "brightness-0 invert",
             )}

@@ -47,7 +47,7 @@ const SelectItem = ({
           : "text-[#20202066]"
       )}
     >
-      <Subtitle>{item.label}</Subtitle>
+      <Subtitle className="text-[14px]">{item.label}</Subtitle>
     </div>
   );
 };
@@ -78,7 +78,7 @@ const MobileSelectShow = ({
   return (
     <div
       className={cn(
-        "flex gap-3 md:hidden mt-[72px]",
+        "flex gap-4 md:hidden mt-[72px]",
         selectedMobileBottomNavigation === "calendar" && "hidden"
       )}
     >
@@ -124,16 +124,20 @@ const MobileSelectShow = ({
                 >
                   <SelectValue placeholder="지역별" />
                 </SelectTrigger>
-                <SelectContent className="p-4">
+                <SelectContent className="p-4 [&>div]:!space-y-0" fitContent>
                   {item.region &&
                     item.region.map((area) => (
-                      <UISelectItem key={area.id} value={area.value}>
+                      <UISelectItem
+                        key={area.id}
+                        value={area.value}
+                        className="px-0 py-2 text-[14px]"
+                      >
                         {area.label}
                       </UISelectItem>
                     ))}
                 </SelectContent>
               </Select>
-              <Subtitle>{displayLabel}</Subtitle>
+              <Subtitle className="text-[14px]">{displayLabel}</Subtitle>
             </div>
           );
         }

@@ -23,19 +23,23 @@ export const CalendarHeader = ({
   return (
     <div
       className={cn(
-        "relative flex items-center xl:items-baseline justify-between xl:justify-start px-5 pb-10 md:pb-18 xl:pb-25",
-        is2xl ? "xl:gap-6 xl:px-20" : "xl:gap-4 xl:px-15",
+        "relative flex items-center md:items-start lg:items-start xl:items-baseline justify-between md:justify-start lg:justify-start px-5 md:px-10 pb-11 md:-mt-[0px] md:pb-[30px] lg:-mt-[4px] lg:pb-[26px] xl:mt-0 xl:pb-[78px] 2xl:pb-[124px]",
+        is2xl ? "md:gap-4 lg:gap-6 lg:px-15 2xl:px-20" : "md:gap-4 lg:gap-6 lg:px-15 xl:gap-4",
       )}
     >
       <Title
         className={cn(
-          "absolute xl:static mt-2.5 text-black text-[38px] md:text-[48px]",
-          is2xl ? "xl:text-[84px] xl:-mt-8" : "xl:text-[56px] xl:-mt-6",
+          "absolute md:static lg:static mt-2.5 text-black text-[30px] tracking-[-2.4px] leading-[22px] md:text-[48px]",
+          "md:text-[42px] md:leading-[30px] md:tracking-[-3.36px] md:mt-[-6px]",
+          "lg:text-[52px] lg:leading-[38px] lg:tracking-[-4.16px] lg:mt-[-24px]",
+          is2xl
+            ? "xl:text-[84px] xl:leading-[61px] xl:mt-[-20px]"
+            : "xl:text-[56px] xl:leading-[40px] xl:mt-[-12px]",
         )}
       >
         calendar
       </Title>
-      <div className="flex items-center absolute xl:static right-1 md:left-[180px] top-[-5px] md:top-[0px] xl:top-auto xl:left-auto gap-1 xl:gap-4">
+      <div className="flex items-center absolute md:static lg:static right-1 md:left-auto top-[-5px] md:top-auto lg:top-auto lg:left-auto md:mt-[0px] lg:mt-[-8px] xl:mt-0 gap-1 xl:gap-4">
         <button
           onClick={onPrevMonth}
           className="p-1 hover:bg-gray-200 rounded transition-colors"

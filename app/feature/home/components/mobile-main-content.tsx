@@ -98,8 +98,8 @@ const MobileMainContent = ({
               className="w-full"
             >
               <Link href={`/performance/${performance.id}`}>
-                <Card className="overflow-hidden gap-3 pb-2">
-                  <div className="aspect-[3/4] relative">
+                <Card className="overflow-hidden gap-3">
+                  <div className="aspect-[4/5] relative">
                     {imageUrl ? (
                       <div>
                         <Image
@@ -113,8 +113,8 @@ const MobileMainContent = ({
                           sizes="33vw"
                           className="w-full h-full object-cover"
                         />
-                        <div className="absolute text-[#FFFFFF] rounded-[3px] bg-black/40 top-2 right-2 px-1.5 py-1">
-                          <Subtitle className="text-[12px] xl:text-[14px] 2xl:text-[16px]">
+                        <div className="absolute text-[#FFFFFF] rounded-[2px] bg-black/40 top-2 right-2 px-1.5 py-1">
+                          <Subtitle className="text-[11px] xl:text-[14px] 2xl:text-[16px]">
                             {formatMonthDay(performance.performDate)}
                           </Subtitle>
                         </div>
@@ -147,7 +147,7 @@ const MobileMainContent = ({
                     <div className="flex gap-1 items-center overflow-x-scroll">
                       {performance.artists && performance.artists.length > 0 ? (
                         performance.artists.length >= 3 ? (
-                          <Subtitle className="truncate text-[12px] bg-gray h-[24px] text-black flex items-center justify-center px-2">
+                          <Subtitle className="truncate text-[12px] bg-gray h-[24px] rounded-[2px] text-black flex items-center justify-center px-2">
                             {performance.artists[0].name} 외{" "}
                             {performance.artists.length - 1}팀
                           </Subtitle>
@@ -155,7 +155,7 @@ const MobileMainContent = ({
                           performance.artists.map((artist, index) => (
                             <Subtitle
                               key={index}
-                              className="truncate text-[12px] bg-gray h-[24px] text-black flex items-center justify-center px-2"
+                              className="truncate text-[12px] bg-gray h-[24px] rounded-[2px] text-black flex items-center justify-center px-2"
                             >
                               {artist.name}
                             </Subtitle>

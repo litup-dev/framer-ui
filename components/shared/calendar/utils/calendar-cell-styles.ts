@@ -22,8 +22,8 @@ export const getButtonClassName = (
 ) => {
   return cn(
     "flex flex-col text-left",
-    "p-1 xl:px-4 xl:pt-4 xl:pb-4 2xl:px-6 2xl:pt-6 2xl:pb-6",
-    "min-h-[62px] sm:min-h-[117px] md:min-h-[159px]",
+    "p-0.5 md:p-2 lg:p-2 xl:px-4 xl:pt-4 xl:pb-4 2xl:px-6 2xl:pt-6 2xl:pb-6",
+    "min-h-[62px] sm:min-h-[117px] md:min-h-[117px] lg:min-h-[159px]",
     "xl:transition-[max-height,height] xl:duration-300 xl:ease-out",
     !isHovered &&
       "xl:!h-[209px] xl:!max-h-[209px] 2xl:!h-[314px] 2xl:!max-h-[314px]",
@@ -41,13 +41,11 @@ export const getButtonClassName = (
 
 export const getEventsContainerClassName = (
   isXl: boolean,
-  is2xl: boolean,
   isHovered: boolean,
   isCurrentMonth: boolean,
 ) => {
   return cn(
-    "flex flex-col relative z-10",
-    is2xl ? "gap-10" : "gap-8",
+    "flex flex-col relative z-10 xl:gap-5 2xl:gap-8",
     isXl ? (isHovered ? "" : "flex-1 min-h-0") : "hidden",
     !isCurrentMonth && "opacity-50",
   );

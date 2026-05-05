@@ -84,7 +84,7 @@ export default function HomeContent() {
 
       <div
         className={cn(
-          "relative z-20 w-full bg-white xl:pt-[80px] 2xl:pt-[100px]",
+          "relative z-20 w-full bg-white pt-1 md:pt-[80px] lg:pt-[80px] 2xl:pt-[100px]",
           !shouldShowCalendar && "hidden",
         )}
         aria-hidden={!shouldShowCalendar}

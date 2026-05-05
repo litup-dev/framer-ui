@@ -40,7 +40,7 @@ export const CalendarDayEvents = ({
     <>
       <div
         ref={eventsContainerRef}
-        className={getEventsContainerClassName(isXl, is2xl, isHovered, isCurrentMonth)}
+        className={getEventsContainerClassName(isXl, isHovered, isCurrentMonth)}
         style={getEventsContainerStyles(isXl, isHovered, isOverflowing)}
       >
         {events.map((event, eventIndex) => {
@@ -51,7 +51,7 @@ export const CalendarDayEvents = ({
               key={eventIndex}
               className={cn(
                 "relative flex flex-col",
-                is2xl ? "gap-3" : "gap-2.5",
+                is2xl ? "gap-3" : "gap-2",
                 isHovered && isXl ? "text-white" : "text-black",
               )}
               onMouseEnter={() => setHoveredEventIndex(eventIndex)}

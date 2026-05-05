@@ -29,24 +29,24 @@ const CalendarDateEventList = ({
   );
 
   return (
-    <div className="flex gap-2.5 justify-between ">
-      <div className="flex flex-col gap-4 flex-1">
+    <div className="flex gap-2.5 md:gap-[93px] lg:gap-[142px] justify-between">
+      <div className="flex flex-col gap-4 md:gap-[16px] w-[42px] flex-none pl-[2px]">
         <Subtitle
-          className={`text-[24px] sm:text-[32px] ${
+          className={`text-[24px] sm:text-[32px] md:text-[32px] lg:text-[40px] ${
             isTodayDate ? "text-black" : "text-black/50"
           }`}
         >
           {day}
         </Subtitle>
         <Description
-          className={`text-[14px] ${
+          className={`text-[14px] md:text-[16px] lg:text-[18px] ${
             isTodayDate ? "text-main" : "text-black/50"
           }`}
         >
           {totalPerformances}개
         </Description>
       </div>
-      <div className="grid grid-cols-3 md:grid-cols-4 gap-x-2.5 md:gap-x-3 gap-y-5 md:gap-y-7 content-start flex-5">
+      <div className="grid grid-cols-3 md:grid-cols-4 gap-x-2.5 md:gap-x-[12px] lg:gap-x-4 gap-y-5 md:gap-y-7 lg:gap-y-8 content-start flex-5 md:flex-1 lg:flex-1">
         {events.map((event) =>
           event.performances?.map((performance, performanceIndex) => {
             const mainImage = performance.images?.find((img) => img.isMain);
@@ -58,8 +58,8 @@ const CalendarDateEventList = ({
 
             return (
               <div key={`${event.id}-${performance.id}-${performanceIndex}`}>
-                <div className="space-y-2.5">
-                  <div className="relative w-full aspect-[94/117] overflow-hidden">
+                <div className="space-y-2.5 md:space-y-[12px] lg:space-y-[14px]">
+                  <div className="relative w-full aspect-[94/117] md:aspect-[4/5] overflow-hidden">
                     <Link href={`/performance/${performance.id}`}>
                       <Image
                         src={imageUrl}

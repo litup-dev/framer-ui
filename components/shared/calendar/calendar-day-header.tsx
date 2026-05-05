@@ -25,16 +25,16 @@ export const CalendarDayHeader = ({
   return (
     <div
       className={cn(
-        "xl:flex xl:items-center relative",
+        "xl:flex xl:items-start relative",
         isXl
-          ? cn("justify-between z-50", is2xl ? "xl:mb-10" : "xl:mb-8")
-          : "justify-center z-10",
+          ? cn("justify-between z-50", is2xl ? "xl:mb-10" : "xl:mb-6")
+          : "justify-center lg:justify-start z-10",
       )}
     >
       <div
         className={cn(
           !isXl &&
-            "rounded-full size-6 md:size-[34px] shrink-0 aspect-square flex items-center justify-center",
+            "rounded-full size-5 md:size-[22px] lg:size-[26px] shrink-0 aspect-square flex items-center justify-center",
           !isXl && isSelected && "bg-main",
           !isXl && isTodayDate && "bg-main",
           !isXl && !isSelected && !isTodayDate && hasImage && "bg-black-60",
@@ -43,8 +43,8 @@ export const CalendarDayHeader = ({
         <Title
           as="span"
           className={cn(
-            "block text-[12px] md:text-[16px] xl:text-[16px] 2xl:text-[20px]",
-            !isXl && "leading-6 md:leading-[34px] text-center",
+            "block text-[12px] md:text-[14px] lg:text-[16px] 2xl:text-[20px]",
+            !isXl && "leading-6 md:leading-[22px] text-center md:!tracking-normal",
             isTodayDate && isXl && !isHovered
               ? "text-black"
               : isTodayDate

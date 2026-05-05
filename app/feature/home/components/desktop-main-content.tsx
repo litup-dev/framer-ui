@@ -108,7 +108,7 @@ const DesktopMainContent = ({
   if (showAllItems) {
     return (
       <div className="hidden md:flex flex-col gap-4">
-        <div className="grid grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <div className="grid grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-x-4 gap-y-10">
           {performanceItems.map((performance) => (
             <PerformanceCard key={performance.id} performance={performance} />
           ))}

@@ -124,7 +124,7 @@ export default function CharacterSection({
             >
               <Title
                 className={cn(
-                  "text-[22px] min-[744px]:text-[30px] lg:text-[38px] xl:text-[56px] 2xl:text-[84px] pr-0.5 lg:pr-1.5 leading-[22px] min-[744px]:leading-[30px] lg:leading-[38px] xl:leading-[40px] 2xl:leading-[61px] xl:tracking-[-4.48px] 2xl:tracking-[-6.72px]",
+                  "text-[30px] min-[744px]:text-[42px] lg:text-[52px] xl:text-[56px] 2xl:text-[84px] pr-0.5 lg:pr-1 xl:pr-1.5 leading-[22px] min-[744px]:leading-[30px] lg:leading-[38px] xl:leading-[40px] 2xl:leading-[61px] tracking-[-2.4px] min-[744px]:tracking-[-3.36px] lg:tracking-[-4.16px] xl:tracking-[-4.48px] 2xl:tracking-[-6.72px]",
                   colorKey === "today" && "text-white",
                   colorKey !== "today" &&
                     colorKey !== "busan" &&

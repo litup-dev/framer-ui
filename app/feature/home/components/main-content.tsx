@@ -37,8 +37,8 @@ export default function MainContent({
   } = useHomeStore();
 
   return (
-    <div className="flex flex-col md:flex-row gap-5 2xl:gap-[57px] z-10 relative">
-      <div className="w-full md:w-2/10 2xl:w-[240px] 2xl:shrink-0">
+    <div className="flex flex-col md:flex-row gap-4 md:gap-[7px] lg:gap-[6px] xl:gap-6 2xl:gap-[57px] z-10 relative">
+      <div className="w-full md:w-[162px] md:shrink-0 lg:w-[224px] lg:shrink-0 xl:w-[232px] xl:shrink-0 2xl:w-[240px] 2xl:shrink-0">
         <SelectShow
           onCategoryChange={(value: "week" | "today" | "free" | "area") =>
             handleCategoryChange(value)
@@ -49,7 +49,7 @@ export default function MainContent({
           onAreaChange={(value: string) => setSelectedArea(value)}
         />
       </div>
-      <div className="w-full md:w-8/10 2xl:flex-1 2xl:min-w-0">
+      <div className="w-full md:flex-1 md:min-w-0 lg:flex-1 lg:min-w-0 xl:flex-1 xl:min-w-0 2xl:flex-1 2xl:min-w-0">
         <MobileMainContent
           selectedMobileBottomNavigation={selectedMobileBottomNavigation}
         />
