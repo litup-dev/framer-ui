@@ -91,7 +91,7 @@ const KakaoMap = ({ club, clubs, placeInfo }: KakaoMapProps) => {
           )}
       </Map>
       {!placeInfo && (club || (clubs && clubs.length > 0)) && (
-        <div className="absolute inset-x-0 bottom-4 z-20 md:hidden">
+        <div className="absolute inset-x-0 bottom-4 z-20 lg:hidden">
           <ClubInfoCard club={club || clubs![0]} />
         </div>
       )}

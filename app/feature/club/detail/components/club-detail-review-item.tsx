@@ -134,19 +134,21 @@ const ClubDetailReviewItem = ({
   console.log(review, "<<<");
 
   return (
-    <div className="space-y-3 py-4 lg:py-6.5 xl:space-y-6.5 border-b">
+    <div className="space-y-3 py-4 lg:py-6.5 xl:space-y-6.5 2xl:space-y-7 2xl:py-8 border-b">
       <div className="flex items-center gap-2">
         <div className="w-8 h-8 bg-gray-300 rounded-full flex-shrink-0" />
         <Link href={`/user/${review.publicId}`}>
-          <div className="flex-1 text-subtitle-14">{review.user.name}</div>
+          <div className="flex-1 text-subtitle-14 2xl:text-[16px]">
+            {review.user.name}
+          </div>
         </Link>
         <div className="flex items-center text-description-14 gap-0.5">
           <Image
             src="/images/review_rate.svg"
             alt="rating"
-            width={16}
-            height={16}
-            className="pb-1"
+            width={18}
+            height={18}
+            className="pb-1 w-4 h-4 2xl:w-[18px] 2xl:h-[18px]"
           />
           <Description className="text-[16px]">
             {Number(review.rating).toLocaleString("ko-KR", {
@@ -158,32 +160,32 @@ const ClubDetailReviewItem = ({
       </div>
       <Textarea
         ref={textareaRef}
-        className="border-none shadow-none text-[14px] text-black-60 resize-none px-0"
+        className="border-none shadow-none text-[14px] 2xl:text-[16px] text-black-60 resize-none px-0"
         rows={3}
         value={review.content}
         readOnly
       />
       {showMoreButton && (
-        <div className="flex justify-end text-description-14 text-black-40">
+        <div className="flex justify-end text-description-14 2xl:text-[16px] text-black-40">
           <button onClick={handleMoreClick} className="hover:opacity-70">
             {isExpanded ? "접기" : "더보기"}
           </button>
         </div>
       )}
       {review.images.length > 0 && (
-        <div className="flex gap-2">
+        <div className="flex gap-2 2xl:gap-3">
           {review.images.map((image, index) => (
             <button
               key={`${review.id}-image-${index}-${image}`}
               onClick={() => handleImageClick(index)}
-              className="relative w-[110px] h-[140px] xl:w-[140px] xl:h-[170px] bg-gray-200 rounded flex-shrink-0 overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
+              className="relative w-[110px] h-[140px] xl:w-[140px] xl:h-[170px] 2xl:w-[140px] 2xl:h-[178px] bg-gray-200 rounded flex-shrink-0 overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
             >
               <Image
                 src={image}
                 alt={`Review image ${index + 1}`}
                 fill
                 className="object-cover"
-                sizes="110px"
+                sizes="140px"
               />
             </button>
           ))}
@@ -196,7 +198,7 @@ const ClubDetailReviewItem = ({
             {review.tags.map((tag, index) => (
               <Subtitle
                 key={`${review.id}-tag-${index}-${tag}`}
-                className="p-2 w-fit bg-white border rounded-[3px] text-subtitle-14"
+                className="p-2 2xl:px-2.5 2xl:py-2 2xl:h-[34px] flex items-center w-fit bg-white border rounded-[3px] text-subtitle-14"
               >
                 {tag}
               </Subtitle>
@@ -206,7 +208,7 @@ const ClubDetailReviewItem = ({
       </div>
 
       <div className="flex items-center justify-between text-subtitle-12 text-black-40">
-        <div className="flex gap-1 text-description-12">
+        <div className="flex gap-1 2xl:gap-2 text-description-12 2xl:text-[14px]">
           <div>작성: {formatDate(review.createdAt)}</div>
           <div>수정: {formatDate(review.updatedAt)}</div>
         </div>

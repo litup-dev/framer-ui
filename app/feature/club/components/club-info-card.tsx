@@ -9,6 +9,7 @@ import {
   getClubByIdOptions,
 } from "@/app/feature/club/query-options";
 import ClubImage from "./club-image";
+import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
 import { cn } from "@/lib/utils";
 import { Description, Subtitle } from "@/components/shared/typography";
 
@@ -55,20 +56,33 @@ const ClubInfoCard = ({ club, isOverlay = false }: ClubInfoCardProps) => {
         "absolute inset-x-0 bottom-4 z-10",
         isOverlay
           ? "relative w-fit border rounded-[4px]"
-          : "relative w-full min-w-[280px] px-2.5 z-10",
+          : "relative w-full min-w-[280px] px-2.5 md:px-10 z-10",
       )}
     >
       <div
         className={cn(
-          "w-full h-[96px] bg-white rounded-[4px] flex justify-between items-center",
-          isOverlay ? " min-w-[280px] px-5" : "w-full px-2.5",
+          "relative w-full h-[96px] bg-white rounded-[4px] flex items-center",
+          isOverlay ? " min-w-[280px] px-5" : "w-full px-5",
         )}
       >
         <div className="flex items-center gap-4">
-          <ClubImage club={clubWithImages} size="md" />
-          <div className="flex flex-col gap-1">
+          {isOverlay ? (
+            <ClubImage club={clubWithImages} size="md" />
+          ) : (
+            <div className="relative size-16 rounded-full overflow-hidden shrink-0 bg-[#D9D9D9]">
+              {clubWithImages.images?.[0]?.filePath && (
+                <Image
+                  src={getImageUrl(clubWithImages.images[0].filePath) ?? ""}
+                  alt={club.name}
+                  fill
+                  className="object-cover"
+                />
+              )}
+            </div>
+          )}
+          <div className="flex flex-col gap-1.5">
             <div className="flex gap-1 items-center">
-              <Subtitle className="text-[14px] xl:text-[16px] 2xl:text-[20px]">
+              <Subtitle className="text-[16px] 2xl:text-[20px]">
                 {club.name}
               </Subtitle>
               <div className="flex items-center gap-1">
@@ -77,16 +91,17 @@ const ClubInfoCard = ({ club, isOverlay = false }: ClubInfoCardProps) => {
                   alt="star"
                   width={20}
                   height={20}
+                  className="w-4 h-4"
                 />
-                <Description className="text-[12px] xl:text-[14px] 2xl:text-[16px]">
+                <Description className="text-[14px] 2xl:text-[16px]">
                   {club.avgRating ?? 0}
                 </Description>
-                <Description className="text-[12px] xl:text-[14px] 2xl:text-[16px]">{`(${club.reviewCnt})`}</Description>
+                <Description className="text-[14px] 2xl:text-[16px]">{`(${club.reviewCnt})`}</Description>
               </div>
             </div>
-            <div className="text-description-14 text-black-60">
+            <Description className="text-[12px] text-black/50">
               {club.address}
-            </div>
+            </Description>
           </div>
         </div>
         {!isOverlay && (
@@ -99,7 +114,7 @@ const ClubInfoCard = ({ club, isOverlay = false }: ClubInfoCardProps) => {
             alt="favorite"
             width={16}
             height={16}
-            className={`w-8 h-8 sm:mr-4 cursor-pointer ${
+            className={`absolute top-[18px] right-[18px] w-7 h-7 cursor-pointer ${
               isFavorite
                 ? "text-main hover:text-main"
                 : "text-black-60 hover:text-main"
