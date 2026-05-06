@@ -33,14 +33,14 @@ const KeywordButton = ({
         isSelected ? "bg-main text-white border-main" : "hover:bg-gray-100",
       )}
     >
-      <Description
+      <Subtitle
         className={cn(
           "text-[14px] whitespace-nowrap text-black/80",
           isSelected ? "text-white" : "",
         )}
       >
         {keyword.keyword}
-      </Description>
+      </Subtitle>
     </div>
   );
 };
@@ -62,9 +62,9 @@ const CategorySection = ({
 
   return (
     <div className="flex flex-col gap-5 lg:gap-6">
-      <Description className="2xl:text-[16px]">
+      <Subtitle className="text-[16px] 2xl:text-[16px]">
         {category.name || categoryName}
-      </Description>
+      </Subtitle>
       <div className="grid grid-cols-3 lg:flex lg:flex-col gap-3 lg:gap-4">
         {category.keywords.map((keyword) => (
           <KeywordButton
@@ -118,12 +118,12 @@ export const ReviewStep1 = ({ clubName, clubImage }: ReviewStep1Props) => {
               />
             ) : null}
           </div>
-          <Subtitle className="text-[18px]">
+          <Subtitle className="text-[18px] lg:text-[20px]">
             {clubName || "클럽"}에서의 시간이 어떠셨나요?
           </Subtitle>
         </div>
         <div className="flex flex-col items-center justify-center gap-2">
-          <Description className="bg-white p-2 text-[12px] lg:px-[11px] lg:py-[10px] rounded-full text-main 2xl:text-[12px]">
+          <Description className="bg-white p-2 text-[12px] lg:px-[11px] lg:py-[7px] lg:text-[14px] rounded-full text-main 2xl:text-[14px]">
             별점을 드래그하세요.
           </Description>
           <StarRating />

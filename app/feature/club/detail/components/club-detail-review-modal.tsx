@@ -178,7 +178,7 @@ const ClubDetailReviewModal = ({
         <div className="flex-1 min-h-0 overflow-y-auto">
           <div
             className={cn(
-              "sticky top-0 z-10 flex justify-start w-full items-center gap-1 lg:gap-2 p-6 pb-0 lg:pt-12 lg:px-12 lg:pb-8",
+              "sticky top-0 z-10 flex justify-start w-full items-center gap-1 lg:gap-2 p-6 pb-0 lg:pt-[46px] lg:px-12 lg:pb-8",
               currentStep === 1 ? "bg-[#F7F6F5]" : "bg-white",
             )}
           >
@@ -197,7 +197,7 @@ const ClubDetailReviewModal = ({
               </div>
             </DialogTitle>
             <DialogClose
-              className="absolute right-4 top-6 2xl:right-12 2xl:top-12 rounded-xs opacity-70 transition-opacity hover:opacity-100 p-1 -m-1"
+              className="absolute right-4 top-6 lg:right-[40px] lg:top-[42px] xl:right-[40px] xl:top-[42px] 2xl:right-[40px] 2xl:top-[42px] rounded-xs opacity-70 transition-opacity hover:opacity-100"
               aria-label="닫기"
             >
               <svg
@@ -209,6 +209,7 @@ const ClubDetailReviewModal = ({
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                className="w-5 h-5 lg:w-6 lg:h-6"
               >
                 <path d="M18 6 6 18" />
                 <path d="m6 6 12 12" />
