@@ -23,6 +23,7 @@ export const getButtonClassName = (
   return cn(
     "flex flex-col text-left",
     "p-0.5 md:p-2 lg:p-2 xl:px-4 xl:pt-4 xl:pb-4 2xl:px-6 2xl:pt-6 2xl:pb-6",
+    "aspect-[4/5] xl:aspect-auto",
     "min-h-[62px] sm:min-h-[117px] md:min-h-[117px] lg:min-h-[159px]",
     "xl:transition-[max-height,height] xl:duration-300 xl:ease-out",
     !isHovered &&

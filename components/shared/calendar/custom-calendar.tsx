@@ -100,6 +100,7 @@ const CustomCalendar = ({
             onPrevMonth={handlePrevMonth}
             onNextMonth={handleNextMonth}
             is2xl={is2xl}
+            isXl={isXl}
           />
           <CalendarWeekdays is2xl={is2xl} />
           <CalendarGrid

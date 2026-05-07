@@ -1,3 +1,4 @@
+import { ChevronDown } from "lucide-react";
 import { Subtitle } from "@/components/shared/typography";
 import { cn } from "@/lib/utils";
 import { useHomeStore } from "@/app/feature/home/store/home-store";
@@ -78,7 +79,7 @@ const MobileSelectShow = ({
   return (
     <div
       className={cn(
-        "flex gap-4 md:hidden mt-[72px]",
+        "flex items-center gap-4 md:hidden mt-[72px]",
         selectedMobileBottomNavigation === "calendar" && "hidden"
       )}
     >
@@ -90,55 +91,55 @@ const MobileSelectShow = ({
             : "지역별";
 
           return (
-            <div
+            <Select
               key={item.id}
-              className={cn(
-                "relative",
-                !isAnimating && "cursor-pointer",
-                isAreaSelected
-                  ? "text-black underline decoration-2 underline-offset-4"
-                  : "text-[#20202066]"
-              )}
-            >
-              <Select
-                value={selectedArea}
-                onValueChange={(value) => {
-                  if (!isAnimating && onAreaChange) {
-                    onAreaChange(value);
-                    if (!isAreaSelected) {
-                      onCategoryChange("area");
-                    }
+              value={selectedArea}
+              onValueChange={(value) => {
+                if (!isAnimating && onAreaChange) {
+                  onAreaChange(value);
+                  if (!isAreaSelected) {
+                    onCategoryChange("area");
                   }
-                }}
-                disabled={isAnimating}
+                }
+              }}
+              disabled={isAnimating}
+            >
+              <SelectTrigger
+                visibleIcon={false}
+                className={cn(
+                  "border-none shadow-none p-0 h-auto w-auto gap-1 min-w-0",
+                  "data-[size=default]:h-auto",
+                  "focus-visible:ring-0 focus-visible:ring-offset-0",
+                  "items-center justify-start",
+                  "[&>span]:p-0 [&>span]:h-auto [&>span]:min-w-0 [&>span]:text-[14px]",
+                  !isAnimating && "cursor-pointer",
+                  isAreaSelected
+                    ? "text-black underline decoration-2 underline-offset-4"
+                    : "text-[#20202066]"
+                )}
               >
-                <SelectTrigger
-                  className={cn(
-                    "border-none shadow-none p-0 h-auto w-auto gap-0 min-w-0",
-                    "focus-visible:ring-0 focus-visible:ring-offset-0",
-                    "items-center justify-start",
-                    "[&>span]:opacity-0 [&>span]:p-0 [&>span]:h-auto [&>span]:min-w-0",
-                    "[&>div]:hidden",
-                    "absolute inset-0"
-                  )}
-                >
-                  <SelectValue placeholder="지역별" />
-                </SelectTrigger>
-                <SelectContent className="p-4 [&>div]:!space-y-0" fitContent>
-                  {item.region &&
-                    item.region.map((area) => (
-                      <UISelectItem
-                        key={area.id}
-                        value={area.value}
-                        className="px-0 py-2 text-[14px]"
-                      >
-                        {area.label}
-                      </UISelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-              <Subtitle className="text-[14px]">{displayLabel}</Subtitle>
-            </div>
+                <SelectValue placeholder="지역별">
+                  <Subtitle className="text-[14px]">{displayLabel}</Subtitle>
+                </SelectValue>
+                <ChevronDown className="size-3.5" strokeWidth={2} />
+              </SelectTrigger>
+              <SelectContent
+                className="p-4 [&>div]:!space-y-0"
+                sideOffset={3}
+                fitContent
+              >
+                {item.region &&
+                  item.region.map((area) => (
+                    <UISelectItem
+                      key={area.id}
+                      value={area.value}
+                      className="px-0 py-2 text-[14px]"
+                    >
+                      {area.label}
+                    </UISelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
           );
         }
         return (

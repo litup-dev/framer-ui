@@ -12,6 +12,7 @@ interface CalendarHeaderProps {
   onPrevMonth: () => void;
   onNextMonth: () => void;
   is2xl?: boolean;
+  isXl?: boolean;
 }
 
 export const CalendarHeader = ({
@@ -19,11 +20,12 @@ export const CalendarHeader = ({
   onPrevMonth,
   onNextMonth,
   is2xl = false,
+  isXl = false,
 }: CalendarHeaderProps) => {
   return (
     <div
       className={cn(
-        "relative flex items-center md:items-start lg:items-start xl:items-baseline justify-between md:justify-start lg:justify-start px-5 md:px-10 pb-11 md:-mt-[0px] md:pb-[30px] lg:-mt-[4px] lg:pb-[26px] xl:mt-0 xl:pb-[78px] 2xl:pb-[124px]",
+        "relative flex items-center md:items-start lg:items-start xl:items-end justify-between md:justify-start lg:justify-start px-5 md:px-10 pb-11 md:-mt-[0px] md:pb-[30px] lg:-mt-[4px] lg:pb-[26px] xl:mt-0 xl:pb-[78px] 2xl:pb-[124px]",
         is2xl ? "md:gap-4 lg:gap-6 lg:px-15 2xl:px-20" : "md:gap-4 lg:gap-6 lg:px-15 xl:gap-4",
       )}
     >
@@ -32,14 +34,14 @@ export const CalendarHeader = ({
           "absolute md:static lg:static mt-2.5 text-black text-[30px] tracking-[-2.4px] leading-[22px] md:text-[48px]",
           "md:text-[42px] md:leading-[30px] md:tracking-[-3.36px] md:mt-[-6px]",
           "lg:text-[52px] lg:leading-[38px] lg:tracking-[-4.16px] lg:mt-[-24px]",
-          is2xl
-            ? "xl:text-[84px] xl:leading-[61px] xl:mt-[-20px]"
-            : "xl:text-[56px] xl:leading-[40px] xl:mt-[-12px]",
+          is2xl || isXl
+            ? "xl:text-[84px] xl:leading-[61px] xl:mt-[-20px] 2xl:mt-[-20px]"
+            : "xl:text-[56px] xl:leading-[40px] xl:mt-[-20px] 2xl:mt-[-20px]",
         )}
       >
         calendar
       </Title>
-      <div className="flex items-center absolute md:static lg:static right-1 md:left-auto top-[-5px] md:top-auto lg:top-auto lg:left-auto md:mt-[0px] lg:mt-[-8px] xl:mt-0 gap-1 xl:gap-4">
+      <div className={cn("flex items-center absolute md:static lg:static right-1 md:left-auto top-[-5px] md:top-auto lg:top-auto lg:left-auto md:mt-[0px] lg:mt-[-8px] xl:mt-0 xl:translate-y-[10px] 2xl:translate-y-[14px] gap-1 xl:gap-4",  is2xl && "2xl:translate-y-[8px]")}>
         <button
           onClick={onPrevMonth}
           className="p-1 hover:bg-gray-200 rounded transition-colors"

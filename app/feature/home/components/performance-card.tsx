@@ -64,7 +64,7 @@ const ArtistsDisplay = ({ artists }: { artists?: Array<{ name: string }> }) => {
 
   if (artists.length >= 3) {
     return (
-      <Subtitle className="text-[16px] md:text-[13px] lg:text-[14px] 2xl:text-[16px] text-black inline-flex items-center justify-center truncate px-3 md:px-[9px] lg:px-[11px] 2xl:px-3 py-2 md:py-[7px] 2xl:py-[9px] rounded-[3px] bg-[#F4F4F4]">
+      <Subtitle className="text-[16px] md:text-[13px] lg:text-[14px] 2xl:text-[16px] text-black inline-flex items-center justify-center whitespace-nowrap flex-shrink-0 px-3 md:px-[9px] lg:px-[11px] 2xl:px-3 py-2 md:py-[7px] 2xl:py-[9px] rounded-[3px] bg-[#F4F4F4]">
         {artists[0].name} 외 {artists.length - 1}팀
       </Subtitle>
     );
@@ -75,7 +75,7 @@ const ArtistsDisplay = ({ artists }: { artists?: Array<{ name: string }> }) => {
       {artists.map((artist, index) => (
         <Subtitle
           key={index}
-          className="text-[16px] md:text-[13px] lg:text-[14px] 2xl:text-[16px] text-black inline-flex items-center justify-center truncate px-3 md:px-[9px] lg:px-[11px] 2xl:px-3 py-2 md:py-[7px] 2xl:py-[9px] rounded-[3px] bg-[#F4F4F4]"
+          className="text-[16px] md:text-[13px] lg:text-[14px] 2xl:text-[16px] text-black inline-flex items-center justify-center whitespace-nowrap flex-shrink-0 px-3 md:px-[9px] lg:px-[11px] 2xl:px-3 py-2 md:py-[7px] 2xl:py-[9px] rounded-[3px] bg-[#F4F4F4]"
         >
           {artist.name}
         </Subtitle>
@@ -116,14 +116,14 @@ export const PerformanceCard = ({ performance }: PerformanceCardProps) => {
             }}
             className="text-left w-full"
           >
-            <Description className="text-black text-[16px] md:text-[14px] 2xl:text-[16px] truncate hover:text-gray-600 cursor-pointer">
+            <Description className="text-black/60 text-[16px] md:text-[14px] 2xl:text-[16px] truncate hover:text-gray-600 cursor-pointer">
               {performance.club.name}
             </Description>
           </button>
           <Subtitle className="text-[20px] md:text-[16px] lg:text-[18px] 2xl:text-[20px] text-black truncate leading-[120%]">
             {performance.title}
           </Subtitle>
-          <div className="flex gap-2 md:gap-1.5 lg:gap-2 truncate">
+          <div className="flex gap-2 md:gap-1.5 lg:gap-2 overflow-x-auto overflow-y-visible [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <ArtistsDisplay artists={performance.artists} />
           </div>
         </CardContent>

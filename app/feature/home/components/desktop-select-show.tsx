@@ -120,7 +120,11 @@ const DesktopSelectShow = ({
                     <SelectValue placeholder="지역별" />
                   </Subtitle>
                 </SelectTrigger>
-                <SelectContent className="p-4 xl:p-5" fitContent>
+                <SelectContent
+                  className="p-4 xl:p-5"
+                  sideOffset={3}
+                  fitContent
+                >
                   {item.region &&
                     item.region.map((area) => (
                       <UISelectItem key={area.id} value={area.value}>

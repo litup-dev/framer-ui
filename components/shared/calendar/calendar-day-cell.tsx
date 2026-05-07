@@ -123,10 +123,10 @@ export const CalendarDayCell = ({
           isXl && dayEvents.length > 0 ? () => onMouseEnter(day) : undefined
         }
         onMouseLeave={isXl && dayEvents.length > 0 ? onMouseLeave : undefined}
-        className={cn(
+        className={`${cn(
           getButtonClassName(isXl, isHovered, dayEvents, isCurrentMonth),
           isXl && "flex-1 w-full",
-        )}
+        )} calendar-cell-scroll`}
         initial={false}
         animate={{
           opacity: !isXl && isCollapsedAndNotSelected ? 0.2 : 1,

@@ -34,17 +34,17 @@ export const CalendarDayHeader = ({
       <div
         className={cn(
           !isXl &&
-            "rounded-full size-5 md:size-[22px] lg:size-[26px] shrink-0 aspect-square flex items-center justify-center",
+            "rounded-full w-5 min-w-5 max-w-5 h-5 min-h-5 max-h-5 md:w-[22px] md:min-w-[22px] md:max-w-[22px] md:h-[22px] md:min-h-[22px] md:max-h-[22px] lg:w-[26px] lg:min-w-[26px] lg:max-w-[26px] lg:h-[26px] lg:min-h-[26px] lg:max-h-[26px] flex-none grid place-items-center",
           !isXl && isSelected && "bg-main",
           !isXl && isTodayDate && "bg-main",
-          !isXl && !isSelected && !isTodayDate && hasImage && "bg-black-60",
+          !isXl && !isSelected && !isTodayDate && hasImage && "bg-black/60",
         )}
       >
         <Title
           as="span"
           className={cn(
             "block text-[12px] md:text-[14px] lg:text-[16px] 2xl:text-[20px]",
-            !isXl && "leading-6 md:leading-[22px] text-center md:!tracking-normal",
+            !isXl && "leading-none whitespace-nowrap text-center md:!tracking-normal",
             isTodayDate && isXl && !isHovered
               ? "text-black"
               : isTodayDate

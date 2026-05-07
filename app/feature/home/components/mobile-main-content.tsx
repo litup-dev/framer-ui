@@ -144,10 +144,10 @@ const MobileMainContent = ({
                     <Subtitle className="truncate text-[14px]">
                       {performance.title}
                     </Subtitle>
-                    <div className="flex gap-1 items-center overflow-x-scroll">
+                    <div className="flex gap-1 items-center overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                       {performance.artists && performance.artists.length > 0 ? (
                         performance.artists.length >= 3 ? (
-                          <Subtitle className="truncate text-[12px] bg-gray h-[24px] rounded-[2px] text-black flex items-center justify-center px-2">
+                          <Subtitle className="whitespace-nowrap flex-shrink-0 text-[12px] bg-gray h-[24px] rounded-[2px] text-black flex items-center justify-center px-2">
                             {performance.artists[0].name} 외{" "}
                             {performance.artists.length - 1}팀
                           </Subtitle>
@@ -155,7 +155,7 @@ const MobileMainContent = ({
                           performance.artists.map((artist, index) => (
                             <Subtitle
                               key={index}
-                              className="truncate text-[12px] bg-gray h-[24px] rounded-[2px] text-black flex items-center justify-center px-2"
+                              className="whitespace-nowrap flex-shrink-0 text-[12px] bg-gray h-[24px] rounded-[2px] text-black flex items-center justify-center px-2"
                             >
                               {artist.name}
                             </Subtitle>
