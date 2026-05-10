@@ -126,12 +126,12 @@ const ClubDetailReview = ({
 
   return (
     <div>
-      <div className="border-b-2 md:border-b-3 lg:border-b-3 xl:border-b-3 2xl:border-b-3 border-main pb-[6px] md:pb-[12px] lg:pb-[12px] xl:pb-[18px] 2xl:pb-4">
+      <div className="border-b-2 md:border-b-3 lg:border-b-3 xl:border-b-3 2xl:border-b-3 border-main pb-[6px] md:pb-[12px] lg:pb-[12px] xl:pb-[12px] 2xl:pb-4">
        <div className="flex items-center justify-between md:h-[24px] lg:h-[24px] xl:h-[28px] 2xl:h-[32px]">
-        <div className="flex gap-2 xl:gap-2.5 2xl:gap-2.5 items-end">
+        <div className="flex gap-2 xl:gap-2.5 2xl:gap-1.5 items-center">
           <div className="flex gap-1.5 md:gap-2 lg:gap-2 xl:gap-2 2xl:gap-2 items-center">
             <Image
-              src="/images/review-modal-icon.svg"
+              src="/images/review-icon.png"
               alt="리뷰"
               width={32}
               height={32}
@@ -141,7 +141,7 @@ const ClubDetailReview = ({
               {`리뷰 (${reviews.length ?? 0})`}
             </Subtitle>
           </div>
-          <div className="flex gap-0.5 xl:gap-1 2xl:gap-1 items-center">
+          <div className="flex gap-0.5 xl:gap-1 2xl:gap-0.5 items-center">
             <Image
               src="/images/rating.svg"
               alt="공연 일정"
@@ -182,10 +182,10 @@ const ClubDetailReview = ({
        </div>
       </div>
       <div className="pt-3 md:pt-3 lg:pt-3 xl:pt-4 2xl:pt-4 flex justify-between text-description-14">
-        <div className="flex items-center gap-0.5 md:gap-1 lg:gap-1 xl:gap-1 2xl:gap-1">
-          <Chip className="text-[14px] 2xl:text-[16px] tracking-[-0.04em] text-black-80">
+        <div className="flex items-center" style={{ gap: "2px" }}>
+          <Description className="text-[14px] xl:text-[16px] 2xl:text-[16px] text-[#17171799]">
             내가 쓴 리뷰 보기
-          </Chip>
+          </Description>
           <Checkbox
             checked={isMine}
             onCheckedChange={setIsMine}
@@ -198,14 +198,13 @@ const ClubDetailReview = ({
             setSort(sort === "-createdAt" ? "+createdAt" : "-createdAt")
           }
         >
-          <Chip className="text-[14px] 2xl:text-[16px] tracking-[-0.04em] text-black-60">
+          <Description className="text-[14px] xl:text-[16px] text-[#17171799]">
             {sort === "-createdAt" ? "최신순" : "오래된순"}
-          </Chip>
+          </Description>
           <ChevronDown
             className={cn(
-              "h-5 w-5 md:h-5 md:w-5 lg:h-5 lg:w-5 xl:h-6 xl:w-6 2xl:h-6 2xl:w-6 transition-transform duration-200",
+              "h-5 w-5 md:h-5 md:w-5 lg:h-5 lg:w-5 xl:h-6 xl:w-6 2xl:h-6 2xl:w-6 text-[#17171799] cursor-pointer",
               sort === "-createdAt" ? "rotate-180" : "",
-              "cursor-pointer",
             )}
           />
         </div>

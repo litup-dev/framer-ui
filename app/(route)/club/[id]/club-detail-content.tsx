@@ -176,7 +176,7 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
             </div>
           </div>
 
-          <div className="hidden xl:flex xl:flex-[490] xl:basis-0 2xl:flex-none 2xl:w-[742px] bg-gray xl:sticky xl:top-0 xl:self-start xl:h-screen xl:overflow-y-auto">
+          <div className="hidden xl:flex xl:flex-[490] xl:basis-0 2xl:flex-none 2xl:w-[742px] bg-gray">
             <ClubDetailDescription data={data.data} />
           </div>
         </div>

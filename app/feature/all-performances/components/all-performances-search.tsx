@@ -28,17 +28,17 @@ export const AllPerformancesSearch = () => {
       <InputGroup className="border-0 rounded-none shadow-none w-full border-b-2 border-black min-h-[50px] xl:min-h-[60px]">
         <Input
           placeholder="공연명 또는 아티스트를 검색하세요"
-          className="border-none p-0 placeholder:text-black/30 shadow-none placeholoder:text-[16px] text-16px 2xl:placeholder:text-[18px] 2xl:text-[18px] text-black"
+          className="border-none p-0 placeholder:text-black/30 shadow-none placeholder:text-[16px] text-[16px] 2xl:placeholder:text-[18px] 2xl:text-[18px] text-black"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyPress={handleKeyPress}
         />
         <InputGroupAddon align="inline-end">
           <Button
-            className="bg-gray text-black w-[46px] sm:w-[64px] h-[34px] sm:h-[44px] rounded-none hover:bg-gray p-0"
+            className="bg-gray text-black w-[46px] md:w-[56px] xl:w-[64px] h-[34px] md:h-[38px] xl:h-[44px] rounded-[3px] hover:bg-gray p-0"
             onClick={handleSearch}
           >
-            <Subtitle className="text-[14px] sm:text-[16px]">검색</Subtitle>
+            <Subtitle className="text-[14px] xl:text-[16px]">검색</Subtitle>
           </Button>
         </InputGroupAddon>
       </InputGroup>

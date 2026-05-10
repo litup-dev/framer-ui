@@ -86,7 +86,7 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
           <div className="flex items-center gap-2.5">
             <ClubImage club={clubWithImages} size="md" />
             <div className="flex flex-col gap-1.5 md:gap-2">
-              <div className="flex gap-1 items-center">
+              <div className="flex gap-1 lg:gap-2 items-center">
                 <Subtitle className="text-[14px] xl:text-[16px] 2xl:text-[20px]">
                   {club.name}
                 </Subtitle>

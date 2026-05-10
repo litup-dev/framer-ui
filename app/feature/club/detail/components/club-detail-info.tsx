@@ -66,7 +66,7 @@ const ClubDetailInfo = ({
   return (
     <div className="space-y-6 sm:space-y-8 lg:space-y-10">
       <div className="flex gap-3 sm:gap-4 2xl:gap-5 items-center px-5 sm:px-10 lg:px-15 2xl:px-20">
-        <div className="w-13 h-13 md:w-16 md:h-16 lg:w-20 lg:h-20 xl:w-20 xl:h-20 2xl:w-20 2xl:h-20 bg-gray-300 rounded-full relative">
+        <div className="w-[52px] h-[52px] md:w-16 md:h-16 lg:w-20 lg:h-20 xl:w-20 xl:h-20 2xl:w-20 2xl:h-20 bg-gray-300 rounded-full relative overflow-hidden flex-shrink-0">
           {firstImageUrl ? (
             <Image
               src={firstImageUrl}
@@ -124,7 +124,7 @@ const ClubDetailInfo = ({
             {keywords.map((kw, idx) => (
               <div
                 key={kw.id ?? idx}
-                className="flex items-center gap-1 h-[34px] px-2.5 rounded-[4px] bg-[rgba(23,23,23,0.04)]"
+                className="flex items-center gap-1 h-[34px] pl-[9px] pr-[11px] py-2 rounded-[3px] bg-white border border-[rgba(23,23,23,0.1)]"
               >
                 {kw.iconPath && (
                   <Image
@@ -135,9 +135,9 @@ const ClubDetailInfo = ({
                     className="w-[18px] h-[18px]"
                   />
                 )}
-                <Description className="text-[14px] text-black/70">
+                <Subtitle className="text-[14px] text-[#171717]">
                   {kw.name}
-                </Description>
+                </Subtitle>
               </div>
             ))}
           </div>

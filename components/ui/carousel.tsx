@@ -188,15 +188,17 @@ function CarouselPrevious({
         variant={variant}
         size={size}
         className={cn(
-          "absolute size-12",
+          "absolute",
+          isClubDetailCarousel ? "size-12" : "size-10 2xl:size-12",
           orientation === "horizontal"
-            ? "top-1/2 -left-12 -translate-y-1/2"
+            ? isClubDetailCarousel
+              ? "top-1/2 -left-12 -translate-y-1/2"
+              : "top-[37.5%] right-full mr-1 2xl:mr-2 -translate-y-1/2"
             : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
           className,
           isClubDetailCarousel
-            ? "border-none bg-transparent shadow-none hover:bg-transparent"
-            : "rounded-full",
-          !canScrollPrev && "hidden",
+            ? "border-none bg-transparent shadow-none hover:bg-transparent disabled:opacity-20"
+            : "rounded-full disabled:opacity-10 disabled:pointer-events-none",
         )}
         disabled={!canScrollPrev}
         onClick={scrollPrev}
@@ -213,9 +215,9 @@ function CarouselPrevious({
           <Image
             src="/images/arrow-down.svg"
             alt="previous"
-            width={32}
-            height={32}
-            className="rotate-90"
+            width={48}
+            height={48}
+            className="rotate-90 !w-full !h-full"
           />
         )}
         <span className="sr-only">Previous slide</span>
@@ -239,14 +241,16 @@ function CarouselNext({
       variant={variant}
       size={size}
       className={cn(
-        "absolute size-12",
+        "absolute",
+        isClubDetailCarousel ? "size-12" : "size-10 2xl:size-12",
         orientation === "horizontal"
-          ? "top-1/2 -right-12 -translate-y-1/2"
+          ? isClubDetailCarousel
+            ? "top-1/2 -right-12 -translate-y-1/2"
+            : "top-[37.5%] left-full ml-1 2xl:ml-2 -translate-y-1/2"
           : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
         isClubDetailCarousel
-          ? "border-none bg-transparent shadow-none hover:bg-transparent"
-          : "rounded-full",
-        !canScrollNext && "hidden",
+          ? "border-none bg-transparent shadow-none hover:bg-transparent disabled:opacity-20"
+          : "rounded-full disabled:opacity-10 disabled:pointer-events-none",
         className,
       )}
       disabled={!canScrollNext}
@@ -265,9 +269,9 @@ function CarouselNext({
         <Image
           src="/images/arrow-down.svg"
           alt="next"
-          width={32}
-          height={32}
-          className="rotate-270"
+          width={48}
+          height={48}
+          className="rotate-270 !w-full !h-full"
         />
       )}
       <span className="sr-only">Next slide</span>
