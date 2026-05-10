@@ -58,21 +58,25 @@ const HeaderMenus = ({
         </div>
       ) : user ? (
         <div className="flex gap-4 items-center">
-          <span
-            role="button"
-            aria-label={user.nickname}
+          <Image
+            src="/images/header-user.png"
+            alt={user.nickname}
+            width={28}
+            height={28}
             onClick={() => router.push("/user")}
-            className="cursor-pointer w-6 h-6 2xl:w-7 2xl:h-7 inline-block bg-current"
-            style={{
-              maskImage: "url('/images/header-user.png')",
-              WebkitMaskImage: "url('/images/header-user.png')",
-              maskSize: "contain",
-              WebkitMaskSize: "contain",
-              maskRepeat: "no-repeat",
-              WebkitMaskRepeat: "no-repeat",
-              maskPosition: "center",
-              WebkitMaskPosition: "center",
-            }}
+            className={cn(
+              "cursor-pointer w-6 h-6 2xl:w-7 2xl:h-7",
+              scrollProgress === undefined &&
+                (isWhiteIcons || isWhiteIconsOnXl) &&
+                "brightness-0 invert",
+            )}
+            style={
+              scrollProgress !== undefined
+                ? {
+                    filter: `brightness(0) invert(${1 - scrollProgress})`,
+                  }
+                : undefined
+            }
           />
           <Image
             src={"/images/logout.svg"}
