@@ -126,7 +126,7 @@ const MobileFilter = ({
     >
       {viewType === "list" ? (
         <Image
-          src="/images/club-map-icon.svg"
+          src="/images/club-map-icon.png"
           alt="map"
           width={20}
           height={20}
@@ -185,7 +185,7 @@ const MobileFilter = ({
                 ))}
               </div>
             </div>
-            <Separator className="px-5" />
+            <Separator className="px-5 mt-3 md:mt-0" />
           </div>
 
           <div className="space-y-6 md:space-y-10 px-5 sm:pl-[40px] md:px-10 pt-4 md:pt-5 pb-10">

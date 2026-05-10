@@ -105,7 +105,7 @@ const MobileSelectShow = ({
                   "focus-visible:ring-0 focus-visible:ring-offset-0",
                   "items-center justify-start",
                   "font-bold tracking-[-0.04em] leading-percent !text-[14px]",
-                  "data-[placeholder]:!text-[14px] data-[placeholder]:text-current",
+                  "data-[placeholder]:!text-[14px] data-[placeholder]:!text-[#A2A2A2]",
                   "[&>span]:p-0 [&>span]:h-auto [&>span]:min-w-0",
                   !isAnimating && "cursor-pointer",
                   isAreaSelected ? "text-[#171717]" : "text-[#A2A2A2]"

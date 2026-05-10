@@ -34,7 +34,11 @@ export const useHomeStore = create<HomeState>((set) => ({
   setIsAnimating: (animating: boolean) => set({ isAnimating: animating }),
 
   handleCategoryChange: (value: "week" | "today" | "free" | "area") =>
-    set({ selectedCategory: value }),
+    set(
+      value === "area"
+        ? { selectedCategory: value }
+        : { selectedCategory: value, selectedArea: "" },
+    ),
 
   handleShowAllClick: () =>
     set((state) => ({ showAllItems: !state.showAllItems })),

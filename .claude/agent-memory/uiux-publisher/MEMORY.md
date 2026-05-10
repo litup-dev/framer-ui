@@ -1,0 +1,1 @@
+- [Figma 1001:1086 QA 패턴 (홈 카드/탭/캐릭터)](feedback_figma_1001_1086_qa.md) — 홈 페이지 카드 aspect-[4/5], 날짜배지 px-[12px] py-[9px], 그리드 gap-x-[20px] gap-y-[64px] 등 핵심 픽셀 값

@@ -130,11 +130,11 @@ const ClubDetailReview = ({
         <div className="flex gap-2 xl:gap-2.5 2xl:gap-1.5 items-center">
           <div className="flex gap-1.5 md:gap-2 lg:gap-2 xl:gap-2 2xl:gap-2 items-center">
             <Image
-              src="/images/review-icon.png"
+              src="/images/review-list-icon.png"
               alt="리뷰"
               width={32}
               height={32}
-              className="w-6 h-6 xl:w-7 xl:h-7 2xl:w-8 2xl:h-8"
+              className="w-6 h-6 md:w-6 md:h-6 lg:w-6 lg:h-6 xl:w-7 xl:h-7 2xl:w-8 2xl:h-8"
             />
             <Subtitle className="text-[18px] sm:text-[20px] xl:text-[24px] 2xl:text-[24px]">
               {`리뷰 (${reviews.length ?? 0})`}
