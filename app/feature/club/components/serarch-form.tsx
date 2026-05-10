@@ -125,7 +125,7 @@ const ClubSearchForm = () => {
   return (
     <FormProvider {...form}>
       <div className="relative h-full min-h-0 flex-1">
-        <div className="absolute inset-0 h-full w-full lg:hidden">
+        <div className="absolute inset-0 h-full w-full lg:hidden overflow-y-auto">
           <MobileFilter
             clubs={clubs}
             setViewType={setViewType}

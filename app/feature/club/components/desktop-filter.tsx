@@ -97,7 +97,7 @@ const DesktopFilter = ({
   return (
     <div className="flex h-full">
       <div className="w-3/8 lg:w-[527px] xl:w-[555px] 2xl:w-[680px] bg-white border-gray-200 flex flex-col h-full">
-        <div className="flex-shrink-0 space-y-6 lg:space-y-5 xl:space-y-5 2xl:space-y-6 pr-10 lg:px-[30px] xl:px-[30px] 2xl:px-10">
+        <div className="flex-shrink-0 space-y-6 lg:space-y-5 xl:space-y-5 2xl:space-y-6 pr-10 lg:px-[30px] xl:px-[30px] 2xl:px-10 lg:pt-[88px] 2xl:pt-[112px]">
           <SearchFormField variant="desktop" />
           <div className="space-y-4 xl:space-y-3 2xl:space-y-4">
             <KeywordList categories={categories?.data} />

@@ -140,7 +140,7 @@ const MobileFilter = ({
   );
 
   return (
-    <div className="">
+    <div className="pt-0 md:pt-[80px]">
       <div className="relative">
         <SearchFormField variant="mobile" onFocus={() => setViewType("list")} />
       </div>

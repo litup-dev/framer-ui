@@ -1,3 +1,4 @@
+import { ChevronDown } from "lucide-react";
 import { Subtitle } from "@/components/shared/typography";
 import { cn } from "@/lib/utils";
 import {
@@ -97,6 +98,7 @@ const DesktopSelectShow = ({
                 disabled={isAnimating}
               >
                 <SelectTrigger
+                  visibleIcon={false}
                   className={cn(
                     "border-none shadow-none p-0 h-auto w-auto gap-0",
                     "focus-visible:ring-0 focus-visible:ring-offset-0",
@@ -119,6 +121,10 @@ const DesktopSelectShow = ({
                   <Subtitle>
                     <SelectValue placeholder="지역별" />
                   </Subtitle>
+                  <ChevronDown
+                    className="size-6 2xl:size-8"
+                    strokeWidth={1.5}
+                  />
                 </SelectTrigger>
                 <SelectContent
                   className="p-4 xl:p-5"

@@ -25,7 +25,6 @@ interface SelectItemProps {
   onCategoryChange: (value: "week" | "today" | "free" | "area") => void;
   selectedCategory?: string;
   isAnimating?: boolean;
-  underlineDecoration?: "decoration-2" | "decoration-3";
 }
 
 const SelectItem = ({
@@ -33,7 +32,6 @@ const SelectItem = ({
   onCategoryChange,
   selectedCategory,
   isAnimating = false,
-  underlineDecoration = "decoration-2",
 }: SelectItemProps) => {
   return (
     <div
@@ -44,8 +42,8 @@ const SelectItem = ({
       className={cn(
         !isAnimating && "cursor-pointer",
         selectedCategory === item.value
-          ? `text-black underline ${underlineDecoration} underline-offset-4`
-          : "text-[#20202066]"
+          ? "text-[#171717] underline decoration-1 underline-offset-4"
+          : "text-[#A2A2A2]"
       )}
     >
       <Subtitle className="text-[14px]">{item.label}</Subtitle>
@@ -85,11 +83,6 @@ const MobileSelectShow = ({
     >
       {SELECT_ITEMS.map((item) => {
         if (item.value === "area") {
-          const displayLabel = selectedArea
-            ? item.region?.find((area) => area.value === selectedArea)?.label ||
-              "지역별"
-            : "지역별";
-
           return (
             <Select
               key={item.id}
@@ -107,21 +100,25 @@ const MobileSelectShow = ({
               <SelectTrigger
                 visibleIcon={false}
                 className={cn(
-                  "border-none shadow-none p-0 h-auto w-auto gap-1 min-w-0",
+                  "border-none shadow-none p-0 h-auto w-auto gap-0 min-w-0",
                   "data-[size=default]:h-auto",
                   "focus-visible:ring-0 focus-visible:ring-offset-0",
                   "items-center justify-start",
-                  "[&>span]:p-0 [&>span]:h-auto [&>span]:min-w-0 [&>span]:text-[14px]",
+                  "font-bold tracking-[-0.04em] leading-percent !text-[14px]",
+                  "data-[placeholder]:!text-[14px] data-[placeholder]:text-current",
+                  "[&>span]:p-0 [&>span]:h-auto [&>span]:min-w-0",
                   !isAnimating && "cursor-pointer",
-                  isAreaSelected
-                    ? "text-black underline decoration-2 underline-offset-4"
-                    : "text-[#20202066]"
+                  isAreaSelected ? "text-[#171717]" : "text-[#A2A2A2]"
                 )}
               >
-                <SelectValue placeholder="지역별">
-                  <Subtitle className="text-[14px]">{displayLabel}</Subtitle>
-                </SelectValue>
-                <ChevronDown className="size-3.5" strokeWidth={2} />
+                <SelectValue
+                  placeholder="지역별"
+                  className={cn(
+                    isAreaSelected &&
+                      "underline decoration-1 underline-offset-4",
+                  )}
+                />
+                <ChevronDown className="size-5" strokeWidth={1.5} />
               </SelectTrigger>
               <SelectContent
                 className="p-4 [&>div]:!space-y-0"

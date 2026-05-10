@@ -52,6 +52,13 @@ const DesktopHeader = () => {
     };
   }, [isClubDetailPage, isHomePage]);
 
+  const lerpColor = (p: number) => {
+    const r = Math.round(255 + (17 - 255) * p);
+    const g = Math.round(255 + (24 - 255) * p);
+    const b = Math.round(255 + (39 - 255) * p);
+    return `rgb(${r}, ${g}, ${b})`;
+  };
+
   return (
     <div
       className={cn(
@@ -60,7 +67,7 @@ const DesktopHeader = () => {
         isClubDetailPage
           ? scrollProgress > 0
             ? "fixed top-0 left-0 right-0"
-            : "absolute top-0 left-0 right-0 text-white"
+            : "absolute top-0 left-0 right-0"
           : isHomePage
             ? cn(
                 "fixed top-0 left-0 right-0",
@@ -81,10 +88,9 @@ const DesktopHeader = () => {
               backgroundColor: isImageGalleryOpen
                 ? "transparent"
                 : `rgba(255, 255, 255, ${scrollProgress})`,
-              color:
-                isImageGalleryOpen || scrollProgress > 0
-                  ? "#111827"
-                  : "#ffffff",
+              color: isImageGalleryOpen
+                ? "#111827"
+                : lerpColor(scrollProgress),
               opacity: isImageGalleryOpen ? 0 : 1,
               pointerEvents: isImageGalleryOpen ? "none" : "auto",
             }
@@ -109,17 +115,19 @@ const DesktopHeader = () => {
             alt="logo"
             width={120}
             height={38}
-            className={cn(
-              "w-[84px] h-[26px] lg:w-[100px] lg:h-[32px] xl:w-[76px] xl:h-[29px] 2xl:w-[120px] 2xl:h-[38px]",
-              isHomePage && scrollProgress === 0 && "brightness-0 invert",
-              isClubDetailPage && scrollProgress === 0 && "brightness-0 invert",
-            )}
+            className="w-[76px] h-[29px] 2xl:w-[88px] 2xl:h-[34px]"
+            style={{
+              filter:
+                isClubDetailPage || isHomePage
+                  ? `brightness(0) invert(${1 - scrollProgress})`
+                  : undefined,
+            }}
           />
         </Link>
       </div>
       <HeaderMenus
-        isWhiteIcons={
-          (isClubDetailPage || isHomePage) && scrollProgress === 0
+        scrollProgress={
+          isClubDetailPage || isHomePage ? scrollProgress : undefined
         }
       />
     </div>

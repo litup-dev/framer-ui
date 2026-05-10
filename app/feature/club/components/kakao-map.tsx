@@ -65,8 +65,8 @@ const KakaoMap = ({ club, clubs, placeInfo }: KakaoMapProps) => {
               },
               options: {
                 offset: {
-                  x: 27,
-                  y: 69,
+                  x: 20,
+                  y: 40,
                 },
               },
             }}

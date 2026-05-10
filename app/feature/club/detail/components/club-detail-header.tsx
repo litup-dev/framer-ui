@@ -140,7 +140,7 @@ const ClubDetailHeader = ({ images, clubName }: ClubDetailHeaderProps) => {
             setApi={setApi}
           >
             <CarouselPrevious
-              className="hidden 2xl:flex 2xl:left-[111px] -translate-y-1/2 z-50"
+              className="hidden 2xl:flex 2xl:left-[63px] -translate-y-1/2 z-50"
               isClubDetailCarousel
             />
             <CarouselNext

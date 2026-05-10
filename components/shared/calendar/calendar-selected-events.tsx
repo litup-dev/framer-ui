@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 
 import { CalendarEvent } from "@/components/shared/calendar/types";
-import { Description, Subtitle, Title } from "@/components/shared/typography";
+import { Description, Subtitle } from "@/components/shared/typography";
 import FadeIn from "@/components/shared/fade-in";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
 import Link from "next/link";
@@ -47,70 +47,68 @@ export const CalendarSelectedEvents = ({
                   return (
                     <div
                       key={`${event.id}-${performance.id}-${performanceIndex}`}
-                      className="flex gap-2"
+                      className="flex gap-2 items-stretch"
                     >
-                      <div className="flex-1 flex flex-col gap-3 sm:gap-4 md:gap-5 relative">
-                        <div className="flex flex-col gap-3 sm:gap-4 h-full justify-between">
-                          <div className="flex flex-col gap-3 md:gap-5">
-                            <div className="flex items-center gap-2.5">
-                              <div className="w-1.5 h-1.5 bg-black rounded-full shrink-0" />
-                              <Subtitle className="text-black text-[12px] sm:text-[14px] md:text-[16px]">
-                                {timeString}
-                              </Subtitle>
-                            </div>
-
-                            <div className="pl-4 flex flex-col gap-1.5 sm:gap-2">
-                              <Link href={`/performance/${performance.id}`}>
-                                <Subtitle className="text-black text-[15px] sm:text-[16px] md:text-[20px]">
-                                  {performance.artists
-                                    ?.map((a) => a.name)
-                                    .join(", ")}
-                                </Subtitle>
-                              </Link>
-
-                              {performance.artists &&
-                                performance.artists.length > 0 && (
-                                  <div className="flex flex-wrap gap-1">
-                                    {performance.artists.map(
-                                      (artist, artistIndex) => (
-                                        <div
-                                          key={artistIndex}
-                                          className="px-2 py-1.5 rounded-[2px] bg-[rgba(23,23,23,0.05)]"
-                                        >
-                                          <Subtitle className="text-black text-[12px] sm:text-[13px] md:text-[14px]">
-                                            {artist.name}
-                                          </Subtitle>
-                                        </div>
-                                      ),
-                                    )}
-                                  </div>
-                                )}
-                            </div>
+                      <div className="flex-1 flex flex-col justify-between relative">
+                        <div className="flex flex-col gap-3 md:gap-4 lg:gap-5">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-1.5 h-1.5 bg-[#171717] rounded-full shrink-0" />
+                            <Subtitle className="text-[#171717] text-[12px] md:text-[14px] lg:text-[16px]">
+                              {timeString}
+                            </Subtitle>
                           </div>
-                          <Link href={`/club/${event.id}`}>
-                            <div className="flex items-center gap-0.5 pl-[11px]">
-                              <Image
-                                src="/images/list-location.png"
-                                alt="location"
-                                width={20}
-                                height={20}
-                                className="w-5 h-5 md:w-4 md:h-4"
-                              />
-                              <Title className="text-black-60 text-[12px] sm:text-[14px] md:text-[16px]">
-                                {event.clubName}
-                              </Title>
-                            </div>
-                          </Link>
+
+                          <div className="pl-4 flex flex-col gap-1.5 md:gap-2 lg:gap-2.5">
+                            <Link href={`/performance/${performance.id}`}>
+                              <Subtitle className="text-[#171717] text-[15px] md:text-[16px] lg:text-[20px] leading-[1.2]">
+                                {performance.artists
+                                  ?.map((a) => a.name)
+                                  .join(", ")}
+                              </Subtitle>
+                            </Link>
+
+                            {performance.artists &&
+                              performance.artists.length > 0 && (
+                                <div className="flex flex-wrap gap-1">
+                                  {performance.artists.map(
+                                    (artist, artistIndex) => (
+                                      <div
+                                        key={artistIndex}
+                                        className="px-2 md:px-[9px] lg:px-[11px] py-1.5 md:py-[7px] lg:py-2 rounded-[2px] md:rounded-[3px] bg-[rgba(23,23,23,0.05)]"
+                                      >
+                                        <Subtitle className="text-[#171717] text-[12px] md:text-[13px] lg:text-[14px]">
+                                          {artist.name}
+                                        </Subtitle>
+                                      </div>
+                                    ),
+                                  )}
+                                </div>
+                              )}
+                          </div>
                         </div>
+                        <Link href={`/club/${event.id}`}>
+                          <div className="flex items-center gap-0.5 md:gap-0 pl-[11px] md:pl-[10px] lg:pl-[9px]">
+                            <Image
+                              src="/images/list-location.png"
+                              alt="location"
+                              width={28}
+                              height={28}
+                              className="w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7"
+                            />
+                            <p className="font-medium tracking-[-0.04em] leading-percent text-[#20202080] text-[12px] md:text-[14px] lg:text-[16px]">
+                              {event.clubName}
+                            </p>
+                          </div>
+                        </Link>
                       </div>
 
-                      <div className="flex-shrink-0 w-[90px] h-[113px] sm:w-[133px] sm:h-[166px] md:w-[160px] md:h-[200px] relative bg-gray overflow-hidden transition-all duration-300 ease-in-out">
+                      <div className="flex-shrink-0 w-[90px] h-[113px] md:w-[133px] md:h-[166px] lg:w-[160px] lg:h-[200px] relative bg-gray overflow-hidden transition-all duration-300 ease-in-out">
                         <Link href={`/performance/${performance.id}`}>
                           <Image
                             src={imageUrl}
                             alt="Performance image"
                             fill
-                            sizes="(max-width: 640px) 90px, (max-width: 768px) 133px, 160px"
+                            sizes="(max-width: 743px) 90px, (max-width: 1023px) 133px, 160px"
                             className="object-cover"
                           />
                         </Link>

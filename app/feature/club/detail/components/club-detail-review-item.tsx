@@ -106,12 +106,12 @@ const ClubDetailReviewItem = ({
   console.log(review, "<<<");
 
   return (
-    <div className="space-y-4 pt-0 pb-4 md:space-y-5 md:pt-0 md:pb-5 lg:space-y-6 lg:pt-0 lg:pb-6 xl:space-y-6 xl:pt-0 xl:pb-6 2xl:space-y-7 2xl:pt-0 2xl:pb-7 border-b">
+    <div className="space-y-4 pt-0 pb-4 md:space-y-5 md:pt-0 md:pb-5 lg:space-y-6 lg:pt-0 lg:pb-6 xl:space-y-6 xl:pt-0 xl:pb-6 2xl:space-y-7 2xl:pt-0 2xl:pb-7 border-b border-b-[rgba(23,23,23,0.1)] 2xl:border-b-[rgba(23,23,23,0.2)]">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-[#f5f5f5] rounded-full flex-shrink-0" />
           <Link href={`/user/${review.publicId}`}>
-            <Subtitle as="span" className="text-[14px] xl:text-[16px] 2xl:text-[16px]">
+            <Subtitle as="span" className="text-[14px] md:text-[16px] xl:text-[16px] 2xl:text-[16px]">
               {review.user.name}
             </Subtitle>
           </Link>
@@ -144,7 +144,7 @@ const ClubDetailReviewItem = ({
         </div>
         {showMoreButton && (
           <button onClick={handleMoreClick} className="hover:opacity-70">
-            <Chip className="text-[14px] md:text-[16px] lg:text-[16px] xl:text-[16px] 2xl:text-[16px] tracking-[-0.08em] text-black-40">
+            <Chip className="text-[14px] md:text-[16px] lg:text-[16px] xl:text-[16px] 2xl:text-[16px] tracking-[-0.08em] text-[#17171766]">
               {isExpanded ? "접기" : "더보기"}
             </Chip>
           </button>
@@ -176,7 +176,7 @@ const ClubDetailReviewItem = ({
             {review.tags.map((tag, index) => (
               <Subtitle
                 key={`${review.id}-tag-${index}-${tag}`}
-                className="p-2 2xl:px-2.5 2xl:py-2 2xl:h-[34px] flex items-center w-fit bg-white border rounded-[3px] text-subtitle-14"
+                className="pl-[9px] pr-[11px] py-2 flex items-center w-fit bg-white border border-[rgba(23,23,23,0.1)] 2xl:border-[rgba(23,23,23,0.2)] rounded-[3px] text-[14px] text-[#171717]"
               >
                 {tag}
               </Subtitle>
@@ -185,7 +185,7 @@ const ClubDetailReviewItem = ({
         ) : null}
       </div>
 
-      <div className="flex items-center justify-between text-black-40">
+      <div className="flex items-center justify-between text-[#17171766]">
         <div className="flex gap-1 md:gap-2 lg:gap-2 xl:gap-2 2xl:gap-2">
           <Chip className="text-[12px] md:text-[14px] lg:text-[14px] xl:text-[14px] 2xl:text-[14px] tracking-[-0.04em]">
             작성: {formatDate(review.createdAt)}
