@@ -26,7 +26,7 @@ export const PerformanceCard = ({ performance }: PerformanceCardProps) => {
   return (
     <Link href={`/performance/${performance.id}`}>
       <Card className="overflow-hidden gap-3.5 md:gap-5 2xl:gap-6 pb-2">
-        <div className="aspect-[3/4] relative">
+        <div className="aspect-[4/5] relative">
           {imageUrl ? (
             <Image
               src={imageUrl}
@@ -45,39 +45,39 @@ export const PerformanceCard = ({ performance }: PerformanceCardProps) => {
             </div>
           )}
           {formatMonthDay(performance.performDate) === getToday() && (
-            <div className="absolute text-[#FFFFFF] rounded-[3px] bg-main top-2 right-2 px-2 py-1.5 xl:top-3 xl:right-3 2xl:top-4 2xl:right-4 xl:px-2.5 xl:py-2 2xl:px-3 2xl:py-2 backdrop-blur-xs">
-              <Subtitle className="text-[11px] sm:text-[12px] xl:text-[14px] 2xl:text-[16px]">
+            <div className="absolute text-[#FFFFFF] rounded-[3px] bg-main top-2 right-2 px-2 py-1.5 md:px-[9px] md:py-[7px] lg:top-3 lg:right-3 xl:top-3 xl:right-3 2xl:top-4 2xl:right-4 lg:px-[11px] lg:py-2 xl:px-[11px] xl:py-2 2xl:px-3 2xl:py-[9px] backdrop-blur-xs">
+              <Subtitle className="text-[11px] sm:text-[12px] lg:text-[14px] xl:text-[14px] 2xl:text-[16px]">
                 오늘 공연
               </Subtitle>
             </div>
           )}
         </div>
 
-        <CardContent className="flex flex-col justify-start gap-1.5 sm:gap-2.5">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              router.push(`/club/${performance.club.id}`);
-            }}
-            className="text-left w-full"
-          >
-            <Description className="text-[12px] 2xl:text-[16px] text-black/60 hover:text-black/80 cursor-pointer">
-              {performance.club.name}
-            </Description>
-          </button>
-          <Subtitle className="text-[14px] 2xl:text-[20px] leading-[120%] truncate sm:line-clamp-2 sm:whitespace-normal">
-            {performance.title}
-          </Subtitle>
-          <Description className="text-[12px] 2xl:text-[16px] text-black">
-            {artistsText || "아티스트 정보 없음"}
-          </Description>
-          <div className="flex gap-1 text-black/40 pt-1">
-            <Description className="text-[12px] 2xl:text-[16px] text-black/40">
-              {formatDate(performance.performDate, "yyyy.MM.dd")}
+        <CardContent className="flex flex-col justify-start gap-3.5 md:gap-5 lg:gap-5 xl:gap-5 2xl:gap-5">
+          <div className="flex flex-col gap-1 md:gap-2 2xl:gap-2">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                router.push(`/club/${performance.club.id}`);
+              }}
+              className="text-left w-full"
+            >
+              <Description className="text-[12px] md:text-[14px] lg:text-[16px] xl:text-[16px] 2xl:text-[16px] leading-[1.2] text-[#171717]/60 hover:text-[#171717]/80 cursor-pointer">
+                {performance.club.name}
+              </Description>
+            </button>
+            <Subtitle className="text-[14px] md:text-[16px] lg:text-[18px] xl:text-[18px] 2xl:text-[20px] leading-[120%] truncate sm:line-clamp-2 sm:whitespace-normal">
+              {performance.title}
+            </Subtitle>
+            <Description className="text-[12px] md:text-[14px] lg:text-[16px] xl:text-[16px] 2xl:text-[16px] leading-[1.2] text-[#171717]">
+              {artistsText || "아티스트 정보 없음"}
             </Description>
           </div>
+          <Description className="text-[12px] md:text-[14px] lg:text-[16px] xl:text-[16px] 2xl:text-[16px] text-[#171717]/40">
+            {formatDate(performance.performDate, "yyyy.MM.dd")}
+          </Description>
         </CardContent>
       </Card>
     </Link>

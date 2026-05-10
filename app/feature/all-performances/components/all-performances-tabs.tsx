@@ -13,10 +13,10 @@ export const AllPerformancesTabs = () => {
   const timeFilter = watch("timeFilter");
 
   return (
-    <div className="flex gap-2 sm:gap-3">
+    <div className="flex gap-2 md:gap-3">
       <Button
         className={cn(
-          "w-[84px] h-[34px] sm:w-[94px] sm:h-[38px] xl:w-[107px] xl:h-[44px]",
+          "w-[84px] h-[34px] md:w-[94px] md:h-[38px] xl:w-[107px] xl:h-[44px]",
           timeFilter === "upcoming"
             ? "bg-black hover:bg-black"
             : "bg-white text-black/40 hover:bg-white hover:text-black",
@@ -27,7 +27,7 @@ export const AllPerformancesTabs = () => {
       </Button>
       <Button
         className={cn(
-          "w-[84px] h-[34px] sm:w-[82px] sm:h-[38px] xl:w-[94px] xl:h-[44px]",
+          "w-[72px] h-[34px] md:w-[82px] md:h-[38px] xl:w-[94px] xl:h-[44px]",
           timeFilter === "past"
             ? "bg-black hover:bg-black"
             : "bg-white text-black/40 hover:bg-white hover:text-black",

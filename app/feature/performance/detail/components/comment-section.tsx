@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import FadeIn from "@/components/shared/fade-in";
-import { Title, Chip, Subtitle, Description } from "@/components/shared/typography";
+import { Title, Chip, Description } from "@/components/shared/typography";
 import Image from "next/image";
 import { getPerformanceCommentsOptions } from "../query-options";
 import { useCommentHandlers } from "../hooks/use-comment-handlers";
@@ -109,11 +109,11 @@ const CommentSection = ({
         />
 
         <div className="flex items-center gap-6 md:gap-4 mt-6 mb-6">
-          <div className="flex items-center gap-1">
-            <Subtitle className="font-semibold text-[14px] xl:text-[16px]">
+          <div className="flex items-center gap-0">
+            <Description className="text-[14px] xl:text-[16px] text-[#17171799]">
               최신순
-            </Subtitle>
-            <div className="w-5 h-5 xl:w-6 xl:h-6">
+            </Description>
+            <div className="w-5 h-5 xl:w-6 xl:h-6 text-[#17171799]">
               <ArrowDownIcon />
             </div>
           </div>

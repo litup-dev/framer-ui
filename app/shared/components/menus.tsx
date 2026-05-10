@@ -17,9 +17,11 @@ import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 const HeaderMenus = ({
   isWhiteIcons = false,
   isWhiteIconsOnXl = false,
+  scrollProgress,
 }: {
   isWhiteIcons?: boolean;
   isWhiteIconsOnXl?: boolean;
+  scrollProgress?: number;
 }) => {
   const { user } = useCurrentUser();
   const router = useRouter();
@@ -78,9 +80,17 @@ const HeaderMenus = ({
             onClick={handleLogout}
             className={cn(
               "cursor-pointer w-6 h-6 2xl:w-7 2xl:h-7",
-              isWhiteIcons && "brightness-0 invert",
-              isWhiteIconsOnXl && "brightness-0 invert",
+              scrollProgress === undefined &&
+                (isWhiteIcons || isWhiteIconsOnXl) &&
+                "brightness-0 invert",
             )}
+            style={
+              scrollProgress !== undefined
+                ? {
+                    filter: `brightness(0) invert(${1 - scrollProgress})`,
+                  }
+                : undefined
+            }
           />
         </div>
       ) : (

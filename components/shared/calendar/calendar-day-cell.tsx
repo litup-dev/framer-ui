@@ -69,6 +69,7 @@ export const CalendarDayCell = ({
   const eventsContainerRef = useCalendarCellScroll({
     isHovered,
     isXl,
+    buttonRef,
   });
 
   const isOverflowing = useCalendarCellOverflow({

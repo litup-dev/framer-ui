@@ -137,14 +137,16 @@ function EventTitleArtists({
 
   return (
     <Link href={`/performance/${id}`}>
-      <div className="flex min-w-0 flex-1 flex-col gap-1.5 justify-center pl-4 sm:pl-6 min-h-[46px] lg:min-w-0 lg:border-l lg:border-gray-200 lg:pl-6 lg:w-[397px] lg:flex-none 2xl:w-[500px] 2xl:flex-none">
-        <Subtitle className="text-[15px] sm:text-[18px]">{title}</Subtitle>
+      <div className="flex min-w-0 flex-1 flex-col gap-2 justify-center pl-4 sm:pl-6 min-h-[46px] lg:min-w-0 lg:border-l lg:border-gray-200 lg:pl-6 lg:w-[397px] lg:flex-none 2xl:w-[500px] 2xl:flex-none">
         <div className="flex items-center gap-0.5">
-          <Description className="text-[14px] sm:text-[16px] text-black/60">
+          <Subtitle className="text-[15px] sm:text-[18px] leading-[1.2] text-[#171717]">
             {artistNames}
-          </Description>
-          <ChevronRightIcon className="w-5 h-5 text-black/60 shrink-0" />
+          </Subtitle>
+          <ChevronRightIcon className="w-5 h-5 text-[#171717] shrink-0" />
         </div>
+        <Description className="text-[14px] sm:text-[16px] leading-[1.2] text-[#17171799] font-medium">
+          {title}
+        </Description>
       </div>
     </Link>
   );
@@ -160,7 +162,7 @@ function AttendButton({
   onClick: () => void;
 }) {
   const attendLabel = isPast
-    ? "관람했어요"
+    ? "관람 했어요"
     : isAttend
       ? "기대돼요"
       : "보고 싶어요";
@@ -174,7 +176,7 @@ function AttendButton({
           <Button className="md:hidden w-9 h-9 shrink-0 border-2 border-main bg-main rounded-[3px] flex items-center justify-center hover:bg-main/90 transition-colors">
             <Check className="w-5 h-5 text-white" />
           </Button>
-          <Button className="hidden md:flex border-2 border-main bg-white text-main hover:bg-main hover:text-white md:w-[112px] md:h-[38px] lg:w-[112px] lg:h-[38px] xl:w-[112px] xl:h-[38px] 2xl:w-[123px] 2xl:h-10">
+          <Button className="group hidden md:flex border-2 border-main bg-white text-main hover:bg-main hover:text-white md:w-[112px] md:h-[38px] lg:w-[112px] lg:h-[38px] xl:w-[112px] xl:h-[38px] 2xl:w-[123px] 2xl:h-10">
             <Subtitle className="text-[14px] xl:text-[16px] group-hover:text-white transition-colors">
               {attendLabel}
             </Subtitle>
@@ -183,14 +185,14 @@ function AttendButton({
         </>
       ) : (
         <>
-          <Button className="group md:hidden w-9 h-9 shrink-0 bg-[rgba(23,23,23,0.04)] rounded-[3px] flex items-center justify-center hover:bg-main transition-colors hover:text-white">
-            <Plus className="w-5 h-5 text-black group-hover:text-white transition-colors" />
+          <Button className="md:hidden w-9 h-9 shrink-0 bg-main rounded-[3px] flex items-center justify-center hover:bg-main/90 transition-colors">
+            <Plus className="w-5 h-5 text-white" />
           </Button>
-          <Button className="hidden md:flex bg-gray hover:bg-main hover:text-white md:w-[112px] md:h-[38px] lg:w-[112px] lg:h-[38px] xl:w-[112px] xl:h-[38px] 2xl:w-[123px] 2xl:h-10">
-            <Subtitle className="text-[14px] xl:text-[16px] group-hover:text-white transition-colors text-black">
-              보고 싶어요
+          <Button className="hidden md:flex bg-main text-white hover:bg-main/90 md:w-[112px] md:h-[38px] lg:w-[112px] lg:h-[38px] xl:w-[112px] xl:h-[38px] 2xl:w-[123px] 2xl:h-10">
+            <Subtitle className="text-[14px] xl:text-[16px] text-white">
+              {attendLabel}
             </Subtitle>
-            <Plus className="w-5 h-5 text-black group-hover:text-white transition-colors" />
+            <Plus className="w-5 h-5 text-white" />
           </Button>
         </>
       )}

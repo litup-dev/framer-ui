@@ -29,7 +29,7 @@ export const AllPerformancesLocationFilter = () => {
   };
 
   return (
-    <div className="sm:pt-19 xl:pt-22 flex gap-4 sm:gap-6">
+    <div className="sm:pt-19 xl:pt-22 flex gap-3 md:gap-6">
       {locations.map((location) => (
         <Button
           key={location.id}
@@ -40,7 +40,7 @@ export const AllPerformancesLocationFilter = () => {
         >
           <Subtitle
             className={cn(
-              "text-[16px] md:text-[18px] xl:text-[20px] 2xl:text-[24px] whitespace-nowrap",
+              "text-[16px] lg:text-[18px] xl:text-[20px] 2xl:text-[24px] whitespace-nowrap",
               isSelected(location.value)
                 ? "border-b-2 border-black"
                 : "text-black/40",
