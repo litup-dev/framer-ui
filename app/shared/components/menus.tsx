@@ -64,10 +64,12 @@ const HeaderMenus = ({
             onClick={() => router.push("/user")}
             className="cursor-pointer w-6 h-6 2xl:w-7 2xl:h-7"
           >
-            <AvatarImage
-              src={getImageUrl(user.profilePath) || ""}
-              alt={user.nickname}
-            />
+            {getImageUrl(user.profilePath) && (
+              <AvatarImage
+                src={getImageUrl(user.profilePath) ?? undefined}
+                alt={user.nickname}
+              />
+            )}
             <AvatarFallback className="bg-transparent p-0">
               <Image
                 src="/images/header-user.png"

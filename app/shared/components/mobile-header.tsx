@@ -109,9 +109,11 @@ const MobileHeader = () => {
                       onClick={toggleUserDropdown}
                     >
                       <Avatar className="w-8 h-8">
-                        <AvatarImage
-                          src={getImageUrl(user?.profilePath) || ""}
-                        />
+                        {getImageUrl(user?.profilePath) && (
+                          <AvatarImage
+                            src={getImageUrl(user?.profilePath) ?? undefined}
+                          />
+                        )}
                         <AvatarFallback className="bg-transparent p-0">
                           <Image
                             src="/images/header-user.png"
