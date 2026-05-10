@@ -47,7 +47,7 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
   const [selectedMonth, setSelectedMonth] = useState(new Date());
   const [reviewPage, setReviewPage] = useState(1);
   const [isMine, setIsMine] = useState(false);
-  const [sort, setSort] = useState<"-createdAt" | "+createdAt">("-createdAt");
+  const [sort, setSort] = useState<"-createdAt" | "+createdAt" | null>("-createdAt");
   const reviewLimit = 5;
   const reviewOffset = (reviewPage - 1) * reviewLimit;
 
@@ -59,7 +59,7 @@ const ClubDetailContent = ({ id }: ClubDetailContentProps) => {
     ...getClubDetailCalendarByIdOptions(Number(id), currentMonth),
   });
   const { data: reviewsData } = useQuery<ReviewPaginatedResponse>(
-    getReviewByIdOptions(id, reviewOffset, reviewLimit, isMine, sort),
+    getReviewByIdOptions(id, reviewOffset, reviewLimit, isMine, sort ?? "-createdAt"),
   );
 
   const images = data?.data?.images || [];

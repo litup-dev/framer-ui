@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 
@@ -28,8 +27,8 @@ interface ClubDetailReviewProps {
   onPageChange: (page: number) => void;
   isMine: boolean;
   setIsMine: (isMine: boolean) => void;
-  sort: "-createdAt" | "+createdAt";
-  setSort: (sort: "-createdAt" | "+createdAt") => void;
+  sort: "-createdAt" | "+createdAt" | null;
+  setSort: (sort: "-createdAt" | "+createdAt" | null) => void;
 }
 
 interface ReviewItem {
@@ -194,17 +193,29 @@ const ClubDetailReview = ({
         </div>
         <div
           className="flex items-center gap-0 md:gap-0 lg:gap-0 xl:gap-0 2xl:gap-0 cursor-pointer"
-          onClick={() =>
-            setSort(sort === "-createdAt" ? "+createdAt" : "-createdAt")
-          }
+          onClick={() => {
+            if (sort === "-createdAt") setSort("+createdAt");
+            else if (sort === "+createdAt") setSort(null);
+            else setSort("-createdAt");
+          }}
         >
-          <Description className="text-[14px] xl:text-[16px] text-[#17171799]">
-            {sort === "-createdAt" ? "최신순" : "오래된순"}
-          </Description>
-          <ChevronDown
+          <Description
             className={cn(
-              "h-5 w-5 md:h-5 md:w-5 lg:h-5 lg:w-5 xl:h-6 xl:w-6 2xl:h-6 2xl:w-6 text-[#17171799] cursor-pointer",
-              sort === "-createdAt" ? "rotate-180" : "",
+              "text-[14px] xl:text-[16px]",
+              sort === null ? "text-[#17171766]" : "text-[#17171799]",
+            )}
+          >
+            {sort === "-createdAt" ? "최신순" : sort === "+createdAt" ? "오래된순" : "날짜순"}
+          </Description>
+          <Image
+            src="/images/rec-arrow-right.png"
+            alt="sort"
+            width={24}
+            height={24}
+            className={cn(
+              "h-5 w-5 md:h-5 md:w-5 lg:h-5 lg:w-5 xl:h-6 xl:w-6 2xl:h-6 2xl:w-6 cursor-pointer transition-opacity",
+              sort === null ? "opacity-0 pointer-events-none" : "opacity-100",
+              sort === "-createdAt" ? "rotate-90" : "-rotate-90",
             )}
           />
         </div>

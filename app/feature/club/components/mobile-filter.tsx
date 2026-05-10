@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Map } from "lucide-react";
-import { ChevronDown, List } from "lucide-react";
+import { Map, List } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 
@@ -88,10 +87,10 @@ const MobileFilter = ({
     return filter.options[optionIndex].label;
   };
 
-  const getChevronRotation = (filter: FilterItem) => {
-    if (activeFilterId !== filter.id) return "rotate-0";
+  const getArrowRotation = (filter: FilterItem) => {
+    if (activeFilterId !== filter.id) return "rotate-90";
     const optionIndex = getCurrentOptionIndex(filter.id);
-    return optionIndex === 0 ? "rotate-0" : "rotate-180";
+    return optionIndex === 0 ? "rotate-90" : "-rotate-90";
   };
 
   useEffect(() => {
@@ -134,7 +133,13 @@ const MobileFilter = ({
           className="size-6"
         />
       ) : (
-        <List className="size-5 text-white" />
+        <Image
+          src="/images/map-list-icon.png"
+          alt="list"
+          width={20}
+          height={20}
+          className="size-6"
+        />
       )}
     </div>
   );
@@ -147,7 +152,7 @@ const MobileFilter = ({
 
       {viewType === "list" ? (
         <>
-          <div className="space-y-3 md:space-y-5 px-5 sm:pl-[40px] md:px-10 pt-[20.5px] md:pt-8">
+          <div className="space-y-0 md:space-y-5 px-5 sm:pl-[40px] md:px-10 pt-[20.5px] md:pt-8">
             <div className="flex items-start gap-2">
               <div className="flex-1 min-w-0">
                 <KeywordList categories={categories?.data} />
@@ -161,20 +166,20 @@ const MobileFilter = ({
                     key={item.id}
                     onClick={() => handleRegionClick(item.value)}
                     className={cn(
-                      "border px-2.5 md:px-[11px] py-[11px] md:py-2.5 rounded-[3px] md:rounded-[4px] cursor-pointer transition-colors h-[31px] md:h-[34px] flex items-center justify-center",
+                      "px-2.5 md:px-[11px] rounded-[3px] md:rounded-[4px] cursor-pointer transition-colors h-[31px] md:h-[34px] flex items-center justify-center",
                       selectedRegion === item.value
-                        ? "border-2 border-main text-main"
-                        : "bg-transparent text-gray-700",
+                        ? "border-[1.5px] border-main text-main"
+                        : "border border-[rgba(23,23,23,0.1)] bg-transparent text-gray-700",
                     )}
                   >
                     {selectedRegion === item.value ? (
-                      <Subtitle className="text-[13px] md:text-[14px] text-main">
+                      <p className="text-[13px] md:text-[14px] font-bold tracking-[-0.04em] leading-none text-main whitespace-nowrap">
                         {item.label}
-                      </Subtitle>
+                      </p>
                     ) : (
-                      <Description className="text-[13px] md:text-[14px] text-black/60">
+                      <p className="text-[13px] md:text-[14px] font-medium tracking-[-0.04em] leading-none text-black/60 whitespace-nowrap">
                         {item.label}
-                      </Description>
+                      </p>
                     )}
                   </div>
                 ))}
@@ -216,13 +221,17 @@ const MobileFilter = ({
                         </Description>
                       )}
                       <div className="w-4 h-4 flex items-center justify-center">
-                        <ChevronDown
+                        <Image
+                          src="/images/rec-arrow-right.png"
+                          alt="sort"
+                          width={16}
+                          height={16}
                           className={cn(
                             "size-4 transition-all duration-200",
                             isActive(filter.id)
                               ? "opacity-100 scale-100"
                               : "opacity-0 scale-0",
-                            getChevronRotation(filter),
+                            getArrowRotation(filter),
                           )}
                         />
                       </div>
@@ -264,7 +273,7 @@ const MobileFilter = ({
             {mapToggleButton}
           </div>
           <div
-            className="fixed inset-x-0 bottom-0 top-[104px] md:top-[148px] overflow-hidden"
+            className="fixed inset-x-0 bottom-0 top-[112px] md:top-[148px] overflow-hidden border-t border-[rgba(23,23,23,0.1)]"
             style={{ touchAction: "none" }}
           >
             <KakaoMap club={selectedClub} clubs={clubs} />

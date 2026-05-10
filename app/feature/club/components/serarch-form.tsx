@@ -85,8 +85,13 @@ const ClubSearchForm = () => {
       resetGeolocation();
       requestGeolocation();
     }
+    if (prevRegion === "nearby" && region !== "nearby") {
+      resetGeolocation();
+    }
     if (region) {
       setPrevRegion(region);
+    } else {
+      setPrevRegion("");
     }
   }, [region, prevRegion, requestGeolocation, resetGeolocation]);
 

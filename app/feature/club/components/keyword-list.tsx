@@ -111,20 +111,20 @@ const KeywordList = ({ categories }: KeywordListProps) => {
         onClick={() => handleKeywordClick(keyword.id)}
         style={opts.visible ? undefined : { visibility: "hidden" }}
         className={cn(
-          "shrink-0 h-[31px] sm:h-[34px] 2xl:h-[36px] rounded-[4px] px-[11px] 2xl:px-3 py-2.5 cursor-pointer transition-colors text-center whitespace-nowrap",
+          "shrink-0 h-[31px] sm:h-[34px] 2xl:h-[36px] rounded-[4px] px-2.5 2xl:px-3 cursor-pointer transition-colors whitespace-nowrap flex items-center justify-center",
           isSelected
             ? "bg-main text-white hover:bg-main/90"
             : "bg-[rgba(23,23,23,0.04)] hover:bg-[rgba(23,23,23,0.08)]",
         )}
       >
         {isSelected ? (
-          <Subtitle className="text-[13px] md:text-[14px] 2xl:text-[16px] text-white">
+          <p className="text-[13px] md:text-[14px] 2xl:text-[16px] font-bold tracking-[-0.04em] leading-none text-white whitespace-nowrap">
             {keyword.keyword}
-          </Subtitle>
+          </p>
         ) : (
-          <Description className="text-[13px] md:text-[14px] 2xl:text-[16px] text-black/50">
+          <p className="text-[13px] md:text-[14px] 2xl:text-[16px] font-medium tracking-[-0.04em] leading-none text-black/50 whitespace-nowrap">
             {keyword.keyword}
-          </Description>
+          </p>
         )}
       </button>
     );
@@ -141,7 +141,7 @@ const KeywordList = ({ categories }: KeywordListProps) => {
           {hasMore && (
             <button
               onClick={() => setShowAllKeywords(false)}
-              className="shrink-0 bg-[rgba(23,23,23,0.04)] cursor-pointer transition-colors text-center hover:bg-[rgba(23,23,23,0.08)] rounded-[4px] px-[11px] 2xl:px-3 py-2.5 h-[31px] sm:h-[34px] 2xl:h-[36px] flex items-center justify-center"
+              className="shrink-0 bg-[rgba(23,23,23,0.04)] cursor-pointer transition-colors text-center hover:bg-[rgba(23,23,23,0.08)] rounded-[4px] px-2.5 2xl:px-3 h-[31px] sm:h-[34px] 2xl:h-[36px] flex items-center justify-center"
             >
               <Image
                 src="/images/arrow-up.svg"
@@ -192,7 +192,7 @@ const KeywordList = ({ categories }: KeywordListProps) => {
           <button
             ref={ellipsisRef}
             onClick={() => setShowAllKeywords(true)}
-            className="shrink-0 bg-[rgba(23,23,23,0.04)] cursor-pointer transition-colors text-center hover:bg-[rgba(23,23,23,0.08)] rounded-[4px] px-[11px] 2xl:px-3 py-2.5 h-[31px] sm:h-[34px] 2xl:h-[36px] flex items-center justify-center"
+            className="shrink-0 bg-[rgba(23,23,23,0.04)] cursor-pointer transition-colors text-center hover:bg-[rgba(23,23,23,0.08)] rounded-[4px] px-2.5 2xl:px-3 h-[31px] sm:h-[34px] 2xl:h-[36px] flex items-center justify-center"
             style={measured ? undefined : { visibility: "hidden" }}
           >
             <Image

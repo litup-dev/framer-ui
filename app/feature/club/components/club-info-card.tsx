@@ -51,16 +51,25 @@ const ClubInfoCard = ({ club, isOverlay = false }: ClubInfoCardProps) => {
 
   if (isOverlay) {
     return (
-      <div className="relative w-fit">
-        <div className="bg-white border border-[rgba(23,23,23,0.1)] drop-shadow-[0px_4px_15px_rgba(0,0,0,0.06)] rounded-[4px] p-5">
-          <div className="flex gap-[14px] items-center pr-[14px]">
-            <ClubImage club={clubWithImages} size="md" />
-            <div className="flex flex-col gap-2 items-start">
+      <div className="flex flex-col items-center w-[320px]">
+        <div className="bg-white outline outline-1 outline-[rgba(23,23,23,0.1)] drop-shadow-[0px_4px_15px_rgba(0,0,0,0.06)] rounded-[4px] p-5 h-[104px] w-full">
+          <div className="flex gap-[14px] items-center h-full">
+            <div className="relative w-16 h-16 shrink-0 rounded-full overflow-hidden bg-[#D9D9D9]">
+              {clubWithImages.images?.[0]?.filePath && (
+                <Image
+                  src={getImageUrl(clubWithImages.images[0].filePath) ?? ""}
+                  alt={club.name}
+                  fill
+                  className="object-cover"
+                />
+              )}
+            </div>
+            <div className="flex flex-col gap-2 min-w-0">
               <div className="flex gap-2 items-center">
-                <Subtitle className="text-[20px] text-[#171717] leading-none whitespace-nowrap">
+                <Subtitle className="text-[20px] text-[#171717] leading-none truncate">
                   {club.name}
                 </Subtitle>
-                <div className="flex items-center gap-0.5">
+                <div className="flex items-center gap-0.5 shrink-0">
                   <Image
                     src="/images/club-rating.svg"
                     alt="star"
@@ -73,14 +82,14 @@ const ClubInfoCard = ({ club, isOverlay = false }: ClubInfoCardProps) => {
                   </Description>
                 </div>
               </div>
-              <Description className="text-[16px] text-[#20202080] font-medium leading-none whitespace-nowrap">
+              <Description className="text-[16px] text-[#20202080] font-medium leading-none truncate">
                 {club.address}
               </Description>
             </div>
           </div>
         </div>
         <svg
-          className="absolute left-1/2 -translate-x-1/2 -bottom-[18px]"
+          className="-mt-[6px]"
           width="26"
           height="19"
           viewBox="0 0 26 19"

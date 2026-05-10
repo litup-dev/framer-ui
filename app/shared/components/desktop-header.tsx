@@ -115,7 +115,7 @@ const DesktopHeader = () => {
             alt="logo"
             width={120}
             height={38}
-            className="w-[76px] h-[29px] 2xl:w-[88px] 2xl:h-[34px]"
+            className="w-[76px] h-[29px] 2xl:w-[122px] 2xl:h-[38px]"
             style={{
               filter:
                 isClubDetailPage || isHomePage

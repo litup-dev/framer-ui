@@ -11,7 +11,7 @@ import ClubInfoCard from "@/app/feature/club/components/club-info-card";
 const useIsMdOrLarger = () => {
   const [isMdOrLarger, setIsMdOrLarger] = useState(false);
   useEffect(() => {
-    const check = () => setIsMdOrLarger(window.innerWidth >= 768);
+    const check = () => setIsMdOrLarger(window.innerWidth >= 744);
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);

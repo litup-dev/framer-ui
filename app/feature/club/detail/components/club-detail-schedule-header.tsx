@@ -2,7 +2,6 @@
 
 import { format, addMonths, subMonths } from "date-fns";
 import { ko } from "date-fns/locale";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { Subtitle } from "@/components/shared/typography";
 
@@ -43,7 +42,13 @@ const ClubDetailScheduleHeader = ({
           className="hover:bg-gray-100 rounded transition-colors"
           aria-label="이전 달"
         >
-          <ChevronLeft className="w-5 h-5 2xl:w-6 2xl:h-6" />
+          <Image
+            src="/images/rec-arrow-right.png"
+            alt="prev month"
+            width={24}
+            height={24}
+            className="w-5 h-5 2xl:w-6 2xl:h-6 rotate-180"
+          />
         </button>
         <Subtitle className="text-[16px] xl:text-[20px] text-black-60 min-w-[100px] xl:min-w-[120px] text-center">
           {format(currentMonth, "yyyy년 M월", { locale: ko })}
@@ -53,7 +58,13 @@ const ClubDetailScheduleHeader = ({
           className="hover:bg-gray-100 rounded transition-colors"
           aria-label="다음 달"
         >
-          <ChevronRight className="w-5 h-5 2xl:w-6 2xl:h-6" />
+          <Image
+            src="/images/rec-arrow-right.png"
+            alt="next month"
+            width={24}
+            height={24}
+            className="w-5 h-5 2xl:w-6 2xl:h-6"
+          />
         </button>
       </div>
     </div>

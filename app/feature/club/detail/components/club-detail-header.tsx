@@ -13,8 +13,6 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel";
 import { Subtitle } from "@/components/shared/typography";
@@ -29,6 +27,8 @@ const ClubDetailHeader = ({ images, clubName }: ClubDetailHeaderProps) => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [api, setApi] = useState<CarouselApi>();
+  const [canScrollPrev, setCanScrollPrev] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(false);
   const [mounted, setMounted] = useState(false);
   const { isImageGalleryOpen } = useClubDetailStore();
 
@@ -79,13 +79,17 @@ const ClubDetailHeader = ({ images, clubName }: ClubDetailHeaderProps) => {
 
     const onSelect = () => {
       setCurrentIndex(api.selectedScrollSnap());
+      setCanScrollPrev(api.canScrollPrev());
+      setCanScrollNext(api.canScrollNext());
     };
 
     api.on("select", onSelect);
+    api.on("reInit", onSelect);
     onSelect();
 
     return () => {
       api.off("select", onSelect);
+      api.off("reInit", onSelect);
     };
   }, [api]);
 
@@ -114,51 +118,33 @@ const ClubDetailHeader = ({ images, clubName }: ClubDetailHeaderProps) => {
               className="object-cover blur-[1px]"
               sizes="100vw"
             />
-            <div className="absolute bottom-5 right-5 z-[1000000]">
-              <div className="flex items-center rounded-full min-h-[12px] min-w-[26px] py-1.5 px-2 gap-1">
-                <Subtitle className="text-white text-[12px]">
-                  {currentIndex + 1}
-                </Subtitle>
-                <Subtitle className="text-gray-400 text-[12px]">/</Subtitle>
-                <Subtitle className="text-gray-400 text-[12px]">
-                  {carouselImages.length}
-                </Subtitle>
-              </div>
-            </div>
             <div className="absolute inset-0 bg-[#000000]/70" />
           </motion.div>
         ))}
       </AnimatePresence>
       <div className="absolute inset-0 z-20 flex justify-center items-center pointer-events-none">
-        <div className="w-full flex justify-center h-[220px] sm:h-[490px] xl:h-[490px] 2xl:h-[600px] pointer-events-auto">
+        <div className="w-full flex justify-center h-[490px] 2xl:h-[600px] pointer-events-auto">
           <Carousel
-            className="w-full sm:w-auto h-[220px] sm:h-[490px] xl:h-[490px] 2xl:h-[600px]"
+            className="w-full sm:w-auto h-[490px] 2xl:h-[600px]"
             opts={{
               align: "start",
-              loop: true,
+              loop: false,
             }}
             setApi={setApi}
           >
-            <CarouselPrevious
-              className="hidden 2xl:flex 2xl:left-[63px] -translate-y-1/2 z-50"
-              isClubDetailCarousel
-            />
-            <CarouselNext
-              className="hidden 2xl:flex 2xl:right-[63px] left-auto -translate-y-1/2 z-50"
-              isClubDetailCarousel
-            />
-            <CarouselContent className="h-[220px] sm:h-[490px] xl:h-[490px] 2xl:h-[600px] -ml-0">
+            <CarouselContent className="h-[490px] 2xl:h-[600px] -ml-0">
               {carouselImages.map((imageSrc, index) => (
                 <CarouselItem
                   key={index}
-                  className="h-[220px] sm:h-[490px] xl:h-[490px] 2xl:h-[600px] pl-0  basis-full xl:!basis-auto min-w-0 flex items-center justify-center"
+                  className="h-[490px] 2xl:h-[600px] pl-0  basis-full xl:!basis-auto min-w-0 flex items-center justify-center"
                 >
-                  <div className="relative w-full h-[220px] sm:h-[490px] xl:h-[490px] 2xl:h-[600px] sm:flex sm:items-center sm:justify-center">
+                  <div className="relative w-full h-[490px] 2xl:h-[600px] flex items-center justify-center overflow-hidden">
+                    {/* mobile: 원본 비율 유지, 컨테이너 안에 완전히 fit (letterbox) */}
                     <Image
                       src={imageSrc}
                       alt="Overlay"
                       fill
-                      className="object-cover sm:!hidden"
+                      className="object-contain sm:!hidden"
                       sizes="100vw"
                     />
                     <div className="hidden sm:block relative w-full h-[490px] xl:h-[490px] 2xl:h-[600px] max-w-[440px] xl:max-w-none xl:w-auto xl:flex xl:items-center xl:justify-center">
@@ -177,12 +163,41 @@ const ClubDetailHeader = ({ images, clubName }: ClubDetailHeaderProps) => {
             </CarouselContent>
           </Carousel>
         </div>
-        <div className="hidden 2xl:flex absolute right-[80px] bottom-[40px] z-50 items-center px-2 py-1 rounded-[4px] bg-black/50">
-          <Subtitle className="text-white text-[14px]">
-            {currentIndex + 1} / {carouselImages.length}
+        <div className="absolute right-5 bottom-5 2xl:right-[80px] 2xl:bottom-[40px] z-[60] xl:hidden flex items-center px-2 py-1.5 rounded-full bg-black/60 pointer-events-auto">
+          <Subtitle className="text-[12px] 2xl:text-[14px]">
+            <span className="text-white">{currentIndex + 1}</span>
+            <span className="text-white/60">{` / ${carouselImages.length}`}</span>
           </Subtitle>
         </div>
       </div>
+      {/* xl/2xl 캐러셀 화살표 — viewport 기준 absolute 배치 (Figma: xl left=91 right=43, 2xl left=111 right=63) */}
+      <button
+        onClick={() => api?.scrollPrev()}
+        aria-label="Previous slide"
+        className="hidden xl:flex absolute top-1/2 -translate-y-1/2 z-50 xl:left-[43px] 2xl:left-[63px] size-12 items-center justify-center border-none bg-transparent shadow-none hover:bg-transparent disabled:opacity-20"
+        disabled={!canScrollPrev}
+      >
+        <Image
+          src="/images/arrow-white.svg"
+          alt="previous"
+          width={48}
+          height={48}
+        />
+      </button>
+      <button
+        onClick={() => api?.scrollNext()}
+        aria-label="Next slide"
+        className="hidden xl:flex absolute top-1/2 -translate-y-1/2 z-50 xl:right-[43px] 2xl:right-[63px] size-12 items-center justify-center border-none bg-transparent shadow-none hover:bg-transparent disabled:opacity-20"
+        disabled={!canScrollNext}
+      >
+        <Image
+          src="/images/arrow-white.svg"
+          alt="next"
+          width={48}
+          height={48}
+          className="rotate-180"
+        />
+      </button>
       {mounted &&
         createPortal(
           <div

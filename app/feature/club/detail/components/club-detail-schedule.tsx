@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { format, getDate } from "date-fns";
 import { ko } from "date-fns/locale";
-import { Check, ChevronRightIcon, Plus } from "lucide-react";
+import { Check, Plus } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { cn } from "@/lib/utils";
@@ -142,7 +142,13 @@ function EventTitleArtists({
           <Subtitle className="text-[15px] sm:text-[18px] leading-[1.2] text-[#171717]">
             {artistNames}
           </Subtitle>
-          <ChevronRightIcon className="w-5 h-5 text-[#171717] shrink-0" />
+          <Image
+            src="/images/rec-arrow-right.png"
+            alt="arrow"
+            width={20}
+            height={20}
+            className="w-5 h-5 shrink-0"
+          />
         </div>
         <Description className="text-[14px] sm:text-[16px] leading-[1.2] text-[#17171799] font-medium">
           {title}

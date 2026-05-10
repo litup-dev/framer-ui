@@ -64,40 +64,66 @@ export const useFilterState = (filters?: UseFilterStateProps) => {
     filters?.region,
   ]);
 
-  const toggleOption = (currentOption: number, optionIndex: number) => {
-    return currentOption === optionIndex
-      ? optionIndex === 0
-        ? 1
-        : 0
-      : optionIndex;
+  // 3-state 사이클: 비활성(undefined) → 옵션0 → 옵션1 → 해제(undefined)
+  const getNextOptionIndex = (
+    filterId: number,
+    currentActiveId: number | null,
+    currentOptions: Record<number, number>
+  ): number | null => {
+    if (currentActiveId !== filterId) {
+      // 비활성 → 옵션0 활성화
+      return 0;
+    }
+    const current = currentOptions[filterId] ?? 0;
+    if (current === 0) {
+      // 옵션0 → 옵션1
+      return 1;
+    }
+    // 옵션1 → 해제(null)
+    return null;
   };
 
   const handleFilterClick = (
     filterId: number,
-    optionIndex: number,
+    _optionIndex: number,
     setValue: (name: keyof ClubSearchFormSchema, value: any) => void
   ) => {
-    const currentOption = selectedOptions[filterId];
-    const newOptionIndex = toggleOption(currentOption, optionIndex);
-
-    setSelectedOptions((prev) => ({
-      ...prev,
-      [filterId]: newOptionIndex,
-    }));
+    const nextOptionIndex = getNextOptionIndex(
+      filterId,
+      activeFilterId,
+      selectedOptions
+    );
 
     const filter = filterItems.find((f) => f.id === filterId);
 
-    if (filter) {
-      const selectedValue = filter.options[newOptionIndex].value;
-      filterItems.forEach((f) => {
-        if (f.id !== filterId) {
-          setValue(f.fieldName, undefined);
-        }
+    if (nextOptionIndex === null) {
+      // 해제: 이 필터 비활성화, form 값 undefined로
+      setSelectedOptions((prev) => {
+        const next = { ...prev };
+        delete next[filterId];
+        return next;
       });
-      setValue(filter.fieldName, selectedValue);
-    }
+      setActiveFilterId(null);
+      if (filter) {
+        setValue(filter.fieldName, undefined);
+      }
+    } else {
+      setSelectedOptions((prev) => ({
+        ...prev,
+        [filterId]: nextOptionIndex,
+      }));
+      setActiveFilterId(filterId);
 
-    setActiveFilterId(filterId);
+      if (filter) {
+        const selectedValue = filter.options[nextOptionIndex].value;
+        filterItems.forEach((f) => {
+          if (f.id !== filterId) {
+            setValue(f.fieldName, undefined);
+          }
+        });
+        setValue(filter.fieldName, selectedValue);
+      }
+    }
   };
 
   const getCurrentOptionIndex = (filterId: number) => {
@@ -110,8 +136,14 @@ export const useFilterState = (filters?: UseFilterStateProps) => {
     regionValue: string,
     setValue: (name: keyof ClubSearchFormSchema, value: any) => void
   ) => {
-    setSelectedRegion(regionValue);
-    setValue("region", regionValue);
+    // 이미 활성화된 region을 다시 클릭하면 해제
+    if (selectedRegion === regionValue) {
+      setSelectedRegion(null);
+      setValue("region", undefined);
+    } else {
+      setSelectedRegion(regionValue);
+      setValue("region", regionValue);
+    }
   };
 
   return {

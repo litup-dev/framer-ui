@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
+import Image from "next/image";
 import { useFormContext } from "react-hook-form";
 
 import { cn } from "@/lib/utils";
@@ -28,7 +28,6 @@ import { useQuery } from "@tanstack/react-query";
 import { getReviewCategoryOptions } from "../query-options";
 import KeywordList from "@/app/feature/club/components/keyword-list";
 import { Description, Subtitle } from "@/components/shared/typography";
-import Image from "next/image";
 
 type FilterItem = (typeof filterItems)[number];
 
@@ -88,10 +87,10 @@ const DesktopFilter = ({
     return filter.options[optionIndex].label;
   };
 
-  const getChevronRotation = (filter: FilterItem) => {
-    if (activeFilterId !== filter.id) return "rotate-0";
+  const getArrowRotation = (filter: FilterItem) => {
+    if (activeFilterId !== filter.id) return "rotate-90";
     const optionIndex = getCurrentOptionIndex(filter.id);
-    return optionIndex === 0 ? "rotate-0" : "rotate-180";
+    return optionIndex === 0 ? "rotate-90" : "-rotate-90";
   };
 
   return (
@@ -172,7 +171,7 @@ const DesktopFilter = ({
                           : "border border-[rgba(23,23,23,0.2)] text-[rgba(23,23,23,0.6)]",
                       )}
                     >
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-0">
                         {isActive(filter.id) ? (
                           <Subtitle className="text-[14px] 2xl:text-[16px] text-main">
                             {getFilterLabel(filter)}
@@ -185,14 +184,18 @@ const DesktopFilter = ({
                         <div
                           className={cn(
                             "flex items-center justify-center flex-shrink-0",
-                            isActive(filter.id) ? "w-4 h-4 " : "w-0 h-0",
+                            isActive(filter.id) ? "w-5 h-5" : "w-0 h-0",
                           )}
                         >
                           {isActive(filter.id) && (
-                            <ChevronDown
+                            <Image
+                              src="/images/rec-arrow-right.png"
+                              alt="sort"
+                              width={20}
+                              height={20}
                               className={cn(
-                                "size-6 transition-transform",
-                                getChevronRotation(filter),
+                                "size-5 transition-transform",
+                                getArrowRotation(filter),
                               )}
                             />
                           )}

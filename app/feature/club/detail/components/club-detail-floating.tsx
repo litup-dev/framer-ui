@@ -24,8 +24,8 @@ const floatingItems = [
   {
     id: 3,
     sectionId: "review",
-    activeImage: "/images/club_review_active.svg",
-    inactiveImage: "/images/club_review_inactive.svg",
+    activeImage: "/images/quick-review-active.png",
+    inactiveImage: "/images/quick-review-inactive.png",
     alt: "review",
   },
 ];
@@ -44,7 +44,7 @@ const ClubDetailFloating = ({ onSelect }: ClubDetailFloatingProps) => {
   };
 
   return (
-    <div className="fixed bottom-10 right-5 flex flex-col gap-1 z-[1000000] xl:hidden">
+    <div className="fixed bottom-10 right-5 flex flex-col gap-1.5 z-[1000000] xl:hidden">
       {floatingItems.map((item) => (
         <div key={item.id} className="cursor-pointer">
           <button onClick={() => handleClick(item.id, item.sectionId)}>
