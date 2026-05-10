@@ -7,11 +7,10 @@ import { useRouter, usePathname } from "next/navigation";
 import { saveReturnUrl } from "@/lib/login-utils";
 import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Subtitle } from "@/components/shared/typography";
-import { cn, getImageUrl } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { apiClient } from "@/lib/api-client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -108,22 +107,13 @@ const MobileHeader = () => {
                       className="flex items-center gap-2 cursor-pointerh-[72px]"
                       onClick={toggleUserDropdown}
                     >
-                      <Avatar className="w-8 h-8">
-                        {getImageUrl(user?.profilePath) && (
-                          <AvatarImage
-                            src={getImageUrl(user?.profilePath) ?? undefined}
-                          />
-                        )}
-                        <AvatarFallback className="bg-transparent p-0">
-                          <Image
-                            src="/images/header-user.png"
-                            alt="사용자"
-                            width={32}
-                            height={32}
-                            className="w-8 h-8"
-                          />
-                        </AvatarFallback>
-                      </Avatar>
+                      <Image
+                        src="/images/header-user.png"
+                        alt="사용자"
+                        width={32}
+                        height={32}
+                        className="w-8 h-8"
+                      />
                       <div className="flex items-center">
                         <Subtitle className="text-[14px]">
                           {user?.nickname}
