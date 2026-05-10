@@ -189,12 +189,7 @@ const MobileFilter = ({
           </div>
 
           <div className="space-y-6 md:space-y-10 px-5 sm:pl-[40px] md:px-10 pt-4 md:pt-5 pb-10">
-            <div
-              className={cn(
-                "flex transition-all duration-200 pb-1",
-                activeFilterId === null ? "gap-0" : "gap-4",
-              )}
-            >
+            <div className="flex gap-1 pb-1">
               {filterItems.map((filter) => {
                 const currentOptionIndex = getCurrentOptionIndex(filter.id);
                 return (
@@ -220,18 +215,18 @@ const MobileFilter = ({
                           {getFilterLabel(filter)}
                         </Description>
                       )}
-                      <div className="w-4 h-4 flex items-center justify-center">
+                      <div className="w-4 h-4 flex items-center justify-center shrink-0">
                         <Image
-                          src="/images/rec-arrow-right.png"
+                          src="/images/sort-arrow.svg"
                           alt="sort"
                           width={16}
                           height={16}
                           className={cn(
-                            "size-4 transition-all duration-200",
-                            isActive(filter.id)
-                              ? "opacity-100 scale-100"
-                              : "opacity-0 scale-0",
-                            getArrowRotation(filter),
+                            "size-4 transition-opacity duration-200",
+                            isActive(filter.id) ? "opacity-100" : "opacity-0",
+                            isActive(filter.id) &&
+                              getCurrentOptionIndex(filter.id) === 1 &&
+                              "rotate-180",
                           )}
                         />
                       </div>

@@ -1,4 +1,4 @@
-import { ChevronDown } from "lucide-react";
+import Image from "next/image";
 import { Subtitle } from "@/components/shared/typography";
 import { cn } from "@/lib/utils";
 import { useHomeStore } from "@/app/feature/home/store/home-store";
@@ -118,7 +118,13 @@ const MobileSelectShow = ({
                       "underline decoration-1 underline-offset-4",
                   )}
                 />
-                <ChevronDown className="size-5" strokeWidth={1.5} />
+                <Image
+                  src="/images/rec-arrow-right.png"
+                  alt="지역별"
+                  width={20}
+                  height={20}
+                  className="size-5 rotate-90"
+                />
               </SelectTrigger>
               <SelectContent
                 className="p-4 [&>div]:!space-y-0"

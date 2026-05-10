@@ -49,7 +49,7 @@ export const CalendarSelectedEvents = ({
                       key={`${event.id}-${performance.id}-${performanceIndex}`}
                       className="flex gap-2 items-stretch"
                     >
-                      <div className="flex-1 flex flex-col justify-between relative">
+                      <div className="flex-1 flex flex-col gap-6 md:gap-0 justify-between relative">
                         <div className="flex flex-col gap-3 md:gap-4 lg:gap-5">
                           <div className="flex items-center gap-2.5">
                             <div className="w-1.5 h-1.5 bg-[#171717] rounded-full shrink-0" />

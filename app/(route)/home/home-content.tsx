@@ -15,7 +15,6 @@ import CustomCalendar from "@/components/shared/calendar/custom-calendar";
 import { convertCalendarEvents } from "@/app/(route)/home/utils/convert-calendar-events";
 import { useResponsive } from "@/components/shared/calendar/hooks/use-responsive";
 import { useHomeStore } from "@/app/feature/home/store/home-store";
-import { cn } from "@/lib/utils";
 
 import HeroSection from "@/app/feature/home/components/hero-section";
 import CharacterSection from "@/app/feature/home/components/character-section";
@@ -81,22 +80,18 @@ export default function HomeContent() {
         </PageWrapper>
       )}
 
-      <div
-        className={cn(
-          "relative z-20 w-full bg-white pt-1 md:pt-[80px] lg:pt-[80px] 2xl:pt-[100px]",
-          !shouldShowCalendar && "hidden",
-        )}
-        aria-hidden={!shouldShowCalendar}
-      >
-        <SelectCalendarViewHeader />
-        <CustomCalendar
-          events={events}
-          selectedDate={selectedDate}
-          onDateSelect={handleDateSelect}
-          currentMonth={currentMonth}
-          onMonthChange={setCurrentMonth}
-        />
-      </div>
+      {shouldShowCalendar && (
+        <div className="relative z-20 w-full bg-white pt-1 md:pt-[80px] lg:pt-[80px] 2xl:pt-[100px]">
+          <SelectCalendarViewHeader />
+          <CustomCalendar
+            events={events}
+            selectedDate={selectedDate}
+            onDateSelect={handleDateSelect}
+            currentMonth={currentMonth}
+            onMonthChange={setCurrentMonth}
+          />
+        </div>
+      )}
       <div className="hidden xl:block h-[200px] bg-gradient-to-b from-[#F7F6F5] to-[#F7F6F5]/0" />
       <Footer />
 

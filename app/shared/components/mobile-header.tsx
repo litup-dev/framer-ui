@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronRight, X, User, LogOut } from "lucide-react";
+import { ChevronRight, X, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter, usePathname } from "next/navigation";
 import { saveReturnUrl } from "@/lib/login-utils";
@@ -112,8 +112,14 @@ const MobileHeader = () => {
                         <AvatarImage
                           src={getImageUrl(user?.profilePath) || ""}
                         />
-                        <AvatarFallback>
-                          {user?.nickname?.charAt(0) || ""}
+                        <AvatarFallback className="bg-transparent p-0">
+                          <Image
+                            src="/images/header-user.png"
+                            alt="사용자"
+                            width={32}
+                            height={32}
+                            className="w-8 h-8"
+                          />
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex items-center">
@@ -151,20 +157,23 @@ const MobileHeader = () => {
                   </div>
                 ) : (
                   <>
-                    <div className="bg-gray-100 rounded-full">
-                      <User className="w-8 h-8 text-gray-300 fill-gray-300 p-1" />
-                    </div>
-                    <div className="flex">
-                      <Link
-                        href="/login"
-                        onClick={() => saveReturnUrl(pathname)}
-                      >
-                        <Subtitle className="text-subtitle-14">
-                          로그인하세요
-                        </Subtitle>
-                      </Link>
-                      <ChevronRight className="w-5 h-5" />
-                    </div>
+                    <Image
+                      src="/images/sidebar-user.png"
+                      alt="사용자"
+                      width={32}
+                      height={32}
+                      className="w-8 h-8"
+                    />
+                    <Link
+                      href="/login"
+                      onClick={() => saveReturnUrl(pathname)}
+                      className="flex items-center"
+                    >
+                      <Subtitle className="text-subtitle-14 text-black/60">
+                        로그인하세요.
+                      </Subtitle>
+                      <ChevronRight className="w-5 h-5 text-black/60" />
+                    </Link>
                   </>
                 )}
               </div>

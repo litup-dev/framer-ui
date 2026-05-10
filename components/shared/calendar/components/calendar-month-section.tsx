@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
-import { useInView } from "react-intersection-observer";
+import { useMemo } from "react";
 import { parse, format } from "date-fns";
 import { CalendarEvent } from "@/components/shared/calendar/types";
 import CalendarDateEventList from "./calendar-date-event-list";
@@ -11,26 +10,13 @@ interface CalendarMonthSectionProps {
   month: string;
   events: Record<string, CalendarEvent[]>;
   onDateSelect: (date: Date) => void;
-  onInView?: () => void;
 }
 
 const CalendarMonthSection = ({
   month,
   events,
   onDateSelect,
-  onInView,
 }: CalendarMonthSectionProps) => {
-  const { ref, inView } = useInView({
-    threshold: 0.1,
-    triggerOnce: false,
-  });
-
-  useEffect(() => {
-    if (inView && onInView) {
-      onInView();
-    }
-  }, [inView, onInView]);
-
   const formattedMonth = useMemo(() => {
     try {
       const date = parse(month, "yyyy-MM", new Date());
@@ -43,7 +29,7 @@ const CalendarMonthSection = ({
   const sortedDates = Object.keys(events).sort();
 
   return (
-    <div ref={ref} className="min-h-[200px] px-5 md:px-10 lg:px-15 flex flex-col gap-6">
+    <div className="min-h-[200px] px-5 md:px-10 lg:px-15 flex flex-col gap-6">
       <Title className="text-[30px] tracking-[-2.4px] md:text-[42px] md:tracking-[-3.36px] leading-[30px] pb-2 md:pb-6 lg:pb-10">
         {formattedMonth.toLowerCase()}
       </Title>

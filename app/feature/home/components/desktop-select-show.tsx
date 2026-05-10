@@ -1,4 +1,4 @@
-import { ChevronDown } from "lucide-react";
+import Image from "next/image";
 import { Subtitle } from "@/components/shared/typography";
 import { cn } from "@/lib/utils";
 import {
@@ -121,9 +121,12 @@ const DesktopSelectShow = ({
                   <Subtitle>
                     <SelectValue placeholder="지역별" />
                   </Subtitle>
-                  <ChevronDown
-                    className="size-6 2xl:size-8"
-                    strokeWidth={1.5}
+                  <Image
+                    src="/images/rec-arrow-right.png"
+                    alt="지역별"
+                    width={32}
+                    height={32}
+                    className="size-6 2xl:size-8 rotate-90"
                   />
                 </SelectTrigger>
                 <SelectContent

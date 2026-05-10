@@ -68,8 +68,14 @@ const HeaderMenus = ({
               src={getImageUrl(user.profilePath) || ""}
               alt={user.nickname}
             />
-            <AvatarFallback className="bg-muted text-black text-xs 2xl:text-sm">
-              {user.nickname?.charAt(0)}
+            <AvatarFallback className="bg-transparent p-0">
+              <Image
+                src="/images/header-user.png"
+                alt={user.nickname}
+                width={28}
+                height={28}
+                className="w-6 h-6 2xl:w-7 2xl:h-7"
+              />
             </AvatarFallback>
           </Avatar>
           <Image

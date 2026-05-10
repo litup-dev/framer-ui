@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { ChevronDown } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 
 import { cn } from "@/lib/utils";
@@ -87,10 +88,10 @@ const DesktopFilter = ({
     return filter.options[optionIndex].label;
   };
 
-  const getArrowRotation = (filter: FilterItem) => {
-    if (activeFilterId !== filter.id) return "rotate-90";
+  const getChevronRotation = (filter: FilterItem) => {
+    if (activeFilterId !== filter.id) return "rotate-0";
     const optionIndex = getCurrentOptionIndex(filter.id);
-    return optionIndex === 0 ? "rotate-90" : "-rotate-90";
+    return optionIndex === 0 ? "rotate-0" : "rotate-180";
   };
 
   return (
@@ -188,14 +189,10 @@ const DesktopFilter = ({
                           )}
                         >
                           {isActive(filter.id) && (
-                            <Image
-                              src="/images/rec-arrow-right.png"
-                              alt="sort"
-                              width={20}
-                              height={20}
+                            <ChevronDown
                               className={cn(
-                                "size-5 transition-transform",
-                                getArrowRotation(filter),
+                                "size-5 transition-transform text-main",
+                                getChevronRotation(filter),
                               )}
                             />
                           )}

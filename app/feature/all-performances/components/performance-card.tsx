@@ -7,8 +7,11 @@ import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Description, Subtitle } from "@/components/shared/typography";
-import { formatDate, formatMonthDay } from "@/lib/date-utils";
-import { getToday } from "@/lib/date-utils";
+import {
+  formatDate,
+  formatMonthDay,
+  getTodayDate,
+} from "@/lib/date-utils";
 
 interface PerformanceCardProps {
   performance: PerformanceItem;
@@ -44,9 +47,10 @@ export const PerformanceCard = ({ performance }: PerformanceCardProps) => {
               <span className="text-gray-500 text-sm">이미지 없음</span>
             </div>
           )}
-          {formatMonthDay(performance.performDate) === getToday() && (
-            <div className="absolute text-[#FFFFFF] rounded-[3px] bg-main top-2 right-2 px-2 py-1.5 md:px-[9px] md:py-[7px] lg:top-3 lg:right-3 xl:top-3 xl:right-3 2xl:top-4 2xl:right-4 lg:px-[11px] lg:py-2 xl:px-[11px] xl:py-2 2xl:px-3 2xl:py-[9px] backdrop-blur-xs">
-              <Subtitle className="text-[11px] sm:text-[12px] lg:text-[14px] xl:text-[14px] 2xl:text-[16px]">
+          {formatMonthDay(performance.performDate) ===
+            formatMonthDay(getTodayDate()) && (
+            <div className="absolute text-white bg-main top-2 right-2 lg:top-3 lg:right-3 xl:top-3 xl:right-3 2xl:top-4 2xl:right-4 rounded-[2px] md:rounded-[3px] px-2 py-1.5 md:px-[9px] md:py-[7px] lg:px-[11px] lg:py-2 xl:px-[11px] xl:py-2 2xl:px-3 2xl:py-[9px]">
+              <Subtitle className="text-[11px] md:text-[12px] lg:text-[14px] xl:text-[14px] 2xl:text-[16px] tracking-[-0.08em]">
                 오늘 공연
               </Subtitle>
             </div>

@@ -29,7 +29,10 @@ const CalendarDateEventList = ({
   );
 
   return (
-    <div className="flex gap-2.5 md:gap-[93px] lg:gap-[142px] justify-between">
+    <div
+      data-date={dateKey}
+      className="flex gap-2.5 md:gap-[93px] lg:gap-[142px] justify-between"
+    >
       <div className="flex flex-col gap-4 md:gap-[16px] w-[42px] flex-none pl-[2px]">
         <Subtitle
           className={`text-[24px] sm:text-[32px] md:text-[32px] lg:text-[40px] ${

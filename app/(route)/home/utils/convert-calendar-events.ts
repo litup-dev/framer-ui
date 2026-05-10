@@ -4,6 +4,12 @@ import { CalendarEvent } from "@/components/shared/calendar/types";
 export function convertCalendarEvents(
   apiEvents: Record<string, Array<{ performances: CalendarPerformance[] }>>
 ): Record<string, CalendarEvent[]> {
+  const firstDate = Object.keys(apiEvents)[0];
+  const firstPerformance =
+    firstDate && apiEvents[firstDate]?.[0]?.performances?.[0];
+  console.log("[calendar API] first performance keys:", firstPerformance && Object.keys(firstPerformance));
+  console.log("[calendar API] first performance:", firstPerformance);
+
   const convertedEvents: Record<string, CalendarEvent[]> = {};
 
   Object.keys(apiEvents).forEach((dateKey) => {
