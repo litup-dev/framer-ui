@@ -60,7 +60,7 @@ const MobileHeader = () => {
       >
         <div className="flex items-center gap-1">
           <Link href="/home">
-            <Image src="/images/logo.svg" alt="logo" width={80} height={26} />
+            <Image src="/images/logo.svg" alt="logo" width={77} height={24} />
           </Link>
         </div>
         <button onClick={openMenu} className="w-12 h-12 flex items-center justify-center">
