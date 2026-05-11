@@ -3,6 +3,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { PerformanceItem } from "@/app/feature/all-performances/types";
+
+const DEFAULT_IMAGE = "/images/poster_default.png";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -30,23 +32,17 @@ export const PerformanceCard = ({ performance }: PerformanceCardProps) => {
     <Link href={`/performance/${performance.id}`}>
       <Card className="overflow-hidden gap-3.5 md:gap-5 2xl:gap-6 pb-2">
         <div className="aspect-[4/5] relative">
-          {imageUrl ? (
-            <Image
-              src={imageUrl}
-              alt={
-                performance.title ||
-                performance.club?.name ||
-                "Performance image"
-              }
-              fill
-              sizes="(max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-              <span className="text-gray-500 text-sm">이미지 없음</span>
-            </div>
-          )}
+          <Image
+            src={imageUrl || DEFAULT_IMAGE}
+            alt={
+              performance.title ||
+              performance.club?.name ||
+              "Performance image"
+            }
+            fill
+            sizes="(max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
+            className="w-full h-full object-cover"
+          />
           {formatMonthDay(performance.performDate) ===
             formatMonthDay(getTodayDate()) && (
             <div className="absolute text-white bg-main top-2 right-2 lg:top-3 lg:right-3 xl:top-3 xl:right-3 2xl:top-4 2xl:right-4 rounded-[2px] md:rounded-[3px] px-2 py-1.5 md:px-[9px] md:py-[7px] lg:px-[11px] lg:py-2 xl:px-[11px] xl:py-2 2xl:px-3 2xl:py-[9px]">

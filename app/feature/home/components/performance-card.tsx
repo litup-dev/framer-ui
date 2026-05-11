@@ -6,6 +6,8 @@ import { Description, Subtitle } from "@/components/shared/typography";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
 import { formatMonthDay } from "@/lib/date-utils";
 
+const DEFAULT_IMAGE = "/images/poster_default.png";
+
 interface Performance {
   id: number;
   title: string;
@@ -34,22 +36,14 @@ const PerformanceImage = ({
   imageUrl: string | null;
   alt: string;
 }) => {
-  if (imageUrl) {
-    return (
-      <Image
-        src={imageUrl}
-        alt={alt}
-        fill
-        sizes="(max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
-        className="w-full h-full object-cover"
-      />
-    );
-  }
-
   return (
-    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-      <span className="text-gray-500 text-sm">이미지 없음</span>
-    </div>
+    <Image
+      src={imageUrl || DEFAULT_IMAGE}
+      alt={alt}
+      fill
+      sizes="(max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
+      className="w-full h-full object-cover"
+    />
   );
 };
 

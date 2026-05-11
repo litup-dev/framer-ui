@@ -20,6 +20,8 @@ import { addWeeks, format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
 import { PerformanceItem } from "@/app/feature/home/types";
+
+const DEFAULT_IMAGE = "/images/poster_default.png";
 import { getPerformancesOptions } from "@/app/feature/home/query-options";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -100,32 +102,22 @@ const MobileMainContent = ({
               <Link href={`/performance/${performance.id}`}>
                 <Card className="overflow-hidden gap-3">
                   <div className="aspect-[4/5] relative">
-                    {imageUrl ? (
-                      <div>
-                        <Image
-                          src={imageUrl}
-                          alt={
-                            performance.title ||
-                            performance.club?.name ||
-                            "Performance image"
-                          }
-                          fill
-                          sizes="33vw"
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute text-[#FFFFFF] rounded-[2px] bg-black/40 top-2 right-2 px-1.5 py-1">
-                          <Subtitle className="text-[11px] xl:text-[14px] 2xl:text-[16px]">
-                            {formatMonthDay(performance.performDate)}
-                          </Subtitle>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                        <span className="text-gray-500 text-sm">
-                          이미지 없음
-                        </span>
-                      </div>
-                    )}
+                    <Image
+                      src={imageUrl || DEFAULT_IMAGE}
+                      alt={
+                        performance.title ||
+                        performance.club?.name ||
+                        "Performance image"
+                      }
+                      fill
+                      sizes="33vw"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute text-[#FFFFFF] rounded-[2px] bg-black/40 top-2 right-2 px-1.5 py-1">
+                      <Subtitle className="text-[11px] xl:text-[14px] 2xl:text-[16px]">
+                        {formatMonthDay(performance.performDate)}
+                      </Subtitle>
+                    </div>
                   </div>
                   <CardContent className="flex flex-col gap-1.5 justify-start">
                     <div
