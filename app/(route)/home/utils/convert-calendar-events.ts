@@ -20,6 +20,7 @@ export function convertCalendarEvents(
       performances: [
         {
           id: p.id,
+          title: p.title,
           performDate: p.performDate,
           artists: p.artists,
           images: p.images,
