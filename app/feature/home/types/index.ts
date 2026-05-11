@@ -6,6 +6,7 @@ export interface PostsItem {
 
 export interface CalendarPerformance {
   id: number;
+  title: string;
   performDate: string;
   artists: Array<{ name: string }>;
   club: { id: number; name: string };
