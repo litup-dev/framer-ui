@@ -61,9 +61,7 @@ export const CalendarSelectedEvents = ({
                           <div className="pl-4 flex flex-col gap-1.5 md:gap-2 lg:gap-2.5">
                             <Link href={`/performance/${performance.id}`}>
                               <Subtitle className="text-[#171717] text-[15px] md:text-[16px] lg:text-[20px] leading-[1.2]">
-                                {performance.artists
-                                  ?.map((a) => a.name)
-                                  .join(", ")}
+                                {performance.title}
                               </Subtitle>
                             </Link>
 
