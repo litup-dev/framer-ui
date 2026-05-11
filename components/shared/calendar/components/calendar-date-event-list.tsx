@@ -82,7 +82,7 @@ const CalendarDateEventList = ({
                     <Link href={`/performance/${performance.id}`}>
                       <div className="flex flex-col gap-1.5">
                         <Subtitle className="text-[14px] md:text-[16px] lg:text-[18px] truncate">
-                          {performance.artists?.map((a) => a.name).join(", ")}
+                          {performance.title}
                         </Subtitle>
                         {artistNames && (
                           <Description className="text-black text-[12px] md:text-[14px] truncate">
