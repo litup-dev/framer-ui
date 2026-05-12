@@ -13,6 +13,7 @@
   --color-foreground: var(--foreground);
   --color-black: #171717;
   --color-black-80: #202020cc;
+  --color-white-80: #ffffffcc;
   --color-main: #ff491a;
   --leading-percent: 100%;
   --font-sans: var(--font-suit);

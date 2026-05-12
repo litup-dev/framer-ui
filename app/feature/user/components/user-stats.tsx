@@ -21,7 +21,7 @@ export default function UserStats({ data }: UserStatsProps) {
               기대돼요
             </Title>
             <Image
-              src="/images/user/arrow-right-line_black.svg"
+              src="/images/user/arrow-right-line_white.svg"
               alt="화살표"
               width={24}
               height={24}
@@ -39,7 +39,7 @@ export default function UserStats({ data }: UserStatsProps) {
         {/* 서비스 준비 중 영역 (게시글 + 댓글) */}
         <div className="col-span-2 flex items-center justify-center text-white px-4 md:px-5 lg:px-10 xl:px-8 2xl:px-10">
           <Description className="text-[12px] md:text-[14px] lg:text-[16px] text-white text-center">
-            서비스 준비 중입니다
+            서비스 준비 중입니다.
           </Description>
         </div>
       </div>
