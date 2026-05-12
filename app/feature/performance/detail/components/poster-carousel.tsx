@@ -47,16 +47,15 @@ const PosterCarousel = ({ images, title, variant }: PosterCarouselProps) => {
           <CarouselContent className="-ml-0">
             {images.map((img, index) => (
               <CarouselItem key={index} className="pl-0">
-                <div className="relative w-full h-[530px] xl:h-[585px] 2xl:h-[890px] overflow-hidden bg-gray-200">
-                  <Image
-                    src={img}
-                    alt={`${title} - ${index + 1}`}
-                    fill
-                    sizes="(max-width: 1279px) 420px, (max-width: 1535px) 490px, 750px"
-                    className="object-cover"
-                    priority={index === 0}
-                  />
-                </div>
+                <Image
+                  src={img}
+                  alt={`${title} - ${index + 1}`}
+                  width={0}
+                  height={0}
+                  sizes="(max-width: 1279px) 420px, (max-width: 1535px) 490px, 750px"
+                  className="w-full h-auto"
+                  priority={index === 0}
+                />
               </CarouselItem>
             ))}
           </CarouselContent>
@@ -72,7 +71,7 @@ const PosterCarousel = ({ images, title, variant }: PosterCarouselProps) => {
                 "relative w-16 h-16 xl:w-16 xl:h-16 2xl:w-20 2xl:h-20 flex-shrink-0 overflow-hidden bg-gray-200 cursor-pointer transition-all",
                 current === index
                   ? "border-[3px] border-main"
-                  : "border-[3px] border-transparent hover:border-main/50"
+                  : "border-[3px] border-transparent hover:border-main/50",
               )}
             >
               <Image
@@ -90,8 +89,6 @@ const PosterCarousel = ({ images, title, variant }: PosterCarouselProps) => {
   }
 
   // MD 이하 레이아웃: 메인 슬라이드 + 인디케이터
-  const heightClass = variant === "md" ? "h-[830px]" : "h-[440px]";
-
   return (
     <div className="relative w-full">
       {/* 메인 포스터 슬라이드 */}
@@ -99,16 +96,15 @@ const PosterCarousel = ({ images, title, variant }: PosterCarouselProps) => {
         <CarouselContent className="-ml-0">
           {images.map((img, index) => (
             <CarouselItem key={index} className="pl-0">
-              <div className={cn("relative w-full overflow-hidden bg-gray-200", heightClass)}>
-                <Image
-                  src={img}
-                  alt={`${title} - ${index + 1}`}
-                  fill
-                  sizes="100vw"
-                  className="object-cover"
-                  priority={index === 0}
-                />
-              </div>
+              <Image
+                src={img}
+                alt={`${title} - ${index + 1}`}
+                width={0}
+                height={0}
+                sizes="100vw"
+                className="w-full h-auto"
+                priority={index === 0}
+              />
             </CarouselItem>
           ))}
         </CarouselContent>
