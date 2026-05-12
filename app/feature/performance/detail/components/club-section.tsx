@@ -35,8 +35,14 @@ const ClubSection = ({ club }: ClubSectionProps) => {
         >
           {/* 클럽 아바타: 2XL/XL 72x72(w-18 h-18), LG 60x60(w-15 h-15) */}
           <div className="relative w-15 h-15 xl:w-18 xl:h-18 rounded-full overflow-hidden flex-shrink-0">
-              <Image src={clubImageUrl} alt={club.name} fill sizes="72px" className="object-cover" />
-            </div>
+            <Image
+              src={clubImageUrl}
+              alt={club.name}
+              fill
+              sizes="72px"
+              className="object-cover"
+            />
+          </div>
           <div className="flex flex-col gap-2 md:gap-2 flex-1">
             {/* 클럽명 */}
             <div className="flex items-center gap-1">
@@ -49,7 +55,7 @@ const ClubSection = ({ club }: ClubSectionProps) => {
                 alt="arrow"
                 width={16}
                 height={16}
-                className="hidden md:block w-4 h-4 lg:w-5 lg:h-5 xl:w-6 xl:h-6 flex-shrink-0"
+                className="hidden md:block w-4 h-4 lg:w-3 lg:h-3 xl:w-3 xl:h-3 flex-shrink-0"
               />
             </div>
             {/* 주소 */}

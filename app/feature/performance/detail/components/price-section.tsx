@@ -14,14 +14,22 @@ const PriceSection = ({ bookingPrice, onsitePrice }: PriceSectionProps) => {
       </Title>
 
       {/* Grid로 캡션과 value 정렬: LG 이하 30px, XL 이상 24px */}
-      <div className="grid grid-cols-[auto_1fr] gap-x-8 lg:gap-x-[30px] xl:gap-x-6 md:mt-6">
+      <div className="grid grid-cols-[50px_1fr] md:grid-cols-[70px_1fr] xl:grid-cols-[80px_1fr] gap-x-8 lg:gap-x-[15px] xl:gap-x-6 md:mt-6">
         {/* 예매 */}
-        <Description className="text-black-60 text-[14px] md:text-[16px] xl:text-[18px]">예매</Description>
-        <Description className="text-[14px] md:text-[16px] xl:text-[18px]">{bookingPrice.toLocaleString()}원</Description>
+        <Description className="text-black-60 text-[14px] md:text-[16px] xl:text-[18px]">
+          예매
+        </Description>
+        <Description className="text-[14px] md:text-[16px] xl:text-[18px]">
+          {bookingPrice.toLocaleString()}원
+        </Description>
 
         {/* 현매 - 예매 아래: 2XL 14px(mt-3.5), XL 14px(mt-3.5), LG 16px(mt-4) */}
-        <Description className="text-black-60 text-[14px] md:text-[16px] xl:text-[18px] mt-2.5 lg:mt-4 xl:mt-3.5">현매</Description>
-        <Description className="text-[14px] md:text-[16px] xl:text-[18px] mt-2.5 lg:mt-4 xl:mt-3.5">{onsitePrice.toLocaleString()}원</Description>
+        <Description className="text-black-60 text-[14px] md:text-[16px] xl:text-[18px] mt-2.5 lg:mt-4 xl:mt-3.5">
+          현매
+        </Description>
+        <Description className="text-[14px] md:text-[16px] xl:text-[18px] mt-2.5 lg:mt-4 xl:mt-3.5">
+          {onsitePrice.toLocaleString()}원
+        </Description>
       </div>
     </div>
   );
