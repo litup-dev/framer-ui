@@ -133,7 +133,7 @@ const KeywordList = ({ categories }: KeywordListProps) => {
   if (showAllKeywords) {
     // expanded: flex-wrap으로 모든 키워드 + arrow-up 버튼 표시
     return (
-      <div className="space-y-3 w-full">
+      <div className="space-y-3 w-full pb-3 md:pb-0">
         <div className="flex flex-wrap gap-2">
           {allKeywords.map((keyword) =>
             renderChip(keyword, { visible: true }),
