@@ -69,7 +69,7 @@ const ClubSection = ({ club }: ClubSectionProps) => {
             alt="arrow"
             width={16}
             height={16}
-            className="md:hidden w-4 h-4 flex-shrink-0"
+            className="md:hidden w-3 h-3 flex-shrink-0"
           />
         </div>
       </div>
