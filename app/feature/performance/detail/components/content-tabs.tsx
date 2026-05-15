@@ -8,7 +8,6 @@ import { getPerformanceCommentsOptions } from "../query-options";
 
 interface ContentTabsProps {
   noticeContent: React.ReactNode;
-  size?: "sm" | "md" | "lg";
   performanceId: number;
   commentText: string;
   setCommentText: (text: string) => void;
@@ -28,7 +27,6 @@ interface ContentTabsProps {
  */
 const ContentTabs = ({
   noticeContent,
-  size = "lg",
   performanceId,
   commentText,
   setCommentText,
@@ -42,11 +40,7 @@ const ContentTabs = ({
   setExpandedComments
 }: ContentTabsProps) => {
 
-  const fontSize = {
-    sm: "text-[14px]",
-    md: "text-[16px]",
-    lg: "text-[18px]"
-  }[size];
+  const fontSize = "text-[14px] sm:text-[16px] xl:text-[18px]";
 
   // 댓글 수 조회 (React Query 캐싱 활용)
   const { data: commentsData } = useQuery(
@@ -74,7 +68,7 @@ const ContentTabs = ({
 
       <TabsContent
         value="notice"
-        className={activeTab === "notice" ? "mt-8 lg:mt-6" : "hidden"}
+        className={activeTab === "notice" ? "mt-8 lg:mt-6 text-[14px] sm:text-[16px] xl:text-[18px]" : "hidden"}
         forceMount
       >
         {noticeContent}
@@ -82,7 +76,7 @@ const ContentTabs = ({
 
       <TabsContent
         value="comment"
-        className={activeTab === "comment" ? "mt-4 md:mt-8 lg:mt-6" : "hidden"}
+        className={activeTab === "comment" ? "mt-4 md:mt-8 lg:mt-6 text-[14px] sm:text-[16px] xl:text-[18px]" : "hidden"}
         forceMount
       >
         <CommentSection

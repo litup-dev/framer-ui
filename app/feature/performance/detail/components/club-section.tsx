@@ -31,7 +31,7 @@ const ClubSection = ({ club }: ClubSectionProps) => {
       <div className="flex flex-col gap-3 text-black rounded-[4px] md:mt-6">
         <div
           onClick={handleClubClick}
-          className="flex gap-3 items-center rounded-[4px] p-3 md:p-0 cursor-pointer hover:bg-gray-50 transition-colors border border-[#202020]/20 md:border-0"
+          className="flex gap-2 md:gap-10 lg:gap-6 xl:gap-8 items-center rounded-[4px] p-3 md:p-0 cursor-pointer hover:bg-gray-50 transition-colors border border-[#202020]/20 md:border-0"
         >
           {/* 클럽 아바타: 2XL/XL 72x72(w-18 h-18), LG 60x60(w-15 h-15) */}
           <div className="relative w-15 h-15 xl:w-18 xl:h-18 rounded-full overflow-hidden flex-shrink-0">
@@ -55,7 +55,7 @@ const ClubSection = ({ club }: ClubSectionProps) => {
                 alt="arrow"
                 width={16}
                 height={16}
-                className="hidden md:block w-4 h-4 lg:w-3 lg:h-3 xl:w-3 xl:h-3 flex-shrink-0"
+                className="hidden md:block w-3 h-3 lg:w-3 lg:h-3 xl:w-3 xl:h-3 flex-shrink-0"
               />
             </div>
             {/* 주소 */}
