@@ -13,7 +13,7 @@ interface NavigationItem {
 
 const navigationItems: NavigationItem[] = [
   { href: "/home", icon: House, label: "홈" },
-  { href: "/community", icon: Users, label: "커뮤니티" },
+  // { href: "/community", icon: Users, label: "커뮤니티" },
   { href: "/concert-schedule", icon: CalendarCheck, label: "공연일정" },
   { href: "/club", icon: Club, label: "클럽" },
   { href: "/user", icon: User, label: "프로필" },
