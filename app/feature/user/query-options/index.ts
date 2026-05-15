@@ -23,12 +23,15 @@ export const getCurrentUserOptions = () =>
   queryOptions({
     queryKey: ["currentUser"],
     queryFn: async () => {
-      const response =
-        await apiClient.get<UserInfoResponse>("/api/v1/users/me");
+      const response = await apiClient.request<UserInfoResponse>(
+        "/api/v1/users/me",
+        { skipAuthRedirect: true },
+      );
       return response.data;
     },
     staleTime: 30 * 60 * 1000, // 30분
     gcTime: 60 * 60 * 1000, // 60분
+    retry: false,
   });
 
 // 유저 통계 API

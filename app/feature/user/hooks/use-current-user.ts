@@ -10,5 +10,10 @@ export const useCurrentUser = () => {
     ...getCurrentUserOptions(),
     enabled: isLogin,
   });
+
+  if (error && typeof window !== "undefined") {
+    document.cookie = "isLogin=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  }
+
   return { user: data, isLoading, error, isAuthenticated: !!data };
 };
