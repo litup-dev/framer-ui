@@ -21,6 +21,7 @@ interface ApiRequestOptions {
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   headers?: Record<string, string>;
   body?: any;
+  skipAuthRedirect?: boolean;
   // isServer?: boolean;
 }
 
@@ -128,7 +129,7 @@ class ApiClient {
           const refreshed = await this.accessTokenRefresh();
           if (refreshed) {
             return this.request<T>(endpoint, options);
-          } else {
+          } else if (!options.skipAuthRedirect) {
             if (typeof window !== "undefined") {
               window.location.href = "/login";
             }

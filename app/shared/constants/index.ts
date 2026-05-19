@@ -9,11 +9,11 @@ export const MenuItems = [
     label: "클럽 찾기",
     href: "/club",
   },
-  {
-    id: 3,
-    label: "커뮤니티",
-    href: "/contact",
-  },
+  // {
+  //   id: 3,
+  //   label: "커뮤니티",
+  //   href: "/contact",
+  // },
 ];
 
 export const FooterMenus = [

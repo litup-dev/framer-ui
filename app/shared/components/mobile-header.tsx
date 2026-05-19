@@ -18,7 +18,7 @@ import { useQueryClient } from "@tanstack/react-query";
 const MENU_ITEMS = [
   { label: "전체 공연", href: "/all-performances" },
   { label: "클럽 찾기", href: "/club" },
-  { label: "커뮤니티", href: "/community" },
+  // { label: "커뮤니티", href: "/community" },
 ] as const;
 
 const MobileHeader = () => {
