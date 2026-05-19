@@ -144,13 +144,17 @@
   * {
     @apply border-border outline-ring/50;
   }
-  html,
+  html {
+    overflow-x: hidden;
+    scrollbar-gutter: stable;
+  }
   body {
     overflow-x: hidden;
-  }
-
-  body {
     @apply bg-background text-foreground font-sans;
+  }
+  body[data-scroll-locked] {
+    padding-right: 0 !important;
+    margin-right: 0 !important;
   }
 }
 
