@@ -20,14 +20,20 @@ interface PerformanceLayoutProps {
  * 공연 상세 페이지 레이아웃
  * - SM, MD, LG+ 모든 레이아웃 통합
  */
-const PerformanceLayout = ({ posterImages, title, performance }: PerformanceLayoutProps) => {
+const PerformanceLayout = ({
+  posterImages,
+  title,
+  performance,
+}: PerformanceLayoutProps) => {
   // 댓글 관련 상태를 최상위 레벨에서 관리하여 모든 레이아웃에서 공유
   const [commentText, setCommentText] = useState("");
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editingText, setEditingText] = useState("");
   // 탭 및 더보기 상태를 최상위 레벨에서 관리
   const [activeTab, setActiveTab] = useState<string>("notice");
-  const [expandedComments, setExpandedComments] = useState<Map<number, boolean>>(new Map());
+  const [expandedComments, setExpandedComments] = useState<
+    Map<number, boolean>
+  >(new Map());
 
   return (
     <>
@@ -64,7 +70,12 @@ const PerformanceLayout = ({ posterImages, title, performance }: PerformanceLayo
             setExpandedComments={setExpandedComments}
           />
         </div>
-        <BookingButton variant="fixed" height="md" className="md:block lg:hidden" bookingUrl={performance.bookingUrl} />
+        <BookingButton
+          variant="fixed"
+          height="md"
+          className="md:block lg:hidden"
+          bookingUrl={performance.bookingUrl}
+        />
       </div>
 
       {/* SM & LG+ 컨테이너 */}
@@ -74,7 +85,11 @@ const PerformanceLayout = ({ posterImages, title, performance }: PerformanceLayo
             {/* SM: 모바일 레이아웃 */}
             <div className="flex md:hidden flex-col w-full pb-20">
               <div className="w-screen">
-                <PosterCarousel images={posterImages} title={title} variant="sm" />
+                <PosterCarousel
+                  images={posterImages}
+                  title={title}
+                  variant="sm"
+                />
               </div>
               <div className="px-5">
                 <DetailContent
@@ -92,14 +107,23 @@ const PerformanceLayout = ({ posterImages, title, performance }: PerformanceLayo
                   setExpandedComments={setExpandedComments}
                 />
               </div>
-              <BookingButton variant="fixed" height="sm" className="md:hidden" bookingUrl={performance.bookingUrl} />
+              <BookingButton
+                variant="fixed"
+                height="sm"
+                className="md:hidden"
+                bookingUrl={performance.bookingUrl}
+              />
             </div>
 
             {/* LG+: 데스크톱 레이아웃 */}
             <div className="hidden lg:block w-full">
               <div className="flex flex-row gap-[60px] 2xl:gap-20 w-full">
                 <div className="w-[420px] xl:w-[490px] 2xl:w-[750px] flex-shrink-0">
-                  <PosterCarousel images={posterImages} title={title} variant="lg" />
+                  <PosterCarousel
+                    images={posterImages}
+                    title={title}
+                    variant="lg"
+                  />
                 </div>
                 <div className="flex-1">
                   <DetailContent
@@ -121,7 +145,6 @@ const PerformanceLayout = ({ posterImages, title, performance }: PerformanceLayo
 
               <div className="mt-[60px]">
                 <ContentTabs
-                  size="lg"
                   performanceId={performance.id}
                   commentText={commentText}
                   setCommentText={setCommentText}

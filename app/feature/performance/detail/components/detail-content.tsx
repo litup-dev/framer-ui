@@ -19,7 +19,9 @@ interface DetailContentProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   expandedComments: Map<number, boolean>;
-  setExpandedComments: React.Dispatch<React.SetStateAction<Map<number, boolean>>>;
+  setExpandedComments: React.Dispatch<
+    React.SetStateAction<Map<number, boolean>>
+  >;
 }
 
 const DetailContent = ({
@@ -34,9 +36,8 @@ const DetailContent = ({
   activeTab,
   setActiveTab,
   expandedComments,
-  setExpandedComments
+  setExpandedComments,
 }: DetailContentProps) => {
-
   return (
     <>
       {/* LG ~ 2XL: 상단 우측 영역 - 공연명, 버튼, 상세정보 */}
@@ -47,9 +48,7 @@ const DetailContent = ({
             <Subtitle className="text-black-60 text-[16px] 2xl:text-[18px] mb-2.5 xl:mb-2.5 2xl:mb-3">
               {performance.club.name}
             </Subtitle>
-            <Subtitle className="text-[24px] 2xl:text-[28px]">
-              {title}
-            </Subtitle>
+            <Subtitle className="text-[24px] 2xl:text-[28px]">{title}</Subtitle>
           </div>
           <div className="self-end">
             <DetailActions
@@ -70,9 +69,7 @@ const DetailContent = ({
           <Subtitle className="text-black-60 text-[14px] mb-2">
             {performance.club.name}
           </Subtitle>
-          <Subtitle className="text-[20px]">
-            {title}
-          </Subtitle>
+          <Subtitle className="text-[20px]">{title}</Subtitle>
           <div className="mt-4">
             <DetailActions
               performanceId={performance.id}
@@ -120,7 +117,6 @@ const DetailContent = ({
         {/* 탭 */}
         <div className="mt-7">
           <ContentTabs
-            size="md"
             performanceId={performance.id}
             commentText={commentText}
             setCommentText={setCommentText}
@@ -150,14 +146,11 @@ const DetailContent = ({
       {/* SM: 모바일 레이아웃 */}
       <div className="block md:hidden">
         {/* 클럽명: 포스터 20px 아래, 18px */}
-        <Subtitle className="text-[18px] mt-5">
-          {title}
-        </Subtitle>
+        <Subtitle className="text-[18px] mt-5">{title}</Subtitle>
 
         {/* 탭 */}
         <div className="mt-4">
           <ContentTabs
-            size="sm"
             performanceId={performance.id}
             commentText={commentText}
             setCommentText={setCommentText}
