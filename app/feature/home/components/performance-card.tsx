@@ -78,6 +78,17 @@ const ArtistsDisplay = ({ artists }: { artists?: Array<{ name: string }> }) => {
   );
 };
 
+export const PerformanceCardSkeleton = () => (
+  <div className="flex flex-col gap-4">
+    <div className="aspect-[4/5] rounded-sm bg-zinc-200 animate-pulse" />
+    <div className="flex flex-col gap-2">
+      <div className="h-3.5 w-2/3 rounded bg-zinc-200 animate-pulse" />
+      <div className="h-[18px] w-full rounded bg-zinc-200 animate-pulse" />
+      <div className="h-8 w-1/2 rounded-sm bg-zinc-200 animate-pulse" />
+    </div>
+  </div>
+);
+
 export const PerformanceCard = ({ performance }: PerformanceCardProps) => {
   const router = useRouter();
   const mainImage =

@@ -8,7 +8,10 @@ import { PerformanceItem } from "@/app/feature/home/types";
 import { usePagination } from "@/app/feature/home/hooks/use-pagination";
 import { useHomeStore } from "@/app/feature/home/store/home-store";
 import { PerformancesPagination } from "@/app/feature/home/components/performances-pagination";
-import { PerformanceCard } from "@/app/feature/home/components/performance-card";
+import {
+  PerformanceCard,
+  PerformanceCardSkeleton,
+} from "@/app/feature/home/components/performance-card";
 
 import {
   Carousel,
@@ -140,20 +143,29 @@ const DesktopMainContent = ({
         ))}
       </div>
       <Carousel
-        className="hidden xl:block w-full relative z-10"
+        className="hidden xl:block w-full relative z-10 aspect-[12/5] 2xl:aspect-[3/1]"
         opts={{
           align: "start",
         }}
       >
         <CarouselContent className="-ml-2 md:-ml-4 2xl:-ml-5">
-          {performanceItems.map((performance) => (
-            <CarouselItem
-              key={performance.id}
-              className="pl-2 sm:pl-4 2xl:pl-5 md:basis-1/3 lg:basis-1/4 2xl:basis-1/5"
-            >
-              <PerformanceCard performance={performance} />
-            </CarouselItem>
-          ))}
+          {performanceItems.length === 0
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <CarouselItem
+                  key={i}
+                  className="pl-2 sm:pl-4 2xl:pl-5 md:basis-1/3 lg:basis-1/4 2xl:basis-1/5 pointer-events-none"
+                >
+                  <PerformanceCardSkeleton />
+                </CarouselItem>
+              ))
+            : performanceItems.map((performance) => (
+                <CarouselItem
+                  key={performance.id}
+                  className="pl-2 sm:pl-4 2xl:pl-5 md:basis-1/3 lg:basis-1/4 2xl:basis-1/5"
+                >
+                  <PerformanceCard performance={performance} />
+                </CarouselItem>
+              ))}
         </CarouselContent>
         <CarouselPrevious />
         <CarouselNext />
