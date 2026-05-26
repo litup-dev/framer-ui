@@ -71,7 +71,7 @@ export const CalendarDayEvents = ({
               <div className="flex justify-between min-w-0">
                 <Title
                   className={cn(
-                    "truncate pr-2",
+                    "truncate",
                     is2xl ? "xl:text-[20px]" : "xl:text-[16px]",
                     isHovered && isXl ? "text-white" : "text-black",
                   )}
@@ -133,12 +133,7 @@ export const CalendarDayEvents = ({
             is2xl ? "bottom-6 right-6 w-5 h-5" : "bottom-4 right-4 w-5 h-5",
           )}
         >
-          <Plus
-            className={cn(
-              "text-black",
-              is2xl ? "w-5 h-5" : "w-5 h-5",
-            )}
-          />
+          <Plus className={cn("text-black", is2xl ? "w-5 h-5" : "w-5 h-5")} />
         </div>
       )}
     </>
