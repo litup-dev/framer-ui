@@ -130,11 +130,13 @@ const DesktopMainContent = ({
     );
   }
 
+  const isLoading = performances === undefined;
+
   return (
     <div
       className={cn(
         "relative w-full hidden md:block",
-        performanceItems.length === 0 && "min-h-[613px]",
+        isLoading && "min-h-[613px]",
       )}
     >
       <div className="hidden md:grid xl:hidden grid-cols-3 gap-x-3 lg:gap-x-4 gap-y-8 lg:gap-y-10">
@@ -149,8 +151,8 @@ const DesktopMainContent = ({
         }}
       >
         <CarouselContent className="-ml-2 md:-ml-4 2xl:-ml-5">
-          {performanceItems.length === 0
-            ? Array.from({ length: 4 }).map((_, i) => (
+          {isLoading
+            ? Array.from({ length: 6 }).map((_, i) => (
                 <CarouselItem
                   key={i}
                   className="pl-2 sm:pl-4 2xl:pl-5 md:basis-1/3 lg:basis-1/4 2xl:basis-1/5 pointer-events-none"
@@ -167,8 +169,8 @@ const DesktopMainContent = ({
                 </CarouselItem>
               ))}
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
+        {performanceItems.length > 0 && <CarouselPrevious />}
+        {performanceItems.length > 0 && <CarouselNext />}
       </Carousel>
     </div>
   );
