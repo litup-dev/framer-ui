@@ -1,5 +1,2 @@
-import { redirect } from "next/navigation";
-
-export default async function RootPage() {
-  redirect("/home");
-}
+export { dynamic } from "./home/page";
+export { default } from "./home/page";
