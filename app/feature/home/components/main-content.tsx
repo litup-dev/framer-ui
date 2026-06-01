@@ -52,6 +52,10 @@ export default function MainContent({
       <div className="w-full md:flex-1 md:min-w-0 lg:flex-1 lg:min-w-0 xl:flex-1 xl:min-w-0 2xl:flex-1 2xl:min-w-0">
         <MobileMainContent
           selectedMobileBottomNavigation={selectedMobileBottomNavigation}
+          performances={performances}
+          hasNextPage={hasNextPage}
+          fetchNextPage={fetchNextPage}
+          isFetchingNextPage={isFetchingNextPage}
         />
         <DesktopMainContent
           showAllItems={showAllItems}

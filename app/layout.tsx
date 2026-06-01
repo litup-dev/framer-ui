@@ -54,7 +54,7 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={null}>
           <ReactQueryProvider>
             {children}
             <CommonModal />
