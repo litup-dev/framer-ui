@@ -158,7 +158,7 @@ export const CalendarDayCell = ({
               alt={firstEvent.clubName || "Event image"}
               fill
               className="object-cover"
-              sizes="50px"
+              sizes="calc(100vw / 7)"
             />
           </div>
         )}
