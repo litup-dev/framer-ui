@@ -12,7 +12,7 @@ import type {
 
 import HomeContent from "./home-content";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 async function prefetchCalendarMonth(
   queryClient: ReturnType<typeof getQueryClient>,
