@@ -10,7 +10,7 @@ const HomeCharacterImage = () => {
 
   return (
     <Image
-      src="/images/main-character.png"
+      src="/images/main-character.svg"
       alt="main-image"
       width={1092}
       height={1092}
