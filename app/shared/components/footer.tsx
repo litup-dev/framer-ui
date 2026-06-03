@@ -59,6 +59,8 @@ const Footer = ({ className }: FooterProps) => {
                 key={social.id}
                 href={social.href}
                 className="bg-[#F5F5F5] rounded-full flex items-center justify-center w-10 h-10 lg:size-12"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 <Image
                   src={social.icon}

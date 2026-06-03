@@ -44,13 +44,13 @@ export const FooterSocials = [
     id: 1,
     label: "X",
     icon: "/images/social-x.svg",
-    href: "https://www.instagram.com/example",
+    href: "https://www.x.com/litup_kr",
   },
   {
     id: 2,
     label: "Instagram",
     icon: "/images/social-instagram.svg",
-    href: "https://www.instagram.com/example",
+    href: "https://www.instagram.com/litup.kr",
   },
   // {
   //   id: 3,
