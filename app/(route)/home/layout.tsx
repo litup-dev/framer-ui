@@ -3,7 +3,7 @@ import HomeCharacterImage from "@/app/feature/home/components/home-character-ima
 
 export default function HomeLayout({ children }: PropsWithChildren) {
   return (
-    <div className="relative">
+    <div className="relative overflow-x-hidden">
       <HomeCharacterImage />
       {children}
     </div>
