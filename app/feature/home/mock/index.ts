@@ -1,27 +1,27 @@
 export const heroSectionImages = [
   {
     id: 1,
-    image: "/images/heros/week.png",
+    image: "/images/heros/week.svg",
   },
   {
     id: 2,
-    image: "/images/heros/today.png",
+    image: "/images/heros/today.svg",
   },
   {
     id: 3,
-    image: "/images/heros/free.png",
+    image: "/images/heros/free.svg",
   },
   {
     id: 4,
-    image: "/images/heros/seoul.png",
+    image: "/images/heros/seoul.svg",
   },
   {
     id: 5,
-    image: "/images/heros/hongdae.png",
+    image: "/images/heros/hongdae.svg",
   },
   {
     id: 6,
-    image: "/images/heros/busan.png",
+    image: "/images/heros/busan.svg",
   },
 ];
 
