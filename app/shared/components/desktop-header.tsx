@@ -14,7 +14,7 @@ import Image from "next/image";
 const DesktopHeader = () => {
   const { user } = useCurrentUser();
   const pathname = usePathname();
-  const isHomePage = pathname === "/home";
+  const isHomePage = pathname === "/home" || pathname === "/";
   const isClubPage = pathname === "/club";
   const isClubDetailPage =
     pathname?.startsWith("/club/") && pathname !== "/club";

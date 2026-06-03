@@ -22,6 +22,7 @@ import MainContent from "@/app/feature/home/components/main-content";
 import MobileBottomNavigation from "@/app/feature/home/components/mobile-bottom-navigation";
 import SelectCalendarViewHeader from "@/components/shared/select-calendar-view-header";
 import Footer from "@/app/shared/components/footer";
+import HomeCharacterImage from "@/app/feature/home/components/home-character-image";
 
 export default function HomeContent() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -66,7 +67,8 @@ export default function HomeContent() {
     isXl || selectedMobileBottomNavigation === "home";
 
   return (
-    <>
+    <div className="relative overflow-x-hidden">
+      <HomeCharacterImage />
       {shouldShowMainContent && (
         <PageWrapper className="relative z-10">
           <HeroSection />
@@ -96,6 +98,6 @@ export default function HomeContent() {
       <Footer />
 
       <MobileBottomNavigation />
-    </>
+    </div>
   );
 }
