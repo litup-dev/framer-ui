@@ -23,6 +23,7 @@ import MobileBottomNavigation from "@/app/feature/home/components/mobile-bottom-
 import SelectCalendarViewHeader from "@/components/shared/select-calendar-view-header";
 import Footer from "@/app/shared/components/footer";
 import HomeCharacterImage from "@/app/feature/home/components/home-character-image";
+import { NoticePopupModal } from "@/app/feature/notice/components/notice-popup-modal";
 
 export default function HomeContent() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -98,6 +99,7 @@ export default function HomeContent() {
       <Footer />
 
       <MobileBottomNavigation />
+      <NoticePopupModal />
     </div>
   );
 }
