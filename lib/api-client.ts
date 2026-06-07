@@ -201,10 +201,8 @@ class ApiClient {
   }
 }
 
-// 클라이언트용 인스턴스
-export const apiClient = new ApiClient(
-  process.env.NEXT_PUBLIC_API_BASE_URL || "",
-);
+// 클라이언트용 인스턴스 — 브라우저에서 상대 경로로 요청해 Next.js rewrite 프록시를 통과시킴
+export const apiClient = new ApiClient("");
 
 // 서버사이드용 인스턴스
 export const serverApiClient = new ApiClient(

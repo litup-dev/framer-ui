@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronRight, X, LogOut } from "lucide-react";
+import { ChevronRight, X, LogOut, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter, usePathname } from "next/navigation";
 import { saveReturnUrl } from "@/lib/login-utils";
@@ -136,6 +136,13 @@ const MobileHeader = () => {
                           transition={{ duration: 0.2 }}
                           className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50"
                         >
+                          <Button
+                            onClick={() => { navigateTo(`/user`); setIsUserDropdownOpen(false); }}
+                            className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex bg-white"
+                          >
+                            <User className="w-4 h-4" />
+                            마이페이지
+                          </Button>
                           <Button
                             onClick={handleLogout}
                             className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex bg-white"

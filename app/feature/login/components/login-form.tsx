@@ -13,11 +13,11 @@ const LoginForm = () => {
   console.log("Redirect URI:", redirectUri);
 
   const handleGoogleLogin = async () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/google?redirect_uri=${encodeURIComponent(redirectUri)}`;
+    window.location.href = `/api/v1/auth/google?redirect_uri=${encodeURIComponent(redirectUri)}`;
   };
 
   const handleKakaoLogin = async () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/kakao?redirect_uri=${encodeURIComponent(redirectUri)}`;
+    window.location.href = `/api/v1/auth/kakao?redirect_uri=${encodeURIComponent(redirectUri)}`;
   };
 
   return (
