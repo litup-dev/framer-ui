@@ -49,11 +49,7 @@ const PerformanceImage = ({
 
 const ArtistsDisplay = ({ artists }: { artists?: Array<{ name: string }> }) => {
   if (!artists || artists.length === 0) {
-    return (
-      <Subtitle className="text-[16px] lg:text-[14px] 2xl:text-[16px] text-black truncate">
-        아티스트 정보 없음
-      </Subtitle>
-    );
+    return null;
   }
 
   if (artists.length >= 3) {
@@ -128,9 +124,11 @@ export const PerformanceCard = ({ performance }: PerformanceCardProps) => {
           <Subtitle className="text-[20px] md:text-[16px] lg:text-[18px] 2xl:text-[20px] text-black truncate leading-[120%]">
             {performance.title}
           </Subtitle>
-          <div className="flex gap-2 md:gap-1.5 lg:gap-2 overflow-x-auto overflow-y-visible [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-            <ArtistsDisplay artists={performance.artists} />
-          </div>
+          {performance.artists && performance.artists.filter((a) => a.name?.trim()).length > 0 && (
+            <div className="flex gap-2 md:gap-1.5 lg:gap-2 overflow-x-auto overflow-y-visible [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              <ArtistsDisplay artists={performance.artists.filter((a) => a.name?.trim())} />
+            </div>
+          )}
         </CardContent>
       </Card>
     </Link>

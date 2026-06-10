@@ -65,23 +65,23 @@ export const CalendarSelectedEvents = ({
                               </Subtitle>
                             </Link>
 
-                            {performance.artists &&
-                              performance.artists.length > 0 && (
+                            {(() => {
+                              const validArtists = performance.artists?.filter((a) => a.name?.trim()) ?? [];
+                              return validArtists.length > 0 ? (
                                 <div className="flex flex-wrap gap-1">
-                                  {performance.artists.map(
-                                    (artist, artistIndex) => (
-                                      <div
-                                        key={artistIndex}
-                                        className="px-2 md:px-[9px] lg:px-[11px] py-1.5 md:py-[7px] lg:py-2 rounded-[2px] md:rounded-[3px] bg-[rgba(23,23,23,0.05)]"
-                                      >
-                                        <Subtitle className="text-[#171717] text-[12px] md:text-[13px] lg:text-[14px]">
-                                          {artist.name}
-                                        </Subtitle>
-                                      </div>
-                                    ),
-                                  )}
+                                  {validArtists.map((artist, artistIndex) => (
+                                    <div
+                                      key={artistIndex}
+                                      className="px-2 md:px-[9px] lg:px-[11px] py-1.5 md:py-[7px] lg:py-2 rounded-[2px] md:rounded-[3px] bg-[rgba(23,23,23,0.05)]"
+                                    >
+                                      <Subtitle className="text-[#171717] text-[12px] md:text-[13px] lg:text-[14px]">
+                                        {artist.name}
+                                      </Subtitle>
+                                    </div>
+                                  ))}
                                 </div>
-                              )}
+                              ) : null;
+                            })()}
                           </div>
                         </div>
                         <Link href={`/club/${event.id}`}>

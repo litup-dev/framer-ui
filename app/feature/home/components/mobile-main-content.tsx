@@ -116,29 +116,28 @@ const MobileMainContent = ({
                   <Subtitle className="truncate text-[14px]">
                     {performance.title}
                   </Subtitle>
-                  <div className="flex gap-1 items-center overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                    {performance.artists && performance.artists.length > 0 ? (
-                      performance.artists.length >= 3 ? (
-                        <Subtitle className="whitespace-nowrap flex-shrink-0 text-[12px] bg-gray h-[24px] rounded-[2px] text-black flex items-center justify-center px-2">
-                          {performance.artists[0].name} 외{" "}
-                          {performance.artists.length - 1}팀
-                        </Subtitle>
-                      ) : (
-                        performance.artists.map((artist, index) => (
-                          <Subtitle
-                            key={index}
-                            className="whitespace-nowrap flex-shrink-0 text-[12px] bg-gray h-[24px] rounded-[2px] text-black flex items-center justify-center px-2"
-                          >
-                            {artist.name}
+                  {(() => {
+                    const validArtists = performance.artists?.filter((a) => a.name?.trim()) ?? [];
+                    return validArtists.length > 0 ? (
+                      <div className="flex gap-1 items-center overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                        {validArtists.length >= 3 ? (
+                          <Subtitle className="whitespace-nowrap flex-shrink-0 text-[12px] bg-gray h-[24px] rounded-[2px] text-black flex items-center justify-center px-2">
+                            {validArtists[0].name} 외{" "}
+                            {validArtists.length - 1}팀
                           </Subtitle>
-                        ))
-                      )
-                    ) : (
-                      <Subtitle className="truncate text-[12px] text-black/60">
-                        아티스트 정보 없음
-                      </Subtitle>
-                    )}
-                  </div>
+                        ) : (
+                          validArtists.map((artist, index) => (
+                            <Subtitle
+                              key={index}
+                              className="whitespace-nowrap flex-shrink-0 text-[12px] bg-gray h-[24px] rounded-[2px] text-black flex items-center justify-center px-2"
+                            >
+                              {artist.name}
+                            </Subtitle>
+                          ))
+                        )}
+                      </div>
+                    ) : null;
+                  })()}
                 </CardContent>
               </Card>
             </Link>
