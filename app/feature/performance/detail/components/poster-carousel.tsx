@@ -62,7 +62,7 @@ const PosterCarousel = ({ images, title, variant }: PosterCarouselProps) => {
         </Carousel>
 
         {/* 썸네일 미리보기 */}
-        <div className="flex gap-2 lg:gap-2 xl:gap-2 2xl:gap-2.5 mt-2 xl:mt-2 2xl:mt-2.5">
+        <div className="flex flex-wrap gap-1.5 2xl:gap-2 mt-2 xl:mt-2 2xl:mt-2.5">
           {images.map((img, index) => (
             <button
               key={index}
