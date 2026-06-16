@@ -1,5 +1,12 @@
 {
-  "disabledMcpjsonServers": [
-    "figma-local"
+  "permissions": {
+    "allow": [
+      "Bash(cat \"C:\\\\Users\\\\tnvje\\\\.claude\\\\settings.json\" 2>/dev/null || echo \"not found\")",
+      "Read(//c/Users/tnvje/.claude/**)"
+    ]
+  },
+  "disabledMcpjsonServers": [],
+  "enabledMcpjsonServers": [
+    "figma"
   ]
 }

@@ -6,6 +6,7 @@ interface ViewingHistoryEditControlsProps {
   allSelected: boolean;
   onSelectAll: (checked: boolean) => void;
   onDelete: () => void;
+  hideDeleteButton?: boolean;
 }
 
 export default function ViewingHistoryEditControls({
@@ -14,6 +15,7 @@ export default function ViewingHistoryEditControls({
   allSelected,
   onSelectAll,
   onDelete,
+  hideDeleteButton = false,
 }: ViewingHistoryEditControlsProps) {
   return (
     <>
@@ -27,13 +29,15 @@ export default function ViewingHistoryEditControls({
           {selectedCount > 0 ? `${selectedCount}개 선택` : "전체 선택"}
         </span>
       </div>
-      <button
-        onClick={onDelete}
-        disabled={selectedCount === 0}
-        className="text-[14px] xl:text-[16px] font-semibold text-main hover:text-main/70 disabled:text-muted-foreground disabled:cursor-not-allowed"
-      >
-        선택항목 삭제
-      </button>
+      {!hideDeleteButton && (
+        <button
+          onClick={onDelete}
+          disabled={selectedCount === 0}
+          className="text-[14px] xl:text-[16px] font-semibold text-main hover:text-main/70 disabled:text-muted-foreground disabled:cursor-not-allowed"
+        >
+          선택항목 삭제
+        </button>
+      )}
     </>
   );
 }

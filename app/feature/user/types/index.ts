@@ -64,6 +64,44 @@ export interface FavoriteClubsResponse {
   message?: string;
 }
 
+// Wish Performs 응답 타입
+export interface WishPerformItem {
+  id: number;
+  title: string;
+  performDate: string;
+  artists: {
+    name: string;
+  }[];
+  createdAt: string;
+  images: {
+    id: number;
+    filePath: string;
+    isMain: boolean;
+  }[];
+  club: {
+    name: string;
+  };
+}
+
+export interface WishPerformsResponse {
+  data: {
+    items: WishPerformItem[];
+    total: number;
+    offset: number;
+    limit: number;
+  };
+  message?: string;
+}
+
+// Wish Performs 삭제 요청 타입
+export interface DeleteWishPerformsRequest {
+  entityIds: number[];
+}
+
+export interface DeleteWishPerformsResponse {
+  message?: string;
+}
+
 // Favorite Clubs 삭제 요청 타입
 export interface DeleteFavoriteClubsRequest {
   entityIds: number[];

@@ -3,6 +3,9 @@ import { apiClient } from "@/lib/api-client";
 import {
   UserStatsResponse,
   PerformHistoryResponse,
+  WishPerformsResponse,
+  DeleteWishPerformsRequest,
+  DeleteWishPerformsResponse,
   FavoriteClubsResponse,
   DeleteFavoriteClubsRequest,
   DeleteFavoriteClubsResponse,
@@ -77,6 +80,65 @@ export const getPerformHistoryOptions = (publicId: string, limit: number = 4) =>
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
   });
+
+// 유저 보고싶은 공연 API (페이지네이션)
+export const getWishPerformsPaginatedOptions = (
+  publicId: string,
+  offset: number = 0,
+  limit: number = 4,
+) =>
+  queryOptions({
+    queryKey: ["wishPerforms", publicId, offset, limit],
+    queryFn: async () => {
+      const response = await apiClient.get<WishPerformsResponse>(
+        `/api/v1/users/wish-performs/${publicId}?offset=${offset}&limit=${limit}`,
+      );
+      return response.data;
+    },
+    staleTime: 0,
+    gcTime: 5 * 60 * 1000,
+  });
+
+// 유저 보고싶은 공연 API (Infinite Query)
+export const getWishPerformsOptions = (publicId: string, limit: number = 4) =>
+  infiniteQueryOptions({
+    queryKey: ["wishPerforms", publicId],
+    queryFn: async ({ pageParam }: { pageParam: number }) => {
+      const offset = pageParam;
+      const response = await apiClient.get<WishPerformsResponse>(
+        `/api/v1/users/wish-performs/${publicId}?offset=${offset}&limit=${limit}`,
+      );
+      const items = response.data.items;
+      const total = response.data.total;
+      const hasMore = offset + items.length < total;
+      return {
+        items,
+        offset,
+        hasMore,
+        total,
+      };
+    },
+    initialPageParam: 0,
+    getNextPageParam: (lastPage: { hasMore: boolean; offset: number }) => {
+      if (lastPage.hasMore === false) {
+        return undefined;
+      }
+      return lastPage.offset + limit;
+    },
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+  });
+
+// 보고싶은 공연 삭제 Mutation
+export const deleteWishPerforms = async (
+  entityIds: number[],
+): Promise<DeleteWishPerformsResponse> => {
+  const response = await apiClient.delete<DeleteWishPerformsResponse>(
+    "/api/v1/users/wish-performs",
+    { entityIds } as DeleteWishPerformsRequest,
+  );
+  return response;
+};
 
 // 유저 관심 클럽 API (Infinite Query)
 export const getFavoriteClubsOptions = (publicId: string, limit: number = 4) =>

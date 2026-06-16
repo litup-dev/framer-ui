@@ -59,7 +59,6 @@ export default function UserPageContent({
   const renderContent = () => (
     <>
       {permissions.canViewStats && <UserStats data={userStats} />}
-      {/* Stats to Viewing History: lg: 80px, md: 64px, sm: 48px */}
       {permissions.canViewPerformHistory && (
         <ViewingHistory
           className="mt-12 md:mt-16 lg:mt-20 xl:mt-20 2xl:mt-[100px]"
@@ -69,7 +68,6 @@ export default function UserPageContent({
           isOwner={isOwner}
         />
       )}
-      {/* Viewing History to Favorite Clubs: lg: 80px, md: 64px, sm: 48px */}
       {permissions.canViewFavoriteClubs && (
         <FavoriteClubs
           className="mt-12 md:mt-16 lg:mt-20 xl:mt-20 2xl:mt-[100px]"
