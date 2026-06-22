@@ -27,6 +27,7 @@ interface ApiRequestOptions {
 
 class ApiClient {
   private baseURL: string;
+  private refreshPromise: Promise<boolean> | null = null;
   // private isServer: boolean;
   // private accessToken: string | null | undefined = undefined;
 
@@ -149,16 +150,22 @@ class ApiClient {
     }
   }
 
+  // 병렬로 들어온 401 요청들이 동시에 refresh를 호출하지 않도록
+  // 진행 중인 refresh promise를 공유한다 (refresh token rotation 백엔드 대응).
   private async accessTokenRefresh(): Promise<boolean> {
-    try {
-      const response = await fetch(`${this.baseURL}/api/v1/auth/refresh`, {
-        method: "POST",
-        credentials: "include",
+    if (this.refreshPromise) return this.refreshPromise;
+
+    this.refreshPromise = fetch(`${this.baseURL}/api/v1/auth/refresh`, {
+      method: "POST",
+      credentials: "include",
+    })
+      .then((response) => response.ok)
+      .catch(() => false)
+      .finally(() => {
+        this.refreshPromise = null;
       });
-      return response.ok;
-    } catch {
-      return false;
-    }
+
+    return this.refreshPromise;
   }
 
   async get<T = any>(

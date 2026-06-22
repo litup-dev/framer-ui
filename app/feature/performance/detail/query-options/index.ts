@@ -10,13 +10,14 @@ import {
 } from "@/app/feature/performance/detail/types";
 import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 
-// 공연 상세 정보 API
+// 공연 상세 정보 API (공개 엔드포인트 — 토큰 만료여도 로그인 리다이렉트 금지)
 export const getPerformanceDetailOptions = (performanceId: number) =>
   queryOptions({
     queryKey: ["performanceDetail", performanceId],
     queryFn: async () => {
-      const response = await apiClient.get<PerformanceDetailResponse>(
+      const response = await apiClient.request<PerformanceDetailResponse>(
         `/api/v1/performances/${performanceId}/details`,
+        { skipAuthRedirect: true },
       );
       return response;
     },
@@ -34,8 +35,9 @@ export const getPerformanceCommentsOptions = (
   queryOptions({
     queryKey: ["performanceComments", performanceId, offset, limit],
     queryFn: async () => {
-      const response = await apiClient.get<PerformanceCommentResponse>(
+      const response = await apiClient.request<PerformanceCommentResponse>(
         `/api/v1/performance/${performanceId}/reviews?offset=${offset}&limit=${limit}`,
+        { skipAuthRedirect: true },
       );
       return response;
     },
