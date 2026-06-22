@@ -55,8 +55,10 @@ export default function OtherUserWishPerformancesPage({ params }: PageProps) {
   const { userInfo } = useUserPageData(publicId);
   const offset = (currentPage - 1) * itemsPerPage;
 
+  const sort = sortOrder === "latest" ? "-createdAt" : "+createdAt";
+
   const { data, isLoading } = useQuery({
-    ...getWishPerformsPaginatedOptions(publicId ?? "", offset, itemsPerPage),
+    ...getWishPerformsPaginatedOptions(publicId ?? "", offset, itemsPerPage, sort),
     enabled: !!publicId,
   });
 
@@ -79,65 +81,67 @@ export default function OtherUserWishPerformancesPage({ params }: PageProps) {
   return (
     <>
       <PageWrapper className="pt-4 md:pt-[120px] lg:pt-[120px] 2xl:pt-[124px]">
-        <Title className="text-[20px] md:text-[24px] lg:text-[32px] xl:text-[32px] 2xl:text-[40px] tracking-[-0.04em]">
-          {pageTitle}
-        </Title>
-        <Separator className="!h-[2px] md:!h-[3px] bg-main mt-4 md:mt-7 lg:mt-10" />
+        <div>
+          <Title className="text-[20px] md:text-[24px] lg:text-[32px] xl:text-[32px] 2xl:text-[40px] tracking-[-0.04em]">
+            {pageTitle}
+          </Title>
+          <Separator className="!h-[2px] md:!h-[3px] bg-main mt-4 md:mt-5 lg:mt-7 xl:mt-8 2xl:mt-10" />
 
-        <div className="mt-4">
-          {isLoading ? (
-            <div className="text-center py-8 text-muted-foreground">로딩 중...</div>
-          ) : (
-            <>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="flex items-center gap-1 font-semibold text-[14px] xl:text-[16px] hover:text-black transition-colors">
-                    <span>{sortOrder === "latest" ? "최신순" : "오래된순"}</span>
-                    <Image
-                      src="/images/arrow-down.svg"
-                      alt="화살표"
-                      width={20}
-                      height={20}
-                      className="w-4 h-4 xl:w-5 xl:h-5"
-                    />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start">
-                  <DropdownMenuItem onClick={() => setSortOrder("latest")}>
-                    최신순
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSortOrder("oldest")}>
-                    오래된순
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              {items.length > 0 ? (
-                <>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-x-3 md:gap-y-6 lg:gap-6 mt-4 md:mt-6">
-                    {items.map((item) => (
-                      <ViewingHistoryItem
-                        key={item.id}
-                        item={item as PerformHistoryItem}
-                        isEditing={false}
-                        isSelected={false}
-                        onSelect={() => {}}
+          <div className="mt-4">
+            {isLoading ? (
+              <div className="text-center py-8 text-muted-foreground">로딩 중...</div>
+            ) : (
+              <>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex items-center gap-1 font-semibold text-[14px] xl:text-[16px] hover:text-black transition-colors">
+                      <span>{sortOrder === "latest" ? "최신순" : "오래된순"}</span>
+                      <Image
+                        src="/images/arrow-down.svg"
+                        alt="화살표"
+                        width={20}
+                        height={20}
+                        className="w-4 h-4 xl:w-5 xl:h-5"
                       />
-                    ))}
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    <DropdownMenuItem onClick={() => setSortOrder("latest")}>
+                      최신순
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortOrder("oldest")}>
+                      오래된순
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {items.length > 0 ? (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-x-3 md:gap-y-6 lg:gap-6 mt-4 md:mt-6">
+                      {items.map((item) => (
+                        <ViewingHistoryItem
+                          key={item.id}
+                          item={item as PerformHistoryItem}
+                          isEditing={false}
+                          isSelected={false}
+                          onSelect={() => {}}
+                        />
+                      ))}
+                    </div>
+                    <CommentPagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={handlePageChange}
+                    />
+                  </>
+                ) : (
+                  <div className="text-center mt-20 text-muted-foreground">
+                    보고싶은 공연이 없습니다.
                   </div>
-                  <CommentPagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={handlePageChange}
-                  />
-                </>
-              ) : (
-                <div className="text-center mt-20 text-muted-foreground">
-                  보고싶은 공연이 없습니다.
-                </div>
-              )}
-            </>
-          )}
+                )}
+              </>
+            )}
+          </div>
         </div>
       </PageWrapper>
       <Footer className="mt-12 md:mt-16 lg:mt-20 xl:mt-40 2xl:mt-40" />

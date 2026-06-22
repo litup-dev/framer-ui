@@ -70,7 +70,7 @@ export default function UserPageLayout({
             <Title className="xl:text-[32px] 2xl:text-[40px] tracking-[-0.04em]">
               {title}
             </Title>
-            <Separator className="!h-[2px] md:!h-[3px] bg-main mt-4 md:mt-7 lg:mt-10" />
+            <Separator className="!h-[2px] md:!h-[3px] bg-main mt-4 md:mt-7 lg:mt-7 xl:mt-8 2xl:mt-10" />
           </div>
           <div
             className={cn(
@@ -92,7 +92,7 @@ export default function UserPageLayout({
           <Title className="text-[20px] md:text-[24px] lg:text-[32px] tracking-[-0.04em]">
             {title}
           </Title>
-          <Separator className="!h-[2px] md:!h-[3px] bg-main mt-4 md:mt-7 lg:mt-10" />
+          <Separator className="!h-[2px] md:!h-[3px] bg-main mt-4 md:mt-5 lg:mt-7" />
         </div>
         <div
           className={cn(

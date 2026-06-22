@@ -50,8 +50,10 @@ export default function WishPerformancesPage() {
 
   const offset = (currentPage - 1) * itemsPerPage;
 
+  const sort = sortOrder === "latest" ? "-createdAt" : "+createdAt";
+
   const { data, isLoading } = useQuery({
-    ...getWishPerformsPaginatedOptions(publicId, offset, itemsPerPage),
+    ...getWishPerformsPaginatedOptions(publicId, offset, itemsPerPage, sort),
     enabled: !!publicId,
   });
 

@@ -83,12 +83,14 @@ export const getWishPerformsPaginatedOptions = (
   publicId: string,
   offset: number = 0,
   limit: number = 4,
+  sort: string = "-createdAt",
 ) =>
   queryOptions({
-    queryKey: ["wishPerforms", publicId, offset, limit],
+    queryKey: ["wishPerforms", publicId, offset, limit, sort],
     queryFn: async () => {
+      const encodedSort = encodeURIComponent(sort);
       const response = await apiClient.get<WishPerformsResponse>(
-        `/api/v1/users/wish-performs/${publicId}?offset=${offset}&limit=${limit}`,
+        `/api/v1/users/wish-performs/${publicId}?offset=${offset}&limit=${limit}&sort=${encodedSort}`,
       );
       return response.data;
     },
