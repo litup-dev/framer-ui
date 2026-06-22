@@ -168,43 +168,50 @@ class ApiClient {
     return this.refreshPromise;
   }
 
+  // GET은 비로그인 접근이 기본 — 만료 토큰이어도 /login 강제 리다이렉트 안 함.
+  // 로그인 필수 페이지의 GET은 useCurrentUser 등 페이지 가드가 처리한다.
   async get<T = any>(
     endpoint: string,
-    headers?: Record<string, string>,
+    options: Omit<ApiRequestOptions, "method" | "body"> = {},
   ): Promise<T> {
-    return this.request<T>(endpoint, { method: "GET", headers });
+    return this.request<T>(endpoint, {
+      ...options,
+      method: "GET",
+      skipAuthRedirect: options.skipAuthRedirect ?? true,
+    });
   }
 
+  // mutation들은 로그인 필수 — 401 발생 시 /login 리다이렉트가 기본 동작.
   async post<T = any>(
     endpoint: string,
     body?: any,
-    headers?: Record<string, string>,
+    options: Omit<ApiRequestOptions, "method" | "body"> = {},
   ): Promise<T> {
-    return this.request<T>(endpoint, { method: "POST", body, headers });
+    return this.request<T>(endpoint, { ...options, method: "POST", body });
   }
 
   async put<T = any>(
     endpoint: string,
     body?: any,
-    headers?: Record<string, string>,
+    options: Omit<ApiRequestOptions, "method" | "body"> = {},
   ): Promise<T> {
-    return this.request<T>(endpoint, { method: "PUT", body, headers });
+    return this.request<T>(endpoint, { ...options, method: "PUT", body });
   }
 
   async delete<T = any>(
     endpoint: string,
     body?: any,
-    headers?: Record<string, string>,
+    options: Omit<ApiRequestOptions, "method" | "body"> = {},
   ): Promise<T> {
-    return this.request<T>(endpoint, { method: "DELETE", body, headers });
+    return this.request<T>(endpoint, { ...options, method: "DELETE", body });
   }
 
   async patch<T = any>(
     endpoint: string,
     body?: any,
-    headers?: Record<string, string>,
+    options: Omit<ApiRequestOptions, "method" | "body"> = {},
   ): Promise<T> {
-    return this.request<T>(endpoint, { method: "PATCH", body, headers });
+    return this.request<T>(endpoint, { ...options, method: "PATCH", body });
   }
 }
 

@@ -26,10 +26,7 @@ export const getCurrentUserOptions = () =>
   queryOptions({
     queryKey: ["currentUser"],
     queryFn: async () => {
-      const response = await apiClient.request<UserInfoResponse>(
-        "/api/v1/users/me",
-        { skipAuthRedirect: true },
-      );
+      const response = await apiClient.get<UserInfoResponse>("/api/v1/users/me");
       return response.data;
     },
     staleTime: 30 * 60 * 1000, // 30분
