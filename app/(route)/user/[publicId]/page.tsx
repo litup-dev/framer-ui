@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import UserPageContent from "@/app/shared/components/user-page-content";
 import { useUserPageData } from "@/app/feature/user/hooks/use-user-page-data";
+import { useRedirectIfOwner } from "@/app/feature/user/hooks/use-redirect-if-owner";
 
 interface UserPageProps {
   params: Promise<{ publicId: string }>;
@@ -17,6 +18,7 @@ export default function UserPage({ params }: UserPageProps) {
     });
   }, [params]);
 
+  useRedirectIfOwner(publicId);
   const { userInfo, userStats, isLoading } = useUserPageData(publicId);
 
   if (isLoading || !publicId) {

@@ -16,6 +16,7 @@ import Footer from "@/app/shared/components/footer";
 import { Title } from "@/components/shared/typography";
 import { Separator } from "@/components/ui/separator";
 import { useUserPageData } from "@/app/feature/user/hooks/use-user-page-data";
+import { useRedirectIfOwner } from "@/app/feature/user/hooks/use-redirect-if-owner";
 import { getWishPerformsPaginatedOptions } from "@/app/feature/user/query-options";
 import { WishPerformItem, PerformHistoryItem } from "@/app/feature/user/types";
 
@@ -36,6 +37,8 @@ export default function OtherUserWishPerformancesPage({ params }: PageProps) {
   useEffect(() => {
     params.then((p) => setPublicId(p.publicId));
   }, [params]);
+
+  useRedirectIfOwner(publicId);
 
   useEffect(() => {
     const update = () =>

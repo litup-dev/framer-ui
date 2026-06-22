@@ -77,7 +77,6 @@ export const MyPageMenuItems = [
     id: 1,
     label: "나의 활동",
     subItems: [
-      { label: "보고싶은 공연", href: "/user/wish-performances" },
       { label: "공연 코멘트", href: "/user/comments" },
       { label: "클럽 리뷰", href: "/user/reviews" },
     ],

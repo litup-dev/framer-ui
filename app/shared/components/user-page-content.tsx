@@ -58,7 +58,9 @@ export default function UserPageContent({
   // 공통 콘텐츠
   const renderContent = () => (
     <>
-      {permissions.canViewStats && <UserStats data={userStats} />}
+      {permissions.canViewStats && (
+        <UserStats data={userStats} isOwner={isOwner} publicId={publicId} />
+      )}
       {permissions.canViewPerformHistory && (
         <ViewingHistory
           className="mt-12 md:mt-16 lg:mt-20 xl:mt-20 2xl:mt-[100px]"
