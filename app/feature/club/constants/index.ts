@@ -1,5 +1,10 @@
 export const region = [
   {
+    id: 0,
+    label: "전국",
+    value: "all",
+  },
+  {
     id: 1,
     label: "서울",
     value: "seoul",

@@ -101,7 +101,7 @@ const ClubSearchForm = () => {
     () =>
       getClubsOptions({
         searchKey: search || undefined,
-        area: region || "seoul",
+        area: region,
         sort,
         page: currentPage,
         limit,

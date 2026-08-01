@@ -60,9 +60,10 @@ const getClubsOptions = (params: GetClubsParams = {}) => {
   const limit = params.limit || 5;
   const page = params.page || 1;
   const offset = params.offset ?? (page - 1) * limit;
+  const area = params.area && params.area !== "all" ? params.area : undefined;
 
   const normalizedParams = {
-    area: params.area || "other",
+    ...(area && { area }),
     sort: params.sort || "-reviewCount",
     offset,
     limit,
@@ -79,7 +80,7 @@ const getClubsOptions = (params: GetClubsParams = {}) => {
     queryKey: [
       "clubs",
       normalizedParams.searchKey,
-      normalizedParams.area,
+      area,
       normalizedParams.latitude,
       normalizedParams.longitude,
       normalizedParams.keywords,
