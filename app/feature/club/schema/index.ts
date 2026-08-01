@@ -13,7 +13,7 @@ export type ClubSearchFormSchema = z.infer<typeof clubSearchFormSchema>;
 
 export const defaultValues: ClubSearchFormSchema = {
   search: "",
-  region: "",
+  region: "all",
   reviewSort: undefined,
   reviewDate: undefined,
   ratingSort: undefined,
