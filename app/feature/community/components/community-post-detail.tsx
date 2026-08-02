@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { ChevronLeft, Pencil, Trash2, Siren } from "lucide-react";
 import { postDetailQueryOptions } from "../query-options";
 import { deletePost } from "../api";
@@ -11,6 +12,7 @@ import { CommunityLikeButtons } from "./community-like-buttons";
 import { CommunityCommentSection } from "./community-comment-section";
 import { CommunityPostImageGallery } from "./community-post-image-gallery";
 import { useLoginRequired } from "../hooks/use-login-required";
+import { getImageUrl } from "@/lib/utils";
 
 function formatDate(isoString: string): string {
   const d = new Date(isoString);
@@ -107,16 +109,25 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
 
         {/* 프로필 행 (아바타 + 닉네임만) */}
         <div className="flex items-center gap-2.5">
-          {post.author.profilePath ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={post.author.profilePath}
-              alt={post.author.nickname}
-              className="w-8 h-8 rounded-full object-cover flex-shrink-0"
-            />
-          ) : (
-            <div className="w-8 h-8 rounded-full bg-black/15 flex-shrink-0" />
-          )}
+          {(() => {
+            const avatar = getImageUrl(post.author.profilePath);
+            return avatar ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={avatar}
+                alt={post.author.nickname}
+                className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+              />
+            ) : (
+              <Image
+                src="/images/user/user-avatar.svg"
+                alt=""
+                width={32}
+                height={32}
+                className="w-8 h-8 rounded-full flex-shrink-0"
+              />
+            );
+          })()}
           <p className="text-[14px] font-bold tracking-[-0.04em] text-black">
             {post.author.nickname}
           </p>
