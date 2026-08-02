@@ -44,8 +44,49 @@ export const createPost = async (body: {
   return apiClient.post("/api/v1/posts", body);
 };
 
+export const updatePost = async (
+  id: number,
+  body: {
+    categoryCode?: string;
+    title?: string;
+    content?: string;
+    imageIds?: number[];
+  },
+): Promise<{ data: { id: number } }> => {
+  return apiClient.patch(`/api/v1/posts/${id}`, body);
+};
+
 export const deletePost = async (id: number) => {
   return apiClient.delete(`/api/v1/posts/${id}`);
+};
+
+// ── Draft (임시저장) ────────────────────────────────
+export const createDraft = async (body: {
+  boardCode?: string;
+  categoryCode?: string;
+  title?: string;
+  content?: string;
+  imageIds?: number[];
+}): Promise<{ data: { id: number } }> => {
+  return apiClient.post("/api/v1/posts/draft", body);
+};
+
+export const updateDraft = async (
+  id: number,
+  body: {
+    categoryCode?: string;
+    title?: string;
+    content?: string;
+    imageIds?: number[];
+  },
+): Promise<{ data: { id: number } }> => {
+  return apiClient.patch(`/api/v1/posts/draft/${id}`, body);
+};
+
+export const publishDraft = async (
+  id: number,
+): Promise<{ data: { id: number } }> => {
+  return apiClient.post(`/api/v1/posts/draft/${id}/publish`);
 };
 
 export const toggleLike = async (

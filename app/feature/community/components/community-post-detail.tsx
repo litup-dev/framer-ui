@@ -12,18 +12,13 @@ import { CommunityLikeButtons } from "./community-like-buttons";
 import { CommunityCommentSection } from "./community-comment-section";
 import { CommunityPostImageGallery } from "./community-post-image-gallery";
 import { useLoginRequired } from "../hooks/use-login-required";
+import { boardLabel } from "../constants";
 import { getImageUrl } from "@/lib/utils";
 
 function formatDate(isoString: string): string {
   const d = new Date(isoString);
   const pad = (n: number) => String(n).padStart(2, "0");
   return `${String(d.getFullYear()).slice(2)}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
-
-function boardLabel(boardCode: string): string {
-  if (boardCode === "FREE") return "자유게시판";
-  if (boardCode === "PERFORM_REVIEW") return "팬 커뮤니티";
-  return boardCode;
 }
 
 interface CommunityPostDetailProps {

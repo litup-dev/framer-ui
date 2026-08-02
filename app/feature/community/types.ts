@@ -1,4 +1,4 @@
-export type BoardCode = "FREE" | "PERFORM_REVIEW";
+export type BoardCode = "FREE";
 export type CategoryCode = "GENERAL" | "BAND_PROMO" | "PERFORM_REVIEW";
 export type SortType = "-createdAt" | "+createdAt";
 export type LikeType = "LIKE" | "DISLIKE";
@@ -79,6 +79,7 @@ export interface PostDetail {
   commentCount: number;
   isMine: boolean;
   myLikeType: LikeType | null;
+  isDraft?: boolean;
 }
 
 export interface Comment {
