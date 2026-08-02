@@ -14,19 +14,23 @@ export interface PostCategory {
   name: string;
 }
 
+export interface PostThumbnail {
+  id: number;
+  filePath: string; // 상대경로, getImageUrl로 절대 URL 조합
+}
+
 export interface PostItem {
   id: number;
   boardCode: BoardCode;
   category: PostCategory | null;
   title: string;
-  contentPreview?: string;   // 백엔드 추가 필요: 약 100자 미리보기
-  thumbnail?: string | null; // 백엔드 추가 필요: 첫 번째 이미지 경로
-  imageCount?: number;       // 백엔드 추가 필요: 이미지 총 개수
+  thumbnails: PostThumbnail[]; // 등록순 최대 4장 (없으면 빈 배열)
+  imageCount: number;          // 첨부된 전체 이미지 개수
   createdAt: string;
   updatedAt: string | null;
   author: PostAuthor;
   likeCount: number;
-  dislikeCount?: number; // 백엔드 추가 필요: 목록 API에 dislikeCount 추가
+  dislikeCount: number;
   commentCount: number;
 }
 
@@ -39,13 +43,10 @@ export interface PostListResponse {
   };
 }
 
-export type SearchType = "all" | "title" | "content" | "author";
-
 export interface PostsQuery {
   board?: BoardCode;
   category?: CategoryCode;
   keyword?: string;
-  searchType?: SearchType; // 백엔드 추가 필요 (기본: all)
   sort?: SortType;
   offset?: number;
   limit?: number;

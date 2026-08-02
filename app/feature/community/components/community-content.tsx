@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -14,12 +14,6 @@ import { CommunityPostCardSkeleton } from "./community-post-card-skeleton";
 import { CommunityWriteFab } from "./community-write-fab";
 import SortDropdown from "@/app/shared/components/sort-dropdown";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Pagination,
   PaginationContent,
   PaginationItem,
@@ -31,18 +25,11 @@ import {
 import { useAllPerformancesPagination } from "@/app/feature/all-performances/hooks/use-all-performances-pagination";
 import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 import { cn } from "@/lib/utils";
-import type { BoardCode, CategoryCode, SortType, SearchType } from "../types";
+import type { BoardCode, CategoryCode, SortType } from "../types";
 
 const SORT_OPTIONS: { value: SortType; label: string }[] = [
   { value: "-createdAt", label: "최신순" },
   { value: "+createdAt", label: "오래된순" },
-];
-
-const SEARCH_TYPE_OPTIONS: { value: SearchType; label: string }[] = [
-  { value: "all", label: "제목 + 내용" },
-  { value: "title", label: "제목" },
-  { value: "content", label: "내용" },
-  { value: "author", label: "작성자" },
 ];
 
 const LIMIT = 10;
@@ -60,12 +47,20 @@ export function CommunityContent() {
   const [sort, setSort] = useState<SortType>(
     (searchParams.get("sort") as SortType) || "-createdAt",
   );
-  const [searchType, setSearchType] = useState<SearchType>("all");
   const [keyword, setKeyword] = useState(searchParams.get("keyword") || "");
   const [inputValue, setInputValue] = useState(searchParams.get("keyword") || "");
   const [currentPage, setCurrentPage] = useState(
     Number(searchParams.get("page")) || 1,
   );
+
+  // 외부(모바일 헤더 검색 등)에서 URL params가 바뀌면 로컬 상태와 동기화
+  useEffect(() => {
+    const urlKeyword = searchParams.get("keyword") ?? "";
+    setKeyword(urlKeyword);
+    setInputValue(urlKeyword);
+    const urlPage = Number(searchParams.get("page")) || 1;
+    setCurrentPage(urlPage);
+  }, [searchParams]);
 
   const offset = (currentPage - 1) * LIMIT;
 
@@ -74,7 +69,6 @@ export function CommunityContent() {
       board: board ?? undefined,
       category: category ?? undefined,
       keyword: keyword || undefined,
-      searchType,
       sort,
       offset,
       limit: LIMIT,
@@ -120,12 +114,7 @@ export function CommunityContent() {
 
   return (
     <div className="w-full min-h-screen">
-      {/* 페이지 타이틀 */}
-      <h1 className="text-[24px] md:text-[28px] font-bold leading-none tracking-[-0.04em] text-black mb-6 md:mb-7">
-        커뮤니티
-      </h1>
-
-      {/* 2컬럼: 메인 + 우측 사이드바 */}
+      {/* 2컬럼: 메인 + 우측 사이드바 (xl+) */}
       <div className="flex gap-8 xl:gap-12 items-start">
 
         {/* ── 메인 컬럼 ── */}
@@ -135,77 +124,35 @@ export function CommunityContent() {
           <div className="flex items-end justify-between border-b border-black/10">
             <CommunityBoardTabs value={board} onChange={handleBoardChange} />
 
-            {/* 검색 (데스크탑) */}
-            <form onSubmit={handleSearch} className="hidden md:flex items-center gap-1 mb-3">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    type="button"
-                    className="flex items-center gap-1 px-3 py-2 text-[13px] font-semibold text-black/50 hover:text-black/70 transition-colors outline-none"
-                  >
-                    {SEARCH_TYPE_OPTIONS.find((o) => o.value === searchType)?.label ?? "제목 + 내용"}
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="flex-shrink-0">
-                      <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="min-w-[120px]">
-                  {SEARCH_TYPE_OPTIONS.map((opt) => (
-                    <DropdownMenuItem
-                      key={opt.value}
-                      onSelect={() => setSearchType(opt.value)}
-                      className="text-[13px] font-semibold"
-                    >
-                      {opt.label}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              <div className="flex items-center gap-2 px-3 py-2">
-                <input
-                  type="text"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="검색어를 입력해 주세요."
-                  className="w-[160px] xl:w-[200px] bg-transparent text-[13px] font-medium text-black placeholder:text-black/30 outline-none"
-                />
-                <button type="submit" className="flex-shrink-0 text-black/40 hover:text-black transition-colors">
-                  <Search className="w-4 h-4" />
-                </button>
-              </div>
-            </form>
-          </div>
-
-          {/* 카테고리 필터 + 정렬 */}
-          <div className="flex items-center justify-between gap-3 mt-4 flex-wrap">
-            <CommunityCategoryFilter value={category} onChange={handleCategoryChange} />
-            <SortDropdown
-              value={sort}
-              options={SORT_OPTIONS}
-              onChange={handleSortChange}
-              className=""
-            />
-          </div>
-
-          {/* 검색 (모바일) */}
-          <form onSubmit={handleSearch} className="mt-3 md:hidden">
-            <div className="flex items-center gap-2 px-3.5 py-3 bg-black/[0.03] rounded-[4px] border border-black/20">
+            {/* 검색 (데스크탑 xl+) */}
+            <form onSubmit={handleSearch} className="hidden xl:flex items-center gap-2 px-3 py-2 mb-3">
               <input
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="검색어를 입력해 주세요."
-                className="flex-1 bg-transparent text-[14px] font-medium text-black placeholder:text-black/30 outline-none"
+                className="w-[200px] bg-transparent text-[13px] font-medium text-black placeholder:text-black/30 outline-none"
               />
-              <button type="submit" className="flex-shrink-0 text-black/40">
+              <button type="submit" className="flex-shrink-0 text-black/40 hover:text-black transition-colors">
                 <Search className="w-4 h-4" />
               </button>
+            </form>
+          </div>
+
+          {/* 카테고리 필터 + 정렬 (정렬은 데스크탑 xl+ 만) */}
+          <div className="flex items-center justify-between gap-3 mt-4 flex-wrap">
+            <CommunityCategoryFilter value={category} onChange={handleCategoryChange} />
+            <div className="hidden xl:block">
+              <SortDropdown
+                value={sort}
+                options={SORT_OPTIONS}
+                onChange={handleSortChange}
+              />
             </div>
-          </form>
+          </div>
 
           {/* 게시글 목록 */}
-          <div className="mt-2">
+          <div className="mt-4 xl:mt-2">
             {isLoading ? (
               Array.from({ length: 5 }).map((_, i) => (
                 <CommunityPostCardSkeleton key={i} />
@@ -262,15 +209,20 @@ export function CommunityContent() {
           )}
         </div>
 
-        {/* ── 우측 사이드바 (데스크탑 전용) ── */}
-        <div className="hidden md:block w-[160px] xl:w-[180px] flex-shrink-0">
-          <div className="sticky top-28">
+        {/* ── 우측 사이드바 (xl 이상) ── */}
+        <div className="hidden xl:block w-[180px] flex-shrink-0">
+          <div className="sticky top-28 flex flex-col gap-3">
             <Link
               href={isAuthenticated ? "/community/write" : "/login"}
               className="flex items-center justify-center w-full py-3.5 bg-main text-white text-[15px] font-bold leading-none tracking-[-0.04em] rounded-[4px] hover:opacity-90 transition-opacity"
             >
               글쓰기
             </Link>
+
+            {/* 알림 카드 자리 (실제 알림 API 연동 예정) */}
+            <div className="flex flex-col gap-2" aria-hidden="true">
+              {/* 알림 컴포넌트 placeholder - 다음 스프린트에서 구현 */}
+            </div>
           </div>
         </div>
 

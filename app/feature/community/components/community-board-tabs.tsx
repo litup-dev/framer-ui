@@ -23,7 +23,7 @@ interface CommunityBoardTabsProps {
 
 export function CommunityBoardTabs({ value, onChange, className }: CommunityBoardTabsProps) {
   return (
-    <div className={cn("flex items-end", className)}>
+    <div className={cn("flex items-end w-full xl:w-auto", className)}>
       {TABS.map((tab) => {
         const isActive = !tab.disabled && tab.code === value;
         return (
@@ -34,7 +34,7 @@ export function CommunityBoardTabs({ value, onChange, className }: CommunityBoar
             }}
             disabled={tab.disabled}
             className={cn(
-              "px-3 pb-4 text-[16px] md:text-[18px] font-bold leading-none tracking-[-0.04em] transition-colors whitespace-nowrap",
+              "flex-1 xl:flex-none px-3 pb-4 text-[16px] xl:text-[18px] font-bold leading-none tracking-[-0.04em] transition-colors whitespace-nowrap",
               "border-b-[3px] -mb-px",
               isActive
                 ? "border-black text-black"

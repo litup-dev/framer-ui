@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronRight, X, LogOut, User } from "lucide-react";
+import { ChevronRight, X, LogOut, User, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { saveReturnUrl } from "@/lib/login-utils";
 import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 
@@ -26,8 +26,11 @@ const MobileHeader = () => {
   const { user, isAuthenticated } = useCurrentUser();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const closeMenu = () => setIsMenuOpen(false);
   const openMenu = () => setIsMenuOpen(true);
@@ -49,6 +52,27 @@ const MobileHeader = () => {
   };
 
   const isClubPage = pathname === "/club";
+  const isCommunityListPage = pathname === "/community";
+
+  const openSearch = () => {
+    setSearchInput(searchParams.get("keyword") ?? "");
+    setIsSearchOpen(true);
+  };
+  const closeSearch = () => setIsSearchOpen(false);
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = searchInput.trim();
+    const params = new URLSearchParams(searchParams.toString());
+    if (trimmed) {
+      params.set("keyword", trimmed);
+    } else {
+      params.delete("keyword");
+    }
+    params.delete("page");
+    router.push(`/community${params.toString() ? `?${params.toString()}` : ""}`);
+    setIsSearchOpen(false);
+  };
 
   return (
     <>
@@ -63,10 +87,73 @@ const MobileHeader = () => {
             <Image src="/images/logo.svg" alt="logo" width={77} height={24} />
           </Link>
         </div>
-        <button onClick={openMenu} className="w-12 h-12 flex items-center justify-center">
-          <Image src="/images/mobile-menu.png" alt="menu" width={28} height={28} />
-        </button>
+        <div className="flex items-center">
+          {isCommunityListPage && (
+            <button
+              onClick={openSearch}
+              className="w-12 h-12 flex items-center justify-center"
+              aria-label="검색"
+            >
+              <Search className="w-6 h-6" strokeWidth={2} />
+            </button>
+          )}
+          <button onClick={openMenu} className="w-12 h-12 flex items-center justify-center">
+            <Image src="/images/mobile-menu.png" alt="menu" width={28} height={28} />
+          </button>
+        </div>
       </div>
+
+      {/* 커뮤니티 검색 시트 */}
+      <AnimatePresence>
+        {isSearchOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/40 z-[60] md:hidden"
+              onClick={closeSearch}
+            />
+            <motion.div
+              initial={{ y: -100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -100, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 250 }}
+              className="fixed top-0 left-0 right-0 bg-white z-[70] md:hidden shadow-md"
+            >
+              <form
+                onSubmit={handleSearchSubmit}
+                className="flex items-center gap-2 px-4 h-[60px]"
+              >
+                <button
+                  type="submit"
+                  className="flex-shrink-0 text-black/60"
+                  aria-label="검색"
+                >
+                  <Search className="w-5 h-5" />
+                </button>
+                <input
+                  type="text"
+                  autoFocus
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                  placeholder="검색어를 입력해 주세요."
+                  className="flex-1 bg-transparent text-[15px] font-medium text-black placeholder:text-black/30 outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={closeSearch}
+                  className="flex-shrink-0 text-black/60"
+                  aria-label="닫기"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </form>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {isMenuOpen && (
