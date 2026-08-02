@@ -9,6 +9,13 @@ export interface PostAuthor {
   profilePath: string | null;
 }
 
+export interface MentionableUser {
+  id: number;
+  nickname: string;
+  profilePath: string | null;
+  isAuthor: boolean;
+}
+
 export interface PostCategory {
   code: CategoryCode;
   name: string;
@@ -83,6 +90,8 @@ export interface Comment {
   author: PostAuthor | null;
   isMine: boolean;
   isDeleted: boolean;
+  likeCount: number;
+  isLiked: boolean;
   replies: Comment[];
 }
 

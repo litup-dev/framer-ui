@@ -3,40 +3,61 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createComment } from "../api";
-import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
-import { useRouter, usePathname } from "next/navigation";
-import { saveReturnUrl } from "@/lib/login-utils";
+import { useLoginRequired } from "../hooks/use-login-required";
+import { MentionInput } from "./mention-input";
 import { cn } from "@/lib/utils";
+import type { MentionableUser } from "../types";
 
 const MAX_LENGTH = 200;
 
 interface CommunityCommentFormProps {
   postId: number;
   parentId?: number;
-  replyTo?: string;
+  replyToNickname?: string;
+  replyToUserId?: number;
   onSuccess?: () => void;
   onCancel?: () => void;
   compact?: boolean;
+  mentionableUsers?: MentionableUser[];
+}
+
+// 보이는 길이 = @[nick](id) 을 @nick 로 치환한 길이
+function visibleLength(text: string): number {
+  return text.replace(/@\[([^\]]+)\]\(\d+\)/g, "@$1").length;
 }
 
 export function CommunityCommentForm({
   postId,
   parentId,
-  replyTo,
+  replyToNickname,
+  replyToUserId,
   onSuccess,
   onCancel,
   compact = false,
+  mentionableUsers = [],
 }: CommunityCommentFormProps) {
   const queryClient = useQueryClient();
-  const { isAuthenticated, user } = useCurrentUser();
-  const router = useRouter();
-  const pathname = usePathname();
-  const [content, setContent] = useState(replyTo ? `@${replyTo} ` : "");
+  const { isAuthenticated, showLoginModal } = useLoginRequired();
+
+  const initial =
+    replyToNickname && replyToUserId
+      ? `@[${replyToNickname}](${replyToUserId}) `
+      : "";
+  const initialIds = replyToUserId ? [replyToUserId] : [];
+
+  const [content, setContent] = useState(initial);
+  const [mentionedUserIds, setMentionedUserIds] = useState<number[]>(initialIds);
 
   const { mutate, isPending } = useMutation({
-    mutationFn: () => createComment(postId, { content: content.trim(), parentId }),
+    mutationFn: () =>
+      createComment(postId, {
+        content: content.trim(),
+        parentId,
+        mentionedUserIds: Array.from(new Set(mentionedUserIds)),
+      }),
     onSuccess: () => {
       setContent("");
+      setMentionedUserIds([]);
       queryClient.invalidateQueries({ queryKey: ["posts", postId, "comments"] });
       queryClient.invalidateQueries({ queryKey: ["posts", postId] });
       onSuccess?.();
@@ -45,17 +66,21 @@ export function CommunityCommentForm({
 
   const handleFocus = () => {
     if (!isAuthenticated) {
-      saveReturnUrl(pathname);
-      router.push("/login");
+      showLoginModal();
     }
+  };
+
+  const handleChange = (v: string, ids: number[]) => {
+    if (visibleLength(v) > MAX_LENGTH) return;
+    setContent(v);
+    setMentionedUserIds(ids);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!content.trim() || isPending) return;
     if (!isAuthenticated) {
-      saveReturnUrl(pathname);
-      router.push("/login");
+      showLoginModal();
       return;
     }
     mutate();
@@ -65,30 +90,31 @@ export function CommunityCommentForm({
     <form
       onSubmit={handleSubmit}
       className={cn(
-        "border border-black/15 rounded-[4px]",
-        compact ? "border-black/10 bg-black/[0.01]" : "",
+        "relative bg-white border border-black/15 rounded-[4px]",
+        compact && "border-black/10",
       )}
     >
       <div className="flex gap-3 p-3.5 pb-2">
-        {/* 아바타 */}
         <div className="w-8 h-8 rounded-full bg-black/15 flex-shrink-0 mt-0.5" />
-
-        {/* 텍스트 영역 */}
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          onFocus={handleFocus}
-          placeholder="내용을 입력해 주세요."
-          rows={compact ? 2 : 3}
-          maxLength={MAX_LENGTH}
-          className="flex-1 resize-none bg-transparent text-[14px] font-medium tracking-[-0.02em] text-black placeholder:text-black/30 outline-none leading-[1.6]"
-        />
+        <div className="flex-1 min-w-0">
+          <MentionInput
+            value={content}
+            onChange={handleChange}
+            mentionableUsers={mentionableUsers}
+            placeholder="내용을 입력해 주세요."
+            onFocus={handleFocus}
+            ariaLabel="댓글 입력"
+            className={cn(
+              "text-[14px] font-medium tracking-[-0.02em] text-black leading-[1.6]",
+              compact ? "min-h-[44px]" : "min-h-[66px]",
+            )}
+          />
+        </div>
       </div>
 
-      {/* 하단 카운터 + 버튼 */}
       <div className="flex items-center justify-between px-3.5 pb-3">
         <span className="text-[12px] text-black/30 font-medium">
-          {content.length}/{MAX_LENGTH}
+          {visibleLength(content)}/{MAX_LENGTH}
         </span>
         <div className="flex items-center gap-2">
           {onCancel && (

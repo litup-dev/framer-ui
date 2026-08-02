@@ -4,9 +4,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ThumbsUp, ThumbsDown, MessageCircle, Share2 } from "lucide-react";
 import { toggleLike } from "../api";
-import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
-import { useRouter, usePathname } from "next/navigation";
-import { saveReturnUrl } from "@/lib/login-utils";
+import { useLoginRequired } from "../hooks/use-login-required";
 import { cn } from "@/lib/utils";
 import type { LikeType } from "../types";
 
@@ -26,9 +24,7 @@ export function CommunityLikeButtons({
   myLikeType: initialMyLikeType,
 }: CommunityLikeButtonsProps) {
   const queryClient = useQueryClient();
-  const { isAuthenticated } = useCurrentUser();
-  const router = useRouter();
-  const pathname = usePathname();
+  const { isAuthenticated, showLoginModal } = useLoginRequired();
 
   const [optimistic, setOptimistic] = useState({
     myLikeType: initialMyLikeType,
@@ -71,8 +67,7 @@ export function CommunityLikeButtons({
 
   const handleLike = (likeType: LikeType) => {
     if (!isAuthenticated) {
-      saveReturnUrl(pathname);
-      router.push("/login");
+      showLoginModal();
       return;
     }
     mutate(likeType);
@@ -85,7 +80,7 @@ export function CommunityLikeButtons({
   };
 
   return (
-    <div className="flex items-center gap-5 py-5 border-t border-b border-black/10">
+    <div className="flex items-center gap-5 py-3">
       <button
         onClick={() => handleLike("LIKE")}
         className={cn(

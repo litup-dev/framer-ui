@@ -4,6 +4,7 @@ import type {
   PostsQuery,
   PostDetail,
   CommentListResponse,
+  MentionableUser,
 } from "./types";
 
 export const getPosts = async (query: PostsQuery = {}): Promise<PostListResponse> => {
@@ -56,9 +57,15 @@ export const toggleLike = async (
 
 export const createComment = async (
   postId: number,
-  body: { content: string; parentId?: number },
+  body: { content: string; parentId?: number; mentionedUserIds?: number[] },
 ): Promise<{ data: { id: number } }> => {
   return apiClient.post(`/api/v1/posts/${postId}/comments`, body);
+};
+
+export const getMentionableUsers = async (
+  postId: number,
+): Promise<{ data: MentionableUser[] }> => {
+  return apiClient.get(`/api/v1/posts/${postId}/mentionable-users`);
 };
 
 export const deleteComment = async (commentId: number) => {
@@ -67,6 +74,12 @@ export const deleteComment = async (commentId: number) => {
 
 export const updateComment = async (commentId: number, content: string) => {
   return apiClient.patch(`/api/v1/comments/${commentId}`, { content });
+};
+
+export const toggleCommentLike = async (
+  commentId: number,
+): Promise<{ data: { isLiked: boolean; likeCount: number } }> => {
+  return apiClient.post(`/api/v1/comments/${commentId}/like`);
 };
 
 export const uploadPostImage = async (

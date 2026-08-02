@@ -11,12 +11,14 @@ const CommunityPostPage = async ({ params }: CommunityPostPageProps) => {
 
   return (
     <>
-      <div className="w-full min-h-screen px-5 md:px-10 md:pt-20 xl:pt-24 lg:px-40 xl:px-52 2xl:px-64 flex flex-col">
-        <div className="py-8 md:py-10">
+      <div className="w-full min-h-screen px-6 md:px-6 md:pt-24 2xl:pt-28 xl:px-[60px] 2xl:px-[120px] flex flex-col">
+        <div className="pt-6 pb-24 md:py-8 xl:py-10">
           <CommunityPostDetail postId={postId} />
         </div>
       </div>
-      <Footer />
+      <div className="hidden md:block">
+        <Footer />
+      </div>
     </>
   );
 };
