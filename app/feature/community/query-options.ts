@@ -1,5 +1,11 @@
 import { queryOptions } from "@tanstack/react-query";
-import { getPosts, getPostDetail, getComments, getMentionableUsers } from "./api";
+import {
+  getPosts,
+  getPostDetail,
+  getComments,
+  getMentionableUsers,
+  getDrafts,
+} from "./api";
 import type { PostsQuery } from "./types";
 
 export const postsQueryOptions = (query: PostsQuery) =>
@@ -25,4 +31,11 @@ export const mentionableUsersQueryOptions = (postId: number) =>
     queryKey: ["posts", postId, "mentionable-users"],
     queryFn: () => getMentionableUsers(postId),
     staleTime: 5 * 60 * 1000,
+  });
+
+export const draftsQueryOptions = (offset = 0, limit = 10) =>
+  queryOptions({
+    queryKey: ["posts", "drafts", { offset, limit }],
+    queryFn: () => getDrafts(offset, limit),
+    staleTime: 0,
   });

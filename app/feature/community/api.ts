@@ -5,6 +5,7 @@ import type {
   PostDetail,
   CommentListResponse,
   MentionableUser,
+  DraftListItem,
 } from "./types";
 
 export const getPosts = async (query: PostsQuery = {}): Promise<PostListResponse> => {
@@ -61,16 +62,18 @@ export const deletePost = async (id: number) => {
 };
 
 // ── Draft (임시저장) ────────────────────────────────
+// 유저당 draft 1개만 허용. 이미 있으면 그 슬롯을 이번 내용으로 덮어씀.
 export const createDraft = async (body: {
   boardCode?: string;
   categoryCode?: string;
   title?: string;
   content?: string;
   imageIds?: number[];
-}): Promise<{ data: { id: number } }> => {
+}): Promise<{ data: { id: number; isNew: boolean } }> => {
   return apiClient.post("/api/v1/posts/draft", body);
 };
 
+// 자동저장. imageIds는 매번 최종 상태 전체 전송 (부분 diff X).
 export const updateDraft = async (
   id: number,
   body: {
@@ -79,14 +82,22 @@ export const updateDraft = async (
     content?: string;
     imageIds?: number[];
   },
-): Promise<{ data: { id: number } }> => {
+): Promise<{ data: { success: boolean; operation: string } }> => {
   return apiClient.patch(`/api/v1/posts/draft/${id}`, body);
 };
 
+// title/content 둘 다 비면 400
 export const publishDraft = async (
   id: number,
 ): Promise<{ data: { id: number } }> => {
   return apiClient.post(`/api/v1/posts/draft/${id}/publish`);
+};
+
+export const getDrafts = async (
+  offset = 0,
+  limit = 20,
+): Promise<{ data: { items: DraftListItem[]; total: number; offset: number; limit: number } }> => {
+  return apiClient.get(`/api/v1/posts/drafts?offset=${offset}&limit=${limit}`);
 };
 
 export const toggleLike = async (

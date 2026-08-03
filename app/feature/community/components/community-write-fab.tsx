@@ -2,19 +2,15 @@
 
 import { useRouter } from "next/navigation";
 import { Pencil } from "lucide-react";
-import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
-import { saveReturnUrl } from "@/lib/login-utils";
-import { usePathname } from "next/navigation";
+import { useLoginRequired } from "../hooks/use-login-required";
 
 export function CommunityWriteFab() {
   const router = useRouter();
-  const pathname = usePathname();
-  const { isAuthenticated } = useCurrentUser();
+  const { isAuthenticated, showLoginModal } = useLoginRequired();
 
   const handleClick = () => {
     if (!isAuthenticated) {
-      saveReturnUrl(pathname);
-      router.push("/login");
+      showLoginModal();
       return;
     }
     router.push("/community/write");

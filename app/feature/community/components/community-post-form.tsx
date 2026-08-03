@@ -4,6 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
+import { useCommonModalStore } from "@/store/common-modal-store";
 import {
   createPost,
   updatePost,
@@ -11,11 +12,12 @@ import {
   updateDraft,
   publishDraft,
 } from "../api";
+import { ApiError } from "@/lib/api-client";
 import { CATEGORY_OPTIONS_BY_BOARD } from "../constants";
 import {
-  CommunityToastEditor,
-  type CommunityToastEditorRef,
-} from "./community-toast-editor";
+  CommunityTiptapEditor,
+  type CommunityTiptapEditorRef,
+} from "./community-tiptap-editor";
 import { cn } from "@/lib/utils";
 import type { BoardCode, CategoryCode } from "../types";
 
@@ -32,6 +34,7 @@ interface CommunityPostFormProps {
   postId?: number;
   initial?: Partial<InitialValues>;
   initialIsDraft?: boolean; // edit 진입 시 이 글이 draft인지
+  existingDraftId?: number | null; // create 모드에서 최근 draft가 있을 때 이어쓰기 유도
 }
 
 const DEFAULT_INITIAL: InitialValues = {
@@ -42,24 +45,43 @@ const DEFAULT_INITIAL: InitialValues = {
   imageIds: [],
 };
 
+const CONTENT_CHAR_LIMIT = 50000;
+
+// 백엔드 응답 상황별 사용자 친화 메시지
+function formatSaveError(err: unknown, action: string): string {
+  if (err instanceof ApiError) {
+    // 백엔드 message가 있으면 우선 사용
+    if (err.message && !err.message.startsWith("API 요청")) return err.message;
+    if (err.status === 413) return `${action}할 내용이 너무 큽니다. 이미지 개수나 본문 길이를 줄여주세요.`;
+    if (err.status === 400) return `${action} 요청이 유효하지 않습니다. 제목/카테고리/본문을 확인해주세요.`;
+    if (err.status >= 500) return `서버에 일시적인 문제가 있어 ${action}에 실패했습니다. 잠시 후 다시 시도해주세요.`;
+  }
+  return `${action}에 실패했습니다. 잠시 후 다시 시도해주세요.`;
+}
+
 export function CommunityPostForm({
   mode,
   postId,
   initial,
   initialIsDraft = false,
+  existingDraftId = null,
 }: CommunityPostFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const editorRef = useRef<CommunityToastEditorRef>(null);
+  const { openModal } = useCommonModalStore();
+  const editorRef = useRef<CommunityTiptapEditorRef>(null);
 
   const boardCode: BoardCode = initial?.boardCode ?? DEFAULT_INITIAL.boardCode;
   const [categoryCode, setCategoryCode] = useState<CategoryCode | null>(
     initial?.categoryCode ?? DEFAULT_INITIAL.categoryCode,
   );
   const [title, setTitle] = useState(initial?.title ?? DEFAULT_INITIAL.title);
+  // content: Tiptap JSON을 stringify한 문자열 (백엔드 저장 포맷과 동일)
   const [content, setContent] = useState(
     initial?.content ?? DEFAULT_INITIAL.content,
   );
+  // 본문 유효성 검사용: plain text (편집기가 emit)
+  const [contentText, setContentText] = useState("");
   const [imageIds, setImageIds] = useState<number[]>(
     initial?.imageIds ?? DEFAULT_INITIAL.imageIds,
   );
@@ -78,7 +100,9 @@ export function CommunityPostForm({
   const categoryOptions = CATEGORY_OPTIONS_BY_BOARD[boardCode] ?? [];
 
   const buildPayload = () => {
-    const finalContent = editorRef.current?.getMarkdown() ?? content;
+    // 편집기가 최신 상태이면 그걸 우선 사용
+    const json = editorRef.current?.getJSON();
+    const finalContent = json ? JSON.stringify(json) : content;
     return {
       categoryCode: categoryCode ?? undefined,
       title: title.trim(),
@@ -88,20 +112,23 @@ export function CommunityPostForm({
   };
 
   // ── 임시저장 (create draft or update draft) ──
+  // 백엔드는 유저당 draft 1개만 허용 → createDraft 호출 시 기존 draft가 있으면 덮어씀.
   const { mutate: saveDraft, isPending: isSavingDraft } = useMutation({
     mutationFn: async () => {
       const payload = buildPayload();
       if (draftId) {
-        return updateDraft(draftId, payload);
+        await updateDraft(draftId, payload);
+        return { id: draftId };
       }
-      return createDraft({ boardCode, ...payload });
+      const res = await createDraft({ boardCode, ...payload });
+      return { id: res.data.id };
     },
     onSuccess: (res) => {
-      if (!draftId) setDraftId(res.data.id);
+      if (!draftId) setDraftId(res.id);
       queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
-    onError: () => {
-      alert("임시저장에 실패했습니다.");
+    onError: (err) => {
+      alert(formatSaveError(err, "임시저장"));
     },
   });
 
@@ -125,32 +152,60 @@ export function CommunityPostForm({
       const id = mode === "edit" && !draftId ? postId : res.data.id;
       router.replace(`/community/${id}`);
     },
-    onError: () => {
-      alert("저장에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+    onError: (err) => {
+      alert(formatSaveError(err, mode === "edit" ? "수정" : "등록"));
     },
   });
+
+  const contentLength = contentText.length;
+  const isOverLimit = contentLength > CONTENT_CHAR_LIMIT;
 
   const canPublish = useMemo(() => {
     if (!title.trim()) return false;
     if (!categoryCode) return false;
-    if (!content.trim()) return false;
+    const hasContent = contentText.trim().length > 0 || imageIds.length > 0;
+    if (!hasContent) return false;
+    if (isOverLimit) return false;
     return !isSubmitting;
-  }, [title, categoryCode, content, isSubmitting]);
+  }, [title, categoryCode, contentText, imageIds, isSubmitting, isOverLimit]);
 
   const canSaveDraft = useMemo(() => {
     if (!categoryCode) return false;
+    if (isOverLimit) return false;
     return !isSavingDraft && isDraftFlow;
-  }, [categoryCode, isSavingDraft, isDraftFlow]);
+  }, [categoryCode, isSavingDraft, isDraftFlow, isOverLimit]);
 
   const handleCancel = () => {
     if (
-      content.trim() ||
+      contentText.trim() ||
       title.trim() ||
       (mode === "create" && imageIds.length > 0)
     ) {
       if (!confirm("작성 중인 내용이 사라집니다. 취소할까요?")) return;
     }
     router.back();
+  };
+
+  // 임시저장 버튼 클릭: 기존 draft가 있고 이번 세션에서 아직 저장 전이면 덮어쓰기 confirm
+  const handleSaveDraftClick = () => {
+    const wouldOverwrite =
+      mode === "create" && existingDraftId && draftId === null;
+    if (!wouldOverwrite) {
+      saveDraft();
+      return;
+    }
+    openModal({
+      description:
+        "기존에 저장된 임시저장 글이 새 내용으로 덮어써집니다.\n계속하시겠어요?",
+      confirmButton: {
+        label: "덮어쓰기",
+        onClick: () => saveDraft(),
+      },
+      cancelButton: {
+        label: "취소",
+        onClick: () => {},
+      },
+    });
   };
 
   const submitLabel =
@@ -174,10 +229,20 @@ export function CommunityPostForm({
         </h1>
 
         <div className="flex items-center gap-2">
+          {/* 이어쓰기 버튼: create 모드 + 기존 draft 있고 이번 세션에서 아직 저장 안 함 */}
+          {mode === "create" && existingDraftId && draftId === null && (
+            <button
+              type="button"
+              onClick={() => router.push(`/community/${existingDraftId}/edit`)}
+              className="px-3 xl:px-4 py-2 text-[12px] xl:text-[13px] font-semibold rounded-[4px] border border-main text-main hover:bg-main/5 transition-colors"
+            >
+              임시저장한 글을 이어씁니다
+            </button>
+          )}
           {isDraftFlow && (
             <button
               type="button"
-              onClick={() => saveDraft()}
+              onClick={handleSaveDraftClick}
               disabled={!canSaveDraft}
               className={cn(
                 "px-4 py-2 text-[14px] font-semibold rounded-[4px] border transition-opacity",
@@ -233,14 +298,29 @@ export function CommunityPostForm({
         />
       </div>
 
-      {/* Toast Editor */}
-      <div className="mb-8">
-        <CommunityToastEditor
-          initialValue={initial?.content}
-          onChange={setContent}
+      {/* Tiptap Editor */}
+      <div className="mb-2">
+        <CommunityTiptapEditor
+          ref={editorRef}
+          initialContent={initial?.content}
+          onChange={(json, text) => {
+            setContent(JSON.stringify(json));
+            setContentText(text);
+          }}
           onImageUploaded={(id) => setImageIds((prev) => [...prev, id])}
-          height="500px"
+          minHeight="400px"
+          characterLimit={CONTENT_CHAR_LIMIT}
         />
+      </div>
+      <div className="flex items-center justify-end mb-8">
+        <span
+          className={cn(
+            "text-[12px] font-medium tabular-nums",
+            isOverLimit ? "text-red-500" : "text-black/40",
+          )}
+        >
+          {contentLength.toLocaleString()} / {CONTENT_CHAR_LIMIT.toLocaleString()}자
+        </span>
       </div>
 
       {/* 태그하기 (자리만 - 백엔드 구현 후 활성화) */}

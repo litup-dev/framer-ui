@@ -2,8 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
-import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 
 import { postsQueryOptions } from "../query-options";
@@ -23,7 +22,7 @@ import {
   PaginationEllipsis,
 } from "@/components/ui/pagination";
 import { useAllPerformancesPagination } from "@/app/feature/all-performances/hooks/use-all-performances-pagination";
-import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
+import { useLoginRequired } from "../hooks/use-login-required";
 import { cn } from "@/lib/utils";
 import type { BoardCode, CategoryCode, SortType } from "../types";
 
@@ -36,7 +35,16 @@ const LIMIT = 10;
 
 export function CommunityContent() {
   const searchParams = useSearchParams();
-  const { isAuthenticated } = useCurrentUser();
+  const router = useRouter();
+  const { isAuthenticated, showLoginModal } = useLoginRequired();
+
+  const handleWriteClick = () => {
+    if (!isAuthenticated) {
+      showLoginModal();
+      return;
+    }
+    router.push("/community/write");
+  };
 
   const [board, setBoard] = useState<BoardTabValue>(
     (searchParams.get("board") as BoardCode) || null,
@@ -212,12 +220,13 @@ export function CommunityContent() {
         {/* ── 우측 사이드바 (xl 이상) ── */}
         <div className="hidden xl:block w-[180px] flex-shrink-0">
           <div className="sticky top-28 flex flex-col gap-3">
-            <Link
-              href={isAuthenticated ? "/community/write" : "/login"}
+            <button
+              type="button"
+              onClick={handleWriteClick}
               className="flex items-center justify-center w-full py-3.5 bg-main text-white text-[15px] font-bold leading-none tracking-[-0.04em] rounded-[4px] hover:opacity-90 transition-opacity"
             >
               글쓰기
-            </Link>
+            </button>
 
             {/* 알림 카드 자리 (실제 알림 API 연동 예정) */}
             <div className="flex flex-col gap-2" aria-hidden="true">

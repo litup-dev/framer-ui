@@ -7,10 +7,9 @@ import Image from "next/image";
 import { ChevronLeft, Pencil, Trash2, Siren } from "lucide-react";
 import { postDetailQueryOptions } from "../query-options";
 import { deletePost } from "../api";
-import { CommunityMarkdownViewer } from "./community-markdown-viewer";
+import { CommunityHtmlViewer } from "./community-html-viewer";
 import { CommunityLikeButtons } from "./community-like-buttons";
 import { CommunityCommentSection } from "./community-comment-section";
-import { CommunityPostImageGallery } from "./community-post-image-gallery";
 import { useLoginRequired } from "../hooks/use-login-required";
 import { boardLabel } from "../constants";
 import { getImageUrl } from "@/lib/utils";
@@ -178,15 +177,8 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
 
         {/* 본문 (마크다운) */}
         <div className="min-h-[120px] mb-6">
-          <CommunityMarkdownViewer content={post.content} />
+          <CommunityHtmlViewer content={post.content} />
         </div>
-
-        {/* 첨부 이미지 갤러리 */}
-        {post.images?.length > 0 && (
-          <div className="mb-6">
-            <CommunityPostImageGallery images={post.images} />
-          </div>
-        )}
 
         {/* 태그된 클럽/공연 카드 자리 (API 반영 대기 - placeholder) */}
         <div className="mb-6 flex flex-col md:grid md:grid-cols-2 gap-3" aria-hidden="true">
@@ -209,12 +201,19 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
       {/* ── 우측 사이드바 (xl 이상) ── */}
       <div className="hidden xl:block w-[180px] flex-shrink-0">
         <div className="sticky top-28 flex flex-col gap-3">
-          <Link
-            href={isAuthenticated ? "/community/write" : "/login"}
+          <button
+            type="button"
+            onClick={() => {
+              if (!isAuthenticated) {
+                showLoginModal();
+                return;
+              }
+              router.push("/community/write");
+            }}
             className="flex items-center justify-center w-full py-3.5 bg-main text-white text-[15px] font-bold leading-none tracking-[-0.04em] rounded-[4px] hover:opacity-90 transition-opacity"
           >
             글쓰기
-          </Link>
+          </button>
 
           {/* 알림 카드 자리 (실제 알림 API 연동 예정) */}
           <div className="flex flex-col gap-2" aria-hidden="true" />

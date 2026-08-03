@@ -16,6 +16,18 @@ export interface MentionableUser {
   isAuthor: boolean;
 }
 
+// 임시저장 목록용 - author/카운트 필드 없음
+export interface DraftListItem {
+  id: number;
+  boardCode: BoardCode;
+  category: PostCategory | null;
+  title: string;
+  createdAt: string;
+  updatedAt: string | null;
+  thumbnails: PostThumbnail[];
+  imageCount: number;
+}
+
 export interface PostCategory {
   code: CategoryCode;
   name: string;
