@@ -1,10 +1,9 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
-import { useCommonModalStore } from "@/store/common-modal-store";
 import {
   createPost,
   updatePost,
@@ -18,6 +17,7 @@ import {
   CommunityTiptapEditor,
   type CommunityTiptapEditorRef,
 } from "./community-tiptap-editor";
+import { CommunityLoadingOverlay } from "./community-loading-overlay";
 import { cn } from "@/lib/utils";
 import type { BoardCode, CategoryCode } from "../types";
 
@@ -68,7 +68,6 @@ export function CommunityPostForm({
 }: CommunityPostFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { openModal } = useCommonModalStore();
   const editorRef = useRef<CommunityTiptapEditorRef>(null);
 
   const boardCode: BoardCode = initial?.boardCode ?? DEFAULT_INITIAL.boardCode;
@@ -94,6 +93,11 @@ export function CommunityPostForm({
     mode === "edit" && initialIsDraft && postId ? postId : null,
   );
 
+  // 자동 저장 상태 표시용
+  const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
+  const [autoSaveError, setAutoSaveError] = useState(false);
+  const isFirstEditRef = useRef(true);
+
   // 임시저장 모드 판단: 새 폼이거나 draft 편집이면 true
   const isDraftFlow = mode === "create" || initialIsDraft;
 
@@ -111,7 +115,7 @@ export function CommunityPostForm({
     };
   };
 
-  // ── 임시저장 (create draft or update draft) ──
+  // ── 자동 임시저장 (silent) ──
   // 백엔드는 유저당 draft 1개만 허용 → createDraft 호출 시 기존 draft가 있으면 덮어씀.
   const { mutate: saveDraft, isPending: isSavingDraft } = useMutation({
     mutationFn: async () => {
@@ -125,10 +129,13 @@ export function CommunityPostForm({
     },
     onSuccess: (res) => {
       if (!draftId) setDraftId(res.id);
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      setLastSavedAt(Date.now());
+      setAutoSaveError(false);
+      // drafts 목록만 refresh (posts 목록은 publish 시에만)
+      queryClient.invalidateQueries({ queryKey: ["posts", "drafts"] });
     },
-    onError: (err) => {
-      alert(formatSaveError(err, "임시저장"));
+    onError: () => {
+      setAutoSaveError(true);
     },
   });
 
@@ -169,11 +176,42 @@ export function CommunityPostForm({
     return !isSubmitting;
   }, [title, categoryCode, contentText, imageIds, isSubmitting, isOverLimit]);
 
-  const canSaveDraft = useMemo(() => {
-    if (!categoryCode) return false;
-    if (isOverLimit) return false;
-    return !isSavingDraft && isDraftFlow;
-  }, [categoryCode, isSavingDraft, isDraftFlow, isOverLimit]);
+  // ── 자동 저장 (debounce 1.5초) ──
+  // categoryCode는 백엔드가 기본값(GENERAL)을 자동 세팅하므로 조건 검사 안 함.
+  useEffect(() => {
+    if (!isDraftFlow) return;
+    // 최초 마운트/초기 로드 시엔 저장 안 함
+    if (isFirstEditRef.current) {
+      isFirstEditRef.current = false;
+      return;
+    }
+    if (isOverLimit) return;
+    if (isSubmitting) return; // 게시 진행 중이면 skip
+
+    // 진짜 내용 있을 때만
+    const hasSomething =
+      title.trim().length > 0 ||
+      contentText.trim().length > 0 ||
+      imageIds.length > 0;
+    if (!hasSomething) return;
+
+    const timer = setTimeout(() => {
+      // 저장 중이어도 그냥 호출 — 백엔드가 upsert(유저당 1 draft) 라서
+      // 동시 호출도 마지막 값으로 수렴. 스킵하면 이미지만 추가한 케이스가 유실됨.
+      saveDraft();
+    }, 1500);
+
+    return () => clearTimeout(timer);
+    // saveDraft는 mutate 함수라 안정적. deps에서 제외.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [title, contentText, imageIds, isDraftFlow, isOverLimit, isSubmitting]);
+
+  // "방금 저장됨" 표시를 일정 시간 후 페이드아웃 (기본 문구로 복귀)
+  useEffect(() => {
+    if (!lastSavedAt) return;
+    const t = setTimeout(() => setLastSavedAt(null), 3000);
+    return () => clearTimeout(t);
+  }, [lastSavedAt]);
 
   const handleCancel = () => {
     if (
@@ -186,33 +224,30 @@ export function CommunityPostForm({
     router.back();
   };
 
-  // 임시저장 버튼 클릭: 기존 draft가 있고 이번 세션에서 아직 저장 전이면 덮어쓰기 confirm
-  const handleSaveDraftClick = () => {
-    const wouldOverwrite =
-      mode === "create" && existingDraftId && draftId === null;
-    if (!wouldOverwrite) {
-      saveDraft();
-      return;
-    }
-    openModal({
-      description:
-        "기존에 저장된 임시저장 글이 새 내용으로 덮어써집니다.\n계속하시겠어요?",
-      confirmButton: {
-        label: "덮어쓰기",
-        onClick: () => saveDraft(),
-      },
-      cancelButton: {
-        label: "취소",
-        onClick: () => {},
-      },
-    });
-  };
-
   const submitLabel =
     mode === "edit" && !isDraftFlow ? "수정" : "등록";
 
+  // 등록/수정 진행 시에만 오버레이 (자동저장은 조용히)
+  const overlayLabel = isSubmitting
+    ? mode === "edit" && !isDraftFlow
+      ? "수정 중..."
+      : "등록 중..."
+    : "";
+
+  // 자동저장 상태 표시 문구
+  const draftStatusText = isDraftFlow
+    ? isSavingDraft
+      ? "저장 중입니다..."
+      : autoSaveError
+        ? "저장에 실패했습니다"
+        : lastSavedAt
+          ? "방금 저장되었습니다"
+          : "자동으로 임시 저장됩니다"
+    : "";
+
   return (
     <div className="w-full flex flex-col">
+      <CommunityLoadingOverlay show={isSubmitting} label={overlayLabel} />
       {/* 헤더 (반응형) */}
       <div className="flex items-center justify-between border-b border-black/10 pb-3 xl:pb-5 mb-6 xl:mb-8">
         <button
@@ -228,31 +263,28 @@ export function CommunityPostForm({
             : "커뮤니티 글쓰기"}
         </h1>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {/* 이어쓰기 버튼: create 모드 + 기존 draft 있고 이번 세션에서 아직 저장 안 함 */}
           {mode === "create" && existingDraftId && draftId === null && (
             <button
               type="button"
               onClick={() => router.push(`/community/${existingDraftId}/edit`)}
-              className="px-3 xl:px-4 py-2 text-[12px] xl:text-[13px] font-semibold rounded-[4px] border border-main text-main hover:bg-main/5 transition-colors"
+              className="px-3 xl:px-4 py-2 text-[12px] xl:text-[13px] font-semibold rounded-[4px] border border-main text-main hover:bg-main/5 transition-colors cursor-pointer"
             >
               임시저장한 글을 이어씁니다
             </button>
           )}
+          {/* 자동 임시저장 상태 표시 */}
           {isDraftFlow && (
-            <button
-              type="button"
-              onClick={handleSaveDraftClick}
-              disabled={!canSaveDraft}
+            <span
               className={cn(
-                "px-4 py-2 text-[14px] font-semibold rounded-[4px] border transition-opacity",
-                canSaveDraft
-                  ? "border-black/20 text-black hover:bg-black/5"
-                  : "border-black/10 text-black/40 cursor-not-allowed",
+                "text-[12px] font-medium hidden sm:inline",
+                autoSaveError ? "text-red-500" : "text-black/40",
               )}
+              aria-live="polite"
             >
-              {isSavingDraft ? "저장 중..." : "임시저장"}
-            </button>
+              {draftStatusText}
+            </span>
           )}
           <button
             type="button"
@@ -261,11 +293,11 @@ export function CommunityPostForm({
             className={cn(
               "px-4 py-2 text-[14px] font-bold rounded-[4px] transition-opacity",
               canPublish
-                ? "bg-main text-white hover:opacity-90"
+                ? "bg-main text-white hover:opacity-90 cursor-pointer"
                 : "bg-main/50 text-white cursor-not-allowed",
             )}
           >
-            {isSubmitting ? "저장 중..." : submitLabel}
+            {submitLabel}
           </button>
         </div>
       </div>

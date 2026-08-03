@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 
@@ -9,7 +9,6 @@ import { postsQueryOptions } from "../query-options";
 import { CommunityBoardTabs, type BoardTabValue } from "./community-board-tabs";
 import { CommunityCategoryFilter } from "./community-category-filter";
 import { CommunityPostCard } from "./community-post-card";
-import { CommunityPostCardSkeleton } from "./community-post-card-skeleton";
 import { CommunityWriteFab } from "./community-write-fab";
 import SortDropdown from "@/app/shared/components/sort-dropdown";
 import {
@@ -72,8 +71,8 @@ export function CommunityContent() {
 
   const offset = (currentPage - 1) * LIMIT;
 
-  const { data, isLoading } = useQuery(
-    postsQueryOptions({
+  const { data, isLoading } = useQuery({
+    ...postsQueryOptions({
       board: board ?? undefined,
       category: category ?? undefined,
       keyword: keyword || undefined,
@@ -81,7 +80,9 @@ export function CommunityContent() {
       offset,
       limit: LIMIT,
     }),
-  );
+    // 필터/페이지 전환 시 이전 결과를 유지해 스켈레톤 flash 방지
+    placeholderData: keepPreviousData,
+  });
 
   const posts = data?.data.items ?? [];
   const total = data?.data.total ?? 0;
@@ -161,18 +162,14 @@ export function CommunityContent() {
 
           {/* 게시글 목록 */}
           <div className="mt-4 xl:mt-2">
-            {isLoading ? (
-              Array.from({ length: 5 }).map((_, i) => (
-                <CommunityPostCardSkeleton key={i} />
-              ))
-            ) : posts.length === 0 ? (
-              <div className="py-20 text-center text-black/40 text-[16px] font-medium">
-                게시글이 없습니다.
-              </div>
-            ) : (
+            {posts.length > 0 ? (
               posts.map((post) => (
                 <CommunityPostCard key={post.id} post={post} />
               ))
+            ) : isLoading ? null : (
+              <div className="py-20 text-center text-black/40 text-[16px] font-medium">
+                게시글이 없습니다.
+              </div>
             )}
           </div>
 
@@ -223,7 +220,7 @@ export function CommunityContent() {
             <button
               type="button"
               onClick={handleWriteClick}
-              className="flex items-center justify-center w-full py-3.5 bg-main text-white text-[15px] font-bold leading-none tracking-[-0.04em] rounded-[4px] hover:opacity-90 transition-opacity"
+              className="flex items-center justify-center w-full py-3.5 bg-main text-white text-[15px] font-bold leading-none tracking-[-0.04em] rounded-[4px] hover:opacity-90 transition-opacity cursor-pointer"
             >
               글쓰기
             </button>

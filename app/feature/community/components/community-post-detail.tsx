@@ -210,7 +210,7 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
               }
               router.push("/community/write");
             }}
-            className="flex items-center justify-center w-full py-3.5 bg-main text-white text-[15px] font-bold leading-none tracking-[-0.04em] rounded-[4px] hover:opacity-90 transition-opacity"
+            className="flex items-center justify-center w-full py-3.5 bg-main text-white text-[15px] font-bold leading-none tracking-[-0.04em] rounded-[4px] hover:opacity-90 transition-opacity cursor-pointer"
           >
             글쓰기
           </button>
