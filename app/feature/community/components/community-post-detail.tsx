@@ -46,17 +46,7 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
   };
 
   if (isLoading) {
-    return (
-      <div className="animate-pulse flex flex-col gap-5 py-8">
-        <div className="h-4 w-16 bg-black/10 rounded" />
-        <div className="h-8 w-3/4 bg-black/10 rounded" />
-        <div className="h-4 w-40 bg-black/10 rounded" />
-        <div className="h-px bg-black/10" />
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="h-4 bg-black/5 rounded" style={{ width: `${75 + (i % 3) * 8}%` }} />
-        ))}
-      </div>
-    );
+    return null;
   }
 
   if (isError || !post) {

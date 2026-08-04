@@ -77,23 +77,7 @@ export function CommunityCommentSection({ postId }: CommunityCommentSectionProps
         </div>
 
         {/* 댓글 목록 */}
-        {isLoading ? (
-          <div className="flex flex-col gap-4">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="py-4 animate-pulse flex flex-col gap-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full bg-black/10" />
-                  <div className="h-4 w-24 bg-black/10 rounded" />
-                </div>
-                <div className="h-4 w-3/4 bg-black/5 rounded ml-9" />
-              </div>
-            ))}
-          </div>
-        ) : comments.length === 0 ? (
-          <div className="py-10 text-center text-black/30 text-[14px]">
-            첫 댓글을 남겨보세요.
-          </div>
-        ) : (
+        {comments.length > 0 ? (
           <div>
             {comments.map((comment) => (
               <CommunityCommentItem
@@ -103,6 +87,10 @@ export function CommunityCommentSection({ postId }: CommunityCommentSectionProps
                 mentionableUsers={mentionableUsers}
               />
             ))}
+          </div>
+        ) : isLoading ? null : (
+          <div className="py-10 text-center text-black/30 text-[14px]">
+            첫 댓글을 남겨보세요.
           </div>
         )}
 
