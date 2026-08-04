@@ -47,6 +47,33 @@ const DEFAULT_INITIAL: InitialValues = {
 
 const CONTENT_CHAR_LIMIT = 50000;
 
+// ProseMirror JSON 노드에서 텍스트만 재귀적으로 추출
+function extractTextFromProseMirrorNode(node: unknown): string {
+  if (!node || typeof node !== "object") return "";
+  const n = node as { text?: string; content?: unknown[] };
+  let text = "";
+  if (typeof n.text === "string") text += n.text;
+  if (Array.isArray(n.content)) {
+    for (const child of n.content) text += extractTextFromProseMirrorNode(child);
+  }
+  return text;
+}
+
+// content 문자열(JSON 또는 raw)에서 plain text 추출
+function extractInitialText(content: string | null | undefined): string {
+  if (!content) return "";
+  const trimmed = content.trim();
+  if (!trimmed) return "";
+  if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
+    try {
+      return extractTextFromProseMirrorNode(JSON.parse(trimmed));
+    } catch {
+      return content;
+    }
+  }
+  return content;
+}
+
 // 백엔드 응답 상황별 사용자 친화 메시지
 function formatSaveError(err: unknown, action: string): string {
   if (err instanceof ApiError) {
@@ -79,8 +106,11 @@ export function CommunityPostForm({
   const [content, setContent] = useState(
     initial?.content ?? DEFAULT_INITIAL.content,
   );
-  // 본문 유효성 검사용: plain text (편집기가 emit)
-  const [contentText, setContentText] = useState("");
+  // 본문 유효성 검사용: plain text (편집기가 emit).
+  // 초기값도 initial.content에서 뽑아야 edit(draft) 진입 시 등록 버튼 활성화 판단이 맞음.
+  const [contentText, setContentText] = useState(() =>
+    extractInitialText(initial?.content),
+  );
   const [imageIds, setImageIds] = useState<number[]>(
     initial?.imageIds ?? DEFAULT_INITIAL.imageIds,
   );
@@ -97,16 +127,32 @@ export function CommunityPostForm({
   const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
   const [autoSaveError, setAutoSaveError] = useState(false);
   const isFirstEditRef = useRef(true);
+  // 마지막 저장 이후 변경이 있는지 (unmount 시 강제 저장 판단용)
+  const dirtyRef = useRef(false);
+  const isFirstDirtyRef = useRef(true);
+  // 저장 직렬화 (동시 저장의 out-of-order arrival 방지)
+  const isMutatingRef = useRef(false);
+  const pendingSaveRef = useRef(false);
 
-  // 임시저장 모드 판단: 새 폼이거나 draft 편집이면 true
-  const isDraftFlow = mode === "create" || initialIsDraft;
+  // 임시저장 모드 판단: 새 폼이거나 draft 편집이면 true.
+  // 마운트 시점에 고정 (publish 성공 후 상세 refetch로 isDraft가 false로 바뀌면서
+  // 잠깐 "수정" 라벨이 보이는 문제 방지)
+  const [isDraftFlow] = useState(
+    () => mode === "create" || initialIsDraft,
+  );
 
   const categoryOptions = CATEGORY_OPTIONS_BY_BOARD[boardCode] ?? [];
 
   const buildPayload = () => {
-    // 편집기가 최신 상태이면 그걸 우선 사용
-    const json = editorRef.current?.getJSON();
-    const finalContent = json ? JSON.stringify(json) : content;
+    // 편집기가 살아있으면 최신 상태 우선. 아니면 state의 content 사용.
+    // (unmount 저장 시 editor가 먼저 destroy될 수 있음)
+    let finalContent = content;
+    try {
+      const json = editorRef.current?.getJSON();
+      if (json) finalContent = JSON.stringify(json);
+    } catch {
+      // 무시 - state fallback
+    }
     return {
       categoryCode: categoryCode ?? undefined,
       title: title.trim(),
@@ -117,6 +163,8 @@ export function CommunityPostForm({
 
   // ── 자동 임시저장 (silent) ──
   // 백엔드는 유저당 draft 1개만 허용 → createDraft 호출 시 기존 draft가 있으면 덮어씀.
+  // imageIds는 매번 최종 상태 전체 전송 (부분 diff X). 동시 저장이 out-of-order로 도착하면
+  // 오래된 payload가 최신을 덮어쓸 수 있어 이미지가 유실됨 → 직렬화 필수.
   const { mutate: saveDraft, isPending: isSavingDraft } = useMutation({
     mutationFn: async () => {
       const payload = buildPayload();
@@ -127,17 +175,38 @@ export function CommunityPostForm({
       const res = await createDraft({ boardCode, ...payload });
       return { id: res.data.id };
     },
+    onMutate: () => {
+      isMutatingRef.current = true;
+    },
     onSuccess: (res) => {
       if (!draftId) setDraftId(res.id);
       setLastSavedAt(Date.now());
       setAutoSaveError(false);
+      dirtyRef.current = false;
       // drafts 목록만 refresh (posts 목록은 publish 시에만)
       queryClient.invalidateQueries({ queryKey: ["posts", "drafts"] });
     },
     onError: () => {
       setAutoSaveError(true);
     },
+    onSettled: () => {
+      isMutatingRef.current = false;
+      if (pendingSaveRef.current) {
+        pendingSaveRef.current = false;
+        // 진행 중일 때 요청됐던 저장 — 이제 최신 상태로 재발동
+        saveDraft();
+      }
+    },
   });
+
+  // 진행 중이면 큐잉, 아니면 즉시 발동 (out-of-order 방지)
+  const triggerSave = () => {
+    if (isMutatingRef.current) {
+      pendingSaveRef.current = true;
+      return;
+    }
+    saveDraft();
+  };
 
   // ── 등록/수정 (publish or update post or create) ──
   const { mutate: submit, isPending: isSubmitting } = useMutation({
@@ -176,6 +245,16 @@ export function CommunityPostForm({
     return !isSubmitting;
   }, [title, categoryCode, contentText, imageIds, isSubmitting, isOverLimit]);
 
+  // ── dirty 트래킹 (unmount 시 강제 저장 판단용) ──
+  // content(JSON)도 포함해야 이미지 리사이즈처럼 텍스트 변화 없이 attrs만 바뀌는 케이스 감지 가능
+  useEffect(() => {
+    if (isFirstDirtyRef.current) {
+      isFirstDirtyRef.current = false;
+      return;
+    }
+    dirtyRef.current = true;
+  }, [title, content, contentText, imageIds]);
+
   // ── 자동 저장 (debounce 1.5초) ──
   // categoryCode는 백엔드가 기본값(GENERAL)을 자동 세팅하므로 조건 검사 안 함.
   useEffect(() => {
@@ -196,15 +275,42 @@ export function CommunityPostForm({
     if (!hasSomething) return;
 
     const timer = setTimeout(() => {
-      // 저장 중이어도 그냥 호출 — 백엔드가 upsert(유저당 1 draft) 라서
-      // 동시 호출도 마지막 값으로 수렴. 스킵하면 이미지만 추가한 케이스가 유실됨.
-      saveDraft();
+      // 진행 중이면 pending 마킹, 완료 후 최신 상태로 재발동 (직렬화)
+      triggerSave();
     }, 1500);
 
     return () => clearTimeout(timer);
     // saveDraft는 mutate 함수라 안정적. deps에서 제외.
+    // content: 이미지 리사이즈처럼 텍스트 변화 없이 attrs만 바뀌는 케이스 감지용
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [title, contentText, imageIds, isDraftFlow, isOverLimit, isSubmitting]);
+  }, [title, content, contentText, imageIds, isDraftFlow, isOverLimit, isSubmitting]);
+
+  // ── unmount 시 강제 저장 (debounce 대기 중이었으면 유실 방지) ──
+  // cleanup은 마지막 render의 closure를 사용하므로 ref로 최신 상태 스냅샷 유지.
+  const unmountSnapshotRef = useRef({
+    title,
+    contentText,
+    imageIds,
+    isDraftFlow,
+  });
+  useEffect(() => {
+    unmountSnapshotRef.current = { title, contentText, imageIds, isDraftFlow };
+  });
+  useEffect(() => {
+    return () => {
+      if (!dirtyRef.current) return;
+      const s = unmountSnapshotRef.current;
+      if (!s.isDraftFlow) return;
+      const hasSomething =
+        s.title.trim().length > 0 ||
+        s.contentText.trim().length > 0 ||
+        s.imageIds.length > 0;
+      if (!hasSomething) return;
+      // fire-and-forget: React Query mutate는 컴포넌트 사라져도 fetch 유지
+      triggerSave();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // "방금 저장됨" 표시를 일정 시간 후 페이드아웃 (기본 문구로 복귀)
   useEffect(() => {

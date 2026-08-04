@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useImperativeHandle, forwardRef, useState } from "react";
+import { useEffect, useImperativeHandle, forwardRef, useState, useRef } from "react";
 import { useEditor, EditorContent, ReactNodeViewRenderer, NodeViewWrapper } from "@tiptap/react";
 import type { NodeViewProps } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -146,6 +146,15 @@ export const CommunityTiptapEditor = forwardRef<
   },
   ref,
 ) {
+  // useEditor는 config를 초기화 시점에만 캡처할 수 있어서
+  // 콜백을 ref로 감싸 최신 값을 안전하게 참조 (stale closure 방지).
+  const onChangeRef = useRef(onChange);
+  const onImageUploadedRef = useRef(onImageUploaded);
+  useEffect(() => {
+    onChangeRef.current = onChange;
+    onImageUploadedRef.current = onImageUploaded;
+  }, [onChange, onImageUploaded]);
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({ link: false }),
@@ -170,7 +179,7 @@ export const CommunityTiptapEditor = forwardRef<
       },
     },
     onUpdate: ({ editor }) => {
-      onChange?.(editor.getJSON(), editor.getText());
+      onChangeRef.current?.(editor.getJSON(), editor.getText());
     },
   });
 
@@ -189,7 +198,8 @@ export const CommunityTiptapEditor = forwardRef<
       const url = getImageUrl(data.filePath);
       if (!url) throw new Error("이미지 URL 조합 실패");
       editor.chain().focus().setImage({ src: url }).run();
-      onImageUploaded?.(data.id);
+      // ref 사용으로 stale closure 방지
+      onImageUploadedRef.current?.(data.id);
     } catch (e) {
       console.error("이미지 업로드 실패:", e);
       alert("이미지 업로드에 실패했습니다.");
