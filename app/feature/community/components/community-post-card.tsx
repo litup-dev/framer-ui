@@ -1,7 +1,31 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ThumbsUp, ThumbsDown, MessageCircle } from "lucide-react";
 import { cn, getImageUrl } from "@/lib/utils";
 import type { PostItem } from "../types";
+
+function PostAuthorAvatar({ profilePath }: { profilePath: string | null }) {
+  const url = getImageUrl(profilePath);
+  if (url) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={url}
+        alt=""
+        className="w-7 h-7 rounded-full object-cover flex-shrink-0"
+      />
+    );
+  }
+  return (
+    <Image
+      src="/images/user/user-avatar.svg"
+      alt=""
+      width={28}
+      height={28}
+      className="w-7 h-7 rounded-full flex-shrink-0"
+    />
+  );
+}
 
 function timeAgo(isoString: string): string {
   const diff = Date.now() - new Date(isoString).getTime();
@@ -23,7 +47,6 @@ export function CommunityPostCard({ post, className }: CommunityPostCardProps) {
   const { imageCount, thumbnails } = post;
   const hasImages = imageCount > 0;
   const firstThumbnailUrl = getImageUrl(thumbnails[0]?.filePath);
-  const avatarUrl = getImageUrl(post.author.profilePath);
   const visibleGridSlots = Math.min(imageCount, 4);
   const gridOverflow = imageCount > 4 ? imageCount - 4 : 0;
 
@@ -37,15 +60,7 @@ export function CommunityPostCard({ post, className }: CommunityPostCardProps) {
         )}
       >
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-7 h-7 rounded-full bg-black/15 flex-shrink-0 overflow-hidden">
-            {avatarUrl && (
-              <img
-                src={avatarUrl}
-                alt=""
-                className="w-full h-full object-cover"
-              />
-            )}
-          </div>
+          <PostAuthorAvatar profilePath={post.author.profilePath} />
           <div>
             <p className="text-[14px] font-semibold tracking-[-0.04em] text-black leading-tight">
               {post.author.nickname}
@@ -110,15 +125,7 @@ export function CommunityPostCard({ post, className }: CommunityPostCardProps) {
         {/* 작성자 (좌) + 시간 (우) */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-full bg-black/15 flex-shrink-0 overflow-hidden">
-              {avatarUrl && (
-                <img
-                  src={avatarUrl}
-                  alt=""
-                  className="w-full h-full object-cover"
-                />
-              )}
-            </div>
+            <PostAuthorAvatar profilePath={post.author.profilePath} />
             <p className="text-[14px] font-semibold tracking-[-0.04em] text-black leading-none">
               {post.author.nickname}
             </p>
