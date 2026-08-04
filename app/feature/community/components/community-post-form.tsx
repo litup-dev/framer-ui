@@ -17,7 +17,6 @@ import {
   CommunityTiptapEditor,
   type CommunityTiptapEditorRef,
 } from "./community-tiptap-editor";
-import { CommunityLoadingOverlay } from "./community-loading-overlay";
 import { cn } from "@/lib/utils";
 import type { BoardCode, CategoryCode } from "../types";
 
@@ -333,13 +332,6 @@ export function CommunityPostForm({
   const submitLabel =
     mode === "edit" && !isDraftFlow ? "수정" : "등록";
 
-  // 등록/수정 진행 시에만 오버레이 (자동저장은 조용히)
-  const overlayLabel = isSubmitting
-    ? mode === "edit" && !isDraftFlow
-      ? "수정 중..."
-      : "등록 중..."
-    : "";
-
   // 자동저장 상태 표시 문구
   const draftStatusText = isDraftFlow
     ? isSavingDraft
@@ -353,7 +345,6 @@ export function CommunityPostForm({
 
   return (
     <div className="w-full flex flex-col">
-      <CommunityLoadingOverlay show={isSubmitting} label={overlayLabel} />
       {/* 헤더 (반응형) */}
       <div className="flex items-center justify-between border-b border-black/10 pb-3 xl:pb-5 mb-6 xl:mb-8">
         <button
