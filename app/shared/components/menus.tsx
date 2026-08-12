@@ -11,6 +11,7 @@ import Image from "next/image";
 import { saveReturnUrl } from "@/lib/login-utils";
 import { cn } from "@/lib/utils";
 import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
+import { CommunitySearchTrigger } from "@/app/feature/community/components/community-search-trigger";
 
 const HeaderMenus = ({
   isWhiteIcons = false,
@@ -50,6 +51,8 @@ const HeaderMenus = ({
           </span>
         </Link>
       ))}
+
+      <CommunitySearchTrigger className="xl:hidden w-6 h-6 2xl:w-7 2xl:h-7" />
 
       {!mounted ? (
         <div className="flex gap-4">

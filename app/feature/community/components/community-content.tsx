@@ -2,9 +2,10 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Search } from "lucide-react";
+import { saveReturnUrl } from "@/lib/login-utils";
 
 import { postsQueryOptions } from "../query-options";
 import { CommunityBoardTabs, type BoardTabValue } from "./community-board-tabs";
@@ -12,6 +13,7 @@ import { CommunityCategoryFilter } from "./community-category-filter";
 import { CommunityPostCard } from "./community-post-card";
 import { CommunityPostCardSkeleton } from "./community-post-card-skeleton";
 import { CommunityWriteFab } from "./community-write-fab";
+import { CommunitySearchTypeSelect } from "./community-search-type-select";
 import SortDropdown from "@/app/shared/components/sort-dropdown";
 import {
   Pagination,
@@ -25,7 +27,7 @@ import {
 import { useAllPerformancesPagination } from "@/app/feature/all-performances/hooks/use-all-performances-pagination";
 import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 import { cn } from "@/lib/utils";
-import type { BoardCode, CategoryCode, SortType } from "../types";
+import type { BoardCode, CategoryCode, SortType, PostSearchType } from "../types";
 
 const SORT_OPTIONS: { value: SortType; label: string }[] = [
   { value: "-createdAt", label: "최신순" },
@@ -36,6 +38,7 @@ const LIMIT = 10;
 
 export function CommunityContent() {
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const { isAuthenticated } = useCurrentUser();
 
   const [board, setBoard] = useState<BoardTabValue>(
@@ -49,6 +52,9 @@ export function CommunityContent() {
   );
   const [keyword, setKeyword] = useState(searchParams.get("keyword") || "");
   const [inputValue, setInputValue] = useState(searchParams.get("keyword") || "");
+  const [searchType, setSearchType] = useState<PostSearchType>(
+    (searchParams.get("searchType") as PostSearchType) || "TITLE_CONTENT",
+  );
   const [currentPage, setCurrentPage] = useState(
     Number(searchParams.get("page")) || 1,
   );
@@ -58,6 +64,7 @@ export function CommunityContent() {
     const urlKeyword = searchParams.get("keyword") ?? "";
     setKeyword(urlKeyword);
     setInputValue(urlKeyword);
+    setSearchType((searchParams.get("searchType") as PostSearchType) || "TITLE_CONTENT");
     const urlPage = Number(searchParams.get("page")) || 1;
     setCurrentPage(urlPage);
   }, [searchParams]);
@@ -69,6 +76,7 @@ export function CommunityContent() {
       board: board ?? undefined,
       category: category ?? undefined,
       keyword: keyword || undefined,
+      searchType: keyword ? searchType : undefined,
       sort,
       offset,
       limit: LIMIT,
@@ -125,17 +133,20 @@ export function CommunityContent() {
             <CommunityBoardTabs value={board} onChange={handleBoardChange} />
 
             {/* 검색 (데스크탑 xl+) */}
-            <form onSubmit={handleSearch} className="hidden xl:flex items-center gap-2 px-3 py-2 mb-3">
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder="검색어를 입력해 주세요."
-                className="w-[200px] bg-transparent text-[13px] font-medium text-black placeholder:text-black/30 outline-none"
-              />
-              <button type="submit" className="flex-shrink-0 text-black/40 hover:text-black transition-colors">
-                <Search className="w-4 h-4" />
-              </button>
+            <form onSubmit={handleSearch} className="hidden xl:flex items-center gap-[10px] mb-3">
+              <CommunitySearchTypeSelect value={searchType} onChange={setSearchType} />
+              <div className="flex items-center justify-between gap-2 h-[48px] w-[360px] px-[14px] bg-[#f8f8f8] rounded-[4px]">
+                <input
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  placeholder="검색어를 입력해 주세요."
+                  className="flex-1 min-w-0 bg-transparent text-[16px] font-semibold text-black placeholder:text-black/20 outline-none"
+                />
+                <button type="submit" className="flex-shrink-0 text-black/40 hover:text-black transition-colors">
+                  <Search className="w-5 h-5" />
+                </button>
+              </div>
             </form>
           </div>
 
@@ -214,9 +225,12 @@ export function CommunityContent() {
           <div className="sticky top-28 flex flex-col gap-3">
             <Link
               href={isAuthenticated ? "/community/write" : "/login"}
-              className="flex items-center justify-center w-full py-3.5 bg-main text-white text-[15px] font-bold leading-none tracking-[-0.04em] rounded-[4px] hover:opacity-90 transition-opacity"
+              onClick={() => {
+                if (!isAuthenticated) saveReturnUrl(pathname);
+              }}
+              className="flex items-center justify-center w-full py-3.5 bg-main text-white text-[15px] font-bold leading-none tracking-[-0.04em] rounded-[4px] hover:opacity-90 transition-opacity text-center"
             >
-              글쓰기
+              {isAuthenticated ? "글쓰기" : "로그인 후 글 작성하기"}
             </Link>
 
             {/* 알림 카드 자리 (실제 알림 API 연동 예정) */}

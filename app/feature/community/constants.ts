@@ -1,4 +1,11 @@
-import type { BoardCode, CategoryCode } from "./types";
+import type { BoardCode, CategoryCode, PostSearchType } from "./types";
+
+export const SEARCH_TYPE_OPTIONS: { value: PostSearchType; label: string }[] = [
+  { value: "TITLE_CONTENT", label: "제목+내용" },
+  { value: "TITLE", label: "제목" },
+  { value: "CONTENT", label: "내용" },
+  { value: "AUTHOR", label: "작성자" },
+];
 
 export const BOARD_OPTIONS: { code: BoardCode; label: string }[] = [
   { code: "FREE", label: "자유 게시판" },
