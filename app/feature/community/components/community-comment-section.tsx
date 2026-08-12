@@ -125,7 +125,10 @@ export function CommunityCommentSection({ postId }: CommunityCommentSectionProps
                       <PaginationLink
                         isActive={page === currentPage}
                         onClick={() => pagination.handlePageClick(page)}
-                        className="cursor-pointer"
+                        className={cn(
+                          "cursor-pointer",
+                          page === currentPage ? "text-black" : "text-gray",
+                        )}
                       >
                         {page}
                       </PaginationLink>

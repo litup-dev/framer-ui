@@ -200,7 +200,7 @@ export function CommunityContent() {
                           onClick={() => pagination.handlePageClick(page)}
                           className={cn(
                             "cursor-pointer font-bold",
-                            page === currentPage && "text-black",
+                            page === currentPage ? "text-black" : "text-gray",
                           )}
                         >
                           {page}
