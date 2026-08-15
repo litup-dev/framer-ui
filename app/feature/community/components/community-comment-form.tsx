@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createComment } from "../api";
+import { createComment, updateComment } from "../api";
 import { useLoginRequired } from "../hooks/use-login-required";
+import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 import { MentionInput } from "./mention-input";
-import { cn } from "@/lib/utils";
+import { cn, getImageUrl } from "@/lib/utils";
 import type { MentionableUser } from "../types";
 
 const MAX_LENGTH = 200;
@@ -15,6 +17,8 @@ interface CommunityCommentFormProps {
   parentId?: number;
   replyToNickname?: string;
   replyToUserId?: number;
+  commentId?: number;
+  initialContent?: string;
   onSuccess?: () => void;
   onCancel?: () => void;
   compact?: boolean;
@@ -26,11 +30,21 @@ function visibleLength(text: string): number {
   return text.replace(/@\[([^\]]+)\]\(\d+\)/g, "@$1").length;
 }
 
+function parseMentionIds(text: string): number[] {
+  const ids: number[] = [];
+  const re = /@\[[^\]]+\]\((\d+)\)/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) ids.push(Number(m[1]));
+  return ids;
+}
+
 export function CommunityCommentForm({
   postId,
   parentId,
   replyToNickname,
   replyToUserId,
+  commentId,
+  initialContent,
   onSuccess,
   onCancel,
   compact = false,
@@ -38,26 +52,39 @@ export function CommunityCommentForm({
 }: CommunityCommentFormProps) {
   const queryClient = useQueryClient();
   const { isAuthenticated, showLoginModal } = useLoginRequired();
+  const { user } = useCurrentUser();
+  const avatarUrl = getImageUrl(user?.profilePath ?? null);
 
-  const initial =
-    replyToNickname && replyToUserId
+  const isEdit = commentId !== undefined;
+
+  const initial = isEdit
+    ? initialContent ?? ""
+    : replyToNickname && replyToUserId
       ? `@[${replyToNickname}](${replyToUserId}) `
       : "";
-  const initialIds = replyToUserId ? [replyToUserId] : [];
+  const initialIds = isEdit
+    ? parseMentionIds(initialContent ?? "")
+    : replyToUserId
+      ? [replyToUserId]
+      : [];
 
   const [content, setContent] = useState(initial);
   const [mentionedUserIds, setMentionedUserIds] = useState<number[]>(initialIds);
 
   const { mutate, isPending } = useMutation({
     mutationFn: () =>
-      createComment(postId, {
-        content: content.trim(),
-        parentId,
-        mentionedUserIds: Array.from(new Set(mentionedUserIds)),
-      }),
+      isEdit
+        ? updateComment(commentId, content.trim(), Array.from(new Set(mentionedUserIds)))
+        : createComment(postId, {
+            content: content.trim(),
+            parentId,
+            mentionedUserIds: Array.from(new Set(mentionedUserIds)),
+          }),
     onSuccess: () => {
-      setContent("");
-      setMentionedUserIds([]);
+      if (!isEdit) {
+        setContent("");
+        setMentionedUserIds([]);
+      }
       queryClient.invalidateQueries({ queryKey: ["posts", postId, "comments"] });
       queryClient.invalidateQueries({ queryKey: ["posts", postId] });
       onSuccess?.();
@@ -95,7 +122,22 @@ export function CommunityCommentForm({
       )}
     >
       <div className="flex gap-3 p-3.5 pb-2">
-        <div className="w-8 h-8 rounded-full bg-black/15 flex-shrink-0 mt-0.5" />
+        {avatarUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={avatarUrl}
+            alt=""
+            className="w-8 h-8 rounded-full object-cover flex-shrink-0 mt-0.5"
+          />
+        ) : (
+          <Image
+            src="/images/user/user-avatar.svg"
+            alt=""
+            width={32}
+            height={32}
+            className="w-8 h-8 rounded-full flex-shrink-0 mt-0.5"
+          />
+        )}
         <div className="flex-1 min-w-0">
           <MentionInput
             value={content}
@@ -129,9 +171,14 @@ export function CommunityCommentForm({
           <button
             type="submit"
             disabled={!content.trim() || isPending}
-            className="px-4 py-1.5 rounded-[3px] bg-main text-white text-[13px] font-bold disabled:opacity-30 transition-opacity"
+            className={cn(
+              "px-4 py-1.5 rounded-[3px] text-[13px] font-bold transition-colors",
+              content.trim()
+                ? "bg-main text-white"
+                : "bg-black/10 text-black/40",
+            )}
           >
-            등록
+            {isEdit ? "수정" : "등록"}
           </button>
         </div>
       </div>

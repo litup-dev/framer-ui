@@ -71,8 +71,8 @@ export function CommunityCommentSection({ postId }: CommunityCommentSectionProps
           </button>
         </div>
 
-        {/* 댓글 작성 폼 (데스크탑/태블릿 인라인) */}
-        <div className="hidden md:block mb-5">
+        {/* 댓글 작성 폼 (데스크탑 인라인 — xl 이상) */}
+        <div className="hidden xl:block mb-5">
           <CommunityCommentForm postId={postId} mentionableUsers={mentionableUsers} />
         </div>
 
@@ -135,8 +135,8 @@ export function CommunityCommentSection({ postId }: CommunityCommentSectionProps
         )}
       </section>
 
-      {/* 모바일 하단 고정 입력 바 */}
-      <div className="md:hidden">
+      {/* 하단 고정 입력 바 (모바일/태블릿 — xl 미만) */}
+      <div className="xl:hidden">
         <CommunityMobileCommentBar postId={postId} mentionableUsers={mentionableUsers} />
       </div>
     </>

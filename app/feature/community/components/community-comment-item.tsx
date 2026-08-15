@@ -3,18 +3,12 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { MoreHorizontal, Trash2, Heart, MessageCircle, CornerDownRight } from "lucide-react";
+import { MoreHorizontal, Trash2, Pencil, Heart, MessageCircle, CornerDownRight } from "lucide-react";
 import { deleteComment, toggleCommentLike } from "../api";
 import { CommunityCommentForm } from "./community-comment-form";
 import { useLoginRequired } from "../hooks/use-login-required";
-import { cn, getImageUrl } from "@/lib/utils";
+import { cn, getImageUrl, formatRelativeTime } from "@/lib/utils";
 import type { Comment, MentionableUser } from "../types";
-
-function formatShort(isoString: string): string {
-  const d = new Date(isoString);
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${pad(d.getMonth() + 1)}.${pad(d.getDate())}`;
-}
 
 function formatFull(isoString: string): string {
   const d = new Date(isoString);
@@ -87,6 +81,7 @@ export function CommunityCommentItem({
   const { isAuthenticated, showLoginModal } = useLoginRequired();
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const [likeState, setLikeState] = useState({
     isLiked: comment.isLiked,
@@ -181,14 +176,13 @@ export function CommunityCommentItem({
                 <p className="text-[14px] font-semibold tracking-[-0.04em] text-black leading-tight truncate">
                   {comment.author?.nickname ?? "알 수 없음"}
                 </p>
-                <p className="text-[11px] text-black/40 font-medium leading-tight mt-0.5">
-                  <span className="md:hidden">{formatShort(comment.createdAt)} 작성</span>
-                  <span className="hidden md:inline">{formatFull(comment.createdAt)} 작성</span>
-                  {comment.updatedAt && comment.updatedAt !== comment.createdAt && (
-                    <>
-                      <span className="md:hidden ml-1.5">{formatShort(comment.updatedAt)} 수정됨</span>
-                      <span className="hidden md:inline ml-1.5">{formatFull(comment.updatedAt)} 수정됨</span>
-                    </>
+                {/* 날짜: xl 미만은 닉네임 아래 상대 시간, xl 이상은 하단 액션 줄의 절대 시간 사용 */}
+                <p className="xl:hidden text-[11px] text-black/40 font-medium leading-tight mt-0.5">
+                  {formatRelativeTime(
+                    comment.updatedAt && comment.updatedAt !== comment.createdAt
+                      ? comment.updatedAt
+                      : comment.createdAt,
+                    !!(comment.updatedAt && comment.updatedAt !== comment.createdAt),
                   )}
                 </p>
               </div>
@@ -205,14 +199,23 @@ export function CommunityCommentItem({
               {showMenu && (
                 <div className="absolute right-0 top-full mt-1 bg-white border border-black/10 rounded-[4px] shadow-sm z-10 min-w-[100px]">
                   {comment.isMine ? (
-                    <button
-                      onClick={() => { remove(); setShowMenu(false); }}
-                      disabled={isDeleting}
-                      className="flex items-center gap-1.5 w-full px-3 py-2 text-[13px] font-semibold text-red-400 hover:bg-black/5 transition-colors"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                      삭제
-                    </button>
+                    <>
+                      <button
+                        onClick={() => { setIsEditing(true); setShowMenu(false); }}
+                        className="flex items-center gap-1.5 w-full px-3 py-2 text-[13px] font-semibold text-black/60 hover:bg-black/5 transition-colors"
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                        수정
+                      </button>
+                      <button
+                        onClick={() => { remove(); setShowMenu(false); }}
+                        disabled={isDeleting}
+                        className="flex items-center gap-1.5 w-full px-3 py-2 text-[13px] font-semibold text-red-400 hover:bg-black/5 transition-colors"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        삭제
+                      </button>
+                    </>
                   ) : (
                     <button
                       onClick={() => {
@@ -233,40 +236,62 @@ export function CommunityCommentItem({
             </div>
           </div>
 
-          {/* 본문 */}
-          <p className="text-[14px] leading-[1.6] tracking-[-0.02em] text-black/80 whitespace-pre-wrap mb-3">
-            {renderContentWithMentions(comment.content)}
-          </p>
+          {isEditing ? (
+            <CommunityCommentForm
+              postId={postId}
+              commentId={comment.id}
+              initialContent={comment.content}
+              compact
+              mentionableUsers={mentionableUsers}
+              onSuccess={() => setIsEditing(false)}
+              onCancel={() => setIsEditing(false)}
+            />
+          ) : (
+            <>
+              {/* 본문 */}
+              <p className="text-[14px] leading-[1.6] tracking-[-0.02em] text-black/80 whitespace-pre-wrap mb-3">
+                {renderContentWithMentions(comment.content)}
+              </p>
 
-          {/* 하단: 하트 + 답글달기 */}
-          <div className="flex items-center gap-4">
-            <button
-              onClick={handleHeartClick}
-              className={cn(
-                "flex items-center gap-1 text-[12px] font-semibold transition-colors",
-                likeState.isLiked
-                  ? "text-red-500"
-                  : "text-black/40 hover:text-red-400",
-              )}
-            >
-              <Heart
-                className="w-3.5 h-3.5"
-                strokeWidth={1.5}
-                fill={likeState.isLiked ? "currentColor" : "none"}
-              />
-              {likeState.likeCount}
-            </button>
+              {/* 하단: 하트 + 답글달기 */}
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={handleHeartClick}
+                  className={cn(
+                    "flex items-center gap-1 text-[12px] font-semibold transition-colors",
+                    likeState.isLiked
+                      ? "text-red-500"
+                      : "text-black/40 hover:text-red-400",
+                  )}
+                >
+                  <Heart
+                    className="w-3.5 h-3.5"
+                    strokeWidth={1.5}
+                    fill={likeState.isLiked ? "currentColor" : "none"}
+                  />
+                  {likeState.likeCount}
+                </button>
 
-            {!isReply && (
-              <button
-                onClick={handleReplyClick}
-                className="flex items-center gap-1 text-[12px] font-semibold text-black/40 hover:text-black/70 transition-colors"
-              >
-                <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.5} />
-                답글달기
-              </button>
-            )}
-          </div>
+                {!isReply && (
+                  <button
+                    onClick={handleReplyClick}
+                    className="flex items-center gap-1 text-[12px] font-semibold text-black/40 hover:text-black/70 transition-colors"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.5} />
+                    답글달기
+                  </button>
+                )}
+
+                {/* 날짜 (절대 시간, xl 이상 전용) */}
+                <p className="hidden xl:block ml-auto text-[12px] text-black/40 font-medium">
+                  <span>{formatFull(comment.createdAt)} 작성</span>
+                  {comment.updatedAt && comment.updatedAt !== comment.createdAt && (
+                    <span className="ml-2">{formatFull(comment.updatedAt)} 수정됨</span>
+                  )}
+                </p>
+              </div>
+            </>
+          )}
         </div>
 
         {/* 답글 폼 */}

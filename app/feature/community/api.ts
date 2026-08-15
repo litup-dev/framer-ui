@@ -125,8 +125,12 @@ export const deleteComment = async (commentId: number) => {
   return apiClient.delete(`/api/v1/comments/${commentId}`);
 };
 
-export const updateComment = async (commentId: number, content: string) => {
-  return apiClient.patch(`/api/v1/comments/${commentId}`, { content });
+export const updateComment = async (
+  commentId: number,
+  content: string,
+  mentionedUserIds: number[] = [],
+) => {
+  return apiClient.patch(`/api/v1/comments/${commentId}`, { content, mentionedUserIds });
 };
 
 export const toggleCommentLike = async (

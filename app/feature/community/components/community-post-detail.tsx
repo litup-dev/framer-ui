@@ -188,8 +188,8 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
         <CommunityCommentSection postId={postId} commentCount={post.commentCount} />
       </article>
 
-      {/* ── 우측 사이드바 (xl 이상) ── */}
-      <div className="hidden xl:block w-[180px] flex-shrink-0">
+      {/* ── 우측 사이드바 (2xl 이상 — 1280에서는 노출 안 함) ── */}
+      <div className="hidden 2xl:block w-[180px] flex-shrink-0">
         <div className="sticky top-28 flex flex-col gap-3">
           <button
             type="button"
@@ -202,7 +202,7 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
             }}
             className="flex items-center justify-center w-full py-3.5 bg-main text-white text-[15px] font-bold leading-none tracking-[-0.04em] rounded-[4px] hover:opacity-90 transition-opacity cursor-pointer"
           >
-            글쓰기
+            {isAuthenticated ? "글쓰기" : "로그인 후 글 작성하기"}
           </button>
 
           {/* 알림 카드 자리 (실제 알림 API 연동 예정) */}

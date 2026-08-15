@@ -93,7 +93,8 @@ export function MentionInput({
   ariaLabel,
 }: MentionInputProps) {
   const editorRef = useRef<HTMLDivElement>(null);
-  const lastEmittedRef = useRef<string>(value);
+  // 빈 문자열로 시작 — 마운트 시 value(수정/답글 프리필 등)가 있으면 DOM에 반드시 반영되도록 함
+  const lastEmittedRef = useRef<string>("");
   const composingRef = useRef(false);
 
   const [query, setQuery] = useState<string | null>(null);
@@ -306,7 +307,7 @@ interface DropdownProps {
 
 function MentionDropdown({ users, onSelect }: DropdownProps) {
   return (
-    <div className="absolute left-0 right-0 bottom-full mb-1 max-h-[220px] overflow-y-auto bg-white border border-black/10 rounded-[6px] shadow-lg z-40">
+    <div className="absolute left-0 bottom-full mb-1 w-max min-w-[140px] max-w-[240px] max-h-[220px] overflow-y-auto bg-white border border-black/10 rounded-[6px] shadow-lg z-40">
       {users.map((u) => {
         const avatar = getImageUrl(u.profilePath);
         return (
@@ -335,11 +336,11 @@ function MentionDropdown({ users, onSelect }: DropdownProps) {
                 className="w-7 h-7 rounded-full flex-shrink-0"
               />
             )}
-            <span className="text-[14px] font-semibold text-black">
+            <span className="min-w-0 truncate text-[14px] font-semibold text-black">
               {u.nickname}
             </span>
             {u.isAuthor && (
-              <span className="ml-1 text-[11px] font-semibold text-main">작성자</span>
+              <span className="ml-1 flex-shrink-0 text-[11px] font-semibold text-main">작성자</span>
             )}
           </button>
         );
