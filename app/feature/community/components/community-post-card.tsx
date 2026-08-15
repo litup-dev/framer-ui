@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ThumbsUp, ThumbsDown, MessageCircle } from "lucide-react";
-import { cn, getImageUrl } from "@/lib/utils";
+import { cn, getImageUrl, formatRelativeTime } from "@/lib/utils";
 import type { PostItem } from "../types";
 
 function PostAuthorAvatar({ profilePath }: { profilePath: string | null }) {
@@ -25,17 +25,6 @@ function PostAuthorAvatar({ profilePath }: { profilePath: string | null }) {
       className="w-7 h-7 rounded-full flex-shrink-0"
     />
   );
-}
-
-function timeAgo(isoString: string): string {
-  const diff = Date.now() - new Date(isoString).getTime();
-  const minutes = Math.floor(diff / 60000);
-  if (minutes < 1) return "방금 전";
-  if (minutes < 60) return `${minutes}분 전`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}시간 전`;
-  const days = Math.floor(hours / 24);
-  return `${days}일 전`;
 }
 
 interface CommunityPostCardProps {
@@ -66,7 +55,7 @@ export function CommunityPostCard({ post, className }: CommunityPostCardProps) {
               {post.author.nickname}
             </p>
             <p className="text-[12px] text-black/40 font-medium leading-tight mt-0.5">
-              {timeAgo(post.createdAt)}
+              {formatRelativeTime(post.createdAt)}
             </p>
           </div>
         </div>
@@ -131,7 +120,7 @@ export function CommunityPostCard({ post, className }: CommunityPostCardProps) {
             </p>
           </div>
           <p className="text-[12px] text-black/40 font-medium leading-none">
-            {timeAgo(post.createdAt)}
+            {formatRelativeTime(post.createdAt)}
           </p>
         </div>
 
