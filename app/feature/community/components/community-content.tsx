@@ -215,6 +215,23 @@ export function CommunityContent() {
               </Pagination>
             </div>
           )}
+
+          {/* 검색 (태블릿 md~xl 전용, 리스트 하단 인라인 바) */}
+          <form onSubmit={handleSearch} className="hidden md:flex xl:hidden items-center gap-[10px] mt-10">
+            <CommunitySearchTypeSelect value={searchType} onChange={setSearchType} />
+            <div className="flex flex-1 items-center justify-between gap-2 h-[48px] px-[14px] bg-[#f8f8f8] rounded-[4px]">
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="검색어를 입력해 주세요."
+                className="flex-1 min-w-0 bg-transparent text-[16px] font-semibold text-black placeholder:text-black/20 outline-none"
+              />
+              <button type="submit" className="flex-shrink-0 text-black/40 hover:text-black transition-colors">
+                <Search className="w-5 h-5" />
+              </button>
+            </div>
+          </form>
         </div>
 
         {/* ── 우측 사이드바 (xl 이상) ── */}

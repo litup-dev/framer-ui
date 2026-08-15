@@ -10,7 +10,7 @@ import type { PostSearchType } from "../types";
 
 /**
  * 커뮤니티 목록 페이지 전용 검색 진입 버튼 + 상단 시트.
- * xl(1280px) 미만 전 구간(모바일/태블릿)에서 동일하게 아이콘 → 상단 시트 방식으로 동작한다.
+ * md(744px) 미만 모바일 전용 — 744 이상은 인라인 검색바(CommunityContent)를 사용한다.
  * /community 페이지가 아니면 아무것도 렌더링하지 않는다.
  */
 export function CommunitySearchTrigger({ className }: { className?: string }) {

@@ -36,7 +36,7 @@ export function CommunitySearchTypeSelect({
           <ChevronRight className="w-4 h-4 rotate-90 text-black/40" strokeWidth={2.5} />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start">
+      <DropdownMenuContent align="start" className="z-[80]">
         {SEARCH_TYPE_OPTIONS.map((option) => (
           <DropdownMenuItem key={option.value} onClick={() => onChange(option.value)}>
             {option.label}
