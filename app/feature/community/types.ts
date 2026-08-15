@@ -1,6 +1,7 @@
 export type BoardCode = "FREE";
 export type CategoryCode = "GENERAL" | "BAND_PROMO" | "PERFORM_REVIEW";
 export type SortType = "-createdAt" | "+createdAt";
+export type PostSearchType = "TITLE_CONTENT" | "TITLE" | "CONTENT" | "AUTHOR";
 export type LikeType = "LIKE" | "DISLIKE";
 
 export interface PostAuthor {
@@ -66,6 +67,7 @@ export interface PostsQuery {
   board?: BoardCode;
   category?: CategoryCode;
   keyword?: string;
+  searchType?: PostSearchType;
   sort?: SortType;
   offset?: number;
   limit?: number;

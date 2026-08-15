@@ -13,6 +13,7 @@ export const getPosts = async (query: PostsQuery = {}): Promise<PostListResponse
   if (query.board) params.set("board", query.board);
   if (query.category) params.set("category", query.category);
   if (query.keyword?.trim()) params.set("keyword", query.keyword.trim());
+  if (query.keyword?.trim() && query.searchType) params.set("searchType", query.searchType);
   if (query.sort) params.set("sort", query.sort);
   if (query.offset !== undefined) params.set("offset", String(query.offset));
   if (query.limit !== undefined) params.set("limit", String(query.limit));
