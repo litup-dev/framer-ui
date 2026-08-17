@@ -18,7 +18,8 @@ import { ko } from "date-fns/locale";
 import { useReportModalStore } from "@/store/report-modal-store";
 import { useCommonModalStore } from "@/store/common-modal-store";
 import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { saveReturnUrl } from "@/lib/login-utils";
 import { useReportContent } from "../query-options";
 import { REPORT_CATEGORIES } from "@/app/shared/constants";
 import { getImageUrl } from "@/lib/utils";
@@ -57,6 +58,7 @@ const CommentItem = ({
   onToggleExpand,
 }: CommentItemProps) => {
   const router = useRouter();
+  const pathname = usePathname();
   const { openModal: openReportModal } = useReportModalStore();
   const { openModal: openCommonModal } = useCommonModalStore();
   const { isAuthenticated } = useCurrentUser();
@@ -97,7 +99,10 @@ const CommentItem = ({
           "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?",
         confirmButton: {
           label: "확인",
-          onClick: () => router.push("/login"),
+          onClick: () => {
+            saveReturnUrl(pathname);
+            router.push("/login");
+          },
         },
         cancelButton: {
           label: "취소",

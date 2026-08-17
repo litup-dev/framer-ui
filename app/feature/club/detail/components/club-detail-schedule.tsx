@@ -2,7 +2,8 @@
 
 import { Fragment } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { saveReturnUrl } from "@/lib/login-utils";
 import { format, getDate } from "date-fns";
 import { ko } from "date-fns/locale";
 import { Check, Plus } from "lucide-react";
@@ -215,6 +216,7 @@ export default function ClubDetailSchedule({
   const { user, isAuthenticated } = useCurrentUser();
   const { openModal: openCommonModal } = useCommonModalStore();
   const router = useRouter();
+  const pathname = usePathname();
   const { mutate } = useMutation(
     performaceAttendByIdOptions(clubId, month, queryClient),
   );
@@ -227,6 +229,7 @@ export default function ClubDetailSchedule({
         confirmButton: {
           label: "확인",
           onClick: () => {
+            saveReturnUrl(pathname);
             router.push("/login");
           },
         },

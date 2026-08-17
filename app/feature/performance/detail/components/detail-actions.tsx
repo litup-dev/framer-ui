@@ -5,12 +5,13 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Subtitle } from "@/components/shared/typography";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useToggleAttendance } from "../query-options";
 import { useCommonModalStore } from "@/store/common-modal-store";
 import { isAfter, parseISO } from "date-fns";
 import ShareModal from "./share-modal";
 import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
+import { saveReturnUrl } from "@/lib/login-utils";
 
 interface DetailActionsProps {
   performanceId: number;
@@ -38,6 +39,7 @@ const DetailActions = ({
 }: DetailActionsProps) => {
   const { isAuthenticated } = useCurrentUser();
   const router = useRouter();
+  const pathname = usePathname();
   const toggleAttendMutation = useToggleAttendance();
   const { openModal } = useCommonModalStore();
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
@@ -49,7 +51,10 @@ const DetailActions = ({
         "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?",
       confirmButton: {
         label: "확인",
-        onClick: () => router.push("/login"),
+        onClick: () => {
+          saveReturnUrl(pathname);
+          router.push("/login");
+        },
       },
       cancelButton: {
         label: "취소",

@@ -3,7 +3,8 @@
 import Image from "next/image";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { saveReturnUrl } from "@/lib/login-utils";
 
 import { useCommonModalStore } from "@/store/common-modal-store";
 import { mutateFavoriteClub } from "@/app/feature/club/query-options";
@@ -43,13 +44,17 @@ const ClubDetailInfo = ({
   const { isAuthenticated } = useCurrentUser();
   const { mutate: mutateFavorite } = useMutation(mutateFavoriteClub(id));
   const router = useRouter();
+  const pathname = usePathname();
   const handleFavorite = () => {
     if (!isAuthenticated) {
       openModal({
         description: "로그인 후 이용해주세요",
         confirmButton: {
           label: "확인",
-          onClick: () => router.push("/login"),
+          onClick: () => {
+            saveReturnUrl(pathname);
+            router.push("/login");
+          },
         },
       });
       return;

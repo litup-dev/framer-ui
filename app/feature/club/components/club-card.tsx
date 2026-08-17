@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { Map, Info } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import { Club } from "@/app/feature/club/types";
@@ -29,6 +29,7 @@ interface ClubCardProps {
 
 const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
   const router = useRouter();
+  const pathname = usePathname();
   const queryClient = useQueryClient();
   const { isAuthenticated } = useCurrentUser();
   const { openModal: openCommonModal } = useCommonModalStore();
@@ -65,6 +66,7 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
         confirmButton: {
           label: "확인",
           onClick: () => {
+            saveReturnUrl(pathname);
             router.push("/login");
           },
         },

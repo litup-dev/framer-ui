@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { saveReturnUrl } from "@/lib/login-utils";
 import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
 
 import { ClubDetailData, Review } from "@/app/feature/club/types";
@@ -61,6 +62,7 @@ const ClubDetailReview = ({
   setSort,
 }: ClubDetailReviewProps) => {
   const router = useRouter();
+  const pathname = usePathname();
   const { openReviewModal } = useClubDetailStore();
   const { isAuthenticated } = useCurrentUser();
   const { openModal } = useCommonModalStore();
@@ -161,7 +163,10 @@ const ClubDetailReview = ({
                 description: "로그인 후 이용해주세요",
                 confirmButton: {
                   label: "확인",
-                  onClick: () => router.push("/login"),
+                  onClick: () => {
+                    saveReturnUrl(pathname);
+                    router.push("/login");
+                  },
                 },
               });
           }}
