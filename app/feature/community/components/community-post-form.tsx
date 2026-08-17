@@ -17,7 +17,7 @@ import {
   CommunityTiptapEditor,
   type CommunityTiptapEditorRef,
 } from "./community-tiptap-editor";
-import { cn } from "@/lib/utils";
+import { cn, getImageUrl } from "@/lib/utils";
 import type { BoardCode, CategoryCode } from "../types";
 
 interface InitialValues {
@@ -26,6 +26,7 @@ interface InitialValues {
   title: string;
   content: string;
   imageIds: number[];
+  images: { id: number; filePath: string }[];
 }
 
 interface CommunityPostFormProps {
@@ -42,6 +43,7 @@ const DEFAULT_INITIAL: InitialValues = {
   title: "",
   content: "",
   imageIds: [],
+  images: [],
 };
 
 const CONTENT_CHAR_LIMIT = 50000;
@@ -56,6 +58,18 @@ function extractTextFromProseMirrorNode(node: unknown): string {
     for (const child of n.content) text += extractTextFromProseMirrorNode(child);
   }
   return text;
+}
+
+// ProseMirror JSON 노드에서 image 노드의 src만 재귀적으로 추출 (문서에 실제로 남아있는 이미지 파악용)
+function extractImageSrcs(node: unknown): string[] {
+  if (!node || typeof node !== "object") return [];
+  const n = node as { type?: string; attrs?: { src?: string }; content?: unknown[] };
+  const srcs: string[] = [];
+  if (n.type === "image" && n.attrs?.src) srcs.push(n.attrs.src);
+  if (Array.isArray(n.content)) {
+    for (const child of n.content) srcs.push(...extractImageSrcs(child));
+  }
+  return srcs;
 }
 
 // content 문자열(JSON 또는 raw)에서 plain text 추출
@@ -112,6 +126,15 @@ export function CommunityPostForm({
   );
   const [imageIds, setImageIds] = useState<number[]>(
     initial?.imageIds ?? DEFAULT_INITIAL.imageIds,
+  );
+  // 업로드된(또는 기존) 이미지의 url→id 매핑. 에디터 본문에 실제로 남아있는 이미지만
+  // imageIds에 반영하기 위한 참조 테이블 — 에디터에서 이미지를 지우면 walk 시 자연히 빠짐.
+  const imageUrlToIdRef = useRef<Map<string, number>>(
+    new Map(
+      (initial?.images ?? DEFAULT_INITIAL.images)
+        .map((img) => [getImageUrl(img.filePath), img.id] as const)
+        .filter((entry): entry is [string, number] => entry[0] !== null),
+    ),
   );
 
   // draft ID:
@@ -435,8 +458,15 @@ export function CommunityPostForm({
           onChange={(json, text) => {
             setContent(JSON.stringify(json));
             setContentText(text);
+            // 본문에 실제로 남아있는 이미지 src만 골라 id로 변환 — 삭제된 이미지는 자연히 제외됨
+            const idsInDoc = extractImageSrcs(json)
+              .map((src) => imageUrlToIdRef.current.get(src))
+              .filter((id): id is number => id !== undefined);
+            setImageIds(Array.from(new Set(idsInDoc)));
           }}
-          onImageUploaded={(id) => setImageIds((prev) => [...prev, id])}
+          onImageUploaded={(id, url) => {
+            imageUrlToIdRef.current.set(url, id);
+          }}
           minHeight="400px"
           characterLimit={CONTENT_CHAR_LIMIT}
         />

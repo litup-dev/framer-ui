@@ -53,6 +53,7 @@ export default function CommunityEditPage() {
           title: post.title,
           content: post.content,
           imageIds: post.images.map((i) => i.id),
+          images: post.images,
         }}
       />
     </div>

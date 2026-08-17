@@ -38,7 +38,7 @@ interface CommunityTiptapEditorProps {
   // JSON 객체 (Tiptap doc) 또는 JSON 문자열 (백엔드 저장값). 빈 값이면 빈 doc으로 시작.
   initialContent?: object | string | null;
   onChange?: (json: object, text: string) => void;
-  onImageUploaded?: (imageId: number) => void;
+  onImageUploaded?: (imageId: number, url: string) => void;
   placeholder?: string;
   minHeight?: string;
   characterLimit?: number;
@@ -197,9 +197,10 @@ export const CommunityTiptapEditor = forwardRef<
       const { data } = await uploadPostImage(file);
       const url = getImageUrl(data.filePath);
       if (!url) throw new Error("이미지 URL 조합 실패");
+      // setImage보다 먼저 호출 — onUpdate(onChange)가 동기적으로 발생하기 전에
+      // url→id 매핑이 준비되어 있어야 방금 삽입한 이미지도 즉시 추적됨
+      onImageUploadedRef.current?.(data.id, url);
       editor.chain().focus().setImage({ src: url }).run();
-      // ref 사용으로 stale closure 방지
-      onImageUploadedRef.current?.(data.id);
     } catch (e) {
       console.error("이미지 업로드 실패:", e);
       alert("이미지 업로드에 실패했습니다.");
