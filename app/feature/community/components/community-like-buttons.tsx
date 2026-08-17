@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ThumbsUp, ThumbsDown, MessageCircle, Share2 } from "lucide-react";
 import { toggleLike } from "../api";
 import { useLoginRequired } from "../hooks/use-login-required";
+import { CommunityShareModal } from "./community-share-modal";
 import { cn } from "@/lib/utils";
 import type { LikeType } from "../types";
 
@@ -14,6 +15,10 @@ interface CommunityLikeButtonsProps {
   dislikeCount: number;
   commentCount: number;
   myLikeType: LikeType | null;
+  postTitle: string;
+  authorNickname: string;
+  description?: string;
+  imageFilePath?: string | null;
 }
 
 export function CommunityLikeButtons({
@@ -22,9 +27,14 @@ export function CommunityLikeButtons({
   dislikeCount,
   commentCount,
   myLikeType: initialMyLikeType,
+  postTitle,
+  authorNickname,
+  description,
+  imageFilePath,
 }: CommunityLikeButtonsProps) {
   const queryClient = useQueryClient();
   const { isAuthenticated, showLoginModal } = useLoginRequired();
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   const [optimistic, setOptimistic] = useState({
     myLikeType: initialMyLikeType,
@@ -73,12 +83,6 @@ export function CommunityLikeButtons({
     mutate(likeType);
   };
 
-  const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-      alert("링크가 복사되었습니다.");
-    });
-  };
-
   return (
     <div className="flex items-center gap-5 py-3">
       <button
@@ -117,12 +121,21 @@ export function CommunityLikeButtons({
       </span>
 
       <button
-        onClick={handleShare}
+        onClick={() => setIsShareModalOpen(true)}
         className="flex items-center gap-1.5 text-[14px] font-semibold text-black/50 hover:text-black/80 transition-colors ml-auto"
       >
         <Share2 className="w-[16px] h-[16px]" strokeWidth={1.5} />
         공유하기
       </button>
+
+      <CommunityShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        postTitle={postTitle}
+        authorNickname={authorNickname}
+        description={description}
+        imageFilePath={imageFilePath}
+      />
     </div>
   );
 }

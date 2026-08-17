@@ -20,6 +20,32 @@ function formatDate(isoString: string): string {
   return `${String(d.getFullYear()).slice(2)}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
+// ProseMirror JSON 노드에서 텍스트만 재귀적으로 추출 (공유하기 설명문용)
+function extractPlainText(node: unknown): string {
+  if (!node || typeof node !== "object") return "";
+  const n = node as { text?: string; content?: unknown[] };
+  let text = "";
+  if (typeof n.text === "string") text += n.text;
+  if (Array.isArray(n.content)) {
+    for (const child of n.content) text += extractPlainText(child);
+  }
+  return text;
+}
+
+function extractShareDescription(content: string): string {
+  const trimmed = content?.trim();
+  if (!trimmed) return "";
+  let text = trimmed;
+  if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
+    try {
+      text = extractPlainText(JSON.parse(trimmed));
+    } catch {
+      text = trimmed;
+    }
+  }
+  return text.slice(0, 80);
+}
+
 interface CommunityPostDetailProps {
   postId: number;
 }
@@ -155,7 +181,7 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
                   showLoginModal();
                   return;
                 }
-                alert("신고가 접수되었습니다.");
+                alert("신고 기능은 준비 중입니다.");
               }}
               className="flex items-center gap-1 text-[12px] font-semibold text-black/40 hover:text-red-400 transition-colors"
             >
@@ -182,6 +208,10 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
           dislikeCount={post.dislikeCount}
           commentCount={post.commentCount}
           myLikeType={post.myLikeType}
+          postTitle={post.title}
+          authorNickname={post.author.nickname}
+          description={extractShareDescription(post.content)}
+          imageFilePath={post.images[0]?.filePath ?? null}
         />
 
         {/* 댓글 섹션 */}

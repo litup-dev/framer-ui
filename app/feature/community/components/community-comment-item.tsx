@@ -224,7 +224,7 @@ export function CommunityCommentItem({
                           showLoginModal();
                           return;
                         }
-                        alert("신고가 접수되었습니다.");
+                        alert("신고 기능은 준비 중입니다.");
                       }}
                       className="flex items-center gap-1.5 w-full px-3 py-2 text-[13px] font-semibold text-black/60 hover:bg-black/5 transition-colors"
                     >

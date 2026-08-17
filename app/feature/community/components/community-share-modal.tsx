@@ -1,0 +1,146 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { Share2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { shareToKakao } from "../utils/kakao-share";
+
+interface CommunityShareModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  postTitle: string;
+  authorNickname: string;
+  description?: string;
+  imageFilePath?: string | null;
+}
+
+export function CommunityShareModal({
+  isOpen,
+  onClose,
+  postTitle,
+  authorNickname,
+  description,
+  imageFilePath,
+}: CommunityShareModalProps) {
+  const [showCopyToast, setShowCopyToast] = useState(false);
+
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+
+  useEffect(() => {
+    if (showCopyToast) {
+      const timer = setTimeout(() => setShowCopyToast(false), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [showCopyToast]);
+
+  const handleCopyUrl = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setShowCopyToast(true);
+    } catch (error) {
+      console.error("URL 복사 실패:", error);
+    }
+  };
+
+  const handleKakaoShare = () => {
+    shareToKakao({
+      postTitle,
+      authorNickname,
+      description,
+      imageFilePath,
+      shareUrl,
+    });
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent
+        className="w-[355px] h-[260px] md:w-[495px] md:h-[305px] p-0 rounded-[8px]"
+        showCloseButton={false}
+      >
+        <DialogHeader className="px-6 pt-6 md:px-8 md:pt-8">
+          <div className="flex items-center justify-between">
+            <DialogTitle className="flex items-center gap-2 text-[18px] md:text-[20px]">
+              <Share2 className="w-5 h-5" />
+              공유하기
+            </DialogTitle>
+            <button
+              onClick={onClose}
+              className="w-8 h-8 flex items-center justify-center transition-colors text-black/60 hover:text-black"
+              aria-label="닫기"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M18 6L6 18M6 6L18 18"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+        </DialogHeader>
+
+        <div className="flex flex-col items-center justify-center flex-1 px-6 pb-6 md:px-8 md:pb-8 relative">
+          {/* 복사 완료 토스트 */}
+          {showCopyToast && (
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 bg-black text-white px-4 py-2 rounded-[4px] text-[14px] font-medium animate-in fade-in slide-in-from-top-2 duration-200">
+              URL이 복사되었습니다
+            </div>
+          )}
+
+          {/* 게시글 정보 */}
+          <div className="text-center mb-8 md:mb-10">
+            <p className="text-[18px] md:text-[20px] font-bold tracking-[-0.04em] text-black mb-2 line-clamp-2">
+              {postTitle}
+            </p>
+            <p className="text-[14px] md:text-[16px] font-semibold text-black/60">
+              {authorNickname}
+            </p>
+          </div>
+
+          {/* 공유 아이콘 */}
+          <div className="flex items-center gap-3">
+            {/* 카카오톡 */}
+            <button
+              onClick={handleKakaoShare}
+              className="cursor-pointer hover:opacity-80 transition-opacity"
+            >
+              <div className="w-14 h-14 rounded-full bg-[#F7F6F5] flex items-center justify-center">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M10 1C4.477 1 0 4.582 0 9C0 11.853 1.885 14.355 4.76 15.858L3.5 19.5L7.615 17.22C8.543 17.441 9.521 17.571 10.526 17.571C16.049 17.571 20.526 13.989 20.526 9.571C20.526 5.153 16.049 1.571 10.526 1.571C10.35 1.571 10.175 1.573 10 1.577V1Z"
+                    fill="#3C1E1E"
+                  />
+                </svg>
+              </div>
+            </button>
+
+            {/* URL 복사 */}
+            <button
+              onClick={handleCopyUrl}
+              className="cursor-pointer hover:opacity-80 transition-opacity"
+            >
+              <div className="w-14 h-14 rounded-full bg-[#F2F1EE] flex items-center justify-center">
+                <span
+                  className="text-[10px] text-black"
+                  style={{ fontWeight: 900, letterSpacing: "-0.04em" }}
+                >
+                  URL
+                </span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
