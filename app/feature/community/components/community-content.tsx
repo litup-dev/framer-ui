@@ -51,7 +51,11 @@ export function CommunityContent() {
   );
   const [keyword, setKeyword] = useState(searchParams.get("keyword") || "");
   const [inputValue, setInputValue] = useState(searchParams.get("keyword") || "");
+  // searchType: 실제 검색에 반영된(제출된) 값 / searchTypeDraft: 드롭다운에서 아직 제출 전인 선택값
   const [searchType, setSearchType] = useState<PostSearchType>(
+    (searchParams.get("searchType") as PostSearchType) || "TITLE_CONTENT",
+  );
+  const [searchTypeDraft, setSearchTypeDraft] = useState<PostSearchType>(
     (searchParams.get("searchType") as PostSearchType) || "TITLE_CONTENT",
   );
   const [currentPage, setCurrentPage] = useState(
@@ -63,7 +67,9 @@ export function CommunityContent() {
     const urlKeyword = searchParams.get("keyword") ?? "";
     setKeyword(urlKeyword);
     setInputValue(urlKeyword);
-    setSearchType((searchParams.get("searchType") as PostSearchType) || "TITLE_CONTENT");
+    const urlSearchType = (searchParams.get("searchType") as PostSearchType) || "TITLE_CONTENT";
+    setSearchType(urlSearchType);
+    setSearchTypeDraft(urlSearchType);
     const urlPage = Number(searchParams.get("page")) || 1;
     setCurrentPage(urlPage);
   }, [searchParams]);
@@ -118,6 +124,7 @@ export function CommunityContent() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setKeyword(inputValue);
+    setSearchType(searchTypeDraft);
     resetPage();
   };
 
@@ -135,7 +142,7 @@ export function CommunityContent() {
 
             {/* 검색 (데스크탑 xl+) */}
             <form onSubmit={handleSearch} className="hidden xl:flex items-center gap-[10px] mb-3">
-              <CommunitySearchTypeSelect value={searchType} onChange={setSearchType} />
+              <CommunitySearchTypeSelect value={searchTypeDraft} onChange={setSearchTypeDraft} />
               <div className="flex items-center justify-between gap-2 h-[48px] w-[360px] px-[14px] bg-[#f8f8f8] rounded-[4px]">
                 <input
                   type="text"
@@ -216,10 +223,10 @@ export function CommunityContent() {
             </div>
           )}
 
-          {/* 검색 (태블릿 md~xl 전용, 리스트 하단 인라인 바) */}
-          <form onSubmit={handleSearch} className="hidden md:flex xl:hidden items-center gap-[10px] mt-10">
-            <CommunitySearchTypeSelect value={searchType} onChange={setSearchType} />
-            <div className="flex flex-1 items-center justify-between gap-2 h-[48px] px-[14px] bg-[#f8f8f8] rounded-[4px]">
+          {/* 검색 (태블릿 md~xl 전용, 리스트 하단 인라인 바 — 피그마 고정폭 518px 가운데 정렬) */}
+          <form onSubmit={handleSearch} className="hidden md:flex xl:hidden items-center justify-center gap-[10px] mt-10">
+            <CommunitySearchTypeSelect value={searchTypeDraft} onChange={setSearchTypeDraft} className="w-[148px]" />
+            <div className="flex items-center justify-between gap-2 h-[48px] w-[360px] px-[14px] bg-[#f8f8f8] rounded-[4px]">
               <input
                 type="text"
                 value={inputValue}
