@@ -135,13 +135,14 @@ function EventTitleArtists({
   id: number;
 }) {
   const artistNames = artists?.map((a) => a.name).join(", ") ?? "";
+  const hasArtists = artistNames.length > 0;
 
   return (
     <Link href={`/performance/${id}`}>
       <div className="flex min-w-0 flex-1 flex-col gap-2 justify-center pl-4 sm:pl-6 min-h-[46px] lg:min-w-0 lg:border-l lg:border-gray-200 lg:pl-6 lg:w-[397px] lg:flex-none 2xl:w-[500px] 2xl:flex-none">
         <div className="flex items-center gap-0.5">
           <Subtitle className="text-[15px] sm:text-[18px] leading-[1.2] text-[#171717]">
-            {artistNames}
+            {hasArtists ? artistNames : title}
           </Subtitle>
           <Image
             src="/images/rec-arrow-right.png"
@@ -151,9 +152,11 @@ function EventTitleArtists({
             className="w-5 h-5 shrink-0"
           />
         </div>
-        <Description className="text-[14px] sm:text-[16px] leading-[1.2] text-[#17171799] font-medium">
-          {title}
-        </Description>
+        {hasArtists && (
+          <Description className="text-[14px] sm:text-[16px] leading-[1.2] text-[#17171799] font-medium">
+            {title}
+          </Description>
+        )}
       </div>
     </Link>
   );
