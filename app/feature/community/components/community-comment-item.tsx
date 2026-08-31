@@ -56,7 +56,7 @@ function CommentAvatar({ profilePath }: { profilePath?: string | null }) {
       <img
         src={src}
         alt=""
-        className="w-7 h-7 rounded-full object-cover flex-shrink-0"
+        className="w-7 h-7 xl:w-8 xl:h-8 rounded-full object-cover flex-shrink-0"
       />
     );
   }
@@ -64,9 +64,9 @@ function CommentAvatar({ profilePath }: { profilePath?: string | null }) {
     <Image
       src="/images/user/user-avatar.svg"
       alt=""
-      width={28}
-      height={28}
-      className="w-7 h-7 rounded-full flex-shrink-0"
+      width={32}
+      height={32}
+      className="w-7 h-7 xl:w-8 xl:h-8 rounded-full flex-shrink-0"
     />
   );
 }
@@ -151,7 +151,7 @@ export function CommunityCommentItem({
   }
 
   const cardClass =
-    "bg-white rounded-[6px] p-3.5 md:bg-transparent md:rounded-none md:border-b md:border-black/10 md:p-0 md:py-4";
+    "bg-white rounded-[6px] p-3.5 md:bg-transparent md:rounded-none md:border-b md:border-black/10 md:p-0 md:py-4 xl:py-7";
 
   const wrapperClass = isReply
     ? "flex items-start gap-2 pl-4 md:pl-6 mt-3 md:mt-2"
@@ -173,7 +173,7 @@ export function CommunityCommentItem({
             <div className="flex items-center gap-2 min-w-0">
               <CommentAvatar profilePath={comment.author?.profilePath} />
               <div className="min-w-0">
-                <p className="text-[14px] font-semibold tracking-[-0.04em] text-black leading-tight truncate">
+                <p className="text-[14px] xl:text-[16px] font-semibold tracking-[-0.04em] text-black leading-tight truncate">
                   {comment.author?.nickname ?? "알 수 없음"}
                 </p>
                 {/* 날짜: xl 미만은 닉네임 아래 상대 시간, xl 이상은 하단 액션 줄의 절대 시간 사용 */}
@@ -249,23 +249,23 @@ export function CommunityCommentItem({
           ) : (
             <>
               {/* 본문 */}
-              <p className="text-[14px] leading-[1.6] tracking-[-0.02em] text-black/80 whitespace-pre-wrap mb-3">
+              <p className="text-[14px] xl:text-[16px] leading-[1.6] tracking-[-0.02em] xl:tracking-[-0.04em] text-black/80 xl:text-black whitespace-pre-wrap mb-3">
                 {renderContentWithMentions(comment.content)}
               </p>
 
               {/* 하단: 하트 + 답글달기 */}
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 xl:gap-3.5">
                 <button
                   onClick={handleHeartClick}
                   className={cn(
-                    "flex items-center gap-1 text-[12px] font-semibold transition-colors",
+                    "flex items-center gap-1 text-[12px] xl:text-[14px] font-semibold transition-colors",
                     likeState.isLiked
                       ? "text-red-500"
                       : "text-black/40 hover:text-red-400",
                   )}
                 >
                   <Heart
-                    className="w-3.5 h-3.5"
+                    className="w-3.5 h-3.5 xl:w-6 xl:h-6"
                     strokeWidth={1.5}
                     fill={likeState.isLiked ? "currentColor" : "none"}
                   />
@@ -275,15 +275,15 @@ export function CommunityCommentItem({
                 {!isReply && (
                   <button
                     onClick={handleReplyClick}
-                    className="flex items-center gap-1 text-[12px] font-semibold text-black/40 hover:text-black/70 transition-colors"
+                    className="flex items-center gap-1 text-[12px] xl:text-[14px] font-semibold text-black/40 hover:text-black/70 transition-colors"
                   >
-                    <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.5} />
+                    <MessageCircle className="w-3.5 h-3.5 xl:w-6 xl:h-6" strokeWidth={1.5} />
                     답글달기
                   </button>
                 )}
 
                 {/* 날짜 (절대 시간, xl 이상 전용) */}
-                <p className="hidden xl:block ml-auto text-[12px] text-black/40 font-medium">
+                <p className="hidden xl:block ml-auto text-[14px] text-black/40 font-medium">
                   <span>{formatFull(comment.createdAt)} 작성</span>
                   {comment.updatedAt && comment.updatedAt !== comment.createdAt && (
                     <span className="ml-2">{formatFull(comment.updatedAt)} 수정됨</span>

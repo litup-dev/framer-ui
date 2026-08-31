@@ -88,12 +88,12 @@ export function CommunityLikeButtons({
       <button
         onClick={() => handleLike("LIKE")}
         className={cn(
-          "flex items-center gap-1.5 text-[14px] font-semibold transition-colors",
+          "flex items-center gap-1 text-[14px] xl:text-[16px] font-semibold transition-colors",
           optimistic.myLikeType === "LIKE" ? "text-main" : "text-black/50 hover:text-black/80",
         )}
       >
         <ThumbsUp
-          className="w-[18px] h-[18px]"
+          className="w-[18px] h-[18px] xl:w-7 xl:h-7"
           strokeWidth={1.5}
           fill={optimistic.myLikeType === "LIKE" ? "currentColor" : "none"}
         />
@@ -103,28 +103,28 @@ export function CommunityLikeButtons({
       <button
         onClick={() => handleLike("DISLIKE")}
         className={cn(
-          "flex items-center gap-1.5 text-[14px] font-semibold transition-colors",
+          "flex items-center gap-1 text-[14px] xl:text-[16px] font-semibold transition-colors",
           optimistic.myLikeType === "DISLIKE" ? "text-black" : "text-black/50 hover:text-black/80",
         )}
       >
         <ThumbsDown
-          className="w-[18px] h-[18px]"
+          className="w-[18px] h-[18px] xl:w-7 xl:h-7"
           strokeWidth={1.5}
           fill={optimistic.myLikeType === "DISLIKE" ? "currentColor" : "none"}
         />
         {optimistic.dislikeCount}
       </button>
 
-      <span className="flex items-center gap-1.5 text-[14px] font-semibold text-black/50">
-        <MessageCircle className="w-[18px] h-[18px]" strokeWidth={1.5} />
+      <span className="flex items-center gap-1 text-[14px] xl:text-[16px] font-semibold text-black/50">
+        <MessageCircle className="w-[18px] h-[18px] xl:w-7 xl:h-7" strokeWidth={1.5} />
         {commentCount}
       </span>
 
       <button
         onClick={() => setIsShareModalOpen(true)}
-        className="flex items-center gap-1.5 text-[14px] font-semibold text-black/50 hover:text-black/80 transition-colors ml-auto"
+        className="flex items-center gap-1 text-[14px] xl:text-[16px] font-semibold text-black/50 hover:text-black/80 transition-colors ml-auto"
       >
-        <Share2 className="w-[16px] h-[16px]" strokeWidth={1.5} />
+        <Share2 className="w-[16px] h-[16px] xl:w-7 xl:h-7" strokeWidth={1.5} />
         공유하기
       </button>
 

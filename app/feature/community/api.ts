@@ -42,6 +42,8 @@ export const createPost = async (body: {
   title: string;
   content: string;
   imageIds?: number[];
+  clubIds?: number[];
+  performIds?: number[];
 }): Promise<{ data: { id: number } }> => {
   return apiClient.post("/api/v1/posts", body);
 };
@@ -53,6 +55,8 @@ export const updatePost = async (
     title?: string;
     content?: string;
     imageIds?: number[];
+    clubIds?: number[];
+    performIds?: number[];
   },
 ): Promise<{ data: { id: number } }> => {
   return apiClient.patch(`/api/v1/posts/${id}`, body);
@@ -70,11 +74,13 @@ export const createDraft = async (body: {
   title?: string;
   content?: string;
   imageIds?: number[];
+  clubIds?: number[];
+  performIds?: number[];
 }): Promise<{ data: { id: number; isNew: boolean } }> => {
   return apiClient.post("/api/v1/posts/draft", body);
 };
 
-// 자동저장. imageIds는 매번 최종 상태 전체 전송 (부분 diff X).
+// 자동저장. imageIds/clubIds/performIds는 매번 최종 상태 전체 전송 (부분 diff X).
 export const updateDraft = async (
   id: number,
   body: {
@@ -82,6 +88,8 @@ export const updateDraft = async (
     title?: string;
     content?: string;
     imageIds?: number[];
+    clubIds?: number[];
+    performIds?: number[];
   },
 ): Promise<{ data: { success: boolean; operation: string } }> => {
   return apiClient.patch(`/api/v1/posts/draft/${id}`, body);

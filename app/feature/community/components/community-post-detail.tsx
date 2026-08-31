@@ -105,12 +105,12 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
         </div>
 
         {/* 데스크탑 전용 게시판 배지 */}
-        <span className="hidden xl:inline-flex items-center px-3 py-1.5 rounded-[3px] text-[12px] font-semibold bg-black/5 text-black/80 mb-3">
+        <span className="hidden xl:inline-flex items-center px-[14px] py-[10px] rounded-[3px] text-[14px] font-semibold bg-black/5 text-black/80 mb-3">
           {boardLabel(post.boardCode)}
         </span>
 
         {/* 제목 */}
-        <h1 className="text-[20px] md:text-[22px] xl:text-[26px] font-bold leading-[1.35] tracking-[-0.04em] text-black mb-4 xl:mb-5">
+        <h1 className="text-[20px] md:text-[22px] xl:text-[32px] font-bold leading-[1.35] tracking-[-0.04em] text-black mb-4 xl:mb-5">
           {post.category && (
             <span className="text-main">[{post.category.name}] </span>
           )}
@@ -138,17 +138,17 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
               />
             );
           })()}
-          <p className="text-[14px] font-bold tracking-[-0.04em] text-black">
+          <p className="text-[14px] xl:text-[16px] font-bold tracking-[-0.04em] text-black">
             {post.author.nickname}
           </p>
         </div>
 
         {/* 구분선 */}
-        <div className="h-px bg-black/10 mt-3" />
+        <div className="h-px bg-[#d1d1d1] mt-3" />
 
         {/* 날짜 + 우측 액션(수정/삭제/신고) */}
         <div className="flex items-center justify-between py-3 mb-5">
-          <p className="text-[12px] text-black/40 font-medium">
+          <p className="text-[12px] xl:text-[14px] text-black/40 font-medium">
             <span>{formatDate(post.createdAt)} 작성</span>
             {post.updatedAt && post.updatedAt !== post.createdAt && (
               <span className="ml-2">{formatDate(post.updatedAt)} 수정됨</span>
@@ -160,17 +160,17 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
               <>
                 <Link
                   href={`/community/${postId}/edit`}
-                  className="flex items-center gap-1 text-[12px] font-semibold text-black/40 hover:text-black transition-colors"
+                  className="flex items-center gap-0.5 text-[12px] xl:text-[14px] font-semibold text-black/40 hover:text-black transition-colors"
                 >
-                  <Pencil className="w-3.5 h-3.5" />
+                  <Pencil className="w-3.5 h-3.5 xl:w-4 xl:h-4" />
                   수정
                 </Link>
                 <button
                   onClick={handleDelete}
                   disabled={isDeleting}
-                  className="flex items-center gap-1 text-[12px] font-semibold text-black/40 hover:text-red-400 transition-colors disabled:opacity-50"
+                  className="flex items-center gap-0.5 text-[12px] xl:text-[14px] font-semibold text-black/40 hover:text-red-400 transition-colors disabled:opacity-50"
                 >
-                  <Trash2 className="w-3.5 h-3.5" />
+                  <Trash2 className="w-3.5 h-3.5 xl:w-4 xl:h-4" />
                   삭제
                 </button>
               </>
@@ -183,9 +183,9 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
                 }
                 alert("신고 기능은 준비 중입니다.");
               }}
-              className="flex items-center gap-1 text-[12px] font-semibold text-black/40 hover:text-red-400 transition-colors"
+              className="flex items-center gap-0.5 text-[12px] xl:text-[14px] font-semibold text-black/40 hover:text-red-400 transition-colors"
             >
-              <Siren className="w-3.5 h-3.5" />
+              <Siren className="w-3.5 h-3.5 xl:w-4 xl:h-4" />
               신고
             </button>
           </div>
@@ -196,10 +196,57 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
           <CommunityHtmlViewer content={post.content} />
         </div>
 
-        {/* 태그된 클럽/공연 카드 자리 (API 반영 대기 - placeholder) */}
-        <div className="mb-6 flex flex-col md:grid md:grid-cols-2 gap-3" aria-hidden="true">
-          {/* 실제 데이터 연결 시 post.tags.clubs / post.tags.performances 로 렌더 */}
-        </div>
+        {/* 태그된 클럽/공연 */}
+        {/* clubTags/performTags는 백엔드 배포 전에는 응답에 아예 없을 수 있어 방어적으로 처리 */}
+        {((post.clubTags?.length ?? 0) > 0 || (post.performTags?.length ?? 0) > 0) && (
+          <div className="mb-6 flex flex-col md:grid md:grid-cols-2 2xl:grid-cols-1 gap-2">
+            {(post.clubTags ?? []).map((club) => (
+              <Link
+                key={`club-${club.id}`}
+                href={`/club/${club.id}`}
+                className="flex items-center gap-3 border border-[#d1d1d1] rounded-[4px] p-4 hover:border-black/30 transition-colors"
+              >
+                {(() => {
+                  const url = getImageUrl(club.mainImage?.filePath);
+                  return url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={url} alt="" className="w-14 h-14 rounded-full object-cover flex-shrink-0 bg-black/10" />
+                  ) : (
+                    <div className="w-14 h-14 rounded-full flex-shrink-0 bg-black/10" />
+                  );
+                })()}
+                <div className="min-w-0 flex-1">
+                  <p className="text-[16px] font-bold tracking-[-0.04em] text-black truncate">{club.name}</p>
+                  <p className="text-[14px] font-medium text-black/80 truncate">{club.address}</p>
+                </div>
+              </Link>
+            ))}
+            {(post.performTags ?? []).map((perform) => (
+              <Link
+                key={`perform-${perform.id}`}
+                href={`/performance/${perform.id}`}
+                className="flex items-center gap-4 border border-[#d1d1d1] rounded-[4px] p-4 hover:border-black/30 transition-colors"
+              >
+                {(() => {
+                  const url = getImageUrl(perform.mainImage?.filePath);
+                  return url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={url} alt="" className="w-[52px] h-[65px] rounded-[2px] object-cover flex-shrink-0 bg-black/10" />
+                  ) : (
+                    <div className="w-[52px] h-[65px] rounded-[2px] flex-shrink-0 bg-black/10" />
+                  );
+                })()}
+                <div className="min-w-0 flex-1">
+                  <p className="text-[16px] font-bold tracking-[-0.04em] text-black truncate">{perform.title}</p>
+                  <p className="text-[14px] font-medium text-black/80 truncate">
+                    {perform.artists.map((a) => a.name).join(", ")}
+                  </p>
+                  <p className="text-[14px] font-medium text-black/60 truncate">{formatDate(perform.performDate)}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
 
         {/* 좋아요/싫어요/댓글/공유 */}
         <CommunityLikeButtons
@@ -220,6 +267,13 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
 
       {/* ── 우측 사이드바 (2xl 이상 — 1280에서는 노출 안 함) ── */}
       <div className="hidden 2xl:block w-[180px] flex-shrink-0">
+        {/* 게시판 배지와 같은 크기의 투명 스페이서 — 글쓰기 버튼을 배지 줄이 아니라 제목 줄에 맞춤 */}
+        <span
+          aria-hidden="true"
+          className="invisible inline-flex items-center px-[14px] py-[10px] rounded-[3px] text-[14px] font-semibold mb-3"
+        >
+          {boardLabel(post.boardCode)}
+        </span>
         <div className="sticky top-28 flex flex-col gap-3">
           <button
             type="button"

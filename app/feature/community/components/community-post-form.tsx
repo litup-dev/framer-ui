@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Search, X } from "lucide-react";
 import {
   createPost,
   updatePost,
@@ -18,7 +18,50 @@ import {
   type CommunityTiptapEditorRef,
 } from "./community-tiptap-editor";
 import { cn, getImageUrl } from "@/lib/utils";
-import type { BoardCode, CategoryCode } from "../types";
+import { CommunityTagSearchModal, TAG_MODE_OPTIONS, formatDate, type TagMode } from "./community-tag-search-modal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import type {
+  BoardCode,
+  CategoryCode,
+  ClubTag,
+  PerformTag,
+  TaggableClub,
+  TaggablePerform,
+} from "../types";
+
+function clubTagToTaggable(tag: ClubTag): TaggableClub {
+  return {
+    id: tag.id,
+    name: tag.name,
+    address: tag.address,
+    imageUrl: getImageUrl(tag.mainImage?.filePath),
+  };
+}
+
+function performTagToTaggable(tag: PerformTag): TaggablePerform {
+  return {
+    id: tag.id,
+    title: tag.title,
+    artistLabel: tag.artists.map((a) => a.name).join(", "),
+    performDate: tag.performDate,
+    imageUrl: getImageUrl(tag.mainImage?.filePath),
+  };
+}
+
+// "FAN"(팬 커뮤니티)은 아직 실제 게시판이 아니라 BoardCode에 없음 — 선택 불가 표시 전용.
+type BoardOption =
+  | { value: BoardCode; label: string; disabled?: false }
+  | { value: "FAN"; label: string; disabled: true };
+
+const BOARD_OPTIONS: BoardOption[] = [
+  { value: "FREE", label: "자유게시판" },
+  { value: "FAN", label: "팬 커뮤니티 (준비중)", disabled: true },
+];
 
 interface InitialValues {
   boardCode: BoardCode;
@@ -27,6 +70,8 @@ interface InitialValues {
   content: string;
   imageIds: number[];
   images: { id: number; filePath: string }[];
+  clubTags: ClubTag[];
+  performTags: PerformTag[];
 }
 
 interface CommunityPostFormProps {
@@ -39,11 +84,13 @@ interface CommunityPostFormProps {
 
 const DEFAULT_INITIAL: InitialValues = {
   boardCode: "FREE",
-  categoryCode: null,
+  categoryCode: "GENERAL",
   title: "",
   content: "",
   imageIds: [],
   images: [],
+  clubTags: [],
+  performTags: [],
 };
 
 const CONTENT_CHAR_LIMIT = 50000;
@@ -127,6 +174,24 @@ export function CommunityPostForm({
   const [imageIds, setImageIds] = useState<number[]>(
     initial?.imageIds ?? DEFAULT_INITIAL.imageIds,
   );
+  // 클럽/공연 태그 (공연 후기 카테고리 전용). 칩 표시를 위해 id뿐 아니라 표시 정보도 함께 보관.
+  const [selectedClubs, setSelectedClubs] = useState<TaggableClub[]>(() =>
+    (initial?.clubTags ?? DEFAULT_INITIAL.clubTags).map(clubTagToTaggable),
+  );
+  const [selectedPerforms, setSelectedPerforms] = useState<TaggablePerform[]>(() =>
+    (initial?.performTags ?? DEFAULT_INITIAL.performTags).map(performTagToTaggable),
+  );
+  const [isTagPanelOpen, setIsTagPanelOpen] = useState(false);
+  const [tagPanelMode, setTagPanelMode] = useState<TagMode>("ALL");
+  const [tagKeyword, setTagKeyword] = useState("");
+
+  // 태그하기는 공연 후기 카테고리 전용 — 다른 카테고리로 바뀌면 선택된 태그를 비움
+  useEffect(() => {
+    if (categoryCode !== "PERFORM_REVIEW") {
+      setSelectedClubs([]);
+      setSelectedPerforms([]);
+    }
+  }, [categoryCode]);
   // 업로드된(또는 기존) 이미지의 url→id 매핑. 에디터 본문에 실제로 남아있는 이미지만
   // imageIds에 반영하기 위한 참조 테이블 — 에디터에서 이미지를 지우면 walk 시 자연히 빠짐.
   const imageUrlToIdRef = useRef<Map<string, number>>(
@@ -180,6 +245,8 @@ export function CommunityPostForm({
       title: title.trim(),
       content: finalContent,
       imageIds: Array.from(new Set(imageIds)),
+      clubIds: selectedClubs.map((c) => c.id),
+      performIds: selectedPerforms.map((p) => p.id),
     };
   };
 
@@ -275,7 +342,7 @@ export function CommunityPostForm({
       return;
     }
     dirtyRef.current = true;
-  }, [title, content, contentText, imageIds]);
+  }, [title, content, contentText, imageIds, selectedClubs, selectedPerforms]);
 
   // ── 자동 저장 (debounce 1.5초) ──
   // categoryCode는 백엔드가 기본값(GENERAL)을 자동 세팅하므로 조건 검사 안 함.
@@ -305,7 +372,17 @@ export function CommunityPostForm({
     // saveDraft는 mutate 함수라 안정적. deps에서 제외.
     // content: 이미지 리사이즈처럼 텍스트 변화 없이 attrs만 바뀌는 케이스 감지용
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [title, content, contentText, imageIds, isDraftFlow, isOverLimit, isSubmitting]);
+  }, [
+    title,
+    content,
+    contentText,
+    imageIds,
+    selectedClubs,
+    selectedPerforms,
+    isDraftFlow,
+    isOverLimit,
+    isSubmitting,
+  ]);
 
   // ── unmount 시 강제 저장 (debounce 대기 중이었으면 유실 방지) ──
   // cleanup은 마지막 render의 closure를 사용하므로 ref로 최신 상태 스냅샷 유지.
@@ -406,12 +483,23 @@ export function CommunityPostForm({
               {draftStatusText}
             </span>
           )}
+          {/* 임시저장: 자동저장과 별개로 즉시 저장을 트리거 */}
+          {isDraftFlow && (
+            <button
+              type="button"
+              onClick={triggerSave}
+              disabled={isSavingDraft}
+              className="px-3 xl:px-[18px] py-2 xl:py-[14px] text-[13px] xl:text-[16px] font-bold tracking-[-0.04em] rounded-[3px] border border-black/10 text-black/60 hover:bg-black/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              임시저장
+            </button>
+          )}
           <button
             type="button"
             onClick={() => submit()}
             disabled={!canPublish}
             className={cn(
-              "px-4 py-2 text-[14px] font-bold rounded-[4px] transition-opacity",
+              "px-3 xl:px-[18px] py-2 xl:py-[14px] text-[13px] xl:text-[16px] font-bold tracking-[-0.04em] rounded-[3px] transition-opacity",
               canPublish
                 ? "bg-main text-white hover:opacity-90 cursor-pointer"
                 : "bg-main/50 text-white cursor-not-allowed",
@@ -422,8 +510,17 @@ export function CommunityPostForm({
         </div>
       </div>
 
-      {/* 카테고리 (게시판은 현재 FREE 단일이라 UI 생략) */}
-      <div className="mb-6">
+      {/* 게시판 + 카테고리 */}
+      <div className="grid grid-cols-2 gap-3 mb-6">
+        <SelectField
+          label="게시판"
+          value={boardCode}
+          onChange={() => {
+            // 현재 실제로 선택 가능한 게시판은 자유게시판뿐이라 no-op
+            // (팬 커뮤니티는 BOARD_OPTIONS에 disabled로만 노출)
+          }}
+          options={BOARD_OPTIONS}
+        />
         <SelectField
           label="카테고리"
           value={categoryCode ?? ""}
@@ -446,7 +543,7 @@ export function CommunityPostForm({
           onChange={(e) => setTitle(e.target.value)}
           placeholder="제목을 입력해 주세요."
           maxLength={100}
-          className="w-full text-[16px] xl:text-[18px] font-medium tracking-[-0.04em] text-black placeholder:text-black/30 bg-transparent outline-none pb-3 border-b border-black/10"
+          className="w-full text-[16px] xl:text-[20px] font-semibold tracking-[-0.04em] text-black placeholder:text-black/20 bg-[#f8f8f8] outline-none rounded-[4px] p-4 xl:p-[24px]"
         />
       </div>
 
@@ -482,22 +579,153 @@ export function CommunityPostForm({
         </span>
       </div>
 
-      {/* 태그하기 (자리만 - 백엔드 구현 후 활성화) */}
-      <div className="mb-10">
-        <p className="text-[13px] font-semibold text-black/60 mb-3">태그하기</p>
-        <div className="flex items-center gap-2 border-b border-black/10 pb-3">
-          <span className="flex-shrink-0 text-[13px] text-black/40 hidden xl:inline">
-            # 클럽
-          </span>
-          <input
-            type="text"
-            disabled
-            placeholder="검색어를 입력해 주세요. (곧 지원 예정)"
-            className="flex-1 text-[14px] text-black placeholder:text-black/30 bg-transparent outline-none disabled:cursor-not-allowed"
-          />
-          <ChevronDown className="w-4 h-4 text-black/30" />
+      {/* 태그하기 (공연 후기 카테고리 전용) — 검색은 모달이 아니라 포스트 아래 인라인 검색창에서 */}
+      {categoryCode === "PERFORM_REVIEW" && (
+        <div className="mb-10">
+          <p className="text-[13px] font-semibold text-black/60 mb-3">태그하기</p>
+
+          <div className="relative flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  className="hidden xl:flex flex-shrink-0 items-center justify-between gap-2 h-12 w-[148px] px-3.5 bg-[#f8f8f8] rounded-[4px] text-[16px] font-semibold text-black/80"
+                >
+                  <span># {TAG_MODE_OPTIONS.find((o) => o.value === tagPanelMode)?.label}</span>
+                  <ChevronDown className="w-4 h-4 text-black/40 flex-shrink-0" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="z-[110]">
+                {TAG_MODE_OPTIONS.map((option) => (
+                  <DropdownMenuItem
+                    key={option.value}
+                    onClick={() => setTagPanelMode(option.value)}
+                  >
+                    {option.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <div className="flex-1 md:flex-none md:w-[360px] flex items-center gap-2 h-12 px-3.5 bg-black/[0.03] rounded-[4px]">
+              <input
+                type="text"
+                value={tagKeyword}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setTagKeyword(value);
+                  // 검색 시에만(검색어가 있을 때만) 결과 패널이 뜸 — 그냥 클릭/포커스만으로는 안 뜸
+                  setIsTagPanelOpen(value.trim().length > 0);
+                }}
+                placeholder="검색어를 입력해 주세요."
+                className="flex-1 min-w-0 bg-transparent text-[14px] text-black placeholder:text-black/30 outline-none"
+              />
+              <button
+                type="button"
+                onClick={() => setIsTagPanelOpen(true)}
+                aria-label="검색"
+                className="flex-shrink-0 text-black/40 hover:text-black transition-colors"
+              >
+                <Search className="w-4 h-4" />
+              </button>
+            </div>
+
+            {isTagPanelOpen && (
+              <CommunityTagSearchModal
+                key={tagPanelMode}
+                keyword={tagKeyword}
+                onKeywordChange={setTagKeyword}
+                mode={tagPanelMode}
+                initialClubs={selectedClubs}
+                initialPerforms={selectedPerforms}
+                onClose={() => setIsTagPanelOpen(false)}
+                onConfirm={(clubs, performs) => {
+                  setSelectedClubs(clubs);
+                  setSelectedPerforms(performs);
+                  setIsTagPanelOpen(false);
+                }}
+              />
+            )}
+          </div>
+
+          {(selectedClubs.length > 0 || selectedPerforms.length > 0) && (
+            <div className="mt-3 flex flex-col sm:grid sm:grid-cols-2 gap-2">
+              {selectedClubs.map((club) => (
+                <TagChip
+                  key={`club-${club.id}`}
+                  imageUrl={club.imageUrl}
+                  imageShape="circle"
+                  title={club.name}
+                  subtitle={club.address}
+                  onRemove={() =>
+                    setSelectedClubs((prev) => prev.filter((c) => c.id !== club.id))
+                  }
+                />
+              ))}
+              {selectedPerforms.map((perform) => (
+                <TagChip
+                  key={`perform-${perform.id}`}
+                  imageUrl={perform.imageUrl}
+                  imageShape="square"
+                  title={perform.title}
+                  subtitle={perform.artistLabel}
+                  subtitle2={formatDate(perform.performDate)}
+                  onRemove={() =>
+                    setSelectedPerforms((prev) => prev.filter((p) => p.id !== perform.id))
+                  }
+                />
+              ))}
+            </div>
+          )}
         </div>
+      )}
+    </div>
+  );
+}
+
+interface TagChipProps {
+  imageUrl: string | null;
+  imageShape: "circle" | "square";
+  title: string;
+  subtitle: string;
+  subtitle2?: string;
+  onRemove: () => void;
+}
+
+function TagChip({ imageUrl, imageShape, title, subtitle, subtitle2, onRemove }: TagChipProps) {
+  return (
+    <div className="flex items-center gap-3 border border-[#d1d1d1] rounded-[4px] p-3">
+      {imageUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={imageUrl}
+          alt=""
+          className={cn(
+            "flex-shrink-0 object-cover bg-black/10",
+            imageShape === "circle" ? "w-10 h-10 rounded-full" : "w-9 h-11 rounded-[2px]",
+          )}
+        />
+      ) : (
+        <div
+          className={cn(
+            "flex-shrink-0 bg-black/10",
+            imageShape === "circle" ? "w-10 h-10 rounded-full" : "w-9 h-11 rounded-[2px]",
+          )}
+        />
+      )}
+      <div className="min-w-0 flex-1">
+        <p className="text-[14px] font-bold text-black truncate">{title}</p>
+        <p className="text-[12px] text-black/60 truncate">{subtitle}</p>
+        {subtitle2 && <p className="text-[12px] text-black/60 truncate">{subtitle2}</p>}
       </div>
+      <button
+        type="button"
+        onClick={onRemove}
+        aria-label="태그 삭제"
+        className="flex-shrink-0 w-6 h-6 flex items-center justify-center text-black/40 hover:text-black transition-colors"
+      >
+        <X className="w-4 h-4" />
+      </button>
     </div>
   );
 }
@@ -517,29 +745,33 @@ function SelectField({
   options,
   disabled,
 }: SelectFieldProps) {
+  const selectedLabel = options.find((o) => o.value === value)?.label;
   return (
-    <div>
-      <label className="block text-[13px] font-semibold text-black/60 mb-2">
+    <div className="flex flex-col gap-4 border-b border-black/20 py-6">
+      <label className="block text-[14px] font-bold tracking-[-0.04em] text-black/40">
         {label}
       </label>
-      <div className="relative border-b border-black/10">
-        <select
-          value={value}
-          disabled={disabled}
-          onChange={(e) => onChange(e.target.value)}
-          className={cn(
-            "w-full appearance-none bg-transparent text-[15px] font-medium text-black outline-none pr-6 py-2",
-            "disabled:text-black/40 disabled:cursor-not-allowed",
-          )}
-        >
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild disabled={disabled}>
+          <button
+            type="button"
+            className={cn(
+              "w-full flex items-center justify-between gap-2 text-[18px] font-semibold tracking-[-0.04em] text-black outline-none",
+              "disabled:text-black/40 disabled:cursor-not-allowed",
+            )}
+          >
+            <span>{selectedLabel}</span>
+            <ChevronDown className="w-4 h-4 text-black/40 flex-shrink-0" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="z-[110]">
           {options.map((o) => (
-            <option key={o.value} value={o.value} disabled={o.disabled}>
+            <DropdownMenuItem key={o.value} disabled={o.disabled} onClick={() => onChange(o.value)}>
               {o.label}
-            </option>
+            </DropdownMenuItem>
           ))}
-        </select>
-        <ChevronDown className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 text-black/40 pointer-events-none" />
-      </div>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }

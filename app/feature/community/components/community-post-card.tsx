@@ -2,9 +2,17 @@ import Link from "next/link";
 import Image from "next/image";
 import { ThumbsUp, ThumbsDown, MessageCircle } from "lucide-react";
 import { cn, getImageUrl, formatRelativeTime } from "@/lib/utils";
+import { extractPlainText } from "../utils/extract-plain-text";
 import type { PostItem } from "../types";
 
-function PostAuthorAvatar({ profilePath }: { profilePath: string | null }) {
+function PostAuthorAvatar({
+  profilePath,
+  size = 28,
+}: {
+  profilePath: string | null;
+  size?: 28 | 36;
+}) {
+  const sizeClass = size === 36 ? "w-9 h-9" : "w-7 h-7";
   const url = getImageUrl(profilePath);
   if (url) {
     return (
@@ -12,7 +20,7 @@ function PostAuthorAvatar({ profilePath }: { profilePath: string | null }) {
       <img
         src={url}
         alt=""
-        className="w-7 h-7 rounded-full object-cover flex-shrink-0"
+        className={cn(sizeClass, "rounded-full object-cover flex-shrink-0")}
       />
     );
   }
@@ -20,9 +28,9 @@ function PostAuthorAvatar({ profilePath }: { profilePath: string | null }) {
     <Image
       src="/images/user/user-avatar.svg"
       alt=""
-      width={28}
-      height={28}
-      className="w-7 h-7 rounded-full flex-shrink-0"
+      width={size}
+      height={size}
+      className={cn(sizeClass, "rounded-full flex-shrink-0")}
     />
   );
 }
@@ -38,40 +46,46 @@ export function CommunityPostCard({ post, className }: CommunityPostCardProps) {
   const firstThumbnailUrl = getImageUrl(thumbnails[0]?.filePath);
   const visibleGridSlots = Math.min(imageCount, 4);
   const gridOverflow = imageCount > 4 ? imageCount - 4 : 0;
+  const contentPreview = extractPlainText(post.content);
 
   return (
     <Link href={`/community/${post.id}`} className="block group">
       {/* Desktop (xl+): flat row */}
       <div
         className={cn(
-          "hidden xl:block py-5 border-b border-black/10",
+          "hidden xl:flex xl:flex-col gap-8 py-8 border-b border-[#d1d1d1]",
           className,
         )}
       >
-        <div className="flex items-center gap-2 mb-3">
-          <PostAuthorAvatar profilePath={post.author.profilePath} />
+        <div className="flex items-center gap-3">
+          <PostAuthorAvatar profilePath={post.author.profilePath} size={36} />
           <div>
-            <p className="text-[14px] font-semibold tracking-[-0.04em] text-black leading-tight">
+            <p className="text-[16px] font-medium tracking-[-0.04em] text-black leading-none">
               {post.author.nickname}
             </p>
-            <p className="text-[12px] text-black/40 font-medium leading-tight mt-0.5">
+            <p className="text-[14px] font-semibold tracking-[-0.04em] text-black/30 leading-none mt-1.5">
               {formatRelativeTime(post.createdAt)}
             </p>
           </div>
         </div>
 
-        <div className="flex items-start gap-4">
-          <div className="flex-1 min-w-0">
-            <p className="text-[17px] font-bold leading-[1.4] tracking-[-0.04em] text-black group-hover:text-main transition-colors line-clamp-2">
+        <div className="flex items-start gap-6">
+          <div className="flex-1 min-w-0 flex flex-col gap-5">
+            <p className="text-[24px] font-semibold leading-none tracking-[-0.04em] text-black group-hover:text-main transition-colors line-clamp-2">
               {post.category && (
-                <span className="text-main">[{post.category.name}] </span>
+                <span className="text-black/40">[{post.category.name}] </span>
               )}
               {post.title}
             </p>
+            {contentPreview && (
+              <p className="text-[16px] font-medium leading-[1.4] tracking-[-0.04em] text-black/40 line-clamp-2">
+                {contentPreview}
+              </p>
+            )}
           </div>
 
           {hasImages && (
-            <div className="relative flex-shrink-0 w-[96px] h-[96px] rounded-[4px] bg-black/10 overflow-hidden">
+            <div className="relative flex-shrink-0 w-[176px] h-[220px] rounded-[4px] bg-black/10 overflow-hidden">
               {firstThumbnailUrl && (
                 <img
                   src={firstThumbnailUrl}
@@ -80,7 +94,7 @@ export function CommunityPostCard({ post, className }: CommunityPostCardProps) {
                 />
               )}
               {imageCount > 1 && (
-                <div className="absolute bottom-1.5 right-1.5 bg-black/60 text-white text-[11px] font-bold px-1.5 py-0.5 rounded">
+                <div className="absolute bottom-2.5 left-2.5 backdrop-blur-[2px] bg-black/40 text-white text-[14px] font-semibold tracking-[-0.04em] px-3.5 py-[7px] rounded-full">
                   +{imageCount - 1}
                 </div>
               )}
@@ -88,17 +102,17 @@ export function CommunityPostCard({ post, className }: CommunityPostCardProps) {
           )}
         </div>
 
-        <div className="flex items-center gap-3 mt-3">
-          <span className="flex items-center gap-1 text-[13px] font-medium text-black/50">
-            <ThumbsUp className="w-3.5 h-3.5" strokeWidth={1.5} />
+        <div className="flex items-center gap-4">
+          <span className="flex items-center gap-1 text-[16px] font-medium tracking-[-0.04em] text-black">
+            <ThumbsUp className="w-6 h-6" strokeWidth={1.5} />
             {post.likeCount}
           </span>
-          <span className="flex items-center gap-1 text-[13px] font-medium text-black/50">
-            <ThumbsDown className="w-3.5 h-3.5" strokeWidth={1.5} />
+          <span className="flex items-center gap-1 text-[16px] font-medium tracking-[-0.04em] text-black">
+            <ThumbsDown className="w-6 h-6" strokeWidth={1.5} />
             {post.dislikeCount}
           </span>
-          <span className="flex items-center gap-1 text-[13px] font-medium text-black/50">
-            <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.5} />
+          <span className="flex items-center gap-1 text-[16px] font-medium tracking-[-0.04em] text-black">
+            <MessageCircle className="w-6 h-6" strokeWidth={1.5} />
             {post.commentCount}
           </span>
         </div>

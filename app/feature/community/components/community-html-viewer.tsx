@@ -61,7 +61,8 @@ export function CommunityHtmlViewer({ content }: CommunityHtmlViewerProps) {
     content: parseContent(content),
     editorProps: {
       attributes: {
-        class: "prose prose-sm max-w-none focus:outline-none",
+        class:
+          "prose prose-sm xl:prose-base max-w-none focus:outline-none [&_p]:text-black [&_p]:leading-[1.6] xl:[&_p]:tracking-[-0.04em]",
       },
     },
   });

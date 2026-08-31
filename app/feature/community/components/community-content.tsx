@@ -130,138 +130,125 @@ export function CommunityContent() {
 
   return (
     <div className="w-full min-h-screen">
-      {/* 2컬럼: 메인 + 우측 사이드바 (xl+) */}
-      <div className="flex gap-8 xl:gap-12 items-start">
+      {/* 페이지 타이틀 (데스크탑 xl+) */}
+      <h1 className="hidden xl:block text-[32px] font-bold tracking-[-0.04em] text-black mb-10">
+        커뮤니티
+      </h1>
 
-        {/* ── 메인 컬럼 ── */}
-        <div className="flex-1 min-w-0">
+      {/* 탭 + 검색 같은 줄 */}
+      <div className="flex items-end justify-between border-b border-black/10">
+        <CommunityBoardTabs value={board} onChange={handleBoardChange} />
 
-          {/* 탭 + 검색 같은 줄 */}
-          <div className="flex items-end justify-between border-b border-black/10">
-            <CommunityBoardTabs value={board} onChange={handleBoardChange} />
-
-            {/* 검색 (데스크탑 xl+) */}
-            <form onSubmit={handleSearch} className="hidden xl:flex items-center gap-[10px] mb-3">
-              <CommunitySearchTypeSelect value={searchTypeDraft} onChange={setSearchTypeDraft} />
-              <div className="flex items-center justify-between gap-2 h-[48px] w-[360px] px-[14px] bg-[#f8f8f8] rounded-[4px]">
-                <input
-                  type="text"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="검색어를 입력해 주세요."
-                  className="flex-1 min-w-0 bg-transparent text-[16px] font-semibold text-black placeholder:text-black/20 outline-none"
-                />
-                <button type="submit" className="flex-shrink-0 text-black/40 hover:text-black transition-colors">
-                  <Search className="w-5 h-5" />
-                </button>
-              </div>
-            </form>
+        {/* 검색 (데스크탑 xl+) */}
+        <form onSubmit={handleSearch} className="hidden xl:flex items-center gap-[10px] mb-3">
+          <CommunitySearchTypeSelect value={searchTypeDraft} onChange={setSearchTypeDraft} />
+          <div className="flex items-center justify-between gap-2 h-[48px] w-[360px] px-[14px] bg-[#f8f8f8] rounded-[4px]">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="검색어를 입력해 주세요."
+              className="flex-1 min-w-0 bg-transparent text-[16px] font-semibold text-black placeholder:text-black/20 outline-none"
+            />
+            <button type="submit" className="flex-shrink-0 text-black/40 hover:text-black transition-colors">
+              <Search className="w-5 h-5" />
+            </button>
           </div>
-
-          {/* 카테고리 필터 + 정렬 (정렬은 데스크탑 xl+ 만) */}
-          <div className="flex items-center justify-between gap-3 mt-4 flex-wrap">
-            <CommunityCategoryFilter value={category} onChange={handleCategoryChange} />
-            <div className="hidden xl:block">
-              <SortDropdown
-                value={sort}
-                options={SORT_OPTIONS}
-                onChange={handleSortChange}
-              />
-            </div>
-          </div>
-
-          {/* 게시글 목록 */}
-          <div className="mt-4 xl:mt-2">
-            {posts.length > 0 ? (
-              posts.map((post) => (
-                <CommunityPostCard key={post.id} post={post} />
-              ))
-            ) : isLoading ? null : (
-              <div className="py-20 text-center text-black/40 text-[16px] font-medium">
-                게시글이 없습니다.
-              </div>
-            )}
-          </div>
-
-          {/* 페이지네이션 */}
-          {!isLoading && pagination.totalPages > 1 && (
-            <div className="flex justify-center mt-10 md:mt-12">
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={pagination.handlePreviousClick}
-                      className={cn(!pagination.canGoPrevious && "opacity-30 pointer-events-none")}
-                    />
-                  </PaginationItem>
-                  {pagination.pageNumbers.map((page, i) => (
-                    <PaginationItem key={i}>
-                      {typeof page === "string" ? (
-                        <PaginationEllipsis />
-                      ) : (
-                        <PaginationLink
-                          isActive={page === currentPage}
-                          onClick={() => pagination.handlePageClick(page)}
-                          className={cn(
-                            "cursor-pointer font-bold",
-                            page === currentPage ? "text-black" : "text-gray",
-                          )}
-                        >
-                          {page}
-                        </PaginationLink>
-                      )}
-                    </PaginationItem>
-                  ))}
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={pagination.handleNextClick}
-                      className={cn(!pagination.canGoNext && "opacity-30 pointer-events-none")}
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </div>
-          )}
-
-          {/* 검색 (태블릿 md~xl 전용, 리스트 하단 인라인 바 — 피그마 고정폭 518px 가운데 정렬) */}
-          <form onSubmit={handleSearch} className="hidden md:flex xl:hidden items-center justify-center gap-[10px] mt-10">
-            <CommunitySearchTypeSelect value={searchTypeDraft} onChange={setSearchTypeDraft} className="w-[148px]" />
-            <div className="flex items-center justify-between gap-2 h-[48px] w-[360px] px-[14px] bg-[#f8f8f8] rounded-[4px]">
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder="검색어를 입력해 주세요."
-                className="flex-1 min-w-0 bg-transparent text-[16px] font-semibold text-black placeholder:text-black/20 outline-none"
-              />
-              <button type="submit" className="flex-shrink-0 text-black/40 hover:text-black transition-colors">
-                <Search className="w-5 h-5" />
-              </button>
-            </div>
-          </form>
-        </div>
-
-        {/* ── 우측 사이드바 (xl 이상) ── */}
-        <div className="hidden xl:block w-[180px] flex-shrink-0">
-          <div className="sticky top-28 flex flex-col gap-3">
-            <Link
-              href={isAuthenticated ? "/community/write" : "/login"}
-              onClick={() => {
-                if (!isAuthenticated) saveReturnUrl(pathname);
-              }}
-              className="flex items-center justify-center w-full py-3.5 bg-main text-white text-[15px] font-bold leading-none tracking-[-0.04em] rounded-[4px] hover:opacity-90 transition-opacity text-center"
-            >
-              {isAuthenticated ? "글쓰기" : "로그인 후 글 작성하기"}
-            </Link>
-
-            {/* 알림 카드 자리 (실제 알림 API 연동 예정) */}
-            <div className="flex flex-col gap-2" aria-hidden="true">
-              {/* 알림 컴포넌트 placeholder - 다음 스프린트에서 구현 */}
-            </div>
-          </div>
-        </div>
-
+        </form>
       </div>
+
+      {/* 카테고리 필터 + 정렬 + 글쓰기 버튼(xl+ 은 같은 줄) */}
+      <div className="flex items-center justify-between gap-3 mt-4 flex-wrap">
+        <CommunityCategoryFilter value={category} onChange={handleCategoryChange} />
+        <div className="flex items-center gap-6">
+          <div className="hidden xl:block">
+            <SortDropdown
+              value={sort}
+              options={SORT_OPTIONS}
+              onChange={handleSortChange}
+            />
+          </div>
+          <Link
+            href={isAuthenticated ? "/community/write" : "/login"}
+            onClick={() => {
+              if (!isAuthenticated) saveReturnUrl(pathname);
+            }}
+            className="hidden xl:flex items-center justify-center w-[302px] h-[60px] bg-main text-white text-[16px] font-bold leading-none tracking-[-0.04em] rounded-[4px] hover:opacity-90 transition-opacity whitespace-nowrap"
+          >
+            {isAuthenticated ? "글쓰기" : "로그인 후 글 작성하기"}
+          </Link>
+        </div>
+      </div>
+
+      {/* 게시글 목록 */}
+      <div className="mt-4 xl:mt-2">
+        {posts.length > 0 ? (
+          posts.map((post) => (
+            <CommunityPostCard key={post.id} post={post} />
+          ))
+        ) : isLoading ? null : (
+          <div className="py-20 text-center text-black/40 text-[16px] font-medium">
+            게시글이 없습니다.
+          </div>
+        )}
+      </div>
+
+      {/* 페이지네이션 */}
+      {!isLoading && pagination.totalPages > 1 && (
+        <div className="flex justify-center mt-10 md:mt-12">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={pagination.handlePreviousClick}
+                  className={cn(!pagination.canGoPrevious && "opacity-30 pointer-events-none")}
+                />
+              </PaginationItem>
+              {pagination.pageNumbers.map((page, i) => (
+                <PaginationItem key={i}>
+                  {typeof page === "string" ? (
+                    <PaginationEllipsis />
+                  ) : (
+                    <PaginationLink
+                      isActive={page === currentPage}
+                      onClick={() => pagination.handlePageClick(page)}
+                      className={cn(
+                        "cursor-pointer font-bold",
+                        page === currentPage ? "text-black" : "text-gray",
+                      )}
+                    >
+                      {page}
+                    </PaginationLink>
+                  )}
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext
+                  onClick={pagination.handleNextClick}
+                  className={cn(!pagination.canGoNext && "opacity-30 pointer-events-none")}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
+
+      {/* 검색 (태블릿 md~xl 전용, 리스트 하단 인라인 바 — 피그마 고정폭 518px 가운데 정렬) */}
+      <form onSubmit={handleSearch} className="hidden md:flex xl:hidden items-center justify-center gap-[10px] mt-10">
+        <CommunitySearchTypeSelect value={searchTypeDraft} onChange={setSearchTypeDraft} className="w-[148px]" />
+        <div className="flex items-center justify-between gap-2 h-[48px] w-[360px] px-[14px] bg-[#f8f8f8] rounded-[4px]">
+          <input
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder="검색어를 입력해 주세요."
+            className="flex-1 min-w-0 bg-transparent text-[16px] font-semibold text-black placeholder:text-black/20 outline-none"
+          />
+          <button type="submit" className="flex-shrink-0 text-black/40 hover:text-black transition-colors">
+            <Search className="w-5 h-5" />
+          </button>
+        </div>
+      </form>
 
       {/* 모바일 글쓰기 FAB */}
       <CommunityWriteFab />

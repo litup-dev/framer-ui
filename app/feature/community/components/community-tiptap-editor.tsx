@@ -255,7 +255,7 @@ export const CommunityTiptapEditor = forwardRef<
   }
 
   return (
-    <div className="border border-black/10 rounded-[6px] bg-white overflow-hidden">
+    <div className="border border-[#e8e8e8] rounded-[6px] bg-white overflow-hidden">
       {/* 툴바 */}
       <div className="flex items-center gap-0.5 flex-wrap border-b border-black/10 px-2 py-1.5">
         <ToolbarBtn

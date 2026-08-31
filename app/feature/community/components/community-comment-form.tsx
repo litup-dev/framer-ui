@@ -117,7 +117,7 @@ export function CommunityCommentForm({
     <form
       onSubmit={handleSubmit}
       className={cn(
-        "relative bg-white border border-black/15 rounded-[4px]",
+        "relative bg-white border border-black/20 rounded-[4px]",
         compact && "border-black/10",
       )}
     >
@@ -147,7 +147,7 @@ export function CommunityCommentForm({
             onFocus={handleFocus}
             ariaLabel="댓글 입력"
             className={cn(
-              "text-[14px] font-medium tracking-[-0.02em] text-black leading-[1.6]",
+              "text-[14px] xl:text-[16px] font-medium xl:font-normal tracking-[-0.02em] xl:tracking-[-0.04em] text-black leading-[1.6]",
               compact ? "min-h-[44px]" : "min-h-[66px]",
             )}
           />
@@ -155,7 +155,7 @@ export function CommunityCommentForm({
       </div>
 
       <div className="flex items-center justify-between px-3.5 pb-3">
-        <span className="text-[12px] text-black/30 font-medium">
+        <span className="text-[12px] xl:text-[14px] text-black/30 xl:text-black/40 font-medium">
           {visibleLength(content)}/{MAX_LENGTH}
         </span>
         <div className="flex items-center gap-2">
@@ -163,7 +163,7 @@ export function CommunityCommentForm({
             <button
               type="button"
               onClick={onCancel}
-              className="px-3.5 py-1.5 text-[13px] font-semibold text-black/50 hover:text-black transition-colors"
+              className="px-3.5 xl:px-4 py-1.5 xl:py-3 text-[13px] xl:text-[14px] font-semibold text-black/50 xl:text-black/40 hover:text-black transition-colors"
             >
               취소
             </button>
@@ -172,7 +172,7 @@ export function CommunityCommentForm({
             type="submit"
             disabled={!content.trim() || isPending}
             className={cn(
-              "px-4 py-1.5 rounded-[3px] text-[13px] font-bold transition-colors",
+              "px-4 py-1.5 xl:py-3 rounded-[3px] xl:rounded-[4px] text-[13px] xl:text-[14px] font-bold transition-colors",
               content.trim()
                 ? "bg-main text-white"
                 : "bg-black/10 text-black/40",

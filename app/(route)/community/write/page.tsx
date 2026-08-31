@@ -24,7 +24,7 @@ export default function CommunityWritePage() {
   }
 
   return (
-    <div className="w-full min-h-screen px-6 md:px-6 md:pt-24 2xl:pt-28 xl:px-[60px] 2xl:px-[120px] pt-6 pb-24 md:py-8 xl:py-10">
+    <div className="w-full min-h-screen px-6 md:px-6 xl:px-[60px] 2xl:px-[120px] pt-6 pb-24 md:pt-24 md:pb-8 2xl:pt-28 2xl:pb-10">
       <CommunityPostForm mode="create" existingDraftId={latestDraftId} />
     </div>
   );
