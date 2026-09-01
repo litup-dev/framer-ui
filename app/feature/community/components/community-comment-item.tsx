@@ -161,8 +161,10 @@ export function CommunityCommentItem({
     <div className={wrapperClass}>
       {isReply && (
         <CornerDownRight
-          className="w-3.5 h-3.5 mt-3.5 text-black/30 flex-shrink-0"
+          className="w-5 h-5 mt-3.5 md:mt-4 xl:mt-7 text-black/20 flex-shrink-0"
           strokeWidth={1.5}
+          strokeLinecap="square"
+          strokeLinejoin="miter"
         />
       )}
 
@@ -261,11 +263,14 @@ export function CommunityCommentItem({
                     "flex items-center gap-1 text-[12px] xl:text-[14px] font-semibold transition-colors",
                     likeState.isLiked
                       ? "text-red-500"
-                      : "text-black/40 hover:text-red-400",
+                      : "text-black hover:text-red-400",
                   )}
                 >
                   <Heart
-                    className="w-3.5 h-3.5 xl:w-6 xl:h-6"
+                    className={cn(
+                      "w-3.5 h-3.5 xl:w-6 xl:h-6",
+                      !likeState.isLiked && "text-black/20",
+                    )}
                     strokeWidth={1.5}
                     fill={likeState.isLiked ? "currentColor" : "none"}
                   />
@@ -275,9 +280,9 @@ export function CommunityCommentItem({
                 {!isReply && (
                   <button
                     onClick={handleReplyClick}
-                    className="flex items-center gap-1 text-[12px] xl:text-[14px] font-semibold text-black/40 hover:text-black/70 transition-colors"
+                    className="flex items-center gap-1 text-[12px] xl:text-[14px] font-semibold text-black hover:text-black/70 transition-colors"
                   >
-                    <MessageCircle className="w-3.5 h-3.5 xl:w-6 xl:h-6" strokeWidth={1.5} />
+                    <MessageCircle className="w-3.5 h-3.5 xl:w-6 xl:h-6 text-black/20" strokeWidth={1.5} />
                     답글달기
                   </button>
                 )}
@@ -296,17 +301,26 @@ export function CommunityCommentItem({
 
         {/* 답글 폼 */}
         {showReplyForm && !isReply && (
-          <div className="mt-3 pl-4 md:pl-6">
-            <CommunityCommentForm
-              postId={postId}
-              parentId={comment.id}
-              replyToNickname={comment.author?.nickname}
-              replyToUserId={comment.author?.id}
-              compact
-              mentionableUsers={mentionableUsers}
-              onSuccess={() => setShowReplyForm(false)}
-              onCancel={() => setShowReplyForm(false)}
+          <div className="flex items-start gap-2 pl-4 md:pl-6 mt-3">
+            {/* 입력 폼은 테두리 박스 상단 라인이 곧 시작점이라 오프셋 없이 정렬 */}
+            <CornerDownRight
+              className="w-5 h-5 text-black/20 flex-shrink-0"
+              strokeWidth={1.5}
+              strokeLinecap="square"
+              strokeLinejoin="miter"
             />
+            <div className="flex-1 min-w-0">
+              <CommunityCommentForm
+                postId={postId}
+                parentId={comment.id}
+                replyToNickname={comment.author?.nickname}
+                replyToUserId={comment.author?.id}
+                compact
+                mentionableUsers={mentionableUsers}
+                onSuccess={() => setShowReplyForm(false)}
+                onCancel={() => setShowReplyForm(false)}
+              />
+            </div>
           </div>
         )}
 

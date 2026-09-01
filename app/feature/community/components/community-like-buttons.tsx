@@ -89,11 +89,14 @@ export function CommunityLikeButtons({
         onClick={() => handleLike("LIKE")}
         className={cn(
           "flex items-center gap-1 text-[14px] xl:text-[16px] font-semibold transition-colors",
-          optimistic.myLikeType === "LIKE" ? "text-main" : "text-black/50 hover:text-black/80",
+          optimistic.myLikeType === "LIKE" ? "text-main" : "text-black hover:text-main",
         )}
       >
         <ThumbsUp
-          className="w-[18px] h-[18px] xl:w-7 xl:h-7"
+          className={cn(
+            "w-[18px] h-[18px] xl:w-7 xl:h-7",
+            optimistic.myLikeType !== "LIKE" && "text-black/20",
+          )}
           strokeWidth={1.5}
           fill={optimistic.myLikeType === "LIKE" ? "currentColor" : "none"}
         />
@@ -104,27 +107,30 @@ export function CommunityLikeButtons({
         onClick={() => handleLike("DISLIKE")}
         className={cn(
           "flex items-center gap-1 text-[14px] xl:text-[16px] font-semibold transition-colors",
-          optimistic.myLikeType === "DISLIKE" ? "text-black" : "text-black/50 hover:text-black/80",
+          optimistic.myLikeType === "DISLIKE" ? "text-black" : "text-black hover:text-black/70",
         )}
       >
         <ThumbsDown
-          className="w-[18px] h-[18px] xl:w-7 xl:h-7"
+          className={cn(
+            "w-[18px] h-[18px] xl:w-7 xl:h-7",
+            optimistic.myLikeType !== "DISLIKE" && "text-black/20",
+          )}
           strokeWidth={1.5}
           fill={optimistic.myLikeType === "DISLIKE" ? "currentColor" : "none"}
         />
         {optimistic.dislikeCount}
       </button>
 
-      <span className="flex items-center gap-1 text-[14px] xl:text-[16px] font-semibold text-black/50">
-        <MessageCircle className="w-[18px] h-[18px] xl:w-7 xl:h-7" strokeWidth={1.5} />
+      <span className="flex items-center gap-1 text-[14px] xl:text-[16px] font-semibold text-black">
+        <MessageCircle className="w-[18px] h-[18px] xl:w-7 xl:h-7 text-black/20" strokeWidth={1.5} />
         {commentCount}
       </span>
 
       <button
         onClick={() => setIsShareModalOpen(true)}
-        className="flex items-center gap-1 text-[14px] xl:text-[16px] font-semibold text-black/50 hover:text-black/80 transition-colors ml-auto"
+        className="flex items-center gap-1 text-[14px] xl:text-[16px] font-semibold text-black hover:text-black/70 transition-colors ml-auto"
       >
-        <Share2 className="w-[16px] h-[16px] xl:w-7 xl:h-7" strokeWidth={1.5} />
+        <Share2 className="w-[16px] h-[16px] xl:w-7 xl:h-7 text-black/20" strokeWidth={1.5} />
         공유하기
       </button>
 

@@ -56,6 +56,8 @@ export function CommunityCommentForm({
   const avatarUrl = getImageUrl(user?.profilePath ?? null);
 
   const isEdit = commentId !== undefined;
+  // 답글 작성 시엔 프로필 옆에 내 닉네임을 보여준 뒤 그 아래로 입력창 (댓글/수정과 구분)
+  const showNickname = !isEdit && parentId !== undefined;
 
   const initial = isEdit
     ? initialContent ?? ""
@@ -139,6 +141,11 @@ export function CommunityCommentForm({
           />
         )}
         <div className="flex-1 min-w-0">
+          {showNickname && (
+            <p className="text-[14px] xl:text-[16px] font-semibold tracking-[-0.04em] text-black leading-tight mb-1">
+              {user?.nickname}
+            </p>
+          )}
           <MentionInput
             value={content}
             onChange={handleChange}

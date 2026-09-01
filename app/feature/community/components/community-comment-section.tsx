@@ -58,22 +58,25 @@ export function CommunityCommentSection({ postId }: CommunityCommentSectionProps
   return (
     <>
       <section className="mt-6 -mx-6 md:mx-0 px-6 md:px-0 py-6 md:py-0 bg-[#f7f6f5] md:bg-transparent">
-        {/* 타이틀 + 정렬 */}
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-[18px] xl:text-[24px] font-bold tracking-[-0.04em] xl:tracking-[-0.08em] text-black">
-            comment
-          </h2>
-          <button className="flex items-center gap-1 text-[13px] xl:text-[16px] font-semibold text-black/60 xl:text-black">
-            등록순
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="xl:w-6 xl:h-6">
-              <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
-        </div>
+        {/* 타이틀 */}
+        <h2 className="mb-4 text-[18px] xl:text-[24px] font-bold tracking-[-0.04em] xl:tracking-[-0.08em] text-black">
+          comment
+        </h2>
 
         {/* 댓글 작성 폼 (데스크탑 인라인 — xl 이상) */}
         <div className="hidden xl:block mb-5">
           <CommunityCommentForm postId={postId} mentionableUsers={mentionableUsers} />
+        </div>
+
+        {/* 정렬 (댓글 작성 폼 아래, 목록 위) */}
+        <div className="flex justify-end mb-3">
+          <button className="flex items-center gap-1 text-[13px] xl:text-[16px] font-semibold text-black">
+            등록순
+            {/* Figma 스펙: 얇은 선이 아니라 굵게 채워진 셰브론 */}
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="xl:w-6 xl:h-6">
+              <path d="M1.5 3.5L6 8L10.5 3.5" stroke="currentColor" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter"/>
+            </svg>
+          </button>
         </div>
 
         {/* 댓글 목록 */}

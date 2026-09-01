@@ -274,6 +274,10 @@ export function CommunityPostForm({
       dirtyRef.current = false;
       // drafts 목록만 refresh (posts 목록은 publish 시에만)
       queryClient.invalidateQueries({ queryKey: ["posts", "drafts"] });
+      // 이 draft의 상세 캐시(postDetailQueryOptions)도 무효화 — 안 하면 같은 draft를
+      // edit 페이지로 재방문 시 staleTime(60초) 내에는 방금 저장한 최신 내용 대신
+      // 캐시된 이전 내용이 보임 (자동저장은 성공했지만 화면엔 반영 안 되는 버그)
+      queryClient.invalidateQueries({ queryKey: ["posts", res.id] });
     },
     onError: () => {
       setAutoSaveError(true);

@@ -192,7 +192,7 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
         </div>
 
         {/* 본문 (마크다운) */}
-        <div className="min-h-[120px] mb-6">
+        <div className="min-h-[120px] mb-14 xl:mb-[72px]">
           <CommunityHtmlViewer content={post.content} />
         </div>
 
