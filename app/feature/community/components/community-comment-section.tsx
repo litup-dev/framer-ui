@@ -72,9 +72,9 @@ export function CommunityCommentSection({ postId }: CommunityCommentSectionProps
         <div className="flex justify-end mb-3">
           <button className="flex items-center gap-1 text-[13px] xl:text-[16px] font-semibold text-black">
             등록순
-            {/* Figma 스펙: 얇은 선이 아니라 굵게 채워진 셰브론 */}
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="xl:w-6 xl:h-6">
-              <path d="M1.5 3.5L6 8L10.5 3.5" stroke="currentColor" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter"/>
+            {/* Figma 스펙: 얇은 선이 아니라 굵게 채워진 셰브론이지만, 아이콘 박스 안에 여백을 두고 작게 위치 */}
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="xl:w-6 xl:h-6">
+              <path d="M6 8.4L12 15.6L18 8.4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square" strokeLinejoin="miter"/>
             </svg>
           </button>
         </div>
