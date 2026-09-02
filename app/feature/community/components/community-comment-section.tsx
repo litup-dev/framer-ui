@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
 import {
   commentsQueryOptions,
@@ -21,8 +22,15 @@ import {
 } from "@/components/ui/pagination";
 import { useAllPerformancesPagination } from "@/app/feature/all-performances/hooks/use-all-performances-pagination";
 import { cn } from "@/lib/utils";
+import type { SortType } from "../types";
 
 const COMMENT_LIMIT = 20;
+
+// 댓글 기본 정렬은 오래된순(+createdAt) — 게시글 목록(최신순 기본)과 다름
+const COMMENT_SORT_OPTIONS: { value: SortType; label: string }[] = [
+  { value: "+createdAt", label: "오래된순" },
+  { value: "-createdAt", label: "최신순" },
+];
 
 interface CommunityCommentSectionProps {
   postId: number;
@@ -31,13 +39,19 @@ interface CommunityCommentSectionProps {
 
 export function CommunityCommentSection({ postId }: CommunityCommentSectionProps) {
   const [currentPage, setCurrentPage] = useState(1);
+  const [sort, setSort] = useState<SortType>("+createdAt");
   const offset = (currentPage - 1) * COMMENT_LIMIT;
 
   const { isAuthenticated } = useCurrentUser();
 
-  const { data, isLoading } = useQuery(commentsQueryOptions(postId, offset, COMMENT_LIMIT));
+  const { data, isLoading } = useQuery(commentsQueryOptions(postId, offset, COMMENT_LIMIT, sort));
   const comments = data?.data.items ?? [];
   const total = data?.data.total ?? 0;
+
+  const handleSortToggle = () => {
+    setSort((prev) => (prev === "+createdAt" ? "-createdAt" : "+createdAt"));
+    setCurrentPage(1);
+  };
 
   // 태그 대상 리스트는 로그인 유저만 필요 (비로그인 요청 시 401로 글로벌 리다이렉트 방지)
   const { data: mentionData } = useQuery({
@@ -68,14 +82,20 @@ export function CommunityCommentSection({ postId }: CommunityCommentSectionProps
           <CommunityCommentForm postId={postId} mentionableUsers={mentionableUsers} />
         </div>
 
-        {/* 정렬 (댓글 작성 폼 아래, 목록 위) */}
+        {/* 정렬 (댓글 작성 폼 아래, 목록 위) — 클릭 시 반대 정렬로 즉시 토글 */}
         <div className="flex justify-end mb-3">
-          <button className="flex items-center gap-1 text-[13px] xl:text-[16px] font-semibold text-black">
-            등록순
-            {/* Figma 스펙: 얇은 선이 아니라 굵게 채워진 셰브론이지만, 아이콘 박스 안에 여백을 두고 작게 위치 */}
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="xl:w-6 xl:h-6">
-              <path d="M6 8.4L12 15.6L18 8.4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square" strokeLinejoin="miter"/>
-            </svg>
+          <button
+            onClick={handleSortToggle}
+            className="flex items-center gap-1 text-[13px] xl:text-[16px] font-semibold text-black"
+          >
+            {COMMENT_SORT_OPTIONS.find((o) => o.value === sort)?.label}
+            <Image
+              src="/images/sort-arrow.svg"
+              alt=""
+              width={20}
+              height={20}
+              className={cn("md:w-6 md:h-6 transition-transform", sort === "+createdAt" && "rotate-180")}
+            />
           </button>
         </div>
 

@@ -6,6 +6,7 @@ import type {
   CommentListResponse,
   MentionableUser,
   DraftListItem,
+  SortType,
 } from "./types";
 
 export const getPosts = async (query: PostsQuery = {}): Promise<PostListResponse> => {
@@ -30,10 +31,11 @@ export const getComments = async (
   postId: number,
   offset = 0,
   limit = 20,
+  sort: SortType = "+createdAt",
 ): Promise<CommentListResponse> => {
-  return apiClient.get(
-    `/api/v1/posts/${postId}/comments?offset=${offset}&limit=${limit}`,
-  );
+  // sort의 "+"는 URLSearchParams로 인코딩해야 함 — 안 그러면 서버가 공백으로 해석해 400 발생
+  const params = new URLSearchParams({ offset: String(offset), limit: String(limit), sort });
+  return apiClient.get(`/api/v1/posts/${postId}/comments?${params.toString()}`);
 };
 
 export const createPost = async (body: {
