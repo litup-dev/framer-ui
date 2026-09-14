@@ -87,9 +87,9 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
   }
 
   return (
-    <div className="flex gap-8 xl:gap-12 items-start w-full">
+    <div className="flex gap-8 min-[1600px]:gap-10 items-start w-full">
       {/* ── 본문 영역 ── */}
-      <article className="flex-1 min-w-0">
+      <article className="flex-1 min-w-0 max-xl:max-w-full xl:max-[1599px]:max-w-[1160px] xl:max-[1599px]:mx-auto">
         {/* 모바일/태블릿 서브 헤더: 뒤로가기 + 게시판명 (xl에서는 숨김) */}
         <div className="flex items-center relative mb-4 xl:hidden">
           <button
@@ -105,14 +105,14 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
         </div>
 
         {/* 데스크탑 전용 게시판 배지 */}
-        <span className="hidden xl:inline-flex items-center px-[14px] py-[10px] rounded-[3px] text-[14px] font-semibold bg-black/5 text-black/80 mb-3">
+        <span className="hidden xl:inline-flex items-center w-[87px] h-[34px] px-[14px] py-[10px] rounded-[3px] text-[14px] font-semibold leading-none tracking-[-0.04em] whitespace-nowrap bg-black/5 border border-black/10 text-black mb-3">
           {boardLabel(post.boardCode)}
         </span>
 
         {/* 제목 */}
         <h1 className="text-[20px] md:text-[22px] xl:text-[32px] font-bold leading-[1.35] tracking-[-0.04em] text-black mb-4 xl:mb-5">
           {post.category && (
-            <span className="text-main">[{post.category.name}] </span>
+            <span className="text-black/40">[{post.category.name}] </span>
           )}
           {post.title}
         </h1>
@@ -265,12 +265,12 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
         <CommunityCommentSection postId={postId} commentCount={post.commentCount} />
       </article>
 
-      {/* ── 우측 사이드바 (2xl 이상 — 1280에서는 노출 안 함) ── */}
-      <div className="hidden 2xl:block w-[180px] flex-shrink-0">
+      {/* ── 우측 사이드바 (1600px 이상 — 그 아래(xl~1599)는 피그마상 사이드바 없는 1컬럼) ── */}
+      <div className="hidden min-[1600px]:block w-[302px] flex-shrink-0">
         {/* 게시판 배지와 같은 크기의 투명 스페이서 — 글쓰기 버튼을 배지 줄이 아니라 제목 줄에 맞춤 */}
         <span
           aria-hidden="true"
-          className="invisible inline-flex items-center px-[14px] py-[10px] rounded-[3px] text-[14px] font-semibold mb-3"
+          className="invisible inline-flex items-center w-[87px] h-[34px] px-[14px] py-[10px] rounded-[3px] text-[14px] font-semibold leading-none whitespace-nowrap mb-3"
         >
           {boardLabel(post.boardCode)}
         </span>
@@ -284,7 +284,7 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
               }
               router.push("/community/write");
             }}
-            className="flex items-center justify-center w-full py-3.5 bg-main text-white text-[15px] font-bold leading-none tracking-[-0.04em] rounded-[4px] hover:opacity-90 transition-opacity cursor-pointer"
+            className="flex items-center justify-center w-[302px] h-[60px] bg-main text-white text-[16px] font-bold leading-none tracking-[-0.04em] rounded-[4px] hover:opacity-90 transition-opacity cursor-pointer whitespace-nowrap"
           >
             {isAuthenticated ? "글쓰기" : "로그인 후 글 작성하기"}
           </button>

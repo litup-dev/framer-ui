@@ -141,7 +141,7 @@ export function CommunityPostCard({ post, className }: CommunityPostCardProps) {
         {/* 제목 */}
         <p className="text-[16px] md:text-[17px] font-bold leading-[1.4] tracking-[-0.04em] text-black group-hover:text-main transition-colors line-clamp-2 mb-3">
           {post.category && (
-            <span className="text-main">[{post.category.name}] </span>
+            <span className="text-black/40">[{post.category.name}] </span>
           )}
           {post.title}
         </p>

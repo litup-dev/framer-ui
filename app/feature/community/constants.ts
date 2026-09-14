@@ -8,7 +8,7 @@ export const SEARCH_TYPE_OPTIONS: { value: PostSearchType; label: string }[] = [
 ];
 
 export const BOARD_OPTIONS: { code: BoardCode; label: string }[] = [
-  { code: "FREE", label: "자유 게시판" },
+  { code: "FREE", label: "자유게시판" },
 ];
 
 export const CATEGORY_OPTIONS_BY_BOARD: Record<
