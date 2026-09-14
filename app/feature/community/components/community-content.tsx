@@ -180,58 +180,65 @@ export function CommunityContent() {
         </div>
       </div>
 
-      {/* 게시글 목록 */}
-      <div className="mt-4 xl:mt-2">
-        {posts.length > 0 ? (
-          posts.map((post) => (
-            <CommunityPostCard key={post.id} post={post} />
-          ))
-        ) : isLoading ? null : (
-          <div className="py-20 text-center text-black/40 text-[16px] font-medium">
-            게시글이 없습니다.
+      <div className="xl:flex xl:items-start xl:gap-10">
+        <div className="xl:min-w-0 xl:flex-1">
+          {/* 게시글 목록 */}
+          <div className="mt-4 xl:mt-2">
+            {posts.length > 0 ? (
+              posts.map((post) => (
+                <CommunityPostCard key={post.id} post={post} />
+              ))
+            ) : isLoading ? null : (
+              <div className="py-20 text-center text-black/40 text-[16px] font-medium">
+                게시글이 없습니다.
+              </div>
+            )}
           </div>
-        )}
-      </div>
 
-      {/* 페이지네이션 */}
-      {!isLoading && pagination.totalPages > 1 && (
-        <div className="flex justify-center mt-10 md:mt-12">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={pagination.handlePreviousClick}
-                  className={cn(!pagination.canGoPrevious && "opacity-30 pointer-events-none")}
-                />
-              </PaginationItem>
-              {pagination.pageNumbers.map((page, i) => (
-                <PaginationItem key={i}>
-                  {typeof page === "string" ? (
-                    <PaginationEllipsis />
-                  ) : (
-                    <PaginationLink
-                      isActive={page === currentPage}
-                      onClick={() => pagination.handlePageClick(page)}
-                      className={cn(
-                        "cursor-pointer font-bold",
-                        page === currentPage ? "text-black" : "text-gray",
+          {/* 페이지네이션 */}
+          {!isLoading && pagination.totalPages > 1 && (
+            <div className="flex justify-center mt-10 md:mt-12">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={pagination.handlePreviousClick}
+                      className={cn(!pagination.canGoPrevious && "opacity-30 pointer-events-none")}
+                    />
+                  </PaginationItem>
+                  {pagination.pageNumbers.map((page, i) => (
+                    <PaginationItem key={i}>
+                      {typeof page === "string" ? (
+                        <PaginationEllipsis />
+                      ) : (
+                        <PaginationLink
+                          isActive={page === currentPage}
+                          onClick={() => pagination.handlePageClick(page)}
+                          className={cn(
+                            "cursor-pointer font-bold",
+                            page === currentPage ? "text-black" : "text-gray",
+                          )}
+                        >
+                          {page}
+                        </PaginationLink>
                       )}
-                    >
-                      {page}
-                    </PaginationLink>
-                  )}
-                </PaginationItem>
-              ))}
-              <PaginationItem>
-                <PaginationNext
-                  onClick={pagination.handleNextClick}
-                  className={cn(!pagination.canGoNext && "opacity-30 pointer-events-none")}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={pagination.handleNextClick}
+                      className={cn(!pagination.canGoNext && "opacity-30 pointer-events-none")}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
         </div>
-      )}
+
+        {/* 사이드 영역: 추후 개발 예정(내 소식/내 활동) — 현재는 비워두고 레이아웃 폭만 예약 */}
+        <div className="hidden xl:block w-[302px] shrink-0" aria-hidden="true" />
+      </div>
 
       {/* 검색 (태블릿 md~xl 전용, 리스트 하단 인라인 바 — 피그마 고정폭 518px 가운데 정렬) */}
       <form onSubmit={handleSearch} className="hidden md:flex xl:hidden items-center justify-center gap-[10px] mt-10">
