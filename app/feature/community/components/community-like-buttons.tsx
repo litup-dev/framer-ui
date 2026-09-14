@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ThumbsUp, ThumbsDown, MessageCircle, Share2 } from "lucide-react";
+import { ThumbsUp, ThumbsDown, Share2 } from "lucide-react";
 import { toggleLike } from "../api";
 import { useLoginRequired } from "../hooks/use-login-required";
 import { CommunityShareModal } from "./community-share-modal";
@@ -94,7 +94,7 @@ export function CommunityLikeButtons({
       >
         <ThumbsUp
           className={cn(
-            "w-[18px] h-[18px] xl:w-7 xl:h-7",
+            "w-[18px] h-[18px] xl:w-[23.33px] xl:h-[21.16px]",
             optimistic.myLikeType !== "LIKE" && "text-black/20",
           )}
           strokeWidth={1.5}
@@ -112,7 +112,7 @@ export function CommunityLikeButtons({
       >
         <ThumbsDown
           className={cn(
-            "w-[18px] h-[18px] xl:w-7 xl:h-7",
+            "w-[18px] h-[18px] xl:w-[23.33px] xl:h-[21.16px]",
             optimistic.myLikeType !== "DISLIKE" && "text-black/20",
           )}
           strokeWidth={1.5}
@@ -122,7 +122,8 @@ export function CommunityLikeButtons({
       </button>
 
       <span className="flex items-center gap-1 text-[14px] xl:text-[16px] font-semibold text-black">
-        <MessageCircle className="w-[18px] h-[18px] xl:w-7 xl:h-7 text-black/20" strokeWidth={1.5} />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/images/reply_message.svg" alt="" className="w-[18px] h-[18px] xl:w-[22.17px] xl:h-[20.16px]" />
         {commentCount}
       </span>
 

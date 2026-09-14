@@ -12,6 +12,7 @@ import { CommunityLikeButtons } from "./community-like-buttons";
 import { CommunityCommentSection } from "./community-comment-section";
 import { useLoginRequired } from "../hooks/use-login-required";
 import { boardLabel } from "../constants";
+import { formatDateDot } from "../utils/format-date";
 import { getImageUrl } from "@/lib/utils";
 
 function formatDate(isoString: string): string {
@@ -199,12 +200,12 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
         {/* 태그된 클럽/공연 */}
         {/* clubTags/performTags는 백엔드 배포 전에는 응답에 아예 없을 수 있어 방어적으로 처리 */}
         {((post.clubTags?.length ?? 0) > 0 || (post.performTags?.length ?? 0) > 0) && (
-          <div className="mb-6 flex flex-col md:grid md:grid-cols-2 2xl:grid-cols-1 gap-2">
+          <div className="mb-6 flex flex-col md:grid md:grid-cols-2 min-[1600px]:grid-cols-1 gap-2">
             {(post.clubTags ?? []).map((club) => (
               <Link
                 key={`club-${club.id}`}
                 href={`/club/${club.id}`}
-                className="flex items-center gap-3 border border-[#d1d1d1] rounded-[4px] p-4 hover:border-black/30 transition-colors"
+                className="flex items-center gap-[14px] h-[104px] px-6 border border-[#d1d1d1] rounded-[4px] hover:border-black/30 transition-colors"
               >
                 {(() => {
                   const url = getImageUrl(club.mainImage?.filePath);
@@ -215,7 +216,7 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
                     <div className="w-14 h-14 rounded-full flex-shrink-0 bg-black/10" />
                   );
                 })()}
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 flex flex-col gap-[7px]">
                   <p className="text-[16px] font-bold tracking-[-0.04em] text-black truncate">{club.name}</p>
                   <p className="text-[14px] font-medium text-black/80 truncate">{club.address}</p>
                 </div>
@@ -225,7 +226,7 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
               <Link
                 key={`perform-${perform.id}`}
                 href={`/performance/${perform.id}`}
-                className="flex items-center gap-4 border border-[#d1d1d1] rounded-[4px] p-4 hover:border-black/30 transition-colors"
+                className="flex items-center gap-4 h-[104px] px-6 border border-[#d1d1d1] rounded-[4px] hover:border-black/30 transition-colors"
               >
                 {(() => {
                   const url = getImageUrl(perform.mainImage?.filePath);
@@ -236,12 +237,12 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
                     <div className="w-[52px] h-[65px] rounded-[2px] flex-shrink-0 bg-black/10" />
                   );
                 })()}
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 flex flex-col">
                   <p className="text-[16px] font-bold tracking-[-0.04em] text-black truncate">{perform.title}</p>
                   <p className="text-[14px] font-medium text-black/80 truncate">
                     {perform.artists.map((a) => a.name).join(", ")}
                   </p>
-                  <p className="text-[14px] font-medium text-black/60 truncate">{formatDate(perform.performDate)}</p>
+                  <p className="mt-1 text-[14px] font-medium text-black/60 truncate">{formatDateDot(perform.performDate)}</p>
                 </div>
               </Link>
             ))}
