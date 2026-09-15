@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ThumbsUp, ThumbsDown, MessageCircle } from "lucide-react";
+import { ThumbsUp, ThumbsDown } from "lucide-react";
 import { cn, getImageUrl, formatRelativeTime } from "@/lib/utils";
 import { extractPlainText } from "../utils/extract-plain-text";
 import type { PostItem } from "../types";
@@ -209,7 +209,12 @@ export function CommunityPostCard({ post, className }: CommunityPostCardProps) {
             {post.dislikeCount}
           </span>
           <span className={cn("flex items-center gap-1 text-[13px] font-medium", post.hasMyComment ? "text-main" : "text-black/50")}>
-            <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.5} />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={post.hasMyComment ? "/images/reply_message_active.svg" : "/images/reply_message.svg"}
+              alt=""
+              className="w-3.5 h-3.5"
+            />
             {post.commentCount}
           </span>
         </div>

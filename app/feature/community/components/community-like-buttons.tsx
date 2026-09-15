@@ -107,7 +107,7 @@ export function CommunityLikeButtons({
         onClick={() => handleLike("DISLIKE")}
         className={cn(
           "flex items-center gap-1 text-[14px] xl:text-[16px] font-semibold transition-colors",
-          optimistic.myLikeType === "DISLIKE" ? "text-black" : "text-black hover:text-black/70",
+          optimistic.myLikeType === "DISLIKE" ? "text-main" : "text-black hover:text-main",
         )}
       >
         <ThumbsDown
