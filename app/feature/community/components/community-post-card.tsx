@@ -104,15 +104,16 @@ export function CommunityPostCard({ post, className }: CommunityPostCardProps) {
 
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-1 text-[16px] font-medium tracking-[-0.04em] text-black">
-            <ThumbsUp className="w-[20px] h-[18.14px]" strokeWidth={1.5} />
+            <ThumbsUp className="w-[20px] h-[18.14px] text-black/20" strokeWidth={1.5} />
             {post.likeCount}
           </span>
           <span className="flex items-center gap-1 text-[16px] font-medium tracking-[-0.04em] text-black">
-            <ThumbsDown className="w-[20px] h-[18.14px]" strokeWidth={1.5} />
+            <ThumbsDown className="w-[20px] h-[18.14px] text-black/20" strokeWidth={1.5} />
             {post.dislikeCount}
           </span>
           <span className="flex items-center gap-1 text-[16px] font-medium tracking-[-0.04em] text-black">
-            <MessageCircle className="w-[18px] h-4" strokeWidth={1.5} />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/images/reply_message.svg" alt="" className="w-[18px] h-4" />
             {post.commentCount}
           </span>
         </div>
