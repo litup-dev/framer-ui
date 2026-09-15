@@ -104,16 +104,28 @@ export function CommunityPostCard({ post, className }: CommunityPostCardProps) {
 
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-1 text-[16px] font-medium tracking-[-0.04em] text-black">
-            <ThumbsUp className="w-[20px] h-[18.14px] text-black/20" strokeWidth={1.5} />
+            <ThumbsUp
+              className={cn("w-[20px] h-[18.14px]", post.myLikeType === "LIKE" ? "text-main" : "text-black/20")}
+              strokeWidth={1.5}
+              fill={post.myLikeType === "LIKE" ? "currentColor" : "none"}
+            />
             {post.likeCount}
           </span>
           <span className="flex items-center gap-1 text-[16px] font-medium tracking-[-0.04em] text-black">
-            <ThumbsDown className="w-[20px] h-[18.14px] text-black/20" strokeWidth={1.5} />
+            <ThumbsDown
+              className={cn("w-[20px] h-[18.14px]", post.myLikeType === "DISLIKE" ? "text-main" : "text-black/20")}
+              strokeWidth={1.5}
+              fill={post.myLikeType === "DISLIKE" ? "currentColor" : "none"}
+            />
             {post.dislikeCount}
           </span>
           <span className="flex items-center gap-1 text-[16px] font-medium tracking-[-0.04em] text-black">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/images/reply_message.svg" alt="" className="w-[18px] h-4" />
+            <img
+              src={post.hasMyComment ? "/images/reply_message_active.svg" : "/images/reply_message.svg"}
+              alt=""
+              className="w-[18px] h-4"
+            />
             {post.commentCount}
           </span>
         </div>
@@ -180,15 +192,23 @@ export function CommunityPostCard({ post, className }: CommunityPostCardProps) {
 
         {/* 반응 카운트 */}
         <div className="flex items-center gap-3">
-          <span className="flex items-center gap-1 text-[13px] font-medium text-black/50">
-            <ThumbsUp className="w-3.5 h-3.5" strokeWidth={1.5} />
+          <span className={cn("flex items-center gap-1 text-[13px] font-medium", post.myLikeType === "LIKE" ? "text-main" : "text-black/50")}>
+            <ThumbsUp
+              className="w-3.5 h-3.5"
+              strokeWidth={1.5}
+              fill={post.myLikeType === "LIKE" ? "currentColor" : "none"}
+            />
             {post.likeCount}
           </span>
-          <span className="flex items-center gap-1 text-[13px] font-medium text-black/50">
-            <ThumbsDown className="w-3.5 h-3.5" strokeWidth={1.5} />
+          <span className={cn("flex items-center gap-1 text-[13px] font-medium", post.myLikeType === "DISLIKE" ? "text-main" : "text-black/50")}>
+            <ThumbsDown
+              className="w-3.5 h-3.5"
+              strokeWidth={1.5}
+              fill={post.myLikeType === "DISLIKE" ? "currentColor" : "none"}
+            />
             {post.dislikeCount}
           </span>
-          <span className="flex items-center gap-1 text-[13px] font-medium text-black/50">
+          <span className={cn("flex items-center gap-1 text-[13px] font-medium", post.hasMyComment ? "text-main" : "text-black/50")}>
             <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.5} />
             {post.commentCount}
           </span>

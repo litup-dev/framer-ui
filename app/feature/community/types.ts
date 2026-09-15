@@ -53,6 +53,8 @@ export interface PostItem {
   likeCount: number;
   dislikeCount: number;
   commentCount: number;
+  myLikeType: LikeType | null; // 비로그인이면 항상 null
+  hasMyComment: boolean;       // 비로그인이면 항상 false
 }
 
 export interface PostListResponse {
