@@ -279,6 +279,62 @@ function CarouselNext({
   );
 }
 
+function CarouselScrollbar({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  const { api } = useCarousel();
+  const [thumbRatio, setThumbRatio] = React.useState(1);
+  const [progress, setProgress] = React.useState(0);
+
+  const updateThumbRatio = React.useCallback((api: CarouselApi) => {
+    if (!api) return;
+    const container = api.containerNode();
+    setThumbRatio(Math.min(container.clientWidth / container.scrollWidth, 1));
+  }, []);
+
+  const updateProgress = React.useCallback((api: CarouselApi) => {
+    if (!api) return;
+    setProgress(Math.min(Math.max(api.scrollProgress(), 0), 1));
+  }, []);
+
+  React.useEffect(() => {
+    if (!api) return;
+    updateThumbRatio(api);
+    updateProgress(api);
+    api.on("reInit", updateThumbRatio);
+    api.on("resize", updateThumbRatio);
+    api.on("reInit", updateProgress);
+    api.on("scroll", updateProgress);
+
+    return () => {
+      api.off("reInit", updateThumbRatio);
+      api.off("resize", updateThumbRatio);
+      api.off("reInit", updateProgress);
+      api.off("scroll", updateProgress);
+    };
+  }, [api, updateThumbRatio, updateProgress]);
+
+  if (thumbRatio >= 1) return null;
+
+  return (
+    <div
+      data-slot="carousel-scrollbar"
+      aria-hidden
+      className={cn("h-1 overflow-hidden bg-[#202020]/10", className)}
+      {...props}
+    >
+      <div
+        className="h-full bg-[#202020]"
+        style={{
+          width: `${thumbRatio * 100}%`,
+          transform: `translateX(${progress * (1 / thumbRatio - 1) * 100}%)`,
+        }}
+      />
+    </div>
+  );
+}
+
 export {
   type CarouselApi,
   Carousel,
@@ -286,4 +342,5 @@ export {
   CarouselItem,
   CarouselPrevious,
   CarouselNext,
+  CarouselScrollbar,
 };
