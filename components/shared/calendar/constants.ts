@@ -8,6 +8,11 @@ export const CALENDAR_FADE_HEIGHT = {
   "2xl": 84,
 } as const;
 
+export const CALENDAR_FADE_SOLID_HEIGHT = {
+  xl: 32,
+  "2xl": 44,
+} as const;
+
 export const CALENDAR_BREAKPOINT = {
   lg: 1024,
   xl: 1280,
