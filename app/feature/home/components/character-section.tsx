@@ -104,7 +104,7 @@ export default function CharacterSection({
   return (
     <div className="block absolute top-[43px] md:top-[167px] lg:top-[201px] xl:top-[280px] 2xl:top-[250px] right-[20px] md:right-[40px] lg:right-[60px] xl:right-[60px] 2xl:right-[80px] z-20">
       <div className="relative w-full md:w-[550px] lg:w-[600px] xl:w-[700px] 2xl:w-[860px]">
-        <div className="absolute top-[115px] lg:top-[120px] xl:top-[14px] 2xl:top-[164px] right-0 flex flex-col items-end xl:gap-2 2xl:gap-3">
+        <div className="absolute top-[115px] lg:top-[120px] xl:top-[14px] 2xl:top-[120px] right-0 flex flex-col items-end xl:gap-2 2xl:gap-3">
           <div
             className="relative overflow-hidden flex justify-end w-full"
             style={{
@@ -124,7 +124,7 @@ export default function CharacterSection({
             >
               <Title
                 className={cn(
-                  "text-[30px] min-[744px]:text-[42px] lg:text-[52px] xl:text-[56px] 2xl:text-[84px] pr-0.5 lg:pr-1 xl:pr-1.5 leading-[22px] min-[744px]:leading-[30px] lg:leading-[38px] xl:leading-[40px] 2xl:leading-[61px] tracking-[-2.4px] min-[744px]:tracking-[-3.36px] lg:tracking-[-4.16px] xl:tracking-[-4.48px] 2xl:tracking-[-6.72px]",
+                  "text-[30px] min-[744px]:text-[42px] lg:text-[52px] xl:text-[56px] 2xl:text-[96px] pr-0.5 lg:pr-1 xl:pr-1.5 leading-[22px] min-[744px]:leading-[30px] lg:leading-[38px] xl:leading-[40px] 2xl:leading-[69px] tracking-[-2.4px] min-[744px]:tracking-[-3.36px] lg:tracking-[-4.16px] xl:tracking-[-4.48px] 2xl:tracking-[-7.68px]",
                   colorKey === "today" && "text-white",
                   colorKey !== "today" &&
                     colorKey !== "busan" &&
@@ -157,7 +157,7 @@ export default function CharacterSection({
                   >
                     <Title
                       className={cn(
-                        "text-[30px] min-[744px]:text-[42px] lg:text-[52px] xl:text-[56px] 2xl:text-[84px] pr-0.5 lg:pr-1 xl:pr-1.5 leading-[22px] min-[744px]:leading-[30px] lg:leading-[38px] xl:leading-[40px] 2xl:leading-[61px] tracking-[-2.4px] min-[744px]:tracking-[-3.36px] lg:tracking-[-4.16px] xl:tracking-[-4.48px] 2xl:tracking-[-6.72px]",
+                        "text-[30px] min-[744px]:text-[42px] lg:text-[52px] xl:text-[56px] 2xl:text-[96px] pr-0.5 lg:pr-1 xl:pr-1.5 leading-[22px] min-[744px]:leading-[30px] lg:leading-[38px] xl:leading-[40px] 2xl:leading-[69px] tracking-[-2.4px] min-[744px]:tracking-[-3.36px] lg:tracking-[-4.16px] xl:tracking-[-4.48px] 2xl:tracking-[-7.68px]",
                         INDEX_TO_COLOR_KEY[previousIndex] === "today" &&
                           "text-white",
 
@@ -188,7 +188,7 @@ export default function CharacterSection({
                     >
                       <Title
                         className={cn(
-                          "text-[30px] min-[744px]:text-[42px] lg:text-[52px] xl:text-[56px] 2xl:text-[84px] pr-0.5 lg:pr-1 xl:pr-1.5 leading-[22px] min-[744px]:leading-[30px] lg:leading-[38px] xl:leading-[40px] 2xl:leading-[61px] tracking-[-2.4px] min-[744px]:tracking-[-3.36px] lg:tracking-[-4.16px] xl:tracking-[-4.48px] 2xl:tracking-[-6.72px]",
+                          "text-[30px] min-[744px]:text-[42px] lg:text-[52px] xl:text-[56px] 2xl:text-[96px] pr-0.5 lg:pr-1 xl:pr-1.5 leading-[22px] min-[744px]:leading-[30px] lg:leading-[38px] xl:leading-[40px] 2xl:leading-[69px] tracking-[-2.4px] min-[744px]:tracking-[-3.36px] lg:tracking-[-4.16px] xl:tracking-[-4.48px] 2xl:tracking-[-7.68px]",
                           colorKey === "today" && "text-white",
                         )}
                       >

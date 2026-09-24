@@ -71,7 +71,7 @@ export default function HomeContent() {
     <div className="relative overflow-x-hidden">
       <HomeCharacterImage />
       {shouldShowMainContent && (
-        <PageWrapper className="relative z-10">
+        <PageWrapper className="relative z-10 2xl:pt-[100px] 2xl:gap-[182px]">
           <HeroSection />
           <CharacterSection performances={performances} />
           <MainContent
