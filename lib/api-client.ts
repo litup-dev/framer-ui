@@ -1,19 +1,25 @@
+import { API_ERROR_CODES } from "@/lib/error-codes";
+
 export class ApiError extends Error {
   status: number;
   code: string | number;
   data: any;
+  // true면 이 에러로는 /login 강제 리다이렉트를 하지 않음 (GET 기본값)
+  skipAuthRedirect: boolean;
 
   constructor(
     message: string,
     status: number,
     code: string | number,
     data: any,
+    skipAuthRedirect: boolean = false,
   ) {
     super(message);
     this.name = "ApiError";
     this.status = status;
     this.code = code;
     this.data = data;
+    this.skipAuthRedirect = skipAuthRedirect;
   }
 }
 
@@ -102,6 +108,8 @@ class ApiClient {
         let errorMessage = "API 요청 중 알 수 없는 오류가 발생했습니다.";
         // HTTP status를 기본 에러 코드로 사용
         let errorCode: string | number = response.status;
+        // 백엔드가 인증 에러에 붙이는 커스텀 숫자 statusCode (예: 10401). code는 문자열이라 별도로 추적.
+        let errorStatusCode: number = response.status;
 
         try {
           errorData = await response.json();
@@ -112,9 +120,11 @@ class ApiClient {
           if (errorData.error) {
             errorMessage = errorData.error.message || errorMessage;
             errorCode = errorData.error.code || errorCode;
+            errorStatusCode = errorData.error.statusCode ?? errorStatusCode;
           } else {
             errorMessage = errorData.message || errorMessage;
             errorCode = errorData.code || errorCode;
+            errorStatusCode = errorData.statusCode ?? errorStatusCode;
           }
         } catch (e) {
           // 응답이 JSON 형식이 아닐 경우
@@ -124,20 +134,23 @@ class ApiClient {
           errorMessage = errorData.message;
         }
 
-        // 인증관련 에러일때 토큰 재발급 시도
-        // 실패 시 로그인 페이지로 리다이렉트
-        if (errorCode === 10401) {
+        // 인증관련 에러(JWT 만료/무효 등)일때 토큰 재발급 시도
+        if (errorStatusCode === API_ERROR_CODES.JWT_AUTH_STATUS) {
           const refreshed = await this.accessTokenRefresh();
           if (refreshed) {
             return this.request<T>(endpoint, options);
-          } else if (!options.skipAuthRedirect) {
-            if (typeof window !== "undefined") {
-              window.location.href = "/login";
-            }
           }
         }
 
-        throw new ApiError(errorMessage, response.status, errorCode, errorData);
+        // /login 리다이렉트는 handleGlobalError(전역 에러 핸들러)에서
+        // skipAuthRedirect 값을 보고 일괄 처리한다 (중복 리다이렉트 방지).
+        throw new ApiError(
+          errorMessage,
+          response.status,
+          errorCode,
+          errorData,
+          options.skipAuthRedirect ?? false,
+        );
       }
 
       if (response.status === 204) {
