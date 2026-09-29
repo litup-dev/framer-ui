@@ -62,7 +62,9 @@ export default function RootLayout({
             <ReportModal />
           </ReactQueryProvider>
         </Suspense>
-        <Analytics />
+        {/* Vercel Production 배포(main)에서만 활성화. Preview(develop)/로컬은 VERCEL_ENV가
+            없거나 'production'이 아니라서 자동으로 비활성화된다. */}
+        {process.env.VERCEL_ENV === "production" && <Analytics />}
       </body>
     </html>
   );
