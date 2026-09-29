@@ -1,0 +1,26 @@
+import { CommunityPostDetail } from "@/app/feature/community/components/community-post-detail";
+import Footer from "@/app/shared/components/footer";
+
+interface CommunityPostPageProps {
+  params: Promise<{ id: string }>;
+}
+
+const CommunityPostPage = async ({ params }: CommunityPostPageProps) => {
+  const { id } = await params;
+  const postId = Number(id);
+
+  return (
+    <>
+      <div className="w-full min-h-screen px-6 md:px-6 xl:px-[60px] xl:max-w-[1360px] xl:mx-auto flex flex-col">
+        <div className="pt-6 pb-24 md:pt-24 md:pb-8 2xl:pt-28 2xl:pb-10">
+          <CommunityPostDetail postId={postId} />
+        </div>
+      </div>
+      <div className="hidden md:block">
+        <Footer />
+      </div>
+    </>
+  );
+};
+
+export default CommunityPostPage;

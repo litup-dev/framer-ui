@@ -17,7 +17,10 @@ import { CalendarDayHeader } from "@/components/shared/calendar/calendar-day-hea
 import { CalendarDayEvents } from "@/components/shared/calendar/calendar-day-events";
 import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
 import { cn } from "@/lib/utils";
-import { CALENDAR_FADE_HEIGHT } from "@/components/shared/calendar/constants";
+import {
+  CALENDAR_FADE_HEIGHT,
+  CALENDAR_FADE_SOLID_HEIGHT,
+} from "@/components/shared/calendar/constants";
 
 const DEFAULT_IMAGE = "/images/poster_default.png";
 
@@ -69,7 +72,6 @@ export const CalendarDayCell = ({
   const eventsContainerRef = useCalendarCellScroll({
     isHovered,
     isXl,
-    buttonRef,
   });
 
   const isOverflowing = useCalendarCellOverflow({
@@ -90,6 +92,9 @@ export const CalendarDayCell = ({
   const fadeHeight = is2xl
     ? CALENDAR_FADE_HEIGHT["2xl"]
     : CALENDAR_FADE_HEIGHT.xl;
+  const fadeSolidHeight = is2xl
+    ? CALENDAR_FADE_SOLID_HEIGHT["2xl"]
+    : CALENDAR_FADE_SOLID_HEIGHT.xl;
 
   return (
     <motion.div
@@ -124,10 +129,10 @@ export const CalendarDayCell = ({
           isXl && dayEvents.length > 0 ? () => onMouseEnter(day) : undefined
         }
         onMouseLeave={isXl && dayEvents.length > 0 ? onMouseLeave : undefined}
-        className={`${cn(
+        className={cn(
           getButtonClassName(isXl, isHovered, dayEvents, isCurrentMonth),
           isXl && "flex-1 w-full",
-        )} calendar-cell-scroll`}
+        )}
         initial={false}
         animate={{
           opacity: !isXl && isCollapsedAndNotSelected ? 0.2 : 1,
@@ -143,7 +148,7 @@ export const CalendarDayCell = ({
             ? {
                 position: "relative",
                 zIndex: isHovered ? 10 : 1,
-                overflow: isHovered ? "auto" : "hidden",
+                overflow: "hidden",
                 ...(isHovered && expandedHeight
                   ? { height: `${expandedHeight}px` }
                   : {}),
@@ -169,8 +174,7 @@ export const CalendarDayCell = ({
             className="absolute top-0 left-0 right-0 pointer-events-none z-30"
             style={{
               height: fadeHeight,
-              background:
-                "linear-gradient(to bottom, #FF491A 0%, rgba(255,73,26,0) 100%)",
+              background: `linear-gradient(to bottom, #FF491A ${fadeSolidHeight}px, rgba(255,73,26,0) 100%)`,
             }}
           />
         )}

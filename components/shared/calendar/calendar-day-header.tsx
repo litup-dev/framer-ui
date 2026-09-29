@@ -27,7 +27,7 @@ export const CalendarDayHeader = ({
       className={cn(
         "xl:flex xl:items-start relative",
         isXl
-          ? cn("justify-between z-50", is2xl ? "xl:mb-10" : "xl:mb-6")
+          ? cn("justify-between z-50 shrink-0", is2xl ? "xl:mb-10" : "xl:mb-6")
           : "justify-center lg:justify-start z-10",
       )}
     >

@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter, usePathname } from "next/navigation";
 import { saveReturnUrl } from "@/lib/login-utils";
 import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
+import { CommunitySearchTrigger } from "@/app/feature/community/components/community-search-trigger";
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,7 @@ import { useQueryClient } from "@tanstack/react-query";
 const MENU_ITEMS = [
   { label: "전체 공연", href: "/all-performances" },
   { label: "클럽 찾기", href: "/club" },
-  // { label: "커뮤니티", href: "/community" },
+  { label: "커뮤니티", href: "/community" },
 ] as const;
 
 const MobileHeader = () => {
@@ -63,9 +64,12 @@ const MobileHeader = () => {
             <Image src="/images/logo.svg" alt="logo" width={77} height={24} />
           </Link>
         </div>
-        <button onClick={openMenu} className="w-12 h-12 flex items-center justify-center">
-          <Image src="/images/mobile-menu.png" alt="menu" width={28} height={28} />
-        </button>
+        <div className="flex items-center">
+          <CommunitySearchTrigger />
+          <button onClick={openMenu} className="w-12 h-12 flex items-center justify-center">
+            <Image src="/images/mobile-menu.png" alt="menu" width={28} height={28} />
+          </button>
+        </div>
       </div>
 
       <AnimatePresence>

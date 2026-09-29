@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { saveReturnUrl } from "@/lib/login-utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useReportModalStore } from "@/store/report-modal-store";
 import { useCommonModalStore } from "@/store/common-modal-store";
@@ -41,6 +42,7 @@ const sortOptions = [
 
 export default function CommentsPage() {
   const router = useRouter();
+  const pathname = usePathname();
   const queryClient = useQueryClient();
   const { user, isAuthenticated } = useCurrentUser();
   const { openModal: openReportModal } = useReportModalStore();
@@ -165,7 +167,10 @@ export default function CommentsPage() {
           "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?",
         confirmButton: {
           label: "확인",
-          onClick: () => router.push("/login"),
+          onClick: () => {
+            saveReturnUrl(pathname);
+            router.push("/login");
+          },
         },
         cancelButton: {
           label: "취소",

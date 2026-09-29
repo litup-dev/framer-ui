@@ -30,7 +30,7 @@ export const getButtonClassName = (
       "xl:!h-[209px] xl:!max-h-[209px] 2xl:!h-[314px] 2xl:!max-h-[314px]",
     isHovered &&
       isXl &&
-      "xl:!absolute xl:!top-0 xl:!left-0 xl:!right-0 xl:!min-h-[209px] 2xl:!min-h-[314px] xl:!max-h-[340px] 2xl:!max-h-[560px] xl:!overflow-y-auto xl:[overscroll-behavior:contain] calendar-cell-scroll",
+      "xl:!absolute xl:!top-0 xl:!left-0 xl:!right-0 xl:!min-h-[209px] 2xl:!min-h-[314px] xl:!max-h-[340px] 2xl:!max-h-[560px]",
     isHovered && isXl
       ? "bg-main text-white"
       : dayEvents.length === 0
@@ -47,7 +47,11 @@ export const getEventsContainerClassName = (
 ) => {
   return cn(
     "flex flex-col relative z-10 xl:gap-5 2xl:gap-8",
-    isXl ? (isHovered ? "" : "flex-1 min-h-0") : "hidden",
+    isXl
+      ? isHovered
+        ? "flex-1 min-h-0 overflow-y-auto calendar-cell-scroll -mx-4 px-4 -mt-6 pt-6 -mb-4 pb-4 2xl:-mx-6 2xl:px-6 2xl:-mt-10 2xl:pt-10 2xl:-mb-6 2xl:pb-6"
+        : "flex-1 min-h-0"
+      : "hidden",
     !isCurrentMonth && "opacity-50",
   );
 };
@@ -57,7 +61,7 @@ export const getEventsContainerStyles = (
   isHovered: boolean,
   isOverflowing: boolean,
 ) => ({
-  width: "100%",
+  width: isXl && isHovered ? undefined : "100%",
   boxSizing: "border-box" as const,
   maskImage:
     !isHovered && isXl && isOverflowing

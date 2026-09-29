@@ -1,26 +1,24 @@
 "use client";
 
-import { useEffect, useRef, RefObject } from "react";
+import { useEffect, useRef } from "react";
 
 interface UseCalendarCellScrollProps {
   isHovered: boolean;
   isXl: boolean;
-  buttonRef: RefObject<HTMLButtonElement | null>;
 }
 
 export const useCalendarCellScroll = ({
   isHovered,
   isXl,
-  buttonRef,
 }: UseCalendarCellScrollProps) => {
   const eventsContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isXl || isHovered) return;
-    const button = buttonRef.current;
-    if (!button) return;
-    button.scrollTop = 0;
-  }, [isHovered, isXl, buttonRef]);
+    const eventsContainer = eventsContainerRef.current;
+    if (!eventsContainer) return;
+    eventsContainer.scrollTop = 0;
+  }, [isHovered, isXl]);
 
   return eventsContainerRef;
 };

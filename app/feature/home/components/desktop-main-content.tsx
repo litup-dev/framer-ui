@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { InfiniteData } from "@tanstack/react-query";
+import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 
 import { cn } from "@/lib/utils";
 import { PerformanceItem } from "@/app/feature/home/types";
@@ -19,6 +20,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  CarouselScrollbar,
 } from "@/components/ui/carousel";
 
 interface DesktopMainContentProps {
@@ -149,26 +151,32 @@ const DesktopMainContent = ({
         opts={{
           align: "start",
         }}
+        plugins={[WheelGesturesPlugin()]}
       >
-        <CarouselContent className="-ml-2 md:-ml-4 2xl:-ml-5">
-          {isLoading
-            ? Array.from({ length: 6 }).map((_, i) => (
-                <CarouselItem
-                  key={i}
-                  className="pl-2 sm:pl-4 2xl:pl-5 md:basis-1/3 lg:basis-1/4 2xl:basis-1/5 pointer-events-none"
-                >
-                  <PerformanceCardSkeleton />
-                </CarouselItem>
-              ))
-            : performanceItems.map((performance) => (
-                <CarouselItem
-                  key={performance.id}
-                  className="pl-2 sm:pl-4 2xl:pl-5 md:basis-1/3 lg:basis-1/4 2xl:basis-1/5"
-                >
-                  <PerformanceCard performance={performance} />
-                </CarouselItem>
-              ))}
-        </CarouselContent>
+        <div className="relative">
+          <CarouselContent className="-ml-2 md:-ml-4 2xl:-ml-5">
+            {isLoading
+              ? Array.from({ length: 6 }).map((_, i) => (
+                  <CarouselItem
+                    key={i}
+                    className="pl-2 sm:pl-4 2xl:pl-5 md:basis-1/3 lg:basis-1/4 2xl:basis-1/5 pointer-events-none"
+                  >
+                    <PerformanceCardSkeleton />
+                  </CarouselItem>
+                ))
+              : performanceItems.map((performance) => (
+                  <CarouselItem
+                    key={performance.id}
+                    className="pl-2 sm:pl-4 2xl:pl-5 md:basis-1/3 lg:basis-1/4 2xl:basis-1/5"
+                  >
+                    <PerformanceCard performance={performance} />
+                  </CarouselItem>
+                ))}
+          </CarouselContent>
+          {performanceItems.length > 0 && (
+            <CarouselScrollbar className="absolute inset-x-0 top-full mt-10" />
+          )}
+        </div>
         {performanceItems.length > 0 && <CarouselPrevious />}
         {performanceItems.length > 0 && <CarouselNext />}
       </Carousel>

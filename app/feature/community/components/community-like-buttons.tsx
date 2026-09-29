@@ -1,0 +1,148 @@
+"use client";
+
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ThumbsUp, ThumbsDown, Share2 } from "lucide-react";
+import { toggleLike } from "../api";
+import { useLoginRequired } from "../hooks/use-login-required";
+import { CommunityShareModal } from "./community-share-modal";
+import { cn } from "@/lib/utils";
+import type { LikeType } from "../types";
+
+interface CommunityLikeButtonsProps {
+  postId: number;
+  likeCount: number;
+  dislikeCount: number;
+  commentCount: number;
+  myLikeType: LikeType | null;
+  postTitle: string;
+  authorNickname: string;
+  description?: string;
+  imageFilePath?: string | null;
+}
+
+export function CommunityLikeButtons({
+  postId,
+  likeCount,
+  dislikeCount,
+  commentCount,
+  myLikeType: initialMyLikeType,
+  postTitle,
+  authorNickname,
+  description,
+  imageFilePath,
+}: CommunityLikeButtonsProps) {
+  const queryClient = useQueryClient();
+  const { isAuthenticated, showLoginModal } = useLoginRequired();
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+
+  const [optimistic, setOptimistic] = useState({
+    myLikeType: initialMyLikeType,
+    likeCount,
+    dislikeCount,
+  });
+
+  const { mutate } = useMutation({
+    mutationFn: (likeType: LikeType) => toggleLike(postId, likeType),
+    onMutate: (likeType) => {
+      const prev = { ...optimistic };
+      const isSame = optimistic.myLikeType === likeType;
+      if (isSame) {
+        setOptimistic((s) => ({
+          myLikeType: null,
+          likeCount: likeType === "LIKE" ? s.likeCount - 1 : s.likeCount,
+          dislikeCount: likeType === "DISLIKE" ? s.dislikeCount - 1 : s.dislikeCount,
+        }));
+      } else {
+        setOptimistic((s) => ({
+          myLikeType: likeType,
+          likeCount: likeType === "LIKE" ? s.likeCount + 1 : s.myLikeType === "LIKE" ? s.likeCount - 1 : s.likeCount,
+          dislikeCount: likeType === "DISLIKE" ? s.dislikeCount + 1 : s.myLikeType === "DISLIKE" ? s.dislikeCount - 1 : s.dislikeCount,
+        }));
+      }
+      return prev;
+    },
+    onSuccess: (data) => {
+      setOptimistic({
+        myLikeType: data.data.myLikeType as LikeType | null,
+        likeCount: data.data.likeCount,
+        dislikeCount: data.data.dislikeCount,
+      });
+      queryClient.invalidateQueries({ queryKey: ["posts", postId] });
+    },
+    onError: (_err, _vars, prev) => {
+      if (prev) setOptimistic(prev);
+    },
+  });
+
+  const handleLike = (likeType: LikeType) => {
+    if (!isAuthenticated) {
+      showLoginModal();
+      return;
+    }
+    mutate(likeType);
+  };
+
+  return (
+    <div className="flex items-center gap-5 py-3">
+      <button
+        onClick={() => handleLike("LIKE")}
+        className={cn(
+          "flex items-center gap-1 text-[14px] xl:text-[16px] font-semibold transition-colors",
+          optimistic.myLikeType === "LIKE" ? "text-main" : "text-black hover:text-main",
+        )}
+      >
+        <ThumbsUp
+          className={cn(
+            "w-[18px] h-[18px] xl:w-[23.33px] xl:h-[21.16px]",
+            optimistic.myLikeType !== "LIKE" && "text-black/20",
+          )}
+          strokeWidth={1.5}
+          fill={optimistic.myLikeType === "LIKE" ? "currentColor" : "none"}
+        />
+        {optimistic.likeCount}
+      </button>
+
+      <button
+        onClick={() => handleLike("DISLIKE")}
+        className={cn(
+          "flex items-center gap-1 text-[14px] xl:text-[16px] font-semibold transition-colors",
+          optimistic.myLikeType === "DISLIKE" ? "text-main" : "text-black hover:text-main",
+        )}
+      >
+        <ThumbsDown
+          className={cn(
+            "w-[18px] h-[18px] xl:w-[23.33px] xl:h-[21.16px]",
+            optimistic.myLikeType !== "DISLIKE" && "text-black/20",
+          )}
+          strokeWidth={1.5}
+          fill={optimistic.myLikeType === "DISLIKE" ? "currentColor" : "none"}
+        />
+        {optimistic.dislikeCount}
+      </button>
+
+      <span className="flex items-center gap-1 text-[14px] xl:text-[16px] font-semibold text-black">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/images/reply_message.svg" alt="" className="w-[18px] h-[18px] xl:w-[22.17px] xl:h-[20.16px]" />
+        {commentCount}
+      </span>
+
+      <button
+        onClick={() => setIsShareModalOpen(true)}
+        className="flex items-center gap-1 text-[14px] xl:text-[16px] font-semibold text-black hover:text-black/70 transition-colors ml-auto"
+      >
+        <Share2 className="w-[16px] h-[16px] xl:w-7 xl:h-7 text-black/20" strokeWidth={1.5} />
+        공유하기
+      </button>
+
+      <CommunityShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        postTitle={postTitle}
+        authorNickname={authorNickname}
+        description={description}
+        imageFilePath={imageFilePath}
+      />
+    </div>
+  );
+}

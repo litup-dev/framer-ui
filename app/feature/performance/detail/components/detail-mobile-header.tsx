@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { Share2, Plus, Check } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import { isAfter, parseISO } from "date-fns";
 import { useToggleAttendance } from "../query-options";
 import { useCommonModalStore } from "@/store/common-modal-store";
 import ShareModal from "./share-modal";
 import { useCurrentUser } from "@/app/feature/user/hooks/use-current-user";
+import { saveReturnUrl } from "@/lib/login-utils";
 
 interface DetailMobileHeaderProps {
   performanceId: number;
@@ -32,6 +33,7 @@ const DetailMobileHeader = ({
   images,
 }: DetailMobileHeaderProps) => {
   const router = useRouter();
+  const pathname = usePathname();
   const { isAuthenticated } = useCurrentUser();
   const toggleAttendMutation = useToggleAttendance();
   const { openModal } = useCommonModalStore();
@@ -45,7 +47,10 @@ const DetailMobileHeader = ({
         "로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?",
       confirmButton: {
         label: "확인",
-        onClick: () => router.push("/login"),
+        onClick: () => {
+          saveReturnUrl(pathname);
+          router.push("/login");
+        },
       },
       cancelButton: {
         label: "취소",

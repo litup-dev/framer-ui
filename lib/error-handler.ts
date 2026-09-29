@@ -11,6 +11,13 @@ export function handleGlobalError(error: unknown): void {
     return;
   }
 
+  // GET 등 비로그인 접근이 기본인 요청은 만료/무효 토큰이어도 /login으로 보내지 않음
+  // (공연 상세, 커뮤니티 글 상세 등 공개 페이지에서 오래된 쿠키 때문에
+  //  로그인 페이지로 튕기는 문제 방지)
+  if (error.skipAuthRedirect) {
+    return;
+  }
+
   // JWT 인증 에러 체크
   const authErrorCodes = [
     API_ERROR_CODES.INVALID_TOKEN,
