@@ -150,6 +150,8 @@ const DesktopMainContent = ({
         className="hidden xl:block w-full relative z-10 aspect-[12/5] 2xl:aspect-[3/1]"
         opts={{
           align: "start",
+          // 드래그 시 카드 경계로 스냅(되돌아감)하지 않고 놓은 자리에서 관성 스크롤
+          dragFree: true,
         }}
         plugins={[WheelGesturesPlugin()]}
       >
