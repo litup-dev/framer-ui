@@ -10,13 +10,13 @@ const HomeCharacterImage = () => {
 
   return (
     <Image
-      src="/images/main-character.png"
+      src="/images/main-characters.png"
       alt="main-image"
-      width={1092}
-      height={1092}
+      width={1611}
+      height={1230}
       priority
       className={cn(
-        "absolute right-0 pointer-events-none select-none top-[37px] min-[744px]:top-[72px] min-[1024px]:top-[-34px] min-[1280px]:top-[-34px] min-[1600px]:top-[-82px] min-[1600px]:right-[-24px] w-[155px] h-[155px] min-[744px]:w-[366px] min-[744px]:h-[366px] min-[1024px]:w-[592px] min-[1024px]:h-[592px] min-[1280px]:w-[782px] min-[1280px]:h-[782px] min-[1600px]:w-[1092px] min-[1600px]:h-[1092px]",
+        "absolute pointer-events-none select-none h-auto right-[20px] top-[64px] w-[210px] min-[744px]:right-[40px] min-[744px]:top-[102px] min-[744px]:w-[400px] min-[1024px]:right-[60px] min-[1024px]:top-[87px] min-[1024px]:w-[520px] min-[1280px]:top-[6px] min-[1280px]:w-[640px] min-[1536px]:right-[80px] min-[1536px]:top-[28px] min-[1536px]:w-[760px] min-[1600px]:top-[10px] min-[1600px]:w-[800px] min-[1920px]:top-0 min-[1920px]:w-[820px]",
         isCalendarTab && "hidden md:block",
       )}
     />
