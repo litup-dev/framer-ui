@@ -16,7 +16,7 @@ const HomeCharacterImage = () => {
       height={1230}
       priority
       className={cn(
-        "absolute pointer-events-none select-none h-auto right-[20px] top-[64px] w-[210px] min-[744px]:right-[40px] min-[744px]:top-[102px] min-[744px]:w-[400px] min-[1024px]:right-[60px] min-[1024px]:top-[87px] min-[1024px]:w-[520px] min-[1280px]:top-[6px] min-[1280px]:w-[640px] min-[1536px]:right-[80px] min-[1536px]:top-[28px] min-[1536px]:w-[760px] min-[1600px]:top-[10px] min-[1600px]:w-[800px] min-[1920px]:top-0 min-[1920px]:w-[820px]",
+        "absolute pointer-events-none select-none h-auto right-[20px] top-[64px] w-[210px] min-[744px]:right-[40px] min-[744px]:top-[102px] min-[744px]:w-[400px] min-[1024px]:right-[60px] min-[1024px]:top-[87px] min-[1024px]:w-[520px] min-[1280px]:top-[-36px] min-[1280px]:w-[640px] min-[1536px]:right-[80px] min-[1536px]:top-[-22px] min-[1536px]:w-[760px] min-[1600px]:top-[-40px] min-[1600px]:w-[800px] min-[1920px]:top-[-44px] min-[1920px]:w-[820px]",
         isCalendarTab && "hidden md:block",
       )}
     />
