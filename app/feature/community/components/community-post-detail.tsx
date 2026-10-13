@@ -106,12 +106,12 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
         </div>
 
         {/* 데스크탑 전용 게시판 배지 */}
-        <span className="hidden xl:inline-flex items-center w-[87px] h-[34px] px-[14px] py-[10px] rounded-[3px] text-[14px] font-semibold leading-none tracking-[-0.04em] whitespace-nowrap bg-black/5 border border-black/10 text-black mb-3">
+        <span className="hidden xl:flex items-center w-[87px] h-[34px] px-[14px] py-[10px] rounded-[3px] text-[14px] font-semibold leading-none tracking-[-0.04em] whitespace-nowrap bg-black/5 border border-black/10 text-black xl:mb-[14px]">
           {boardLabel(post.boardCode)}
         </span>
 
         {/* 제목 */}
-        <h1 className="text-[20px] md:text-[22px] xl:text-[32px] font-bold leading-[1.35] tracking-[-0.04em] text-black mb-4 xl:mb-5">
+        <h1 className="text-[20px] md:text-[22px] xl:text-[32px] font-bold leading-[1.35] tracking-[-0.04em] text-black mb-4 xl:mb-[34px]">
           {post.category && (
             <span className="text-black/40">[{post.category.name}] </span>
           )}
@@ -119,7 +119,7 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
         </h1>
 
         {/* 프로필 행 (아바타 + 닉네임만) */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
           {(() => {
             const avatar = getImageUrl(post.author.profilePath);
             return avatar ? (
@@ -145,14 +145,14 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
         </div>
 
         {/* 구분선 */}
-        <div className="h-px bg-[#d1d1d1] mt-3" />
+        <div className="h-px bg-[#d1d1d1] mt-3 xl:mt-6" />
 
         {/* 날짜 + 우측 액션(수정/삭제/신고) */}
         <div className="flex items-center justify-between py-3 mb-5">
           <p className="text-[12px] xl:text-[14px] text-black/40 font-medium">
             <span>{formatDate(post.createdAt)} 작성</span>
             {post.updatedAt && post.updatedAt !== post.createdAt && (
-              <span className="ml-2">{formatDate(post.updatedAt)} 수정됨</span>
+              <span className="ml-2 xl:ml-2.5">{formatDate(post.updatedAt)} 수정됨</span>
             )}
           </p>
 
@@ -271,7 +271,7 @@ export function CommunityPostDetail({ postId }: CommunityPostDetailProps) {
         {/* 게시판 배지와 같은 크기의 투명 스페이서 — 글쓰기 버튼을 배지 줄이 아니라 제목 줄에 맞춤 */}
         <span
           aria-hidden="true"
-          className="invisible inline-flex items-center w-[87px] h-[34px] px-[14px] py-[10px] rounded-[3px] text-[14px] font-semibold leading-none whitespace-nowrap mb-3"
+          className="invisible flex items-center w-[87px] h-[34px] px-[14px] py-[10px] rounded-[3px] text-[14px] font-semibold leading-none whitespace-nowrap mb-[14px]"
         >
           {boardLabel(post.boardCode)}
         </span>
