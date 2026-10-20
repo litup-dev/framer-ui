@@ -9,6 +9,7 @@ import { ReportModal } from "@/components/shared/report-modal";
 import localFont from "next/font/local";
 import { Suspense } from "react";
 import Script from "next/script";
+import { ClarityInit } from "@/components/shared/clarity";
 
 const suit = localFont({
   src: "./fonts/SUIT-Variable.woff2",
@@ -75,6 +76,8 @@ export default function RootLayout({
             strategy="afterInteractive"
           />
         )}
+        {/* Microsoft Clarity(히트맵/세션 녹화). Vercel Production에서만 로드. */}
+        {process.env.VERCEL_ENV === "production" && <ClarityInit />}
       </body>
     </html>
   );
