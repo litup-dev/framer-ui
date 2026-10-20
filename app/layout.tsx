@@ -8,6 +8,7 @@ import { CommonModal } from "@/components/shared/common-modal";
 import { ReportModal } from "@/components/shared/report-modal";
 import localFont from "next/font/local";
 import { Suspense } from "react";
+import Script from "next/script";
 
 const suit = localFont({
   src: "./fonts/SUIT-Variable.woff2",
@@ -65,6 +66,15 @@ export default function RootLayout({
         {/* Vercel Production 배포(main)에서만 활성화. Preview(develop)/로컬은 VERCEL_ENV가
             없거나 'production'이 아니라서 자동으로 비활성화된다. */}
         {process.env.VERCEL_ENV === "production" && <Analytics />}
+        {/* Cloudflare Web Analytics. litup.kr은 프록시(주황 구름)가 꺼진 Vercel 직결이라
+            자동 삽입이 안 되어 스니펫을 직접 넣는다. Vercel Production에서만 로드. */}
+        {process.env.VERCEL_ENV === "production" && (
+          <Script
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            data-cf-beacon='{"token": "0a271ac55baf4ab68e57af545f314f3a"}'
+            strategy="afterInteractive"
+          />
+        )}
       </body>
     </html>
   );
