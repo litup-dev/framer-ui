@@ -4,7 +4,7 @@ import { parse, getDate, isToday } from "date-fns";
 import { CalendarEvent } from "@/components/shared/calendar/types";
 import { Description, Subtitle } from "@/components/shared/typography";
 import Image from "next/image";
-import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
+import { getPosterThumbUrl } from "@/app/feature/club/detail/utils/get-image-url";
 import Link from "next/link";
 
 const DEFAULT_IMAGE = "/images/poster_default.png";
@@ -53,7 +53,7 @@ const CalendarDateEventList = ({
         {events.map((event) =>
           event.performances?.map((performance, performanceIndex) => {
             const mainImage = performance.images?.find((img) => img.isMain);
-            const imageUrl = getImageUrl(mainImage?.filePath) || DEFAULT_IMAGE;
+            const imageUrl = getPosterThumbUrl(mainImage) || DEFAULT_IMAGE;
 
             const artistNames =
               performance.artists?.map((artist) => artist.name).join(", ") ||

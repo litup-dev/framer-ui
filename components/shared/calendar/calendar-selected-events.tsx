@@ -7,7 +7,7 @@ import { ko } from "date-fns/locale";
 import { CalendarEvent } from "@/components/shared/calendar/types";
 import { Description, Subtitle } from "@/components/shared/typography";
 import FadeIn from "@/components/shared/fade-in";
-import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
+import { getPosterThumbUrl } from "@/app/feature/club/detail/utils/get-image-url";
 import Link from "next/link";
 
 const DEFAULT_IMAGE = "/images/poster_default.png";
@@ -42,7 +42,7 @@ export const CalendarSelectedEvents = ({
                     (img) => img.isMain,
                   );
                   const imageUrl =
-                    getImageUrl(mainImage?.filePath) || DEFAULT_IMAGE;
+                    getPosterThumbUrl(mainImage) || DEFAULT_IMAGE;
 
                   return (
                     <div

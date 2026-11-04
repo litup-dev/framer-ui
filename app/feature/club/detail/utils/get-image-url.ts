@@ -17,3 +17,11 @@ export const getImageUrl = (
   const path = filePath.startsWith("/") ? filePath : `/${filePath}`;
   return `${imagePrefix}${path}`;
 };
+
+/**
+ * 목록/카드용 포스터 URL. 썸네일(thumbPath)이 있으면 그걸, 없으면(기존 포스터) 원본을 쓴다.
+ * 상세 화면처럼 크게 보여주는 곳은 getImageUrl(filePath)를 그대로 쓴다.
+ */
+export const getPosterThumbUrl = (
+  image: { filePath?: string | null; thumbPath?: string | null } | null | undefined,
+): string | null => getImageUrl(image?.thumbPath || image?.filePath);

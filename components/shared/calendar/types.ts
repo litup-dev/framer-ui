@@ -6,6 +6,7 @@ export interface Performance {
   images: Array<{
     id: number;
     filePath: string;
+    thumbPath?: string | null;
     isMain: boolean;
   }>;
 }

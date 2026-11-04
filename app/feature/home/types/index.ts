@@ -13,6 +13,7 @@ export interface CalendarPerformance {
   images: Array<{
     id: number;
     filePath: string;
+    thumbPath?: string | null;
     isMain: boolean;
   }>;
 }
@@ -24,6 +25,7 @@ export interface Performance {
   images: Array<{
     id: number;
     filePath: string;
+    thumbPath?: string | null;
     isMain: boolean;
   }>;
 }
@@ -45,6 +47,7 @@ export interface Artist {
 export interface PerformanceImage {
   id: number;
   filePath: string;
+  thumbPath?: string | null;
   isMain: boolean;
 }
 
