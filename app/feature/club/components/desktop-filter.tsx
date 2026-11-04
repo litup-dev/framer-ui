@@ -256,7 +256,11 @@ const DesktopFilter = ({
 
       <div className="hidden lg:block w-3/5 relative flex-1 min-h-0">
         <div className="absolute inset-0 -right-5 md:-right-10 lg:-right-15 xl:-right-20">
-          <KakaoMap club={selectedClub} clubs={clubs} />
+          <KakaoMap
+            club={selectedClub}
+            clubs={clubs}
+            onSelectClub={setSelectedClub}
+          />
         </div>
       </div>
     </div>
