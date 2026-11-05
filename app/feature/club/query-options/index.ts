@@ -12,6 +12,7 @@ import {
   ClubDetailCalendarResponse,
   Performance,
   Club,
+  ClubMapResponse,
   CreateReviewResponse,
 } from "@/app/feature/club/types";
 import { apiClient } from "@/lib/api-client";
@@ -96,6 +97,13 @@ const getClubsOptions = (params: GetClubsParams = {}) => {
     },
   });
 };
+
+const getClubMapOptions = () =>
+  queryOptions<ClubMapResponse>({
+    queryKey: ["club-map"],
+    staleTime: 10 * 60 * 1000,
+    queryFn: () => apiClient.get<ClubMapResponse>("/api/v1/clubs/map"),
+  });
 
 const getReviewCategoryOptions = () =>
   queryOptions<ReviewCategoryResponse>({
@@ -397,6 +405,7 @@ const deleteReviewOptions = () =>
 
 export {
   getClubsOptions,
+  getClubMapOptions,
   getClubByIdOptions,
   mutateFavoriteClub,
   getReviewCategoryOptions,

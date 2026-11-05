@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Title, Description } from "@/components/shared/typography";
 import { PerformHistoryItem } from "@/app/feature/user/types";
-import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
+import { getPosterThumbUrl } from "@/app/feature/club/detail/utils/get-image-url";
 import { formatDate } from "@/lib/date-utils";
 
 interface ViewingHistoryItemProps {
@@ -19,7 +19,7 @@ export default function ViewingHistoryItem({
   onSelect,
 }: ViewingHistoryItemProps) {
   const mainImage = item.images?.find((img) => img.isMain) || item.images?.[0];
-  const imageUrl = mainImage ? getImageUrl(mainImage.filePath) : null;
+  const imageUrl = getPosterThumbUrl(mainImage);
   const artistNames = item.artists?.map((artist) => artist.name) ?? [];
 
   return (

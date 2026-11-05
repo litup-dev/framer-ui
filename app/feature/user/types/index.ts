@@ -25,6 +25,7 @@ export interface PerformHistoryItem {
   images: {
     id: number;
     filePath: string;
+    thumbPath?: string | null;
     isMain: boolean;
   }[];
   club: {
@@ -76,6 +77,7 @@ export interface WishPerformItem {
   images: {
     id: number;
     filePath: string;
+    thumbPath?: string | null;
     isMain: boolean;
   }[];
   club: {

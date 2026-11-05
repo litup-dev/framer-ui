@@ -25,9 +25,12 @@ export const searchPerformancesForTag = async (
   return apiClient.get(`/api/v1/performances/search?${params.toString()}`);
 };
 
-function mainImagePath(images?: { filePath: string; isMain?: boolean }[]): string | undefined {
+function mainImagePath(
+  images?: { filePath: string; thumbPath?: string | null; isMain?: boolean }[],
+): string | undefined {
   if (!images || images.length === 0) return undefined;
-  return (images.find((i) => i.isMain) ?? images[0]).filePath;
+  const main = images.find((i) => i.isMain) ?? images[0];
+  return main.thumbPath || main.filePath;
 }
 
 export function toTaggableClub(club: Club): TaggableClub {

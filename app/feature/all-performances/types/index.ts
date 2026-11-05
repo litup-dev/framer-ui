@@ -5,6 +5,7 @@ export interface Artist {
 export interface PerformanceImage {
   id: number;
   filePath: string;
+  thumbPath?: string | null;
   isMain: boolean;
 }
 

@@ -36,6 +36,18 @@ export interface Club {
   longitude?: number;
 }
 
+export interface ClubMapItem {
+  id: number;
+  name: string | null;
+  latitude: number;
+  longitude: number;
+  avgRating: number | null;
+}
+
+export interface ClubMapResponse {
+  data: ClubMapItem[];
+}
+
 export interface UpcomingPerform {
   id: number;
   title: string;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { usePathname } from "next/navigation";
@@ -117,6 +117,17 @@ const ClubSearchForm = () => {
   const clubs = data?.data?.items || [];
   const total = data?.data?.total || 0;
 
+  // 같은 클럽을 다시 선택해도 지도가 이동하도록 매번 새 객체로 저장
+  const handleSelectClub = useCallback((club: Club | null) => {
+    setSelectedClub(club ? { ...club } : null);
+  }, []);
+
+  // 목록(페이지/필터)이 바뀌면 선택을 풀고 첫 번째 클럽을 지도 기준으로 사용
+  const firstClubId = clubs[0]?.id;
+  useEffect(() => {
+    setSelectedClub(null);
+  }, [firstClubId]);
+
   const pagination = useClubPagination({
     total,
     limit,
@@ -136,7 +147,7 @@ const ClubSearchForm = () => {
             setViewType={setViewType}
             viewType={viewType}
             selectedClub={selectedClub}
-            setSelectedClub={setSelectedClub}
+            setSelectedClub={handleSelectClub}
             pagination={pagination}
             currentPage={currentPage}
           />
@@ -145,7 +156,7 @@ const ClubSearchForm = () => {
           <DesktopFilter
             clubs={clubs}
             selectedClub={selectedClub}
-            setSelectedClub={setSelectedClub}
+            setSelectedClub={handleSelectClub}
             pagination={pagination}
             currentPage={currentPage}
           />

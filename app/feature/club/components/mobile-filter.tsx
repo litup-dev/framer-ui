@@ -271,7 +271,11 @@ const MobileFilter = ({
             className="fixed inset-x-0 bottom-0 top-[112px] md:top-[148px] overflow-hidden border-t border-[rgba(23,23,23,0.1)]"
             style={{ touchAction: "none" }}
           >
-            <KakaoMap club={selectedClub} clubs={clubs} />
+            <KakaoMap
+              club={selectedClub}
+              clubs={clubs}
+              onSelectClub={setSelectedClub}
+            />
           </div>
         </>
       )}

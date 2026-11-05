@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { PerformanceItem } from "@/app/feature/all-performances/types";
 
 const DEFAULT_IMAGE = "/images/poster_default.png";
-import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
+import { getPosterThumbUrl } from "@/app/feature/club/detail/utils/get-image-url";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Description, Subtitle } from "@/components/shared/typography";
@@ -23,7 +23,7 @@ export const PerformanceCard = ({ performance }: PerformanceCardProps) => {
   const router = useRouter();
   const mainImage =
     performance.images.find((img) => img.isMain) || performance.images[0];
-  const imageUrl = getImageUrl(mainImage?.filePath);
+  const imageUrl = getPosterThumbUrl(mainImage);
   const artistsText = performance.artists
     .map((artist) => artist.name)
     .join(", ");

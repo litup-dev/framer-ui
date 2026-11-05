@@ -9,7 +9,7 @@ import { useInView } from "react-intersection-observer";
 
 import { PerformanceItem } from "@/app/feature/home/types";
 import { formatMonthDay } from "@/lib/date-utils";
-import { getImageUrl } from "@/app/feature/club/detail/utils/get-image-url";
+import { getPosterThumbUrl } from "@/app/feature/club/detail/utils/get-image-url";
 import { Card, CardContent } from "@/components/ui/card";
 import { Description, Subtitle } from "@/components/shared/typography";
 import { PerformanceCardSkeleton } from "@/app/feature/home/components/performance-card";
@@ -72,7 +72,7 @@ const MobileMainContent = ({
         const mainImage =
           performance.images.find((img) => img.isMain) ||
           performance.images[0];
-        const imageUrl = getImageUrl(mainImage?.filePath);
+        const imageUrl = getPosterThumbUrl(mainImage);
 
         return (
           <div
