@@ -10,9 +10,7 @@ const getHostname = (url: string | undefined): string | null => {
 };
 
 const apiHostname = getHostname(process.env.NEXT_PUBLIC_API_BASE_URL);
-const imageHostname = getHostname(
-  process.env.NEXT_PUBLIC_IMAGE_PREFIX_URL,
-);
+const imageHostname = getHostname(process.env.NEXT_PUBLIC_IMAGE_PREFIX_URL);
 
 const remotePatterns = [
   ...(apiHostname
@@ -23,7 +21,11 @@ const remotePatterns = [
     : []),
   ...(imageHostname && imageHostname !== apiHostname
     ? [
-        { protocol: "https" as const, hostname: imageHostname, pathname: "/**" },
+        {
+          protocol: "https" as const,
+          hostname: imageHostname,
+          pathname: "/**",
+        },
         { protocol: "http" as const, hostname: imageHostname, pathname: "/**" },
       ]
     : []),
@@ -32,6 +34,7 @@ const remotePatterns = [
 const nextConfig: NextConfig = {
   images: {
     remotePatterns,
+    unoptimized: true,
   },
   async rewrites() {
     const apiBaseUrl = process.env.API_BASE_URL;

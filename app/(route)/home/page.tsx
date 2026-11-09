@@ -12,7 +12,8 @@ import type {
 
 import HomeContent from "./home-content";
 
-export const revalidate = 60;
+// ISR(revalidate)은 Vercel Hobby의 ISR Writes 한도를 소진시켜 force-dynamic으로 되돌린다.
+export const dynamic = "force-dynamic";
 
 async function prefetchCalendarMonth(
   queryClient: ReturnType<typeof getQueryClient>,
