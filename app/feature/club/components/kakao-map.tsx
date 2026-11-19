@@ -160,8 +160,9 @@ const KakaoMap = ({ club, clubs, placeInfo, onSelectClub }: KakaoMapProps) => {
 
   // 클러스터링 이벤트 핸들러에서 최신 선택 위치를 읽기 위한 ref
   const selectedPositionRef = useRef<{ lat: number; lng: number } | null>(null);
-  const selectedLat = displayClub?.latitude;
-  const selectedLng = displayClub?.longitude;
+  // 선택 상태는 사용자가 실제로 고른 club 기준 (첫 번째 클럽으로 이동만 한 경우는 미선택)
+  const selectedLat = club?.latitude;
+  const selectedLng = club?.longitude;
   const clustererRef = useRef<kakao.maps.MarkerClusterer | null>(null);
   useEffect(() => {
     selectedPositionRef.current =
@@ -216,16 +217,16 @@ const KakaoMap = ({ club, clubs, placeInfo, onSelectClub }: KakaoMapProps) => {
   const hideSelectedChip = isClustered && selectedClustered;
 
   const markerClubs = useMemo(
-    () => (mapData?.data ?? []).filter((item) => item.id !== displayClub?.id),
-    [mapData, displayClub?.id],
+    () => (mapData?.data ?? []).filter((item) => item.id !== club?.id),
+    [mapData, club?.id],
   );
 
   // 선택한 클럽 칩에 오늘 공연 여부를 표시하기 위한 조회용
-  const displayHasTodayPerform = useMemo(
+  const selectedHasTodayPerform = useMemo(
     () =>
-      (mapData?.data ?? []).find((item) => item.id === displayClub?.id)
+      (mapData?.data ?? []).find((item) => item.id === club?.id)
         ?.hasTodayPerform ?? false,
-    [mapData, displayClub?.id],
+    [mapData, club?.id],
   );
 
   // 클러스터링하지 않는 확대 레벨에서는 화면 안의 클럽만 칩으로 그린다
@@ -285,7 +286,7 @@ const KakaoMap = ({ club, clubs, placeInfo, onSelectClub }: KakaoMapProps) => {
         >
           {isClustered &&
             clusterClubs.map((item) =>
-              item.id === displayClub?.id ? (
+              item.id === club?.id ? (
                 // 선택한 클럽도 클러스터 개수에 포함하되, 혼자 남았을 때는
                 // 선택 칩이 대신 보이므로 마커 자체는 투명하게 둔다
                 <MapMarker
@@ -324,19 +325,19 @@ const KakaoMap = ({ club, clubs, placeInfo, onSelectClub }: KakaoMapProps) => {
             />
           </CustomOverlayMap>
         ))}
-        {displayClub?.latitude && displayClub?.longitude && !hideSelectedChip && (
+        {club?.latitude && club?.longitude && !hideSelectedChip && (
           <CustomOverlayMap
             position={{
-              lat: displayClub.latitude,
-              lng: displayClub.longitude,
+              lat: club.latitude,
+              lng: club.longitude,
             }}
             yAnchor={1}
             zIndex={SELECTED_CHIP_Z_INDEX}
             clickable
           >
             <ClubMapChip
-              name={displayClub.name}
-              hasTodayPerform={displayHasTodayPerform}
+              name={club.name}
+              hasTodayPerform={selectedHasTodayPerform}
               selected
             />
           </CustomOverlayMap>
