@@ -22,6 +22,9 @@ import ClubImage from "@/app/feature/club/components/club-image";
 import { Description, Subtitle } from "@/components/shared/typography";
 import { saveReturnUrl } from "@/lib/login-utils";
 
+// tailwind lg 브레이크포인트 (데스크톱 레이아웃: 목록 + 지도)
+const DESKTOP_MEDIA_QUERY = "(min-width: 1024px)";
+
 interface ClubCardProps {
   club: Club;
   onMapClick: (club: Club) => void;
@@ -81,8 +84,20 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
     mutateFavorite(undefined);
   };
 
+  // 링크/버튼을 제외한 카드 영역 클릭 동작.
+  // 지도가 목록 옆에 함께 보이는 데스크톱에서는 지도 이동, 모바일은 상세 페이지로 이동한다
+  // (모바일에서 지도는 "위치" 버튼으로만 볼 수 있다)
+  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if ((e.target as HTMLElement).closest("a, [data-map-ignore]")) return;
+    if (window.matchMedia(DESKTOP_MEDIA_QUERY).matches) {
+      onMapClick(club);
+    } else {
+      router.push(`/club/${club.id}`);
+    }
+  };
+
   return (
-    <div className="block cursor-pointer">
+    <div className="block cursor-pointer" onClick={handleCardClick}>
       <div className="flex justify-between">
         <Link href={`/club/${club.id}`}>
           <div className="flex items-center gap-2.5">
@@ -161,6 +176,7 @@ const ClubCard = ({ club, onMapClick }: ClubCardProps) => {
       </div>
       <div className="flex gap-1 items-center text-subtitle-12 text-black-60 mt-4 md:mt-3 lg:mt-3 xl:mt-3 2xl:mt-4">
         <div
+          data-map-ignore
           className="flex items-center gap-1 border border-black/20 px-2.5 py-2 rounded-[4px] cursor-pointer max-h-[31px]"
           onClick={() => onMapClick(club)}
         >

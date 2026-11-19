@@ -31,6 +31,63 @@ const CHIP_VIEWPORT_PADDING = 0.1;
 const CHIP_Z_INDEX = 5;
 const SELECTED_CHIP_Z_INDEX = 10;
 
+// 지도 이동 애니메이션 시간(ms)
+const PAN_DURATION = 1200;
+
+const easeInOutCubic = (t: number) =>
+  t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+// 카카오 panTo 는 이동 거리가 화면보다 길면 애니메이션 없이 바로 점프하므로
+// 중심 좌표를 직접 보간해서 거리와 상관없이 부드럽게 이동한다.
+// level 을 주면 먼저 확대/축소 애니메이션이 끝난 뒤 이동한다. 반환값은 취소 함수
+const moveMapTo = (
+  map: kakao.maps.Map,
+  lat: number,
+  lng: number,
+  level?: number,
+) => {
+  let frame = 0;
+  let idleHandler: (() => void) | null = null;
+
+  const glide = () => {
+    const from = map.getCenter();
+    const fromLat = from.getLat();
+    const fromLng = from.getLng();
+    const startedAt = performance.now();
+
+    const step = (now: number) => {
+      const t = Math.min((now - startedAt) / PAN_DURATION, 1);
+      const eased = easeInOutCubic(t);
+      map.setCenter(
+        new kakao.maps.LatLng(
+          fromLat + (lat - fromLat) * eased,
+          fromLng + (lng - fromLng) * eased,
+        ),
+      );
+      if (t < 1) frame = requestAnimationFrame(step);
+    };
+    frame = requestAnimationFrame(step);
+  };
+
+  if (level !== undefined && map.getLevel() !== level) {
+    const handler = () => {
+      kakao.maps.event.removeListener(map, "idle", handler);
+      idleHandler = null;
+      glide();
+    };
+    idleHandler = handler;
+    kakao.maps.event.addListener(map, "idle", handler);
+    map.setLevel(level, { animate: true });
+  } else {
+    glide();
+  }
+
+  return () => {
+    cancelAnimationFrame(frame);
+    if (idleHandler) kakao.maps.event.removeListener(map, "idle", idleHandler);
+  };
+};
+
 interface Viewport {
   level: number;
   south: number;
@@ -125,14 +182,13 @@ const KakaoMap = ({ club, clubs, placeInfo, onSelectClub }: KakaoMapProps) => {
   // 선택한 클럽으로 이동
   useEffect(() => {
     if (!map || !club?.latitude || !club?.longitude) return;
-    map.setLevel(FOCUS_LEVEL);
-    map.panTo(new kakao.maps.LatLng(club.latitude, club.longitude));
+    return moveMapTo(map, club.latitude, club.longitude, FOCUS_LEVEL);
   }, [map, club]);
 
   // 선택한 클럽이 없으면 목록의 첫 번째 클럽이 지도 기준
   useEffect(() => {
     if (!map || club || !firstLat || !firstLng) return;
-    map.panTo(new kakao.maps.LatLng(firstLat, firstLng));
+    return moveMapTo(map, firstLat, firstLng);
   }, [map, club, firstClub?.id, firstLat, firstLng]);
 
   const syncViewport = useCallback((target: kakao.maps.Map) => {
