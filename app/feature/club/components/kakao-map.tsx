@@ -28,6 +28,9 @@ const CLUSTER_MIN_LEVEL = 5;
 const DEFAULT_LEVEL = 3;
 // 칩은 화면 밖으로 이 비율만큼 여유를 두고 그린다
 const CHIP_VIEWPORT_PADDING = 0.1;
+// 클러스터러는 화면 밖으로 이 px 만큼 여유를 둔 영역의 마커만 묶는다 (카카오 기본값 60).
+// 클러스터링 레벨에서는 칩도 이 여유를 넘지 않는 범위만 그려야 묶이지 않은 클럽을 정확히 가려낼 수 있다
+const CLUSTER_GRID_SIZE = 60;
 const CHIP_Z_INDEX = 5;
 const SELECTED_CHIP_Z_INDEX = 10;
 
@@ -90,6 +93,9 @@ const moveMapTo = (
 
 interface Viewport {
   level: number;
+  // 지도 영역의 화면 크기(px). 클러스터 격자 여유를 비율로 환산하는 데 쓴다
+  width: number;
+  height: number;
   south: number;
   west: number;
   north: number;
@@ -110,6 +116,9 @@ const CLUSTER_HIGHLIGHT_VARS = {
 // 카카오 클러스터러 기본값. 이 개수 미만은 클러스터가 아니라 개별 마커로 보인다
 const CLUSTER_MIN_SIZE = 2;
 const SAME_POSITION_EPSILON = 1e-7;
+
+const isSameSet = (a: Set<number>, b: Set<number>) =>
+  a.size === b.size && [...a].every((value) => b.has(value));
 
 const buildClusterStyle = (
   outer: number,
@@ -164,8 +173,17 @@ const KakaoMap = ({ club, clubs, placeInfo, onSelectClub }: KakaoMapProps) => {
   const [viewport, setViewport] = useState<Viewport | null>(null);
   // 선택한 클럽이 클러스터에 묶여 있는지 (묶여 있으면 칩 대신 클러스터를 강조)
   const [selectedClustered, setSelectedClustered] = useState(false);
+  // 클러스터에 묶인 클럽. 클러스터링 레벨에서는 여기에 없는 클럽을 칩으로 그린다
+  const [clusteredIds, setClusteredIds] = useState<Set<number>>(
+    () => new Set(),
+  );
 
   const { data: mapData } = useQuery(getClubMapOptions());
+
+  // 클러스터러가 돌려주는 카카오 마커로 클럽을 찾기 위한 매핑.
+  // 좌표로 비교하면 카카오가 돌려주는 값과 미세하게 달라 어긋나는 클럽이 생기므로
+  // 마커가 만들어질 때 클럽 id 를 직접 연결해 둔다
+  const markerIdsRef = useRef(new WeakMap<kakao.maps.Marker, number>());
 
   const firstClub = clubs && clubs.length > 0 ? clubs[0] : null;
   const displayClub = club ?? firstClub;
@@ -195,8 +213,11 @@ const KakaoMap = ({ club, clubs, placeInfo, onSelectClub }: KakaoMapProps) => {
     const bounds = target.getBounds();
     const southWest = bounds.getSouthWest();
     const northEast = bounds.getNorthEast();
+    const node = target.getNode();
     setViewport({
       level: target.getLevel(),
+      width: node.clientWidth,
+      height: node.clientHeight,
       south: southWest.getLat(),
       west: southWest.getLng(),
       north: northEast.getLat(),
@@ -232,8 +253,16 @@ const KakaoMap = ({ club, clubs, placeInfo, onSelectClub }: KakaoMapProps) => {
     (_: kakao.maps.MarkerClusterer, clusters: kakao.maps.Cluster[]) => {
       const selected = selectedPositionRef.current;
       let found = false;
+      const clustered = new Set<number>();
 
+      // 카카오는 clustered 이벤트에 CLUSTER_MIN_SIZE 이상 묶인 클러스터만 넘겨준다.
+      // 혼자 남은 마커는 목록에 없으므로, 묶인 클럽을 모아 두고 나머지를 칩으로 그린다
       clusters.forEach((cluster) => {
+        (cluster.getMarkers() as kakao.maps.Marker[]).forEach((marker) => {
+          const id = markerIdsRef.current.get(marker);
+          if (id !== undefined) clustered.add(id);
+        });
+
         const content = cluster.getClusterMarker().getContent();
         if (!(content instanceof HTMLElement)) return;
 
@@ -260,6 +289,7 @@ const KakaoMap = ({ club, clubs, placeInfo, onSelectClub }: KakaoMapProps) => {
       });
 
       setSelectedClustered(found);
+      setClusteredIds((prev) => (isSameSet(prev, clustered) ? prev : clustered));
     },
     [],
   );
@@ -285,19 +315,33 @@ const KakaoMap = ({ club, clubs, placeInfo, onSelectClub }: KakaoMapProps) => {
     [mapData, club?.id],
   );
 
-  // 클러스터링하지 않는 확대 레벨에서는 화면 안의 클럽만 칩으로 그린다
+  // 클러스터로 묶이지 않은 클럽은 전부 칩으로 그린다.
+  // 클러스터링하지 않는 확대 레벨에서는 화면 안의 모든 클럽,
+  // 클러스터링 레벨에서는 묶이지 않고 혼자 남은 클럽만 해당
   const chipClubs = useMemo(() => {
-    if (!viewport || viewport.level >= CLUSTER_MIN_LEVEL) return [];
-    const latPad = (viewport.north - viewport.south) * CHIP_VIEWPORT_PADDING;
-    const lngPad = (viewport.east - viewport.west) * CHIP_VIEWPORT_PADDING;
-    return markerClubs.filter(
+    if (!viewport) return [];
+    const clusterLevel = viewport.level >= CLUSTER_MIN_LEVEL;
+    const candidates = clusterLevel
+      ? markerClubs.filter((item) => !clusteredIds.has(item.id))
+      : markerClubs;
+    // 클러스터러가 다루는 영역(화면 + 격자 여유) 밖의 클럽은 묶였는지 알 수 없으므로
+    // 클러스터링 레벨에서는 여유를 격자 크기 이내로 제한한다
+    const padX = clusterLevel
+      ? Math.min(CHIP_VIEWPORT_PADDING, CLUSTER_GRID_SIZE / (viewport.width || Infinity))
+      : CHIP_VIEWPORT_PADDING;
+    const padY = clusterLevel
+      ? Math.min(CHIP_VIEWPORT_PADDING, CLUSTER_GRID_SIZE / (viewport.height || Infinity))
+      : CHIP_VIEWPORT_PADDING;
+    const latPad = (viewport.north - viewport.south) * padY;
+    const lngPad = (viewport.east - viewport.west) * padX;
+    return candidates.filter(
       (item) =>
         item.latitude >= viewport.south - latPad &&
         item.latitude <= viewport.north + latPad &&
         item.longitude >= viewport.west - lngPad &&
         item.longitude <= viewport.east + lngPad,
     );
-  }, [markerClubs, viewport]);
+  }, [markerClubs, clusteredIds, viewport]);
 
   const handleMarkerClick = useCallback(
     async (id: number) => {
@@ -328,6 +372,7 @@ const KakaoMap = ({ club, clubs, placeInfo, onSelectClub }: KakaoMapProps) => {
       >
         <MarkerClusterer
           averageCenter
+          gridSize={CLUSTER_GRID_SIZE}
           minLevel={CLUSTER_MIN_LEVEL}
           styles={CLUSTER_STYLES}
           onCreate={(target) => {
@@ -340,31 +385,18 @@ const KakaoMap = ({ club, clubs, placeInfo, onSelectClub }: KakaoMapProps) => {
             })
           }
         >
+          {/* 마커는 클러스터 개수 집계용이라 투명하게 둔다.
+              혼자 남은 클럽은 핀 대신 칩이 보이고, 클릭도 칩이 처리한다 */}
           {isClustered &&
-            clusterClubs.map((item) =>
-              item.id === club?.id ? (
-                // 선택한 클럽도 클러스터 개수에 포함하되, 혼자 남았을 때는
-                // 선택 칩이 대신 보이므로 마커 자체는 투명하게 둔다
-                <MapMarker
-                  key={item.id}
-                  position={{ lat: item.latitude, lng: item.longitude }}
-                  opacity={0}
-                  clickable={false}
-                />
-              ) : (
-                <MapMarker
-                  key={item.id}
-                  position={{ lat: item.latitude, lng: item.longitude }}
-                  title={item.name ?? undefined}
-                  image={{
-                    src: "/images/map-pin.svg",
-                    size: { width: 32, height: 32 },
-                    options: { offset: { x: 16, y: 32 } },
-                  }}
-                  onClick={() => handleMarkerClick(item.id)}
-                />
-              ),
-            )}
+            clusterClubs.map((item) => (
+              <MapMarker
+                key={item.id}
+                position={{ lat: item.latitude, lng: item.longitude }}
+                opacity={0}
+                clickable={false}
+                onCreate={(marker) => markerIdsRef.current.set(marker, item.id)}
+              />
+            ))}
         </MarkerClusterer>
         {chipClubs.map((item) => (
           <CustomOverlayMap
