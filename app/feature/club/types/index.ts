@@ -42,6 +42,7 @@ export interface ClubMapItem {
   latitude: number;
   longitude: number;
   avgRating: number | null;
+  hasTodayPerform: boolean;
 }
 
 export interface ClubMapResponse {
