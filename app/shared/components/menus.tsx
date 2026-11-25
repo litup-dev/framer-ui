@@ -21,7 +21,7 @@ const HeaderMenus = ({
   isWhiteIconsOnXl?: boolean;
   scrollProgress?: number;
 }) => {
-  const { user } = useCurrentUser();
+  const { user, isLogin } = useCurrentUser();
   const router = useRouter();
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
@@ -52,9 +52,11 @@ const HeaderMenus = ({
       ))}
 
       {!mounted ? (
-        <div className="flex gap-4">
-          <div className="w-6 h-6 2xl:w-7 2xl:h-7 bg-gray-200 rounded-full animate-pulse" />
-          <div className="w-6 h-6 2xl:w-7 2xl:h-7 bg-gray-200 rounded-full animate-pulse" />
+        // 서버 렌더 시점엔 로그인 여부를 몰라서(쿠키는 클라이언트에서만 확인) 아무것도 그리지 않고
+        // 자리만 잡는다. 로그아웃 상태 사용자에게 로그인용 아이콘 스켈레톤이 보이지 않게 한다.
+        <div className="flex gap-4 invisible" aria-hidden>
+          <div className="w-6 h-6 2xl:w-7 2xl:h-7" />
+          <div className="w-6 h-6 2xl:w-7 2xl:h-7" />
         </div>
       ) : user ? (
         <div className="flex gap-4 items-center">
@@ -98,6 +100,12 @@ const HeaderMenus = ({
                 : undefined
             }
           />
+        </div>
+      ) : isLogin ? (
+        // 로그인 쿠키는 있고 유저 정보를 불러오는 중: 로그인 후 모습(아이콘 2개)과 같은 크기의 스켈레톤
+        <div className="flex gap-4">
+          <div className="w-6 h-6 2xl:w-7 2xl:h-7 bg-gray-200 rounded-full animate-pulse" />
+          <div className="w-6 h-6 2xl:w-7 2xl:h-7 bg-gray-200 rounded-full animate-pulse" />
         </div>
       ) : (
         <Link

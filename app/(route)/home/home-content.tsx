@@ -22,7 +22,6 @@ import MainContent from "@/app/feature/home/components/main-content";
 import MobileBottomNavigation from "@/app/feature/home/components/mobile-bottom-navigation";
 import SelectCalendarViewHeader from "@/components/shared/select-calendar-view-header";
 import Footer from "@/app/shared/components/footer";
-import HomeCharacterImage from "@/app/feature/home/components/home-character-image";
 import { NoticePopupModal } from "@/app/feature/notice/components/notice-popup-modal";
 
 export default function HomeContent() {
@@ -69,9 +68,11 @@ export default function HomeContent() {
 
   return (
     <div className="relative overflow-x-hidden">
-      <HomeCharacterImage />
       {shouldShowMainContent && (
-        <PageWrapper className="relative z-10 2xl:pt-[100px] 2xl:gap-[182px]">
+        <PageWrapper
+          fade={false}
+          className="relative z-10 2xl:pt-[100px] 2xl:gap-[182px]"
+        >
           <HeroSection />
           <CharacterSection performances={performances} />
           <MainContent

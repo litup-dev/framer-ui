@@ -83,6 +83,10 @@ const MobileMainContent = ({
             <Link href={`/performance/${performance.id}`}>
               <Card className="overflow-hidden gap-3">
                 <div className="aspect-[4/5] relative">
+                  <div
+                    className="absolute inset-0 rounded-sm bg-zinc-200 animate-pulse"
+                    aria-hidden
+                  />
                   <Image
                     src={imageUrl || DEFAULT_IMAGE}
                     alt={

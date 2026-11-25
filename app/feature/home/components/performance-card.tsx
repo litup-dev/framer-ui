@@ -38,13 +38,20 @@ const PerformanceImage = ({
   alt: string;
 }) => {
   return (
-    <Image
-      src={imageUrl || DEFAULT_IMAGE}
-      alt={alt}
-      fill
-      sizes="(max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
-      className="w-full h-full object-cover"
-    />
+    <>
+      {/* 포스터 이미지가 로드되기 전까지 보이는 스켈레톤. 이미지가 뜨면 위를 덮는다. */}
+      <div
+        className="absolute inset-0 rounded-sm bg-zinc-200 animate-pulse"
+        aria-hidden
+      />
+      <Image
+        src={imageUrl || DEFAULT_IMAGE}
+        alt={alt}
+        fill
+        sizes="(max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
+        className="w-full h-full object-cover"
+      />
+    </>
   );
 };
 

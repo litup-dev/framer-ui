@@ -19,5 +19,5 @@ export const useCurrentUser = () => {
     }
   }, [error]);
 
-  return { user: data, isLoading, error, isAuthenticated: !!data };
+  return { user: data, isLoading, error, isAuthenticated: !!data, isLogin };
 };
